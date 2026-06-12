@@ -1,8 +1,11 @@
 import { EventEmitter } from 'node:events';
+import { rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { buildWebSocketAuthMessage, buildWebSocketUrl } from '../src/net/online';
 import { Sim } from '../src/sim/sim';
-import { validCharName } from '../server/auth';
+import { offensiveUsername, validCharName, validUsername } from '../server/auth';
 import { rateLimited, requestIp } from '../server/ratelimit';
 
 function fakeReq(headers: Record<string, string>, remoteAddress: string) {
@@ -10,6 +13,23 @@ function fakeReq(headers: Record<string, string>, remoteAddress: string) {
   req.headers = headers;
   req.socket = { remoteAddress };
   return req;
+}
+
+function withUsernameBanlist(env: { inline?: string; file?: string }, test: () => void): void {
+  const prevInline = process.env.USERNAME_BANLIST;
+  const prevFile = process.env.USERNAME_BANLIST_FILE;
+  if (env.inline === undefined) delete process.env.USERNAME_BANLIST;
+  else process.env.USERNAME_BANLIST = env.inline;
+  if (env.file === undefined) delete process.env.USERNAME_BANLIST_FILE;
+  else process.env.USERNAME_BANLIST_FILE = env.file;
+  try {
+    test();
+  } finally {
+    if (prevInline === undefined) delete process.env.USERNAME_BANLIST;
+    else process.env.USERNAME_BANLIST = prevInline;
+    if (prevFile === undefined) delete process.env.USERNAME_BANLIST_FILE;
+    else process.env.USERNAME_BANLIST_FILE = prevFile;
+  }
 }
 
 describe('websocket authentication', () => {
@@ -108,5 +128,39 @@ describe('gm privilege boundaries', () => {
     const pid = target.addPlayer('warrior', 'Tester', { state });
 
     expect(target.entities.get(pid)?.gm).not.toBe(true);
+  });
+});
+
+describe('username censorship', () => {
+  it('allows normal account usernames that meet the shape rules', () => {
+    withUsernameBanlist({ inline: 'blockedterm' }, () => {
+      expect(validUsername('Eastbrook_123')).toBe(true);
+    });
+  });
+
+  it('rejects configured banned terms in new account usernames', () => {
+    withUsernameBanlist({ inline: 'blockedterm' }, () => {
+      expect(validUsername('blockedterm')).toBe(false);
+      expect(validUsername('xBLOCKEDTERMx')).toBe(false);
+    });
+  });
+
+  it('normalizes obvious separators and leetspeak before checking usernames', () => {
+    withUsernameBanlist({ inline: 'biga' }, () => {
+      expect(offensiveUsername('b_1_g_4')).toBe(true);
+      expect(validUsername('b_1_g_4')).toBe(false);
+    });
+  });
+
+  it('can load banned username terms from a configured file', () => {
+    const file = join(tmpdir(), `woc-banlist-${Date.now()}-${Math.random().toString(16).slice(2)}.txt`);
+    writeFileSync(file, 'forbidden\n');
+    try {
+      withUsernameBanlist({ file }, () => {
+        expect(validUsername('forbidden')).toBe(false);
+      });
+    } finally {
+      rmSync(file, { force: true });
+    }
   });
 });

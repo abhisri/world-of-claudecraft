@@ -99,6 +99,9 @@ For off-box safety, sync the directory to S3 occasionally:
 
 - **Secrets**: the Postgres password is generated at first boot into
   `/opt/eastbrook/.env` (mode 600, gitignored). Nothing else to manage.
+- **Username bans**: set `USERNAME_BANLIST_FILE=/opt/eastbrook/username-banlist.txt`
+  to load blocked username terms from a private newline- or comma-separated
+  file. `USERNAME_BANLIST` can also provide a comma-separated inline list.
 - **Never** set `ALLOW_DEV_COMMANDS=1` in production — it enables the
   level/teleport cheats used by the test bots.
 - Health check: `curl -s localhost:8787/api/status` on the box returns

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
 
 const SCRYPT_N = 16384, SCRYPT_R = 8, SCRYPT_P = 1, KEYLEN = 64;
@@ -29,8 +30,55 @@ export function newToken(): string {
   return randomBytes(32).toString('hex');
 }
 
+const CONFUSABLE_CHARS: Record<string, string> = {
+  '0': 'o',
+  '1': 'i',
+  '!': 'i',
+  '|': 'i',
+  '3': 'e',
+  '4': 'a',
+  '@': 'a',
+  '5': 's',
+  '$': 's',
+  '7': 't',
+  '+': 't',
+  '8': 'b',
+};
+
+function normalizedUsernameForCensorship(username: string): string {
+  return username
+    .toLowerCase()
+    .replace(/[0134578!|@$+]/g, (ch) => CONFUSABLE_CHARS[ch] ?? ch)
+    .replace(/[^a-z]/g, '');
+}
+
+function parseBanlist(raw: string | undefined): string[] {
+  return (raw ?? '')
+    .split(/[\s,]+/)
+    .map((term) => normalizedUsernameForCensorship(term))
+    .filter((term) => term.length > 0);
+}
+
+function bannedUsernameTerms(): string[] {
+  const terms = parseBanlist(process.env.USERNAME_BANLIST);
+  const file = process.env.USERNAME_BANLIST_FILE;
+  if (!file) return terms;
+  try {
+    return terms.concat(parseBanlist(readFileSync(file, 'utf8')));
+  } catch (err) {
+    console.warn(`could not read USERNAME_BANLIST_FILE (${file}):`, err);
+    return terms;
+  }
+}
+
+export function offensiveUsername(u: unknown): boolean {
+  if (typeof u !== 'string') return false;
+  const normalized = normalizedUsernameForCensorship(u);
+  return bannedUsernameTerms().some((term) => normalized.includes(term));
+}
+
 export function validUsername(u: unknown): u is string {
-  return typeof u === 'string' && /^[A-Za-z0-9_]{3,24}$/.test(u);
+  return typeof u === 'string' && /^[A-Za-z0-9_]{3,24}$/.test(u) && !offensiveUsername(u);
 }
 
 export function validPassword(p: unknown): p is string {
