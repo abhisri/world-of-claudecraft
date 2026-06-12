@@ -1,5 +1,6 @@
 import type { WebSocket } from 'ws';
 import { Sim } from '../src/sim/sim';
+import type { PlayerMeta } from '../src/sim/sim';
 import { DT, Entity, SimEvent, dist2d } from '../src/sim/types';
 import { zoneAt, DUNGEONS } from '../src/sim/data';
 import { saveCharacterState, openPlaySession, closePlaySession } from './db';
@@ -21,6 +22,9 @@ export interface ClientSession {
   alive: boolean;
   joinedAt: number;
   dbSessionId: number | null; // play_sessions row, set once the insert lands
+  // serialized form of each delta self field as last sent to this client;
+  // a field is omitted from a snapshot while its serialization is unchanged
+  lastSent: Record<string, string>;
 }
 
 export interface AdminServerStats {
@@ -150,6 +154,7 @@ export class GameServer {
     const session: ClientSession = {
       ws, accountId, characterId, pid, name,
       lastSave: Date.now(), alive: true, joinedAt: Date.now(), dbSessionId: null,
+      lastSent: {},
     };
     this.clients.set(pid, session);
     this.peakOnline = Math.max(this.peakOnline, this.clients.size);
@@ -300,9 +305,9 @@ export class GameServer {
       case 'interact': sim.interact(pid); break;
       case 'loot': if (typeof msg.id === 'number') sim.lootCorpse(msg.id, pid); break;
       case 'pickup': if (typeof msg.id === 'number') sim.pickUpObject(msg.id, pid); break;
-      case 'accept': if (typeof msg.quest === 'string') sim.acceptQuest(msg.quest, pid); break;
-      case 'turnin': if (typeof msg.quest === 'string') sim.turnInQuest(msg.quest, pid); break;
-      case 'abandon': if (typeof msg.quest === 'string') sim.abandonQuest(msg.quest, pid); break;
+      case 'accept': if (typeof msg.quest === 'string') { sim.acceptQuest(msg.quest, pid); this.resyncQuests(session); } break;
+      case 'turnin': if (typeof msg.quest === 'string') { sim.turnInQuest(msg.quest, pid); this.resyncQuests(session); } break;
+      case 'abandon': if (typeof msg.quest === 'string') { sim.abandonQuest(msg.quest, pid); this.resyncQuests(session); } break;
       case 'equip': if (typeof msg.item === 'string') sim.equipItem(msg.item, pid); break;
       case 'use': if (typeof msg.item === 'string') sim.useItem(msg.item, pid); break;
       case 'buy': if (typeof msg.npc === 'number' && typeof msg.item === 'string') sim.buyItem(msg.npc, msg.item, pid); break;
@@ -377,48 +382,75 @@ export class GameServer {
   // -------------------------------------------------------------------------
 
   private broadcastSnapshots(): void {
+    if (this.clients.size === 0) return;
+    // each entity is serialized at most once per tick, shared by every
+    // recipient whose interest area contains it
+    const entJson = new Map<number, string>();
+    const head = `{"t":"snap","tick":${this.sim.tickCount},"time":${round2(this.sim.time)}`;
     for (const session of this.clients.values()) {
       const p = this.sim.entities.get(session.pid);
       const meta = this.sim.meta(session.pid);
       if (!p || !meta) continue;
-      const ents: Record<string, unknown>[] = [];
+      const ents: string[] = [];
       for (const e of this.sim.entities.values()) {
         if (e.id === session.pid) continue;
         if (dist2d(p.pos, e.pos) > INTEREST_RADIUS) continue;
-        ents.push(wireEntity(e));
+        let json = entJson.get(e.id);
+        if (json === undefined) {
+          json = JSON.stringify(wireEntity(e));
+          entJson.set(e.id, json);
+        }
+        ents.push(json);
       }
-      const selfWire = wireEntity(p);
-      Object.assign(selfWire, {
-        res: Math.round(p.resource * 10) / 10,
-        mres: p.maxResource,
-        rtype: p.resourceType,
-        xp: meta.xp,
-        copper: meta.copper,
-        inv: meta.inventory,
-        equip: meta.equipment,
-        qlog: [...meta.questLog.values()],
-        qdone: [...meta.questsDone],
-        cds: Object.fromEntries([...p.cooldowns.entries()].map(([k, v]) => [k, round2(v)])),
-        gcd: round2(p.gcdRemaining),
-        combo: p.comboPoints,
-        comboTgt: p.comboTargetId,
-        target: p.targetId,
-        auto: p.autoAttack,
-        queued: p.queuedOnSwing,
-        stats: p.stats,
-        ap: p.attackPower,
-        crit: p.critChance,
-        dodge: p.dodgeChance,
-        weapon: p.weapon,
-        eat: p.eating ? { remaining: round2(p.eating.remaining) } : null,
-        drk: p.drinking ? { remaining: round2(p.drinking.remaining) } : null,
-        opUntil: p.overpowerUntil > this.sim.time ? 1 : 0,
-        party: this.partyWire(session.pid),
-        trade: this.tradeWire(session.pid),
-        duel: this.duelWire(session.pid),
-      });
-      this.send(session, { t: 'snap', tick: this.sim.tickCount, time: round2(this.sim.time), self: selfWire, ents });
+      this.sendRaw(session, `${head},"self":${this.selfWireJson(session, p, meta)},"ents":[${ents.join(',')}]}`);
     }
+  }
+
+  private selfWireJson(session: ClientSession, p: Entity, meta: PlayerMeta): string {
+    const self = wireEntity(p);
+    Object.assign(self, {
+      res: Math.round(p.resource * 10) / 10,
+      mres: p.maxResource,
+      rtype: p.resourceType,
+      xp: meta.xp,
+      copper: meta.copper,
+      gcd: round2(p.gcdRemaining),
+      combo: p.comboPoints,
+      comboTgt: p.comboTargetId,
+      target: p.targetId,
+      auto: p.autoAttack,
+      queued: p.queuedOnSwing,
+      ap: p.attackPower,
+      crit: p.critChance,
+      dodge: p.dodgeChance,
+      eat: p.eating ? { remaining: round2(p.eating.remaining) } : null,
+      drk: p.drinking ? { remaining: round2(p.drinking.remaining) } : null,
+      opUntil: p.overpowerUntil > this.sim.time ? 1 : 0,
+    });
+    const json = JSON.stringify(self);
+    // heavy, rarely-changing fields ride along only when their serialized
+    // form differs from what this session last received; the client treats
+    // an absent field as "unchanged" (a fresh session always gets them all)
+    const sent = session.lastSent;
+    let extra = '';
+    const maybe = (key: string, value: unknown): void => {
+      const s = JSON.stringify(value ?? null);
+      if (sent[key] !== s) {
+        sent[key] = s;
+        extra += `,"${key}":${s}`;
+      }
+    };
+    maybe('inv', meta.inventory);
+    maybe('equip', meta.equipment);
+    maybe('qlog', [...meta.questLog.values()]);
+    maybe('qdone', [...meta.questsDone]);
+    maybe('cds', Object.fromEntries([...p.cooldowns.entries()].map(([k, v]) => [k, round2(v)])));
+    maybe('stats', p.stats);
+    maybe('weapon', p.weapon);
+    maybe('party', this.partyWire(session.pid));
+    maybe('trade', this.tradeWire(session.pid));
+    maybe('duel', this.duelWire(session.pid));
+    return extra === '' ? json : json.slice(0, -1) + extra + '}';
   }
 
   private partyWire(pid: number): unknown {
@@ -494,9 +526,21 @@ export class GameServer {
     }
   }
 
+  // the web client applies quest commands optimistically; force the next
+  // snapshot to carry quest state even when the command changed nothing,
+  // so a rejected command still converges back to the server's truth
+  private resyncQuests(session: ClientSession): void {
+    delete session.lastSent.qlog;
+    delete session.lastSent.qdone;
+  }
+
   private send(session: ClientSession, obj: unknown): void {
+    this.sendRaw(session, JSON.stringify(obj));
+  }
+
+  private sendRaw(session: ClientSession, payload: string): void {
     if (session.ws.readyState === 1) {
-      session.ws.send(JSON.stringify(obj));
+      session.ws.send(payload);
     }
   }
 }

@@ -21,6 +21,14 @@ async function api(path, body, token) {
   return { status: res.status, body: await res.json().catch(() => ({})) };
 }
 
+// heavy self fields (inventory, quests, party, ...) arrive only when they
+// changed; an absent field means "same as the previous snapshot"
+const DELTA_SELF_KEYS = ['inv', 'equip', 'qlog', 'qdone', 'cds', 'stats', 'weapon', 'party', 'trade', 'duel'];
+function mergeSelf(prev, next) {
+  if (prev) for (const k of DELTA_SELF_KEYS) if (!(k in next)) next[k] = prev[k];
+  return next;
+}
+
 class Bot {
   constructor(name, cls) { this.name = name; this.cls = cls; this.self = null; this.events = []; }
   async join() {
@@ -35,7 +43,7 @@ class Bot {
       this.ws.on('message', (data) => {
         const msg = JSON.parse(String(data));
         if (msg.t === 'hello') { this.pid = msg.pid; clearTimeout(to); resolve(); }
-        else if (msg.t === 'snap') this.self = msg.self;
+        else if (msg.t === 'snap') this.self = mergeSelf(this.self, msg.self);
         else if (msg.t === 'events') this.events.push(...msg.list);
       });
       this.ws.on('error', reject);

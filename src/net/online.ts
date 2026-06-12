@@ -293,7 +293,9 @@ export class ClientWorld implements IWorld {
       e.resource = s.res;
       e.maxResource = s.mres;
       e.resourceType = s.rtype;
-      e.cooldowns = new Map(Object.entries(s.cds ?? {}).map(([k, v]) => [k, Number(v)]));
+      // delta fields: the server omits them while unchanged, so only the
+      // snapshots that carry them rebuild the local structures
+      if (s.cds !== undefined) e.cooldowns = new Map(Object.entries(s.cds).map(([k, v]) => [k, Number(v)]));
       e.gcdRemaining = s.gcd ?? 0;
       e.comboPoints = s.combo ?? 0;
       e.comboTargetId = s.comboTgt ?? null;
@@ -313,14 +315,14 @@ export class ClientWorld implements IWorld {
         : null;
       this.xp = s.xp ?? 0;
       this.copper = s.copper ?? 0;
-      this.inventory = s.inv ?? [];
-      this.equipment = s.equip ?? {};
-      this.questLog = new Map((s.qlog ?? []).map((q: QuestProgress) => [q.questId, q]));
-      this.questsDone = new Set(s.qdone ?? []);
+      if (s.inv !== undefined) this.inventory = s.inv;
+      if (s.equip !== undefined) this.equipment = s.equip;
+      if (s.qlog !== undefined) this.questLog = new Map((s.qlog as QuestProgress[]).map((q) => [q.questId, q]));
+      if (s.qdone !== undefined) this.questsDone = new Set(s.qdone);
       this.known = abilitiesKnownAt(this.cfg.playerClass, e.level);
-      this.partyInfo = s.party ?? null;
-      this.tradeInfo = s.trade ?? null;
-      this.duelInfo = s.duel ?? null;
+      if (s.party !== undefined) this.partyInfo = s.party;
+      if (s.trade !== undefined) this.tradeInfo = s.trade;
+      if (s.duel !== undefined) this.duelInfo = s.duel;
       // camera follows server-side facing changes when not mouselooking
       if (prevSelfFacing !== undefined && this.mouselookFacing === null) {
         let d = e.facing - prevSelfFacing;

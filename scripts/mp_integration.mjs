@@ -25,6 +25,14 @@ async function api(path, opts = {}, token = null) {
   return { status: res.status, body };
 }
 
+// heavy self fields (inventory, quests, party, ...) arrive only when they
+// changed; an absent field means "same as the previous snapshot"
+const DELTA_SELF_KEYS = ['inv', 'equip', 'qlog', 'qdone', 'cds', 'stats', 'weapon', 'party', 'trade', 'duel'];
+function mergeSelf(prev, next) {
+  if (prev) for (const k of DELTA_SELF_KEYS) if (!(k in next)) next[k] = prev[k];
+  return next;
+}
+
 class Client {
   constructor() {
     this.snapshots = [];
@@ -48,8 +56,8 @@ class Client {
           clearTimeout(timeout);
           resolve(msg);
         } else if (msg.t === 'snap') {
-          this.self = msg.self;
-          this.entities = new Map([[msg.self.id, msg.self], ...msg.ents.map((e) => [e.id, e])]);
+          this.self = mergeSelf(this.self, msg.self);
+          this.entities = new Map([[this.self.id, this.self], ...msg.ents.map((e) => [e.id, e])]);
         } else if (msg.t === 'events') {
           this.events.push(...msg.list);
         } else if (msg.t === 'error') {
