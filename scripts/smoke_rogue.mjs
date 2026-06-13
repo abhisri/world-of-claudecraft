@@ -20,7 +20,8 @@ await page.goto(URL, { waitUntil: 'networkidle0', timeout: 30000 });
 await page.click('#btn-offline');
 await new Promise((r) => setTimeout(r, 200));
 await page.type('#char-name', 'Sneaks');
-await page.click('.class-card[data-class="rogue"]');
+await page.click('#offline-select .mini-class[data-class="rogue"]');
+await page.click('#btn-start-offline');
 await new Promise((r) => setTimeout(r, 1500));
 
 // engage a wolf with sinister strike

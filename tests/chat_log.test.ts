@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../server/db', () => ({
+  pool: { query: vi.fn() },
   insertChatLogs: vi.fn(async () => {}),
   saveCharacterState: vi.fn(async () => {}),
   openPlaySession: vi.fn(async () => 1),

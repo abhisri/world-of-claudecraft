@@ -23,7 +23,8 @@ await page.click('#btn-offline');
 await new Promise((r) => setTimeout(r, 200));
 await page.screenshot({ path: 'tmp/t00_start.png' });
 await page.type('#char-name', 'Thorgar');
-await page.click(`.class-card[data-class="${CLASS}"]`);
+await page.click(`#offline-select .mini-class[data-class="${CLASS}"]`);
+await page.click('#btn-start-offline');
 await new Promise((r) => setTimeout(r, 3000));
 await page.screenshot({ path: 'tmp/t01_town.png' });
 

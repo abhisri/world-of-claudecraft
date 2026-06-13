@@ -5,8 +5,12 @@ import type { PlayerMeta } from '../src/sim/sim';
 import { DT, Entity, SimEvent, dist2d } from '../src/sim/types';
 import { stealthDetectionRadius, threatEntries } from '../src/sim/threat';
 import { zoneAt, DUNGEONS } from '../src/sim/data';
-import { saveCharacterState, openPlaySession, closePlaySession, insertChatLogs } from './db';
+import { saveCharacterState, openPlaySession, closePlaySession, insertChatLogs, pool } from './db';
 import { ChatLogger } from './chat_log';
+import { SocialService } from './social';
+import type { Presence, PresenceStatus, SocialActor, SocialEvent, SocialTransport } from './social';
+import { PgSocialDb } from './social_db';
+import { REALM } from './realm';
 
 const WORLD_SEED = 20061;
 // Interest management: the client renders entities out to 80yd, so new
@@ -55,6 +59,11 @@ export interface ClientSession {
   chatLastRateError: number;
   chatRateViolations: number;
   chatCooldownUntil: number;
+  // character ids this player has ignored; chat from them is dropped before
+  // delivery. Loaded from the DB on join, kept in sync by social commands.
+  blockedIds: Set<number>;
+  // name of the last player to whisper this session, for WoW's /r reply
+  lastWhisperFrom: string | null;
   // serialized form of each delta self field as last sent to this client;
   // a field is omitted from a snapshot while its serialization is unchanged
   lastSent: Record<string, string>;
@@ -198,6 +207,10 @@ function round2(v: number): number {
   return Math.round(v * 100) / 100;
 }
 
+function logSocialErr(err: unknown): void {
+  console.error('social command failed:', err);
+}
+
 const CONFUSABLE_CHARS: Record<string, string> = {
   '0': 'o',
   '1': 'i',
@@ -252,6 +265,8 @@ export class GameServer {
   sim: Sim;
   clients = new Map<number, ClientSession>(); // by pid
   readonly chatLog = new ChatLogger(insertChatLogs);
+  private readonly socialDb = new PgSocialDb(pool);
+  readonly social: SocialService;
   private wireCache = new Map<number, EntityWireCache>();
   private lastWireSweepTick = 0;
   private interval: NodeJS.Timeout | null = null;
@@ -262,6 +277,76 @@ export class GameServer {
 
   constructor() {
     this.sim = new Sim({ seed: WORLD_SEED, playerClass: 'warrior', noPlayer: true });
+    this.social = new SocialService(this.socialDb, this.socialTransport());
+  }
+
+  // -------------------------------------------------------------------------
+  // Social presence/transport: bridges the persistent SocialService to the
+  // live client map + sim. Keyed by character id (stable across sessions),
+  // not pid (per-login).
+  // -------------------------------------------------------------------------
+
+  private actorFor(session: ClientSession): SocialActor {
+    return { characterId: session.characterId, name: session.name };
+  }
+
+  private sessionByCharacterId(id: number): ClientSession | null {
+    for (const s of this.clients.values()) if (s.characterId === id) return s;
+    return null;
+  }
+
+  private sessionByName(name: string): ClientSession | null {
+    const wanted = name.trim();
+    let ci: ClientSession | null = null;
+    let ciCount = 0;
+    const lower = wanted.toLowerCase();
+    for (const s of this.clients.values()) {
+      if (s.name === wanted) return s; // exact case wins
+      if (s.name.toLowerCase() === lower) { ci = s; ciCount++; }
+    }
+    return ciCount === 1 ? ci : null;
+  }
+
+  // Live location + activity of an online character, for friend/guild rosters.
+  private presenceOf(session: ClientSession): Presence {
+    const e = this.sim.entities.get(session.pid);
+    if (!e) return { zone: 'Unknown', status: 'online' };
+    let status: PresenceStatus = 'online';
+    if (e.dead) status = 'dead';
+    else if (e.dungeonId) status = 'dungeon';
+    else if (e.inCombat) status = 'combat';
+    const zone = e.dungeonId ? (DUNGEONS[e.dungeonId]?.name ?? e.dungeonId) : zoneAt(e.pos.z).name;
+    return { zone, status };
+  }
+
+  private socialTransport(): SocialTransport {
+    const actor = (s: ClientSession): SocialActor => ({ characterId: s.characterId, name: s.name });
+    return {
+      byCharacterId: (id) => { const s = this.sessionByCharacterId(id); return s ? actor(s) : null; },
+      byName: (name) => { const s = this.sessionByName(name); return s ? actor(s) : null; },
+      isOnline: (id) => this.sessionByCharacterId(id) !== null,
+      locationOf: (id) => { const s = this.sessionByCharacterId(id); return s ? this.presenceOf(s) : null; },
+      deliver: (id, events) => {
+        const s = this.sessionByCharacterId(id);
+        if (s) this.send(s, { t: 'events', list: events });
+      },
+      pushSnapshot: (id) => { void this.sendSocialSnapshot(id); },
+      onBlocksChanged: (id, ids) => {
+        const s = this.sessionByCharacterId(id);
+        if (s) s.blockedIds = new Set(ids);
+      },
+    };
+  }
+
+  private async sendSocialSnapshot(charId: number): Promise<void> {
+    const session = this.sessionByCharacterId(charId);
+    if (!session) return;
+    try {
+      const snap = await this.social.snapshot(charId);
+      this.send(session, { t: 'social', ...snap });
+    } catch (err) {
+      console.error('social snapshot failed:', err);
+    }
   }
 
   start(): void {
@@ -312,6 +397,8 @@ export class GameServer {
       lastSave: Date.now(), alive: true, joinedAt: Date.now(), dbSessionId: null,
       chatTokens: CHAT_RATE_BURST, chatLastRefill: Date.now() / 1000, chatLastRateError: 0,
       chatRateViolations: 0, chatCooldownUntil: 0,
+      blockedIds: new Set(),
+      lastWhisperFrom: null,
       lastSent: {},
       sentEnts: new Map(),
     };
@@ -327,14 +414,33 @@ export class GameServer {
       seed: this.sim.cfg.seed,
       name,
       cls,
+      realm: REALM,
     });
     this.broadcastSystem(`${name} has entered World of Claudecraft.`);
+    void this.initSocial(session);
     return session;
+  }
+
+  // Load the player's block list, send their friends/ignore/guild panel, and
+  // let friends + guildmates know they've come online.
+  private async initSocial(session: ClientSession): Promise<void> {
+    try {
+      session.blockedIds = new Set(await this.socialDb.blockedIds(session.characterId));
+    } catch (err) {
+      console.error('failed to load block list:', err);
+    }
+    await this.sendSocialSnapshot(session.characterId);
+    await this.social.announcePresence({ characterId: session.characterId, name: session.name }, true)
+      .catch((err) => console.error('presence announce failed:', err));
   }
 
   async leave(session: ClientSession, reason: string): Promise<void> {
     if (!this.clients.has(session.pid)) return;
     this.clients.delete(session.pid);
+    this.social.forget(session.characterId);
+    // delete from clients first so friends see them as offline in the notice
+    void this.social.announcePresence({ characterId: session.characterId, name: session.name }, false)
+      .catch((err) => console.error('presence announce failed:', err));
     if (session.dbSessionId !== null) {
       void closePlaySession(session.dbSessionId).catch((err) => console.error('failed to close play session:', err));
     }
@@ -413,6 +519,26 @@ export class GameServer {
     return players.sort((a, b) => b.sessionSeconds - a.sessionSeconds);
   }
 
+  liveAccountIds(): Set<number> {
+    return new Set([...this.clients.values()].map((s) => s.accountId));
+  }
+
+  reportTargetForPid(pid: number): { accountId: number; characterId: number; characterName: string } | null {
+    const session = this.clients.get(pid);
+    return session
+      ? { accountId: session.accountId, characterId: session.characterId, characterName: session.name }
+      : null;
+  }
+
+  disconnectAccount(accountId: number, reason: string): void {
+    for (const session of [...this.clients.values()]) {
+      if (session.accountId !== accountId) continue;
+      this.send(session, { t: 'error', error: reason });
+      try { session.ws.close(); } catch { /* connection already closing */ }
+      void this.leave(session, 'moderation action');
+    }
+  }
+
   // -------------------------------------------------------------------------
   // Input & commands
   // -------------------------------------------------------------------------
@@ -479,16 +605,37 @@ export class GameServer {
       case 'chat': {
         if (typeof msg.text !== 'string') break;
         if (!this.consumeChatToken(session)) break;
-        const sent = sim.chat(censorChatText(msg.text), pid);
-        if (sent) {
-          this.chatLog.log({
-            accountId: session.accountId,
-            characterId: session.characterId,
-            characterName: session.name,
-            channel: sent.channel,
-            message: sent.message,
-          });
+        const text = msg.text.trim();
+        // guild and officer chat are persistent + cross-zone, so they live in
+        // the server's SocialService rather than the sim (no guild concept)
+        const gm = /^\/(?:gu|guild)\s+([\s\S]+)$/i.exec(text);
+        const om = gm ? null : /^\/(?:o|officer)\s+([\s\S]+)$/i.exec(text);
+        if (gm || om) {
+          const channel = gm ? 'guild' : 'officer';
+          const body = censorChatText((gm ?? om!)[1]);
+          const route = gm ? this.social.guildChat(this.actorFor(session), body)
+            : this.social.officerChat(this.actorFor(session), body);
+          void route.then((sent) => {
+            if (sent) {
+              this.chatLog.log({
+                accountId: session.accountId, characterId: session.characterId,
+                characterName: session.name, channel, message: body.trim().slice(0, 200),
+              });
+            }
+          }).catch((err) => console.error(`${channel} chat failed:`, err));
+          break;
         }
+        // WoW /r: reply to whoever last whispered you
+        const rm = /^\/(?:r|reply)\s+([\s\S]+)$/i.exec(text);
+        if (rm) {
+          if (!session.lastWhisperFrom) {
+            this.send(session, { t: 'events', list: [{ type: 'error', text: 'No one has whispered you recently.' }] });
+            break;
+          }
+          this.logChat(session, sim.chat(`/w ${session.lastWhisperFrom} ${censorChatText(rm[1])}`, pid));
+          break;
+        }
+        this.logChat(session, sim.chat(censorChatText(msg.text), pid));
         break;
       }
       // party
@@ -509,6 +656,22 @@ export class GameServer {
       case 'duel_req': if (typeof msg.id === 'number') sim.duelRequest(msg.id, pid); break;
       case 'duel_accept': sim.duelAccept(pid); break;
       case 'duel_decline': sim.duelDecline(pid); break;
+      // social: friends / ignore / guild (persistent, account-scoped)
+      case 'friend_add': if (typeof msg.name === 'string') void this.social.friendAdd(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'friend_remove': if (typeof msg.name === 'string') void this.social.friendRemove(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'block_add': if (typeof msg.name === 'string') void this.social.blockAdd(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'block_remove': if (typeof msg.name === 'string') void this.social.blockRemove(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'social_refresh': void this.sendSocialSnapshot(session.characterId); break;
+      case 'guild_create': if (typeof msg.name === 'string') void this.social.guildCreate(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'guild_invite': if (typeof msg.name === 'string') void this.social.guildInvite(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'guild_accept': void this.social.guildAccept(this.actorFor(session)).catch(logSocialErr); break;
+      case 'guild_decline': this.social.guildDecline(this.actorFor(session)); break;
+      case 'guild_leave': void this.social.guildLeave(this.actorFor(session)).catch(logSocialErr); break;
+      case 'guild_kick': if (typeof msg.name === 'string') void this.social.guildKick(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'guild_promote': if (typeof msg.name === 'string') void this.social.guildSetRank(this.actorFor(session), msg.name, 'officer').catch(logSocialErr); break;
+      case 'guild_demote': if (typeof msg.name === 'string') void this.social.guildSetRank(this.actorFor(session), msg.name, 'member').catch(logSocialErr); break;
+      case 'guild_transfer': if (typeof msg.name === 'string') void this.social.guildTransferLeader(this.actorFor(session), msg.name).catch(logSocialErr); break;
+      case 'guild_disband': void this.social.guildDisband(this.actorFor(session)).catch(logSocialErr); break;
       // dev/ops commands, only when ALLOW_DEV_COMMANDS=1 (never in production)
       case 'dev_level': {
         if (process.env.ALLOW_DEV_COMMANDS === '1' && typeof msg.level === 'number') {
@@ -765,8 +928,18 @@ export class GameServer {
       if (!p) continue;
       const mine: SimEvent[] = [];
       for (const ev of events) {
+        // ignore list: drop chat originating from a character this player has
+        // blocked, before it ever reaches their client
+        if (ev.type === 'chat' && session.blockedIds.size > 0 && this.isBlockedSender(session, ev.fromPid)) continue;
         if (ev.pid !== undefined) {
-          if (ev.pid === session.pid) mine.push(ev);
+          if (ev.pid === session.pid) {
+            mine.push(ev);
+            // remember the last person to whisper us, for /r reply (the
+            // recipient copy of a whisper has no `to`; the sender echo does)
+            if (ev.type === 'chat' && ev.channel === 'whisper' && ev.to === undefined && ev.fromPid !== session.pid) {
+              session.lastWhisperFrom = ev.from;
+            }
+          }
           continue;
         }
         // world events: only those near this player
@@ -777,12 +950,32 @@ export class GameServer {
     }
   }
 
+  // Maps a chat event's source pid to its character id and checks the
+  // recipient's ignore set. Self-echoes (fromPid === own pid) are never
+  // blocked so you always see your own messages.
+  private isBlockedSender(recipient: ClientSession, fromPid: number): boolean {
+    if (fromPid === recipient.pid) return false;
+    const sender = this.clients.get(fromPid);
+    return sender ? recipient.blockedIds.has(sender.characterId) : false;
+  }
+
   private eventAnchor(ev: SimEvent): { x: number; y: number; z: number } | null {
     let id: number | undefined;
     if ('targetId' in ev && typeof ev.targetId === 'number') id = ev.targetId;
     else if ('entityId' in ev && typeof ev.entityId === 'number') id = ev.entityId;
     if (id === undefined) return null; // chat/log etc: broadcast
     return this.sim.entities.get(id)?.pos ?? null;
+  }
+
+  private logChat(session: ClientSession, sent: import('../src/sim/sim').SentChat | null): void {
+    if (!sent) return;
+    this.chatLog.log({
+      accountId: session.accountId,
+      characterId: session.characterId,
+      characterName: session.name,
+      channel: sent.channel,
+      message: sent.message,
+    });
   }
 
   private consumeChatToken(session: ClientSession): boolean {

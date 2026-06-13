@@ -12,7 +12,11 @@ const page = await browser.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 await page.goto('http://localhost:5173', { waitUntil: 'networkidle0' });
-await page.click('.class-card.warrior');
+await page.click('#btn-offline');
+await new Promise((r) => setTimeout(r, 200));
+await page.type('#char-name', 'Adventurer');
+await page.click('#offline-select .mini-class[data-class="warrior"]');
+await page.click('#btn-start-offline');
 await new Promise((r) => setTimeout(r, 1500));
 
 // move somewhere flat & quiet

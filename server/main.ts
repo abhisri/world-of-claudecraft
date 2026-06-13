@@ -5,13 +5,17 @@ import { WebSocketServer, WebSocket } from 'ws';
 import {
   ensureSchema, pool, createAccount, findAccount, touchLogin, saveToken, accountForToken,
   listCharacters, getCharacter, createCharacter, deleteCharacter, closeOrphanSessions,
-  pruneChatLogs,
+  pruneChatLogs, searchCharacters, characterCountsByRealm, moderationStatusForAccount, renameCharacter,
+  findCharacterReportTargetByName,
 } from './db';
+import { cleanReportReason, createPlayerReport } from './moderation_db';
+import { resolveReportTarget } from './report_target';
 import { hashPassword, verifyPassword, newToken, validUsername, validPassword, validCharName } from './auth';
 import { json, readBody } from './http_util';
 import { rateLimited } from './ratelimit';
 import { handleAdminApi } from './admin';
 import { GameServer } from './game';
+import { REALM, REALM_DIRECTORY, REALM_ORIGINS } from './realm';
 import { cacheControlFor, etagFor, isNotModified } from './static_cache';
 
 const PORT = Number(process.env.PORT ?? 8787);
@@ -26,6 +30,20 @@ async function bearerAccount(req: http.IncomingMessage): Promise<number | null> 
   const m = /^Bearer ([a-f0-9]{64})$/.exec(auth);
   if (!m) return null;
   return accountForToken(m[1]);
+}
+
+async function bearerActiveAccount(req: http.IncomingMessage, res: http.ServerResponse): Promise<number | null> {
+  const accountId = await bearerAccount(req);
+  if (accountId === null) {
+    json(res, 401, { error: 'not authenticated' });
+    return null;
+  }
+  const status = await moderationStatusForAccount(accountId);
+  if (status.locked) {
+    json(res, 403, { error: status.message });
+    return null;
+  }
+  return accountId;
 }
 
 const MIME: Record<string, string> = {
@@ -102,6 +120,21 @@ function serveStatic(req: http.IncomingMessage, res: http.ServerResponse): void 
 // REST API
 // ---------------------------------------------------------------------------
 
+// Cross-realm CORS: a client served by one realm may call another realm's API
+// after switching realms in the picker. Only the configured realm origins are
+// allowed; auth is via bearer token (no cookies), so reflecting these specific
+// origins is safe.
+function maybeCors(req: http.IncomingMessage, res: http.ServerResponse): void {
+  const origin = req.headers.origin;
+  if (typeof origin === 'string' && REALM_ORIGINS.has(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    res.setHeader('Access-Control-Max-Age', '600');
+  }
+}
+
 async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
   const url = (req.url ?? '').split('?')[0];
   try {
@@ -125,20 +158,24 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
       if (!account || !(await verifyPassword(String(body.password ?? ''), account.password_hash))) {
         return json(res, 401, { error: 'invalid username or password' });
       }
+      const status = await moderationStatusForAccount(account.id);
+      if (status.locked) return json(res, 403, { error: status.message });
       await touchLogin(account.id);
       const token = newToken();
       await saveToken(token, account.id);
       return json(res, 200, { token, username: account.username });
     }
     if (url === '/api/characters') {
-      const accountId = await bearerAccount(req);
-      if (accountId === null) return json(res, 401, { error: 'not authenticated' });
+      const accountId = await bearerActiveAccount(req, res);
+      if (accountId === null) return;
       if (req.method === 'GET') {
         const chars = await listCharacters(accountId);
         return json(res, 200, {
+          realm: REALM,
           characters: chars.map((c) => ({
             id: c.id, name: c.name, class: c.class, level: c.level,
             online: [...game.clients.values()].some((s) => s.characterId === c.id),
+            forceRename: c.force_rename,
           })),
         });
       }
@@ -151,7 +188,7 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
         if (chars.length >= 10) return json(res, 400, { error: 'character limit reached' });
         try {
           const c = await createCharacter(accountId, body.name, body.class);
-          return json(res, 200, { id: c.id, name: c.name, class: c.class, level: c.level });
+          return json(res, 200, { id: c.id, name: c.name, class: c.class, level: c.level, forceRename: c.force_rename });
         } catch (err: any) {
           if (String(err?.message).includes('unique') || err?.code === '23505') {
             return json(res, 409, { error: 'that name is taken' });
@@ -161,15 +198,78 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
       }
     }
     const delMatch = /^\/api\/characters\/(\d+)$/.exec(url);
+    const renameMatch = /^\/api\/characters\/(\d+)\/rename$/.exec(url);
+    if (req.method === 'POST' && renameMatch) {
+      const accountId = await bearerActiveAccount(req, res);
+      if (accountId === null) return;
+      const body = await readBody(req);
+      if (!validCharName(body.name)) return json(res, 400, { error: 'invalid character name (2-16 letters)' });
+      try {
+        const c = await renameCharacter(accountId, Number(renameMatch[1]), body.name);
+        if (!c) return json(res, 404, { error: 'character not found' });
+        return json(res, 200, { id: c.id, name: c.name, class: c.class, level: c.level, forceRename: c.force_rename });
+      } catch (err: any) {
+        if (String(err?.message).includes('unique') || err?.code === '23505') {
+          return json(res, 409, { error: 'that name is taken' });
+        }
+        throw err;
+      }
+    }
     if (req.method === 'DELETE' && delMatch) {
-      const accountId = await bearerAccount(req);
-      if (accountId === null) return json(res, 401, { error: 'not authenticated' });
+      const accountId = await bearerActiveAccount(req, res);
+      if (accountId === null) return;
       const ok = await deleteCharacter(accountId, Number(delMatch[1]));
       return json(res, ok ? 200 : 404, ok ? { ok: true } : { error: 'not found' });
+    }
+    if (req.method === 'GET' && url === '/api/realms') {
+      // optionally authenticated: with a token we also return how many
+      // characters the account has on each realm (for the realm-list screen)
+      const accountId = await bearerAccount(req);
+      const characters = accountId !== null ? await characterCountsByRealm(accountId) : {};
+      return json(res, 200, { current: REALM, realms: REALM_DIRECTORY, characters });
+    }
+    if (req.method === 'GET' && url === '/api/search') {
+      const accountId = await bearerAccount(req);
+      if (accountId === null) return json(res, 401, { error: 'not authenticated' });
+      const q = new URL(req.url ?? '/', 'http://localhost').searchParams.get('q') ?? '';
+      const results = q.trim().length >= 1 ? await searchCharacters(q, 8) : [];
+      return json(res, 200, { results });
+    }
+    if (req.method === 'POST' && url === '/api/reports') {
+      const accountId = await bearerActiveAccount(req, res);
+      if (accountId === null) return;
+      const body = await readBody(req);
+      const reason = cleanReportReason(body.reason);
+      if (!reason) return json(res, 400, { error: 'choose a report reason' });
+      const reporterCharacterId = Number(body.reporterCharacterId);
+      if (!Number.isFinite(reporterCharacterId)) {
+        return json(res, 400, { error: 'invalid report target' });
+      }
+      const reporter = await getCharacter(accountId, reporterCharacterId);
+      if (!reporter) return json(res, 404, { error: 'reporting character not found' });
+      const resolved = await resolveReportTarget(body, {
+        reportTargetForPid: (pid) => game.reportTargetForPid(pid),
+        findCharacterReportTargetByName,
+      });
+      if (!resolved.ok) return json(res, resolved.status, { error: resolved.error });
+      try {
+        const report = await createPlayerReport({
+          reporterAccountId: accountId,
+          reporterCharacterId: reporter.id,
+          reporterCharacterName: reporter.name,
+          target: resolved.target,
+          reason,
+          details: body.details,
+        });
+        return json(res, 200, { ok: true, reportId: report.id });
+      } catch (err) {
+        return json(res, 400, { error: err instanceof Error ? err.message : 'could not submit report' });
+      }
     }
     if (req.method === 'GET' && url === '/api/status') {
       return json(res, 200, {
         ok: true,
+        realm: REALM,
         players_online: game.clients.size,
         names: [...game.clients.values()].map((s) => s.name),
       });
@@ -209,6 +309,9 @@ async function main(): Promise<void> {
 
   const server = http.createServer((req, res) => {
     const url = req.url ?? '';
+    const isApi = url.startsWith('/api/') || url.startsWith('/admin/api/');
+    if (isApi) maybeCors(req, res);
+    if (req.method === 'OPTIONS' && isApi) { res.writeHead(204); res.end(); return; }
     if (url.startsWith('/admin/api/')) void handleAdminApi(req, res, game);
     else if (url.startsWith('/api/')) void handleApi(req, res);
     else serveStatic(req, res);
@@ -252,9 +355,20 @@ async function main(): Promise<void> {
       ws.close();
       return;
     }
+    const status = await moderationStatusForAccount(accountId);
+    if (status.locked) {
+      ws.send(JSON.stringify({ t: 'error', error: status.message }));
+      ws.close();
+      return;
+    }
     const character = await getCharacter(accountId, characterId);
     if (!character) {
       ws.send(JSON.stringify({ t: 'error', error: 'no such character' }));
+      ws.close();
+      return;
+    }
+    if (character.force_rename) {
+      ws.send(JSON.stringify({ t: 'error', error: 'This character must be renamed before entering the world.' }));
       ws.close();
       return;
     }

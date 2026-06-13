@@ -105,6 +105,15 @@ For off-box safety, sync the directory to S3 occasionally:
 - **Chat censorship**: set `CHAT_CENSOR_FILE=/opt/eastbrook/chat-censor.txt`
   to mask configured terms from a private newline- or comma-separated file.
   `CHAT_CENSOR_LIST` can also provide a comma-separated inline list.
+- **Realms (horizontal scaling)**: each server process serves one realm,
+  set by `REALM_NAME` (default `Claudemoon`). To add a realm, run another
+  process against the **same** `DATABASE_URL` with a different `REALM_NAME`
+  and `PORT` (e.g. behind its own vhost or compose service). Characters,
+  friends, guilds, and presence are realm-scoped, so the worlds are fully
+  isolated — players on different realms can't see, whisper, friend, or
+  guild each other. Concurrent boots serialize their schema setup behind a
+  Postgres advisory lock, so starting several at once is safe. Character and
+  guild names remain globally unique across realms.
 - **Never** set `ALLOW_DEV_COMMANDS=1` in production — it enables the
   level/teleport cheats used by the test bots.
 - Health check: `curl -s localhost:8787/api/status` on the box returns

@@ -15,6 +15,7 @@ import { music } from '../game/music';
 import { iconDataUrl, QUALITY_COLOR } from './icons';
 import { Keybinds, BIND_ACTIONS, BIND_CATEGORIES, isReservedCode, keyLabel } from '../game/keybinds';
 import { Settings, GameSettings, SETTING_RANGES } from '../game/settings';
+import { chatPlayerContextActions } from './player_context_menu';
 
 // hooks main wires after Input exists (the options menu drives input, audio,
 // graphics, and logout, all of which live outside the HUD)
@@ -25,7 +26,18 @@ export interface OptionsHooks {
   onSettingChange(key: keyof GameSettings, value: number): void;
 }
 
+export interface ReportHooks {
+  submit(targetPid: number, reason: string, details: string): Promise<void>;
+  submitByName?(targetName: string, reason: string, details: string): Promise<void>;
+}
+
 const $ = <T extends HTMLElement = HTMLElement>(sel: string): T => document.querySelector(sel) as T;
+const esc = (value: unknown): string => String(value ?? '')
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
 
 const FAMILY_GLYPH: Record<string, string> = {
   beast: '🐾', humanoid: '🗡️', murloc: '🐟', spider: '🕷️', kobold: '⛏️', undead: '💀',
@@ -46,6 +58,7 @@ export class Hud {
   private slotMap: (string | null)[] = []; // index = barSlot-1, value = ability id
   private dragFromSlot: number | null = null;
   private optionsHooks: OptionsHooks | null = null;
+  private reportHooks: ReportHooks | null = null;
   private optionsView: 'main' | 'keybinds' | 'graphics' | 'audio' = 'main';
   private capturingKey: { action: string; index: number } | null = null; // binding awaiting a key
   private keybindNote = '';
@@ -73,6 +86,17 @@ export class Hud {
   private lastZoneId = '';
   private mapZoneId = ''; // zone the cached map-window canvas was rendered for
   private ignoredChatNames = new Set<string>();
+  private socialTab: 'friends' | 'guild' | 'ignore' = 'friends';
+  // split signatures: structural changes (tab, guild membership) rebuild the
+  // whole panel; content-only changes (a friend's presence) refresh just the
+  // list, so an open typeahead / half-typed name survives a snapshot
+  private lastSocialStruct = '';
+  private lastSocialContent = '';
+  private socialNotice: { text: string; error: boolean } | null = null;
+  private socialSuggestTimer: number | undefined;
+  // current typeahead state: which input, its results, and the keyboard-
+  // highlighted row (-1 = none), so Enter/Arrow keys can pick a suggestion
+  private socialSuggest: { field: string; items: { name: string; cls: string; level: number }[]; index: number } = { field: '', items: [], index: -1 };
 
   private meters: Meters;
 
@@ -104,6 +128,7 @@ export class Hud {
     $('#mm-quest').addEventListener('click', () => this.toggleQuestLog());
     $('#mm-map').addEventListener('click', () => this.toggleMap());
     $('#mm-bag').addEventListener('click', () => this.toggleBags());
+    $('#social-fab').addEventListener('click', () => this.toggleSocial());
     const musicBtn = $('#mm-music');
     const styleMusicBtn = () => { musicBtn.style.color = music.enabled ? '#ffd100' : '#666'; };
     styleMusicBtn();
@@ -213,11 +238,40 @@ export class Hud {
     const a = res.def;
     const resName = this.sim.player.resourceType === 'rage' ? 'Rage' : this.sim.player.resourceType === 'energy' ? 'Energy' : 'Mana';
     let dmgText = '';
-    for (const eff of res.effects) {
-      if (eff.type === 'directDamage') dmgText = eff.min === eff.max ? `${eff.min}` : `${eff.min} to ${eff.max}`;
-      if (eff.type === 'weaponDamage' || eff.type === 'weaponStrike') dmgText = `${eff.bonus}`;
-      if (eff.type === 'dot') dmgText = `${eff.total}`;
-      if (eff.type === 'aoeDamage' || eff.type === 'aoeRoot') dmgText = `${eff.min} to ${eff.max}`;
+    const primaryEffect = res.effects.find(eff => 
+      eff.type === 'directDamage' || 
+      eff.type === 'heal' || 
+      eff.type === 'weaponDamage' || 
+      eff.type === 'weaponStrike' || 
+      eff.type === 'aoeDamage' || 
+      eff.type === 'aoeRoot' ||
+      eff.type === 'finisherDamage' ||
+      eff.type === 'drainTick'
+    );
+    if (primaryEffect) {
+      if (primaryEffect.type === 'directDamage' || primaryEffect.type === 'aoeDamage' || primaryEffect.type === 'aoeRoot' || primaryEffect.type === 'drainTick') {
+        dmgText = primaryEffect.min === primaryEffect.max ? `${primaryEffect.min}` : `${primaryEffect.min} to ${primaryEffect.max}`;
+      } else if (primaryEffect.type === 'weaponDamage' || primaryEffect.type === 'weaponStrike') {
+        dmgText = `${primaryEffect.bonus}`;
+      } else if (primaryEffect.type === 'finisherDamage') {
+        dmgText = `${primaryEffect.base} plus ${primaryEffect.perCombo} per combo point`;
+      }
+    } else {
+      const secondaryEffect = res.effects.find(eff => 
+        eff.type === 'dot' || 
+        eff.type === 'hot' || 
+        eff.type === 'absorb' || 
+        eff.type === 'imbue'
+      );
+      if (secondaryEffect) {
+        if (secondaryEffect.type === 'dot' || secondaryEffect.type === 'hot') {
+          dmgText = `${secondaryEffect.total}`;
+        } else if (secondaryEffect.type === 'absorb') {
+          dmgText = `${secondaryEffect.amount}`;
+        } else if (secondaryEffect.type === 'imbue') {
+          dmgText = `${secondaryEffect.bonus}`;
+        }
+      }
     }
     let html = `<div class="tt-title">${a.name}</div>`;
     html += `<div class="tt-sub">Rank ${res.rank}</div>`;
@@ -553,6 +607,17 @@ export class Hud {
     this.updateTradeWindow();
     this.updateMinimap();
     if ($('#map-window').style.display === 'block') this.updateMapWindow();
+    if ($('#social-window').classList.contains('open')) {
+      const struct = this.socialStructSig();
+      if (struct !== this.lastSocialStruct) {
+        this.lastSocialStruct = struct;
+        this.lastSocialContent = JSON.stringify(this.sim.socialInfo);
+        this.renderSocial();
+      } else {
+        const content = JSON.stringify(this.sim.socialInfo);
+        if (content !== this.lastSocialContent) { this.lastSocialContent = content; this.refreshSocialList(); }
+      }
+    }
     if (this.openLootMobId !== null) {
       const mob = sim.entities.get(this.openLootMobId);
       if (!mob || !mob.lootable || dist2d(p.pos, mob.pos) > 7) this.closeLoot();
@@ -913,14 +978,16 @@ export class Hud {
         case 'chat': {
           if (this.isChatIgnored(ev.from)) break;
           switch (ev.channel) {
-            case 'party': this.log(`[Party] ${ev.from}: ${ev.text}`, '#7fd4ff'); break;
-            case 'yell': this.log(`${ev.from} yells: ${ev.text}`, '#ff5040'); break;
+            case 'party': this.chatLogFrom(ev.from, ev.text, '#7fd4ff', '[Party] ', ': '); break;
+            case 'yell': this.chatLogFrom(ev.from, ev.text, '#ff5040', '', ' yells: '); break;
             case 'whisper':
-              if (ev.to) this.log(`To ${ev.to}: ${ev.text}`, '#ff80ff');
-              else { this.log(`${ev.from} whispers: ${ev.text}`, '#ff80ff'); audio.whisper(); }
+              if (ev.to) this.chatLogFrom(ev.to, ev.text, '#ff80ff', 'To ', ': ');
+              else { this.chatLogFrom(ev.from, ev.text, '#ff80ff', '', ' whispers: '); audio.whisper(); }
               break;
-            case 'general': this.log(`[General] ${ev.from}: ${ev.text}`, '#ffc864'); break;
-            default: this.log(`${ev.from} says: ${ev.text}`, '#f0ead8'); break;
+            case 'general': this.chatLogFrom(ev.from, ev.text, '#ffc864', '[General] ', ': '); break;
+            case 'guild': this.chatLogFrom(ev.from, ev.text, '#40d264', '[Guild] ', ': '); break;
+            case 'officer': this.chatLogFrom(ev.from, ev.text, '#4ce0c0', '[Officer] ', ': '); break;
+            default: this.chatLogFrom(ev.from, ev.text, '#f0ead8', '', ' says: '); break;
           }
           if ((ev.channel === 'say' || ev.channel === 'yell') && ev.entityId !== undefined) {
             this.renderer.showChatBubble(ev.entityId, ev.text, ev.channel === 'yell');
@@ -945,6 +1012,11 @@ export class Hud {
           audio.questAccept();
           this.showPrompt(`<b>${ev.fromName}</b> invites you to join their party.`, 'Join Party',
             () => this.sim.partyAccept(), () => this.sim.partyDecline());
+          break;
+        case 'guildInvite':
+          audio.questAccept();
+          this.showPrompt(`<b>${ev.fromName}</b> invites you to join <span class="gold">&lt;${ev.guildName}&gt;</span>.`, 'Join Guild',
+            () => this.sim.guildAccept(), () => this.sim.guildDecline());
           break;
         case 'tradeRequest':
           audio.click();
@@ -999,6 +1071,25 @@ export class Hud {
 
   log(text: string, color = '#ccc'): void {
     this.appendLog(this.chatLogEl, text, color);
+  }
+
+  private chatLogFrom(name: string, text: string, color: string, prefix: string, separator: string): void {
+    const wasNearBottom = this.chatLogEl.scrollHeight - this.chatLogEl.scrollTop - this.chatLogEl.clientHeight < 24;
+    const div = document.createElement('div');
+    div.style.color = color;
+    if (prefix) div.append(document.createTextNode(prefix));
+    const sender = document.createElement('span');
+    sender.className = 'chat-player-name';
+    sender.textContent = name;
+    sender.title = `Right-click ${name}`;
+    sender.addEventListener('contextmenu', (ev) => {
+      ev.preventDefault();
+      this.openChatPlayerContextMenu(name, ev.clientX, ev.clientY);
+    });
+    div.append(sender, document.createTextNode(`${separator}${text}`));
+    this.chatLogEl.appendChild(div);
+    while (this.chatLogEl.children.length > 200) this.chatLogEl.removeChild(this.chatLogEl.firstChild!);
+    if (wasNearBottom) this.chatLogEl.scrollTop = this.chatLogEl.scrollHeight;
   }
 
   private combatLog(text: string, color = '#ccc'): void {
@@ -1492,17 +1583,29 @@ export class Hud {
     const party = this.sim.partyInfo;
     const isLeader = party?.leader === this.sim.playerId;
     const isMember = !!party?.members.some((m) => m.pid === pid);
-    const ignored = this.isChatIgnored(name);
-    let html = `<div class="ctx-title">${name}</div>`;
+    // online play exposes persistent friends/ignore/guild; offline falls back
+    // to the client-only chat ignore stored in localStorage
+    const online = this.sim.socialInfo !== null;
+    const social = this.sim.socialInfo;
+    const isFriend = !!social?.friends.some((f) => f.name === name);
+    const inGuildWithInvite = !!social?.guild && social.guild.rank !== 'member';
+    const alreadyGuilded = !!social?.guild?.members.some((m) => m.name === name);
+    const ignored = online
+      ? !!social?.blocks.some((b) => b.name === name)
+      : this.isChatIgnored(name);
+    let html = `<div class="ctx-title">${esc(name)}</div>`;
     if (!isMember) html += `<div class="ctx-item" data-act="invite">Invite to Party</div>`;
     html += `<div class="ctx-item" data-act="trade">Trade</div>`;
     html += `<div class="ctx-item" data-act="duel">Challenge to a Duel</div>`;
-    html += `<div class="ctx-item" data-act="ignore">${ignored ? 'Unignore' : 'Ignore'} Chat</div>`;
+    if (online) html += `<div class="ctx-item" data-act="${isFriend ? 'unfriend' : 'friend'}">${isFriend ? 'Remove Friend' : 'Add Friend'}</div>`;
+    if (inGuildWithInvite && !alreadyGuilded) html += `<div class="ctx-item" data-act="ginvite">Invite to Guild</div>`;
+    html += `<div class="ctx-item" data-act="ignore">${ignored ? 'Unignore' : 'Ignore'}${online ? '' : ' Chat'}</div>`;
+    if (this.reportHooks && pid !== this.sim.playerId) html += `<div class="ctx-item" data-act="report">Report Player</div>`;
     if (isLeader && isMember && pid !== this.sim.playerId) html += `<div class="ctx-item" data-act="kick">Remove from Party</div>`;
     html += `<div class="ctx-item" data-act="close">Cancel</div>`;
     el.innerHTML = html;
     el.style.left = `${Math.min(window.innerWidth - 170, x)}px`;
-    el.style.top = `${Math.min(window.innerHeight - 200, y)}px`;
+    el.style.top = `${Math.min(window.innerHeight - 240, y)}px`;
     el.style.display = 'block';
     el.querySelectorAll('.ctx-item').forEach((item) => {
       item.addEventListener('click', () => {
@@ -1511,9 +1614,117 @@ export class Hud {
         if (act === 'invite') this.sim.partyInvite(pid);
         else if (act === 'trade') this.sim.tradeRequest(pid);
         else if (act === 'duel') this.sim.duelRequest(pid);
-        else if (act === 'ignore') this.toggleChatIgnore(name);
+        else if (act === 'friend') this.sim.friendAdd(name);
+        else if (act === 'unfriend') this.sim.friendRemove(name);
+        else if (act === 'ginvite') this.sim.guildInvite(name);
+        else if (act === 'ignore') {
+          if (online) { ignored ? this.sim.blockRemove(name) : this.sim.blockAdd(name); }
+          else this.toggleChatIgnore(name);
+        } else if (act === 'report') this.openReportWindow({ pid, name });
         else if (act === 'kick') this.sim.partyKick(pid);
       });
+    });
+  }
+
+  private openChatPlayerContextMenu(name: string, x: number, y: number): void {
+    const el = $('#ctx-menu');
+    const online = this.sim.socialInfo !== null;
+    const social = this.sim.socialInfo;
+    const isFriend = !!social?.friends.some((f) => f.name === name);
+    const canGuildInvite = !!social?.guild && social.guild.rank !== 'member';
+    const alreadyGuilded = !!social?.guild?.members.some((m) => m.name === name);
+    const ignored = online
+      ? !!social?.blocks.some((b) => b.name === name)
+      : this.isChatIgnored(name);
+    const actions = chatPlayerContextActions({
+      playerName: name,
+      selfName: this.sim.player.name,
+      online,
+      isFriend,
+      ignored,
+      canGuildInvite,
+      alreadyGuilded,
+      canReport: !!this.reportHooks?.submitByName,
+    });
+    el.innerHTML = `<div class="ctx-title">${esc(name)}</div>`
+      + actions.map((a) => `<div class="ctx-item" data-act="${a.id}">${esc(a.label)}</div>`).join('');
+    el.style.left = `${Math.min(window.innerWidth - 170, x)}px`;
+    el.style.top = `${Math.min(window.innerHeight - 240, y)}px`;
+    el.style.display = 'block';
+    el.querySelectorAll('.ctx-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        const act = (item as HTMLElement).dataset.act;
+        el.style.display = 'none';
+        const livePid = this.playerPidByName(name);
+        if (act === 'whisper') this.startWhisper(name);
+        else if (act === 'invite') {
+          if (livePid !== null) this.sim.partyInvite(livePid);
+          else this.showError('That player is not nearby.');
+        } else if (act === 'friend') this.sim.friendAdd(name);
+        else if (act === 'unfriend') this.sim.friendRemove(name);
+        else if (act === 'ginvite') this.sim.guildInvite(name);
+        else if (act === 'ignore') {
+          if (online) { ignored ? this.sim.blockRemove(name) : this.sim.blockAdd(name); }
+          else this.toggleChatIgnore(name);
+        } else if (act === 'report') this.openReportWindow({ name });
+      });
+    });
+  }
+
+  private playerPidByName(name: string): number | null {
+    const wanted = name.toLowerCase();
+    for (const e of this.sim.entities.values()) {
+      if (e.kind === 'player' && e.name.toLowerCase() === wanted) return e.id;
+    }
+    return null;
+  }
+
+  private openReportWindow(target: { pid?: number; name: string }): void {
+    if (!this.reportHooks) return;
+    const { pid, name } = target;
+    const el = $('#report-window');
+    el.innerHTML = `
+      <div class="panel-title">Report ${esc(name)}<button data-close>×</button></div>
+      <label class="report-label">Reason</label>
+      <select id="report-reason">
+        <option value="harassment">Harassment / abuse</option>
+        <option value="spam">Spam</option>
+        <option value="cheating">Cheating / exploit</option>
+        <option value="offensive_name_or_chat">Offensive name or chat</option>
+        <option value="other">Other</option>
+      </select>
+      <label class="report-label">Details</label>
+      <textarea id="report-details" maxlength="1000" placeholder="What happened?"></textarea>
+      <div class="report-error" id="report-error"></div>
+      <div class="report-actions">
+        <button class="btn" id="report-submit">Submit Report</button>
+        <button class="btn" data-close>Cancel</button>
+      </div>`;
+    el.style.left = `${Math.max(12, Math.min(window.innerWidth - 340, window.innerWidth / 2 - 160))}px`;
+    el.style.top = `${Math.max(20, Math.min(window.innerHeight - 300, window.innerHeight / 2 - 150))}px`;
+    el.style.display = 'block';
+    el.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', () => { el.style.display = 'none'; }));
+    const submit = $('#report-submit') as HTMLButtonElement;
+    submit.addEventListener('click', () => {
+      const reason = ($('#report-reason') as HTMLSelectElement).value;
+      const details = ($('#report-details') as HTMLTextAreaElement).value;
+      submit.disabled = true;
+      const request = pid !== undefined
+        ? this.reportHooks!.submit(pid, reason, details)
+        : this.reportHooks!.submitByName?.(name, reason, details);
+      if (!request) {
+        $('#report-error').textContent = 'Could not submit report.';
+        return;
+      }
+      request
+        .then(() => {
+          el.style.display = 'none';
+          this.log(`Report submitted for ${name}.`, '#ffd100');
+        })
+        .catch((err: unknown) => {
+          submit.disabled = false;
+          $('#report-error').textContent = err instanceof Error ? err.message : 'Could not submit report.';
+        });
     });
   }
 
@@ -1554,6 +1765,314 @@ export class Hud {
 
   closeContextMenu(): void {
     $('#ctx-menu').style.display = 'none';
+  }
+
+  // -------------------------------------------------------------------------
+  // Social panel: friends / guild / ignore (online play)
+  // -------------------------------------------------------------------------
+
+  toggleSocial(): void {
+    const el = $('#social-window');
+    if (el.classList.contains('open')) { el.classList.remove('open'); return; }
+    el.classList.add('open');
+    this.socialNotice = null;
+    this.lastSocialStruct = this.socialStructSig();
+    this.lastSocialContent = JSON.stringify(this.sim.socialInfo);
+    this.renderSocial();
+  }
+
+  // structural identity of the panel: which tab, online or not, and the guild
+  // membership/rank (which changes the footer). Content within a tab — a
+  // friend's zone, the roster — doesn't count, so it can refresh in place.
+  private socialStructSig(): string {
+    const g = this.sim.socialInfo?.guild;
+    return `${this.socialTab}|${this.sim.socialInfo !== null}|${g?.id ?? 0}|${g?.rank ?? ''}`;
+  }
+
+  // Full rebuild: title, tabs, body, notice, and the tab's footer (with its
+  // typeahead). Used on open, tab switch, and guild-membership changes.
+  private renderSocial(): void {
+    const el = $('#social-window');
+    if (!el.classList.contains('open')) return;
+    const tab = this.socialTab;
+    const online = this.sim.socialInfo !== null;
+    const realmTag = online && this.sim.realm ? ` <span class="soc-realm-tag">— ${esc(this.sim.realm)}</span>` : '';
+    el.innerHTML = `<div class="panel-title"><span>Social${realmTag}</span><span class="x-btn" data-close>✕</span></div>`
+      + `<div class="soc-tabs">`
+      + `<div class="soc-tab ${tab === 'friends' ? 'on' : ''}" data-tab="friends">Friends</div>`
+      + `<div class="soc-tab ${tab === 'guild' ? 'on' : ''}" data-tab="guild">Guild</div>`
+      + `<div class="soc-tab ${tab === 'ignore' ? 'on' : ''}" data-tab="ignore">Ignore</div>`
+      + `</div>`
+      + `<div class="soc-body"></div>`
+      + `<div class="soc-notice"></div>`
+      + (online ? this.socialFooter() : '');
+    this.wireSocialChrome(el);
+    this.refreshSocialList();
+    this.renderSocialNotice();
+  }
+
+  // Lighter refresh: just the list inside the current tab, leaving the footer
+  // (and any half-typed name / open suggestions) untouched.
+  private refreshSocialList(): void {
+    const body = $('#social-window').querySelector('.soc-body') as HTMLElement | null;
+    if (!body) return;
+    const online = this.sim.socialInfo !== null;
+    body.innerHTML = !online
+      ? `<div class="soc-empty">Friends, guilds, and ignore lists are available in online play.</div>`
+      : this.socialTab === 'friends' ? this.friendsHtml()
+        : this.socialTab === 'guild' ? this.guildHtml()
+          : this.ignoreHtml();
+    this.wireSocialRows(body);
+  }
+
+  private friendsHtml(): string {
+    const friends = this.sim.socialInfo?.friends ?? [];
+    if (friends.length === 0) return `<div class="soc-empty">No friends yet. Search for someone by name below.</div>`;
+    return friends.map((f) => {
+      const dot = f.online ? (f.status ?? 'online') : 'off';
+      const meta = f.online
+        ? `<span class="zone">${esc(f.zone ?? '')}</span><br>${statusLabel(f.status)}`
+        : 'Offline';
+      const name = f.online
+        ? `<span class="soc-name soc-link" data-whisper="${esc(f.name)}" title="Whisper ${esc(f.name)}">${esc(f.name)}</span>`
+        : `<span class="soc-name">${esc(f.name)}</span>`;
+      const whisper = f.online ? `<span class="soc-x" data-whisper="${esc(f.name)}" title="Whisper ${esc(f.name)}">✉</span>` : '';
+      return `<div class="soc-row">`
+        + `<span class="soc-dot ${dot === 'off' ? '' : dot}"></span>`
+        + `<span>${name}<br><span class="soc-meta">Lvl ${f.level} ${cap(f.cls)}</span></span>`
+        + `<span class="soc-meta">${meta}</span>`
+        + `<span class="soc-actions">${whisper}<span class="soc-x" data-act="unfriend" data-name="${esc(f.name)}" title="Remove ${esc(f.name)} from friends">✕</span></span>`
+        + `</div>`;
+    }).join('');
+  }
+
+  private ignoreHtml(): string {
+    const blocks = this.sim.socialInfo?.blocks ?? [];
+    if (blocks.length === 0) return `<div class="soc-empty">Your ignore list is empty.</div>`;
+    return blocks.map((b) => `<div class="soc-row">`
+      + `<span class="soc-name">${esc(b.name)}</span>`
+      + `<span class="soc-actions" style="margin-left:auto"><span class="soc-x" data-act="unblock" data-name="${esc(b.name)}" title="Stop ignoring ${esc(b.name)}">✕</span></span>`
+      + `</div>`).join('');
+  }
+
+  private guildHtml(): string {
+    const guild = this.sim.socialInfo?.guild ?? null;
+    if (!guild) return `<div class="soc-empty">You are not in a guild. Found one below, or get invited by an existing guild.</div>`;
+    const me = guild.rank;
+    const head = `<div class="soc-guild-head">&lt;${esc(guild.name)}&gt; <span class="gm">— you are ${rankLabel(me)} &middot; ${guild.members.length} member${guild.members.length === 1 ? '' : 's'}</span></div>`;
+    const rows = guild.members.map((m) => {
+      const dot = m.online ? (m.status ?? 'online') : 'off';
+      const meta = m.online ? `<span class="zone">${esc(m.zone ?? '')}</span>` : 'Offline';
+      const self = m.name === this.sim.player.name;
+      const nameInner = `${esc(m.name)}<span class="rank">${rankLabel(m.rank)}</span>`;
+      const name = m.online && !self
+        ? `<span class="soc-name soc-link" data-whisper="${esc(m.name)}" title="Whisper ${esc(m.name)}">${nameInner}</span>`
+        : `<span class="soc-name">${nameInner}</span>`;
+      let actions = m.online && !self ? `<span class="soc-x" data-whisper="${esc(m.name)}" title="Whisper ${esc(m.name)}">✉</span>` : '';
+      if (!self && me === 'leader') actions += `<span class="soc-x" data-act="gtransfer" data-name="${esc(m.name)}" title="Make ${esc(m.name)} Guild Master">♛</span>`;
+      if (!self && me === 'leader' && m.rank === 'member') actions += `<span class="soc-x" data-act="promote" data-name="${esc(m.name)}" title="Promote ${esc(m.name)} to officer">▲</span>`;
+      if (!self && me === 'leader' && m.rank === 'officer') actions += `<span class="soc-x" data-act="demote" data-name="${esc(m.name)}" title="Demote ${esc(m.name)} to member">▼</span>`;
+      // leaders may remove members + officers; officers may remove only members
+      const canKick = !self && ((me === 'leader' && m.rank !== 'leader') || (me === 'officer' && m.rank === 'member'));
+      if (canKick) actions += `<span class="soc-x" data-act="gkick" data-name="${esc(m.name)}" title="Remove ${esc(m.name)} from guild">✕</span>`;
+      return `<div class="soc-row">`
+        + `<span class="soc-dot ${dot === 'off' ? '' : dot}"></span>`
+        + `<span>${name}<br><span class="soc-meta">Lvl ${m.level} ${cap(m.cls)}</span></span>`
+        + `<span class="soc-meta">${meta}</span>`
+        + (actions ? `<span class="soc-actions">${actions}</span>` : '')
+        + `</div>`;
+    }).join('');
+    return head + rows;
+  }
+
+  // The add/action row changes with the tab (and guild membership). Inputs
+  // tagged data-suggest get the username typeahead.
+  private socialFooter(): string {
+    if (this.socialTab === 'friends') return this.addRow('friend', 'friend-add', 'Search to add a friend…', 'Add', 16, true);
+    if (this.socialTab === 'ignore') return this.addRow('ignore', 'block-add', 'Search to ignore…', 'Ignore', 16, true);
+    const guild = this.sim.socialInfo?.guild ?? null;
+    if (!guild) return this.addRow('gname', 'guild-create', 'Name your new guild', 'Found', 24, false);
+    let foot = '';
+    if (guild.rank !== 'member') foot += this.addRow('ginvite', 'guild-invite', 'Search to invite…', 'Invite', 16, true);
+    // WoW: a Guild Master with other members can't just leave — they disband
+    // (or hand over leadership via the ♛ action). Everyone else can leave.
+    foot += guild.rank === 'leader' && guild.members.length > 1
+      ? `<div class="soc-add soc-leave"><button class="btn" data-act="guild-disband">Disband Guild</button></div>`
+      : `<div class="soc-add soc-leave"><button class="btn" data-act="guild-leave">Leave Guild</button></div>`;
+    return foot;
+  }
+
+  private addRow(field: string, act: string, placeholder: string, label: string, maxlen: number, suggest: boolean): string {
+    return `<div class="soc-add">`
+      + (suggest ? `<div class="soc-suggest" data-for="${field}"></div>` : '')
+      + `<input maxlength="${maxlen}" placeholder="${placeholder}" data-field="${field}"${suggest ? ' data-suggest="1"' : ''} autocomplete="off" spellcheck="false"/>`
+      + `<button class="btn" data-act="${act}">${label}</button></div>`;
+  }
+
+  // Wire the parts that survive a content refresh: close, tabs, footer + search.
+  private wireSocialChrome(el: HTMLElement): void {
+    el.querySelector('[data-close]')?.addEventListener('click', () => this.toggleSocial());
+    el.querySelectorAll('.soc-tab').forEach((t) => t.addEventListener('click', () => {
+      this.socialTab = (t as HTMLElement).dataset.tab as 'friends' | 'guild' | 'ignore';
+      this.socialNotice = null;
+      this.lastSocialStruct = this.socialStructSig();
+      this.renderSocial();
+    }));
+    const field = (sel: string): string => (el.querySelector(`input[data-field="${sel}"]`) as HTMLInputElement | null)?.value.trim() ?? '';
+    const submit = (act: string | undefined): void => {
+      if (act === 'friend-add') void this.socialResolveAndAct('friend', field('friend'));
+      else if (act === 'block-add') void this.socialResolveAndAct('ignore', field('ignore'));
+      else if (act === 'guild-invite') void this.socialResolveAndAct('ginvite', field('ginvite'));
+      else if (act === 'guild-create') { const n = field('gname'); if (n) { this.sim.guildCreate(n); this.clearSocialInput('gname'); } }
+      else if (act === 'guild-leave') this.sim.guildLeave();
+      else if (act === 'guild-disband') this.showPrompt('Disband your guild? This cannot be undone.', 'Disband', () => this.sim.guildDisband(), () => { /* keep */ });
+    };
+    el.querySelectorAll('.soc-add .btn').forEach((b) => b.addEventListener('click', () => submit((b as HTMLElement).dataset.act)));
+    // Enter-to-submit only for plain inputs (the guild name). Search inputs get
+    // richer keyboard handling — arrows + Enter to pick a suggestion — below.
+    el.querySelectorAll('.soc-add input:not([data-suggest])').forEach((inp) => inp.addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key !== 'Enter') return;
+      submit((inp.parentElement?.querySelector('.btn') as HTMLElement | null)?.dataset.act);
+    }));
+    this.wireSuggest(el);
+  }
+
+  // Wire per-row actions (re-run on every list refresh).
+  private wireSocialRows(scope: HTMLElement): void {
+    scope.querySelectorAll('.soc-x').forEach((x) => x.addEventListener('click', () => {
+      const act = (x as HTMLElement).dataset.act;
+      const name = (x as HTMLElement).dataset.name ?? '';
+      if (act === 'unfriend') this.sim.friendRemove(name);
+      else if (act === 'unblock') this.sim.blockRemove(name);
+      else if (act === 'gkick') this.sim.guildKick(name);
+      else if (act === 'promote') this.sim.guildPromote(name);
+      else if (act === 'demote') this.sim.guildDemote(name);
+      else if (act === 'gtransfer') this.showPrompt(`Make <b>${esc(name)}</b> the Guild Master? You will step down to Officer.`, 'Promote', () => this.sim.guildTransfer(name), () => { /* keep */ });
+    }));
+    scope.querySelectorAll('[data-whisper]').forEach((w) => w.addEventListener('click', () => {
+      this.startWhisper((w as HTMLElement).dataset.whisper ?? '');
+    }));
+  }
+
+  private suggestKind(field: string): 'friend' | 'ignore' | 'ginvite' {
+    return field === 'friend' ? 'friend' : field === 'ignore' ? 'ignore' : 'ginvite';
+  }
+
+  // Username typeahead: debounced search against same-realm characters, with
+  // arrow-key navigation and Enter to pick the highlighted name.
+  private wireSuggest(el: HTMLElement): void {
+    el.querySelectorAll('input[data-suggest]').forEach((node) => {
+      const input = node as HTMLInputElement;
+      const field = input.dataset.field ?? '';
+      input.addEventListener('input', () => {
+        const q = input.value.trim();
+        window.clearTimeout(this.socialSuggestTimer);
+        if (!q) { this.renderSuggest(field, []); return; }
+        this.socialSuggestTimer = window.setTimeout(async () => {
+          const results = await this.sim.searchCharacters(q);
+          this.renderSuggest(field, results.filter((r) => r.name !== this.sim.player.name).slice(0, 8));
+        }, 160);
+      });
+      input.addEventListener('keydown', (e) => {
+        const ke = e as KeyboardEvent;
+        const open = this.socialSuggest.field === field && this.socialSuggest.items.length > 0;
+        if (ke.key === 'ArrowDown' && open) { ke.preventDefault(); this.moveSuggest(field, 1); }
+        else if (ke.key === 'ArrowUp' && open) { ke.preventDefault(); this.moveSuggest(field, -1); }
+        else if (ke.key === 'Escape' && open) { ke.preventDefault(); this.renderSuggest(field, []); }
+        else if (ke.key === 'Enter') {
+          ke.preventDefault();
+          const picked = open && this.socialSuggest.index >= 0 ? this.socialSuggest.items[this.socialSuggest.index].name : input.value;
+          void this.socialResolveAndAct(this.suggestKind(field), picked);
+        }
+      });
+      // let a suggestion's mousedown fire before blur clears the list
+      input.addEventListener('blur', () => window.setTimeout(() => this.renderSuggest(field, []), 150));
+    });
+  }
+
+  private renderSuggest(field: string, results: { name: string; cls: string; level: number }[]): void {
+    const box = $('#social-window').querySelector(`.soc-suggest[data-for="${field}"]`) as HTMLElement | null;
+    if (!box) return;
+    this.socialSuggest = { field, items: results, index: -1 };
+    if (results.length === 0) { box.style.display = 'none'; box.innerHTML = ''; return; }
+    const kind = this.suggestKind(field);
+    box.innerHTML = results.map((r, i) =>
+      `<div class="soc-sugg-item" data-i="${i}" data-name="${esc(r.name)}"><span class="soc-name">${esc(r.name)}</span><span class="soc-meta">Lvl ${r.level} ${cap(r.cls)}</span></div>`).join('');
+    box.style.display = 'block';
+    box.querySelectorAll('.soc-sugg-item').forEach((it) => {
+      it.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        void this.socialResolveAndAct(kind, (it as HTMLElement).dataset.name ?? '');
+      });
+      it.addEventListener('mousemove', () => { this.socialSuggest.index = Number((it as HTMLElement).dataset.i); this.highlightSuggest(field); });
+    });
+  }
+
+  private moveSuggest(field: string, delta: number): void {
+    const n = this.socialSuggest.items.length;
+    if (n === 0) return;
+    // start at the top when nothing is highlighted yet, then wrap
+    this.socialSuggest.index = this.socialSuggest.index < 0
+      ? (delta > 0 ? 0 : n - 1)
+      : (this.socialSuggest.index + delta + n) % n;
+    this.highlightSuggest(field);
+  }
+
+  private highlightSuggest(field: string): void {
+    const box = $('#social-window').querySelector(`.soc-suggest[data-for="${field}"]`) as HTMLElement | null;
+    if (!box) return;
+    box.querySelectorAll('.soc-sugg-item').forEach((it) => {
+      const on = Number((it as HTMLElement).dataset.i) === this.socialSuggest.index;
+      it.classList.toggle('active', on);
+      if (on) (it as HTMLElement).scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  // Authoritative existence check (realm-scoped) before acting, so we can give
+  // clear inline "no such player" feedback instead of a silent failure.
+  private async socialResolveAndAct(kind: 'friend' | 'ignore' | 'ginvite', rawName: string): Promise<void> {
+    const name = rawName.trim();
+    if (!name) return;
+    const results = await this.sim.searchCharacters(name);
+    const exact = results.find((r) => r.name.toLowerCase() === name.toLowerCase());
+    if (!exact) {
+      this.setSocialNotice(`No player named “${name}” on ${this.sim.realm || 'this realm'}.`, true);
+      return;
+    }
+    if (exact.name === this.sim.player.name) { this.setSocialNotice('That is you!', true); return; }
+    if (kind === 'friend') { this.sim.friendAdd(exact.name); this.setSocialNotice(`Added ${exact.name} to your friends.`, false); this.clearSocialInput('friend'); }
+    else if (kind === 'ignore') { this.sim.blockAdd(exact.name); this.setSocialNotice(`Now ignoring ${exact.name}.`, false); this.clearSocialInput('ignore'); }
+    else { this.sim.guildInvite(exact.name); this.setSocialNotice(`Invited ${exact.name} to your guild.`, false); this.clearSocialInput('ginvite'); }
+    this.renderSuggest(kind, []);
+  }
+
+  private clearSocialInput(field: string): void {
+    const inp = $('#social-window').querySelector(`input[data-field="${field}"]`) as HTMLInputElement | null;
+    if (inp) inp.value = '';
+  }
+
+  private setSocialNotice(text: string, error: boolean): void {
+    this.socialNotice = { text, error };
+    this.renderSocialNotice();
+  }
+
+  private renderSocialNotice(): void {
+    const box = $('#social-window').querySelector('.soc-notice') as HTMLElement | null;
+    if (!box) return;
+    if (!this.socialNotice) { box.style.display = 'none'; box.textContent = ''; return; }
+    box.textContent = this.socialNotice.text;
+    box.className = 'soc-notice' + (this.socialNotice.error ? ' err' : ' ok');
+    box.style.display = 'block';
+  }
+
+  // Open the chat bar pre-filled with a whisper to this player (WoW-style DM).
+  private startWhisper(name: string): void {
+    if (!name || name === this.sim.player.name) return;
+    const input = $('#chat-input') as unknown as HTMLInputElement;
+    input.value = `/w ${name} `;
+    input.style.display = 'block';
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
   }
 
   // -------------------------------------------------------------------------
@@ -1679,6 +2198,10 @@ export class Hud {
 
   attachOptions(hooks: OptionsHooks): void {
     this.optionsHooks = hooks;
+  }
+
+  attachReporting(hooks: ReportHooks): void {
+    this.reportHooks = hooks;
   }
 
   get optionsOpen(): boolean {
@@ -1913,11 +2436,13 @@ export class Hud {
     let closed = false;
     this.closeContextMenu();
     if (this.optionsOpen) { this.closeOptions(); return true; }
+    const socialEl = $('#social-window');
+    if (socialEl.classList.contains('open')) { socialEl.classList.remove('open'); closed = true; }
     if (this.tradeOpen) {
       this.sim.tradeCancel();
       closed = true;
     }
-    for (const id of ['#quest-dialog', '#loot-window', '#vendor-window', '#bags', '#char-window', '#spellbook', '#quest-log-window', '#map-window']) {
+    for (const id of ['#quest-dialog', '#loot-window', '#vendor-window', '#bags', '#char-window', '#spellbook', '#quest-log-window', '#map-window', '#report-window']) {
       const el = $(id);
       if (el.style.display === 'block') {
         el.style.display = 'none';
@@ -1940,6 +2465,23 @@ function describeCost(known: ResolvedAbility, sim: IWorld): string {
   parts.push(known.def.channel ? 'Channeled' : known.castTime > 0 ? `${known.castTime}s cast` : 'Instant');
   if (known.def.cooldown > 0) parts.push(`${known.def.cooldown}s cooldown`);
   return parts.join(' · ');
+}
+
+function cap(s: string): string {
+  return s ? s[0].toUpperCase() + s.slice(1) : s;
+}
+
+function statusLabel(status: string | undefined): string {
+  switch (status) {
+    case 'combat': return 'In Combat';
+    case 'dungeon': return 'In Dungeon';
+    case 'dead': return 'Dead';
+    default: return 'Online';
+  }
+}
+
+function rankLabel(rank: string): string {
+  return rank === 'leader' ? 'Guild Master' : rank === 'officer' ? 'Officer' : 'Member';
 }
 
 function shade(hex: string, amt: number): string {

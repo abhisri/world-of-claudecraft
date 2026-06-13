@@ -117,17 +117,21 @@ const moved = before && after ? Math.hypot(after.x - before.x, after.z - before.
 console.log('B watched A move:', moved > 4 ? `OK (${moved.toFixed(1)} yd)` : `FAIL (${moved.toFixed(1)})`);
 
 // chat from A (through the real chat input flow), read on B
+await pageA.bringToFront();
+await new Promise((r) => setTimeout(r, 600));
 await pageA.evaluate(() => {
   window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter' }));
   const input = document.querySelector('#chat-input');
   input.value = 'For Eastbrook!';
   input.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter', bubbles: true }));
 });
+// Allow WebSocket frame to flush before bringing B to front
+await new Promise((r) => setTimeout(r, 800));
 // B's HUD drains network events on rAF, which only runs while foregrounded
 await pageB.bringToFront();
 await new Promise((r) => setTimeout(r, 1200));
 const bGotChat = await pageB.evaluate(() =>
-  [...document.querySelectorAll('#combatlog div')].some((d) => d.textContent.includes('For Eastbrook!')),
+  [...document.querySelectorAll('#chatlog div, #combatlog div')].some((d) => d.textContent.includes('For Eastbrook!')),
 );
 console.log('chat A -> B:', bGotChat ? 'OK' : 'FAIL');
 
