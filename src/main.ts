@@ -21,6 +21,48 @@ const WORLD_SEED = 20061; // fixed: World of Claudecraft is a persistent place
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string): T => document.querySelector(sel) as T;
 
+type FullscreenDocument = Document & {
+  webkitFullscreenElement?: Element | null;
+  webkitExitFullscreen?: () => Promise<void> | void;
+};
+
+type FullscreenElement = HTMLElement & {
+  webkitRequestFullscreen?: () => Promise<void> | void;
+};
+
+function currentFullscreenElement(): Element | null {
+  const doc = document as FullscreenDocument;
+  return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
+}
+
+function requestBrowserFullscreen(): void {
+  if (currentFullscreenElement()) return;
+  const root = document.documentElement as FullscreenElement;
+  const request = root.requestFullscreen?.bind(root) ?? root.webkitRequestFullscreen?.bind(root);
+  if (!request) return;
+  try {
+    const result = request();
+    if (result instanceof Promise) void result.catch(() => {});
+  } catch {
+    // Browsers can reject fullscreen outside a direct user gesture.
+  }
+}
+
+function exitBrowserFullscreen(): void {
+  if (!currentFullscreenElement()) return;
+  const doc = document as FullscreenDocument;
+  try {
+    const result = document.exitFullscreen?.() ?? doc.webkitExitFullscreen?.();
+    if (result instanceof Promise) void result.catch(() => {});
+  } catch {
+    // Fullscreen exit can also reject while the document is changing state.
+  }
+}
+
+function requestPreferredFullscreen(): void {
+  if (new Settings().get('fullscreen') >= 0.5) requestBrowserFullscreen();
+}
+
 // ---------------------------------------------------------------------------
 // Loading screen (shown from "enter world" until the first frame renders)
 // ---------------------------------------------------------------------------
@@ -164,6 +206,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       case 'musicVolume': music.setVolume(v); break;
       case 'brightness': renderer.setBrightness(v); break;
       case 'renderScale': renderer.setRenderScale(v); break;
+      case 'fullscreen': v >= 0.5 ? requestBrowserFullscreen() : exitBrowserFullscreen(); break;
     }
   }
   // apply persisted settings to the freshly-built subsystems
@@ -319,6 +362,7 @@ function sanitizeOfflineName(raw: string): string {
 }
 
 function startOffline(playerClass: PlayerClass, name: string): void {
+  requestPreferredFullscreen();
   if (!beginWorldEntry()) return;
   const sim = new Sim({ seed: WORLD_SEED, playerClass, playerName: name });
   void startGame(sim, sim, null);
@@ -680,6 +724,7 @@ function fatalOverlay(message: string): void {
 }
 
 function enterWorld(c: CharacterSummary): void {
+  requestPreferredFullscreen();
   if (!beginWorldEntry()) return;
   audio.init();
   music.init();

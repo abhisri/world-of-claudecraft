@@ -2283,6 +2283,33 @@ export class Hud {
     parent.appendChild(row);
   }
 
+  private settingToggle(parent: HTMLElement, label: string, key: keyof GameSettings): void {
+    const hooks = this.optionsHooks;
+    if (!hooks) return;
+    const row = document.createElement('div');
+    row.className = 'set-row';
+    const name = document.createElement('span');
+    name.className = 'set-name';
+    name.textContent = label;
+    const toggle = document.createElement('button');
+    toggle.className = 'btn set-toggle';
+    const sync = () => {
+      const on = hooks.settings.get(key) >= 0.5;
+      toggle.textContent = on ? 'On' : 'Off';
+      toggle.classList.toggle('off', !on);
+      toggle.setAttribute('aria-pressed', String(on));
+    };
+    sync();
+    toggle.addEventListener('click', () => {
+      audio.click();
+      const next = hooks.settings.get(key) >= 0.5 ? 0 : 1;
+      hooks.onSettingChange(key, next);
+      sync();
+    });
+    row.append(name, toggle);
+    parent.appendChild(row);
+  }
+
   private settingsViewShell(title: string): HTMLElement {
     const el = $('#options-menu');
     el.innerHTML = `<div class="panel-title"><span>${title}</span><span class="x-btn" data-close>✕</span></div>`;
@@ -2318,6 +2345,7 @@ export class Hud {
     this.settingSlider(body, 'Camera Speed', 'cameraSpeed');
     this.settingSlider(body, 'Brightness', 'brightness');
     this.settingSlider(body, 'Render Quality', 'renderScale');
+    this.settingToggle(body, 'Fullscreen', 'fullscreen');
     const note = document.createElement('div');
     note.className = 'set-note';
     note.textContent = 'Lower Camera Speed for a calmer mouselook. Render Quality below 100% boosts FPS on weaker machines.';
