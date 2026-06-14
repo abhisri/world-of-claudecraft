@@ -5,6 +5,8 @@
 // F interacts, R autorun.
 
 import { Keybinds, actionKind } from './keybinds';
+import { sanitizeMoveFacing, sanitizeMoveInput } from '../sim/move_input';
+import type { MoveInput } from '../sim/types';
 
 // the camera sensitivity that used to be hard-coded in onMouseMove; the
 // settings slider scales this (cameraSpeed 1.0 reproduces the old feel)
@@ -42,6 +44,8 @@ export class Input {
   // one-shot key capture for the rebind UI: the next keydown is delivered here
   // (Escape cancels with null) instead of being dispatched as an action
   private captureCb: ((code: string | null) => void) | null = null;
+  private controllerMoveInput: MoveInput | null = null;
+  private controllerFacing: number | null = null;
   // mouse-look sensitivity, in radians per pixel of drag; the old fixed value
   // was BASE_LOOK_SENS — setCameraSpeed scales it from the settings menu
   private lookSensitivity = BASE_LOOK_SENS;
@@ -103,6 +107,24 @@ export class Input {
 
   isMouselookActive(): boolean {
     return this.rightDown || this.touchLookActive;
+  }
+
+  setControllerMoveInput(input: unknown, facing?: unknown): void {
+    this.controllerMoveInput = sanitizeMoveInput(input);
+    if (arguments.length > 1) this.controllerFacing = sanitizeMoveFacing(facing);
+  }
+
+  setControllerFacing(facing: unknown): void {
+    this.controllerFacing = sanitizeMoveFacing(facing);
+  }
+
+  clearControllerMoveInput(): void {
+    this.controllerMoveInput = null;
+    this.controllerFacing = null;
+  }
+
+  controllerFacingOverride(): number | null {
+    return this.controllerFacing;
   }
 
   private onKeyDown(e: KeyboardEvent): void {
@@ -181,13 +203,11 @@ export class Input {
     this.camPitch = Math.min(1.35, Math.max(-0.4, this.camPitch + my * this.lookSensitivity));
   }
 
-  readMoveInput(): {
-    forward: boolean; back: boolean; turnLeft: boolean; turnRight: boolean;
-    strafeLeft: boolean; strafeRight: boolean; jump: boolean;
-  } {
+  readMoveInput(): MoveInput {
     if (this.suspendMovement) {
       return { forward: false, back: false, turnLeft: false, turnRight: false, strafeLeft: false, strafeRight: false, jump: false };
     }
+    if (this.controllerMoveInput) return { ...this.controllerMoveInput };
     const k = this.keys;
     const held = (id: string) => this.keybinds.codesForAction(id).some((c) => k.has(c));
     const bothButtons = this.leftDown && this.rightDown;

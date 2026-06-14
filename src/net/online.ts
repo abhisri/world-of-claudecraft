@@ -6,6 +6,7 @@ import {
   Entity, EquipSlot, InvSlot, MoveInput, PlayerClass, QuestProgress, QuestState, SimEvent,
   emptyMoveInput,
 } from '../sim/types';
+import { normalizeMoveFacing, sanitizeMoveInput } from '../sim/move_input';
 import type { ArenaInfo, CharacterSearchResult, DuelInfo, IWorld, MarketInfo, PartyInfo, SocialInfo, TradeInfo } from '../world_api';
 
 // ---------------------------------------------------------------------------
@@ -284,8 +285,13 @@ export class ClientWorld implements IWorld {
     return out;
   }
 
-  setMouselookFacing(facing: number | null): void {
-    this.mouselookFacing = facing;
+  setMoveInput(input: unknown, facing?: unknown): void {
+    Object.assign(this.moveInput, sanitizeMoveInput(input));
+    if (arguments.length > 1) this.setMouselookFacing(facing);
+  }
+
+  setMouselookFacing(facing: unknown): void {
+    this.mouselookFacing = normalizeMoveFacing(facing);
   }
 
   // -----------------------------------------------------------------------

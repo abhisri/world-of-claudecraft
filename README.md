@@ -246,6 +246,14 @@ node scripts/arena_visual.mjs   # two clients queue + fight a ranked 1v1 in the 
 node scripts/crypt_raid.mjs     # five bots clear the Hollow Crypt (ALLOW_DEV_COMMANDS=1)
 ```
 
+Browser agents can drive movement through `window.__game.controller` instead
+of simulating held keys. Use `controller.move({ forward: true }, facingRadians)`
+or compact websocket flags such as `{ f: 1, sr: 1 }`; call
+`controller.face(facingRadians)` to update facing without changing movement and
+`controller.stop()` to return to real keyboard input. Online play sends the
+same input frame to the server, which accepts only boolean/`1` movement flags
+and finite facing values.
+
 Layout:
 
 ```

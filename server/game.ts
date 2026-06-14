@@ -3,6 +3,7 @@ import type { WebSocket } from 'ws';
 import { Sim } from '../src/sim/sim';
 import type { PlayerMeta } from '../src/sim/sim';
 import { DT, Entity, SimEvent, dist2d } from '../src/sim/types';
+import { parseMoveInputFrame } from '../src/sim/move_input';
 import { stealthDetectionRadius, threatEntries } from '../src/sim/threat';
 import { zoneAt, DUNGEONS } from '../src/sim/data';
 import { saveCharacterState, openPlaySession, closePlaySession, insertChatLogs, pool, loadMarketState, saveMarketState } from './db';
@@ -600,16 +601,10 @@ export class GameServer {
       const meta = sim.meta(pid);
       const e = sim.entities.get(pid);
       if (!meta || !e) return;
-      const mi = msg.mi ?? {};
-      meta.moveInput.forward = !!mi.f;
-      meta.moveInput.back = !!mi.b;
-      meta.moveInput.turnLeft = !!mi.tl;
-      meta.moveInput.turnRight = !!mi.tr;
-      meta.moveInput.strafeLeft = !!mi.sl;
-      meta.moveInput.strafeRight = !!mi.sr;
-      meta.moveInput.jump = !!mi.j;
-      if (typeof msg.facing === 'number' && isFinite(msg.facing) && !e.dead) {
-        e.facing = msg.facing;
+      const { moveInput, facing } = parseMoveInputFrame(msg);
+      Object.assign(meta.moveInput, moveInput);
+      if (facing !== null && !e.dead) {
+        e.facing = facing;
       }
       return;
     }

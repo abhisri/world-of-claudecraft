@@ -516,13 +516,15 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     input.updateTouchLook(frameDt);
 
     const mouselook = input.isMouselookActive() && !world.player.dead;
+    const controllerFacing = input.controllerFacingOverride();
+    const movementFacing = !world.player.dead ? (mouselook ? input.camYaw : controllerFacing) : null;
 
     if (offlineSim) {
       acc += frameDt;
       while (acc >= DT) {
         const mi = input.readMoveInput();
         Object.assign(offlineSim.moveInput, mi);
-        if (mouselook) offlineSim.player.facing = input.camYaw;
+        if (movementFacing !== null) offlineSim.player.facing = movementFacing;
         const events = offlineSim.tick();
         hud.handleEvents(events);
         acc -= DT;
@@ -532,7 +534,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       renderer.camYaw = input.camYaw;
       renderer.camPitch = input.camPitch;
       renderer.camDist = input.camDist;
-      renderer.sync(acc / DT, frameDt, mouselook ? input.camYaw : null);
+      renderer.sync(acc / DT, frameDt, movementFacing);
       hud.update();
       return;
     }
@@ -540,7 +542,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     // online: inputs stream on a timer inside ClientWorld; here we mirror state
     const net = online!;
     Object.assign(net.moveInput, input.readMoveInput());
-    net.setMouselookFacing(mouselook ? input.camYaw : null);
+    net.setMouselookFacing(movementFacing);
     net.pendingFacingDelta = 0; // superseded by the interpolated follow below
     hud.handleEvents(net.drainEvents());
     if (net.consumeInventoryChanged()) hud.onInventoryChanged();
@@ -553,14 +555,22 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     renderer.camYaw = input.camYaw;
     renderer.camPitch = input.camPitch;
     renderer.camDist = input.camDist;
-    renderer.sync(alpha, frameDt, mouselook ? input.camYaw : null);
+    renderer.sync(alpha, frameDt, movementFacing);
     hud.update();
   }
   requestAnimationFrame(frame);
   // cut to the game only once the first frame is actually on screen
   requestAnimationFrame(() => requestAnimationFrame(() => hideLoadingScreen()));
 
-  (window as any).__game = { sim: world, world, renderer, input, hud, online };
+  const controller = {
+    move(moveInput: unknown, facing?: unknown) {
+      if (arguments.length > 1) input.setControllerMoveInput(moveInput, facing);
+      else input.setControllerMoveInput(moveInput);
+    },
+    face(facing: unknown) { input.setControllerFacing(facing); },
+    stop() { input.clearControllerMoveInput(); },
+  };
+  (window as any).__game = { sim: world, world, renderer, input, hud, online, controller };
 }
 
 // ---------------------------------------------------------------------------
