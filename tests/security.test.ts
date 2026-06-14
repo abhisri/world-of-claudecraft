@@ -110,6 +110,29 @@ describe('rate-limit client IP selection', () => {
     // ...while another player behind the same proxy is unaffected
     expect(rateLimited(fakeReq({ 'x-forwarded-for': '198.51.100.201' }, '172.18.0.1'))).toBe(false);
   });
+
+  it('keeps limiting a persistent attacker after the memory backstop evicts', () => {
+    // A persistent attacker keeps hammering one endpoint while the IP map is
+    // pushed past its backstop threshold by churning many one-off IPs. The
+    // backstop must evict expired one-off entries, NOT wipe the attacker's
+    // live counter — otherwise flooding the map silently disables rate limiting.
+    const attacker = '203.0.113.250';
+    let limited = false;
+    for (let i = 0; i < 25; i++) {
+      limited = rateLimited(fakeReq({ 'x-forwarded-for': attacker }, '172.18.0.1'));
+    }
+    expect(limited).toBe(true);
+
+    // Churn past MAX_TRACKED_IPS (10_000) distinct clients to trip the backstop.
+    for (let i = 0; i < 10_050; i++) {
+      const a = (i >> 8) & 0xff;
+      const b = i & 0xff;
+      rateLimited(fakeReq({ 'x-forwarded-for': `100.64.${a}.${b}` }, '172.18.0.1'));
+    }
+
+    // The attacker's counter must survive eviction and stay limited.
+    expect(rateLimited(fakeReq({ 'x-forwarded-for': attacker }, '172.18.0.1'))).toBe(true);
+  });
 });
 
 describe('malformed websocket frames cannot crash the server', () => {

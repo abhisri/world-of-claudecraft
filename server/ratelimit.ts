@@ -66,6 +66,18 @@ export function rateLimited(req: http.IncomingMessage, maxPerMinute = 20): boole
   const list = (attempts.get(ip) ?? []).filter((t) => t > windowStart);
   const updated = [...list, now];
   attempts.set(ip, updated);
-  if (attempts.size > MAX_TRACKED_IPS) attempts.clear(); // memory backstop
+  // Memory backstop: when the map grows too large, evict entries whose window
+  // has fully expired rather than clearing everything. A blanket clear() would
+  // also wipe the counter we just recorded, so every IP would perpetually see
+  // a single attempt and rate limiting would silently stop working under load.
+  if (attempts.size > MAX_TRACKED_IPS) {
+    for (const [key, times] of attempts) {
+      if (key === ip) continue;
+      if (times.length === 0 || times[times.length - 1] <= windowStart) {
+        attempts.delete(key);
+      }
+      if (attempts.size <= MAX_TRACKED_IPS) break;
+    }
+  }
   return updated.length > maxPerMinute;
 }

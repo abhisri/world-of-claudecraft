@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi, afterEach } from "vitest";
 
-// db.ts requires DATABASE_URL at import time; set a dummy value before the
-// hoisted import runs so the module loads. Queries are spied on the real pool
-// (see below), so no actual connection is ever opened.
+// db.ts requires DATABASE_URL at import time (it throws otherwise). Stub it
+// before the import below so the module loads; pool.query is spied per-test
+// so no real connection is ever opened.
 vi.hoisted(() => {
   process.env.DATABASE_URL ??= "postgres://test/test";
 });
