@@ -2821,7 +2821,7 @@
   }
   body.mobile-touch #mobile-combat-controls {
     position: absolute; left: 50%; bottom: calc(4px + env(safe-area-inset-bottom)); transform: translateX(-50%);
-    display: grid; grid-template-columns: 124px 58px 58px; gap: 8px; pointer-events: auto; align-items: end;
+    display: grid; grid-template-columns: 124px 58px 58px 58px; gap: 8px; pointer-events: auto; align-items: end;
   }
   body.mobile-touch .mobile-btn {
     width: 58px; height: 54px; border: 2px solid #4a3d1d; border-radius: 8px;
@@ -3121,7 +3121,7 @@
     }
     body.mobile-touch .mobile-joy-label { bottom: -15px; font-size: 8px; color: #d7c987aa; }
     body.mobile-touch #mobile-combat-controls {
-      bottom: calc(2px + env(safe-area-inset-bottom)); grid-template-columns: 115px 54px 54px; gap: 7px;
+      bottom: calc(2px + env(safe-area-inset-bottom)); grid-template-columns: 115px 54px 54px 54px; gap: 7px;
     }
     body.mobile-touch .mobile-btn { width: 54px; height: 48px; font-size: 20px; background: radial-gradient(circle at 35% 30%, #2d3048bf, #11121ec2 72%); }
     body.mobile-touch #mobile-attack-nearest { width: 115px; }
@@ -4102,6 +4102,7 @@
     </div>
     <div id="mobile-combat-controls">
       <button class="mobile-btn" id="mobile-attack-nearest" title="Attack nearest enemy" aria-label="Attack nearest enemy" data-icon="attack"><span class="mobile-label">Attack</span></button>
+      <button class="mobile-btn" id="mobile-jump" title="Jump" aria-label="Jump" data-icon="jump"><span class="mobile-label">Jump</span></button>
       <button class="mobile-btn" id="mobile-target" title="Target nearest enemy" aria-label="Target nearest enemy" data-icon="target"><span class="mobile-label">Target</span></button>
       <button class="mobile-btn" id="mobile-chat" title="Chat" aria-label="Open chat" data-icon="chat"><span class="mobile-label">Chat</span></button>
       <button class="mobile-btn" id="mobile-more" title="More menus" aria-label="Show more menus" data-icon="more"><span class="mobile-label">More</span></button>

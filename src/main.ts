@@ -420,6 +420,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
 
   const mobileControls = new MobileControls(input, {
     onAttackNearest: () => attackNearest(),
+    onJump: () => input.triggerTouchJump(),
     onTarget: () => world.tabTarget(),
     onInteract: () => interactKey(),
     onChat: () => openChat(),

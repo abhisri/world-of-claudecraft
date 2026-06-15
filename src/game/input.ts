@@ -61,6 +61,7 @@ export class Input {
   // was BASE_LOOK_SENS — setCameraSpeed scales it from the settings menu
   private lookSensitivity = BASE_LOOK_SENS;
   private touchMove: TouchMoveInput = { forward: false, back: false, strafeLeft: false, strafeRight: false };
+  private touchJump = false;
   private touchLookActive = false;
   private touchLookVector = { x: 0, y: 0 };
 
@@ -131,6 +132,13 @@ export class Input {
 
   clearTouchMove(): void {
     this.touchMove = { forward: false, back: false, strafeLeft: false, strafeRight: false };
+  }
+
+  // A touch jump is momentary: the on-screen button arms this flag and the next
+  // readMoveInput() poll consumes it, yielding a single frame of jump=true (the
+  // sim only launches when grounded, so one frame is enough — same as a Space tap).
+  triggerTouchJump(): void {
+    this.touchJump = true;
   }
 
   setTouchLook(active: boolean): void {
@@ -296,7 +304,8 @@ export class Input {
     const bothButtons = this.leftDown && this.rightDown;
     const forward = held('forward') || bothButtons || this.autorun || this.touchMove.forward;
     const back = held('back') || this.touchMove.back;
-    const jump = held('jump');
+    const jump = held('jump') || this.touchJump;
+    this.touchJump = false;
 
     if (this.mouseCameraEnabled) {
       return {

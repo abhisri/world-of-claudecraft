@@ -105,3 +105,18 @@ describe('Input movement is not cancelled by a camera drag', () => {
     expect(input.readMoveInput().forward).toBe(false);
   });
 });
+
+describe('touch jump', () => {
+  it('jump is off until the touch button arms it', () => {
+    const { input } = makeInput();
+    expect(input.readMoveInput().jump).toBe(false);
+  });
+
+  it('triggerTouchJump yields exactly one frame of jump', () => {
+    const { input } = makeInput();
+    input.triggerTouchJump();
+    expect(input.readMoveInput().jump).toBe(true);
+    // momentary: a single poll consumes it so it cannot stick on like a held key
+    expect(input.readMoveInput().jump).toBe(false);
+  });
+});
