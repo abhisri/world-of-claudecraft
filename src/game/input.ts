@@ -336,8 +336,8 @@ export class Input {
     }
     const tag = (document.activeElement?.tagName ?? '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
-    if (this.cb.canUseGameKeys && !this.cb.canUseGameKeys()) return;
     if (e.code === 'Escape') { this.cb.onUiKey('escape'); return; }
+    if (this.cb.canUseGameKeys && !this.cb.canUseGameKeys()) return;
     if (e.code === 'Tab') e.preventDefault();
     const action = this.keybinds.actionForCode(e.code);
     if (action === null) return;

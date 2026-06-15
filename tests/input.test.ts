@@ -259,6 +259,19 @@ describe('Input context menu guard', () => {
   });
 });
 
+describe('Input Escape handling', () => {
+  it('dispatches Escape even when modal UI blocks game keys', () => {
+    const { cb, windowListeners } = makeInput();
+    (cb as any).canUseGameKeys = vi.fn(() => false);
+
+    windowListeners.get('keydown')!({ code: 'Escape', repeat: false });
+    windowListeners.get('keydown')!({ code: 'KeyB', repeat: false });
+
+    expect(cb.onUiKey).toHaveBeenCalledTimes(1);
+    expect(cb.onUiKey).toHaveBeenCalledWith('escape');
+  });
+});
+
 describe('Input movement is not cancelled by a camera drag', () => {
   // Discord regression: walking with W (or any held key) then right/left-drag to
   // look around and releasing the button stopped movement, because exiting
