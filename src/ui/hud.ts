@@ -4148,7 +4148,7 @@ export class Hud {
       else if (act === 'block-add') void this.socialResolveAndAct('ignore', field('ignore'));
       else if (act === 'guild-invite') void this.socialResolveAndAct('ginvite', field('ginvite'));
       else if (act === 'guild-create') { const n = field('gname'); if (n) { this.sim.guildCreate(n); this.clearSocialInput('gname'); } }
-      else if (act === 'guild-leave') this.sim.guildLeave();
+      else if (act === 'guild-leave') this.showPrompt('Are you sure you want to leave your guild?', 'Leave Guild', () => this.sim.guildLeave(), () => {});
       else if (act === 'guild-disband') this.showPrompt('Disband your guild? This cannot be undone.', 'Disband', () => this.sim.guildDisband(), () => { /* keep */ });
     };
     el.querySelectorAll('.soc-add .btn').forEach((b) => b.addEventListener('click', () => submit((b as HTMLElement).dataset.act)));
