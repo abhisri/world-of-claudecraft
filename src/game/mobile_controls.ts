@@ -23,6 +23,21 @@ export function isPhoneTouchDevice(win: Pick<Window, 'matchMedia'> = window): bo
   return win.matchMedia(PHONE_TOUCH_QUERY).matches;
 }
 
+export interface OriginBounds { left: number; top: number; right: number; bottom: number; }
+
+/**
+ * Clamp a floating joystick's spawn centre so the whole circle (given `radius`)
+ * stays inside `bounds`. If the zone is narrower/shorter than the joystick on an
+ * axis, the centre falls back to the midpoint of that axis.
+ */
+export function clampJoystickOrigin(px: number, py: number, radius: number, bounds: OriginBounds): { x: number; y: number } {
+  const clamp = (v: number, lo: number, hi: number) => (hi < lo ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, v)));
+  return {
+    x: clamp(px, bounds.left + radius, bounds.right - radius),
+    y: clamp(py, bounds.top + radius, bounds.bottom - radius),
+  };
+}
+
 export function mapJoystickVector(x: number, y: number, deadzone = DEADZONE): TouchMoveInput {
   const mag = Math.hypot(x, y);
   if (mag < deadzone) return { forward: false, back: false, strafeLeft: false, strafeRight: false };
@@ -41,7 +56,12 @@ export class MobileControls {
   private lookPointer: number | null = null;
   private mq: MediaQueryList | null = null;
 
+  private moveOriginX = 0;
+  private moveOriginY = 0;
+  private moveRadius = 1;
+
   private root = document.getElementById('mobile-controls') as HTMLElement | null;
+  private moveZone = document.getElementById('mobile-move-zone') as HTMLElement | null;
   private moveJoystick = document.getElementById('mobile-move-joystick') as HTMLElement | null;
   private moveStick = document.getElementById('mobile-move-stick') as HTMLElement | null;
   private cameraJoystick = document.getElementById('mobile-camera-joystick') as HTMLElement | null;
@@ -55,10 +75,15 @@ export class MobileControls {
     this.setActive(this.mq.matches);
     this.mq.addEventListener?.('change', (e) => this.setActive(e.matches));
 
-    this.moveJoystick.addEventListener('pointerdown', (e) => this.onMoveDown(e));
-    this.moveJoystick.addEventListener('pointermove', (e) => this.onMoveMove(e));
-    this.moveJoystick.addEventListener('pointerup', (e) => this.onMoveEnd(e));
-    this.moveJoystick.addEventListener('pointercancel', (e) => this.onMoveEnd(e));
+    // The move joystick floats: the pointer lifecycle lives on the lower-left
+    // capture zone (so a thumb can land anywhere), while the joystick element is
+    // just the visual that JS repositions under the touch. Fall back to the
+    // joystick element itself if the zone is absent (e.g. an older shell).
+    const moveSurface = this.moveZone ?? this.moveJoystick;
+    moveSurface.addEventListener('pointerdown', (e) => this.onMoveDown(e));
+    moveSurface.addEventListener('pointermove', (e) => this.onMoveMove(e));
+    moveSurface.addEventListener('pointerup', (e) => this.onMoveEnd(e));
+    moveSurface.addEventListener('pointercancel', (e) => this.onMoveEnd(e));
 
     this.cameraJoystick.addEventListener('pointerdown', (e) => this.onCameraDown(e));
     this.cameraJoystick.addEventListener('pointermove', (e) => this.onCameraMove(e));
@@ -124,20 +149,30 @@ export class MobileControls {
   }
 
   private onMoveDown(e: PointerEvent): void {
-    if (!this.active || this.joyPointer !== null) return;
+    if (!this.active || this.joyPointer !== null || !this.moveJoystick) return;
     e.preventDefault();
     this.joyPointer = e.pointerId;
-    try { this.moveJoystick?.setPointerCapture(e.pointerId); } catch { /* synthetic test event */ }
+    // Spawn the joystick base under the thumb, clamped so the circle stays
+    // on-screen, then pin the stick offset to that floating centre.
+    const radius = Math.max(1, this.moveJoystick.offsetWidth / 2 || 61);
+    const zone = (this.moveZone ?? this.moveJoystick).getBoundingClientRect();
+    const origin = clampJoystickOrigin(e.clientX, e.clientY, radius, zone);
+    this.moveOriginX = origin.x;
+    this.moveOriginY = origin.y;
+    this.moveRadius = radius;
+    this.moveJoystick.style.left = `${(origin.x - radius).toFixed(1)}px`;
+    this.moveJoystick.style.top = `${(origin.y - radius).toFixed(1)}px`;
+    this.moveJoystick.classList.add('floating', 'active');
+    try { (this.moveZone ?? this.moveJoystick).setPointerCapture(e.pointerId); } catch { /* synthetic test event */ }
     this.onMoveMove(e);
   }
 
   private onMoveMove(e: PointerEvent): void {
-    if (!this.active || e.pointerId !== this.joyPointer || !this.moveJoystick || !this.moveStick) return;
+    if (!this.active || e.pointerId !== this.joyPointer || !this.moveStick) return;
     e.preventDefault();
-    const r = this.moveJoystick.getBoundingClientRect();
-    const radius = Math.max(1, r.width / 2);
-    const rawX = (e.clientX - (r.left + radius)) / radius;
-    const rawY = (e.clientY - (r.top + radius)) / radius;
+    const radius = this.moveRadius;
+    const rawX = (e.clientX - this.moveOriginX) / radius;
+    const rawY = (e.clientY - this.moveOriginY) / radius;
     const mag = Math.max(1, Math.hypot(rawX, rawY));
     const x = rawX / mag;
     const y = rawY / mag;
@@ -155,6 +190,11 @@ export class MobileControls {
     this.joyPointer = null;
     this.input.clearTouchMove();
     if (this.moveStick) this.moveStick.style.transform = '';
+    if (this.moveJoystick) {
+      this.moveJoystick.classList.remove('floating', 'active');
+      this.moveJoystick.style.left = '';
+      this.moveJoystick.style.top = '';
+    }
   }
 
   private onCameraDown(e: PointerEvent): void {

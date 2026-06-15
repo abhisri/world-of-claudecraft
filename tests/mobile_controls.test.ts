@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isPhoneTouchDevice, mapJoystickVector, mapLookVector } from '../src/game/mobile_controls';
+import { clampJoystickOrigin, isPhoneTouchDevice, mapJoystickVector, mapLookVector } from '../src/game/mobile_controls';
 
 describe('mapJoystickVector', () => {
   it('returns neutral inside the deadzone', () => {
@@ -45,5 +45,27 @@ describe('mapLookVector', () => {
     const v = mapLookVector(0.45, -0.25);
     expect(v.x).toBeCloseTo(0.36);
     expect(v.y).toBeCloseTo(-0.2);
+  });
+});
+
+describe('clampJoystickOrigin', () => {
+  const bounds = { left: 0, top: 0, right: 400, bottom: 600 };
+  const radius = 61;
+
+  it('keeps an interior touch exactly where the thumb landed', () => {
+    expect(clampJoystickOrigin(200, 300, radius, bounds)).toEqual({ x: 200, y: 300 });
+  });
+
+  it('pushes a corner touch inward so the whole circle stays on-screen', () => {
+    expect(clampJoystickOrigin(5, 595, radius, bounds)).toEqual({ x: radius, y: bounds.bottom - radius });
+  });
+
+  it('clamps against the far edges too', () => {
+    expect(clampJoystickOrigin(900, -50, radius, bounds)).toEqual({ x: bounds.right - radius, y: radius });
+  });
+
+  it('falls back to the axis midpoint when the zone is smaller than the joystick', () => {
+    const tight = { left: 0, top: 0, right: 80, bottom: 600 };
+    expect(clampJoystickOrigin(10, 300, radius, tight)).toEqual({ x: 40, y: 300 });
   });
 });

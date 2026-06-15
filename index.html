@@ -2792,6 +2792,22 @@
   body.mobile-touch .mobile-joystick::before {
     content: ''; position: absolute; inset: 28px; border-radius: 50%; border: 1px solid #ffffff18;
   }
+  /* Floating move joystick: a lower-left capture zone lets the thumb land
+     anywhere; the joystick rests dimmed at home until touched, then springs to
+     the touch point with a gold "engaged" glow. */
+  body.mobile-touch #mobile-move-zone {
+    position: absolute; left: 0; bottom: 0; width: 44%; height: 58%;
+    pointer-events: auto; touch-action: none; z-index: 1;
+  }
+  body.mobile-touch.mobile-chat-open #mobile-move-zone { pointer-events: none; }
+  body.mobile-touch #mobile-move-joystick { opacity: .5; transition: opacity .12s linear; }
+  body.mobile-touch #mobile-move-joystick.floating {
+    opacity: 1; bottom: auto; left: 0; transition: none;
+  }
+  body.mobile-touch #mobile-move-joystick.active {
+    border-color: var(--gold);
+    box-shadow: 0 3px 18px #0008, inset 0 1px 0 #ffffff12, inset 0 0 26px #0008, 0 0 16px 3px #e3c66a55;
+  }
   body.mobile-touch #mobile-camera-joystick {
     left: auto; right: max(18px, env(safe-area-inset-right));
   }
@@ -4075,6 +4091,7 @@
   </main>
 
   <div id="mobile-controls" aria-label="Mobile controls">
+    <div id="mobile-move-zone" aria-hidden="true"></div>
     <div id="mobile-move-joystick" class="mobile-joystick" aria-label="Move">
       <div id="mobile-move-stick" class="mobile-stick"></div>
       <div class="mobile-joy-label">Move</div>
