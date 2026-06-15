@@ -4329,6 +4329,10 @@ export class Sim {
     // currently on your target, each tagged as a buff or debuff
     if (/^\/(?:targetbuffs|debuffs|tb)(?:\s|$)/i.test(raw)) {
       this.error(r.meta.entityId, this.targetBuffsReadout(r.e));
+    // "/casting" (aliases /cast, /castbar) — self-only readout of the player's
+    // current cast or channel progress
+    if (/^\/(?:casting|cast|castbar)(?:\s|$)/i.test(raw)) {
+      this.error(r.meta.entityId, this.castingReadout(r.e));
       return null;
     }
 
@@ -6165,6 +6169,21 @@ const HARMFUL_AURA_KINDS: ReadonlySet<AuraKind> = new Set<AuraKind>([
 
 function isHarmfulAura(kind: AuraKind): boolean {
   return HARMFUL_AURA_KINDS.has(kind);
+  // Reads the live cast-bar state (no stored fields): castingAbility holds an
+  // ability id or the FISHING_CAST_ID sentinel, channeling distinguishes a
+  // channel from a normal cast. Times are fractional seconds, so toFixed(1)
+  // stays truthful rather than rounding a 2.5s cast to "3s".
+  private castingReadout(e: Entity): string {
+    if (!e.castingAbility) return 'You are not casting anything.';
+    const remaining = e.castRemaining.toFixed(1);
+    const total = e.castTotal.toFixed(1);
+    if (e.castingAbility === FISHING_CAST_ID) {
+      return `You are fishing — ${remaining}s of ${total}s remaining.`;
+    }
+    const name = ABILITIES[e.castingAbility]?.name ?? e.castingAbility;
+    const verb = e.channeling ? 'Channeling' : 'Casting';
+    return `${verb} ${name} — ${remaining}s of ${total}s remaining.`;
+  }
 }
 
 export function formatMoney(copper: number): string {
