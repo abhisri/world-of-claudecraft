@@ -4342,6 +4342,8 @@ export class Sim {
     // "/consumable" — self-only readout of active food/drink regen
     if (/^\/(consumable|consumables|eat|drink)(?:\s|$)/i.test(raw)) {
       this.error(r.meta.entityId, this.consumableReadout(r.e));
+    if (/^\/(?:potion|potioncd|pot)(?:\s|$)/i.test(raw)) {
+      this.error(r.meta.entityId, this.potionReadout(r.e));
       return null;
     }
 
@@ -6234,6 +6236,14 @@ function isHarmfulAura(kind: AuraKind): boolean {
     }
     if (parts.length === 0) return 'You are not eating or drinking.';
     return `You are ${parts.join(' and ')}.`;
+  // Self-only readout of the shared combat-potion cooldown (#103). Distinct from
+  // /cooldowns, which reads the per-ability Entity.cooldowns map and never shows
+  // this separate 60s potion timer. potionCooldownUntil is an absolute sim-time
+  // deadline, so the remaining time is computed against this.time.
+  private potionReadout(e: Entity): string {
+    const remaining = e.potionCooldownUntil - this.time;
+    if (remaining <= 0) return 'Combat potion is ready to use.';
+    return `Combat potion on cooldown — ready in ${Math.ceil(remaining)}s.`;
   }
 }
 
