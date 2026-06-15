@@ -20,7 +20,7 @@ import { terrainHeight, WATER_LEVEL, roadDistance, generateDecorations } from '.
 import type { Decoration } from '../sim/world';
 import { Meters } from './meters';
 import { audio } from '../game/audio';
-import { music } from '../game/music';
+import { music, musicZoneForLocation } from '../game/music';
 import { iconDataUrl, iconCanvas, QUALITY_COLOR, raidMarkerDataUrl, RAID_MARKER_NAMES } from './icons';
 import { svgIcon } from './ui_icons';
 import { Keybinds, BIND_ACTIONS, BIND_CATEGORIES, isReservedCode, keyLabel } from '../game/keybinds';
@@ -1220,8 +1220,12 @@ export class Hud {
       }
       const inCombat = aggroed || now - this.lastCombatEventAt < 5000;
       const hub = currentZone.hub;
-      const zone = inDungeon ? 'dungeon'
-        : Math.hypot(p.pos.x - hub.x, p.pos.z - hub.z) < hub.radius + 10 ? 'town' : currentZone.biome;
+      const inHub = !inDungeon
+        && Math.hypot(p.pos.x - hub.x, p.pos.z - hub.z) < hub.radius + 10;
+      const dungeon = inDungeon ? dungeonAt(p.pos.x) : null;
+      const zone = musicZoneForLocation(
+        currentZone.id, currentZone.biome, inHub, inDungeon, dungeon?.id ?? null,
+      );
       music.update(zone, inCombat);
 
       this.updateQuestTracker();
