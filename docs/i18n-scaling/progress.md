@@ -8,7 +8,7 @@
 | 1 QA | DONE (PASS) | 2026-06-16 | 2026-06-16 |
 | 2 - Resolved artifact | DONE | 2026-06-16 | 2026-06-16 |
 | 2 QA | NOT STARTED | | |
-| 3 - Flatten overlays | NOT STARTED | | |
+| 3 - Flatten overlays | DONE | 2026-06-16 | 2026-06-16 |
 | 3 QA | NOT STARTED | | |
 | 4 - Dialect inheritance | NOT STARTED | | |
 | 4 QA | NOT STARTED | | |
@@ -46,11 +46,17 @@ Commits: `3f1ed8d` (build script + generated dense table + `EnTranslations` + wi
 Validation: `tsc --noEmit` clean; targeted suite 77/77 (localization_fixes + localization_coverage + server_i18n + i18n_resolved_equivalence); byte-equivalence SHA `d9db528bea1c7a1e02835c4d3edb3fabcee3687aad2186608f1f1d2ac83b3b9b` (14 locales, 1,584,856 bytes); regeneration byte-identical; `npm run build` clean (client + admin).
 Bundle delta (locale data now fully inlined, losing cross-locale spread-sharing): main bundle gzip 966.77 -> 1120.64 KB (+153.9 KB, +15.9%); admin bundle unchanged. A naive repoint balloons +479.8 KB gzip because the `gameStrings` re-export dragged the full ~1 MB `i18n.en` base in alongside the inlined table; sourcing `gameStrings` from the generated `en.game` recovers ~326 KB gzip of pure duplication. The residual +154 KB is inherent to a dense table (no cross-locale sharing) plus `world_entity_i18n` entity data being inlined in the table AND still bundled for the `hud`/`entity_i18n` resolver - see state.md gotchas.
 
-### Phase 3 - Flatten non-English locales
-- [ ] 13 non-English locales (main table + `world_entity_i18n`/`talent_i18n` non-English data) converted to flat dotted-key overlays in `src/ui/i18n.locales/<lang>.ts`
-- [ ] `en` stays nested; generator resolves flat overlays + nested `en` to the same dense artifact
-- [ ] Overlays still dense (every key present) at this stage; key-completeness test passes
-- [ ] Resolved table byte-identical
+### Phase 3 - Flatten non-English locales - DONE (2026-06-16)
+- [x] 13 main-table non-English locales converted to flat dotted-key overlays in `src/ui/i18n.locales/<lang>.ts` (`Record<string, string>`, 1925 keys each, dense). Produced by the one-time migration `scripts/i18n_flatten_locales.mjs`; they no longer import `i18n.en`/`world_entity_i18n` (standalone flat literals)
+- [x] `en` stays nested + authoritative (`src/ui/i18n.en.ts` untouched); generator unflattens each overlay onto a deep copy of `en` and emits the byte-identical dense artifact
+- [x] Overlays still dense (every key present); temporary key-completeness test passes (`tests/i18n_flat_overlay_dense.test.ts`, exact key-set vs `flatten(en)` + non-empty-string values)
+- [x] Resolved table byte-identical (SHA-256 `d9db528..` unchanged; generated-file blob `90b4326..` unchanged; `git diff --exit-code` clean)
+- [~] DEVIATION (deliberate, sign-off via maintainer "do whatever is best"): the two island files were NOT flattened. `world_entity_i18n.ts` is all-string but has ZERO runtime path-indexers and its non-English data is superseded by the inlined overlays (flattening it would be dead-code churn); its `.en` slice still feeds nested `en`. `talent_i18n.ts` is a SEPARATE channel (not in the byte-frozen table), read at runtime by `hud.ts`/`tTalent`, and its `localeText` has FUNCTION-valued leaves (`chooseOne`/`specDescription`/`grant`/`increase`/`reduce`) that cannot become a flat string map; `titleOverrides` is already a flat string map. Both deferred to Phase 4 (which already owns `world_entity_i18n` dialect/overlay semantics).
+
+Commits: `refactor(i18n): flatten non-English locales to dotted-key overlays` (contract `i18n_flatten.mjs` + build overlay path + migration + 13 overlays), `test(i18n): assert flat overlays match en leaf set and stay dense`, this doc commit.
+Validation: `tsc --noEmit` clean; targeted suite 31/31 (flat-overlay-dense + resolved-equivalence) and 77/77 (localization_fixes + localization_coverage + server_i18n + i18n_resolved_equivalence); full suite 1268/1268; `npm run build` (client+admin) + `build:env` + `build:server` clean; byte-equivalence SHA `d9db528..` (14 locales, 1,584,856 bytes) unchanged; regeneration byte-identical. Main bundle gzip 1120.64 KB (unchanged from Phase 2 - overlays are build-time source, not bundled).
+Reviews (coverage mode, whole diff): privacy-security-review PASS (no BLOCKING/SHOULD-FIX), cross-platform-sync PASS (no BLOCKING; islands-left-nested confirmed correct), correctness review PASS (round-trip proven total in both directions vs git HEAD; could not break it). Hardening applied from review NICE-TO-HAVEs: `flatten`/`unflatten` now throw on a dotted key segment or a prefix collision (fail-loud instead of silent corruption); neither is reachable in today's data.
+Type note: overlays are typed `Record<string, string>`, not `Record<TranslationKey, string>` - `TranslationKey = Leaves<typeof en, 5>` stops at depth 5, but the deepest real leaves (`entities.quests.<id>.objectives.0.label`, `entities.zones.<id>.pois.<n>.label`) are 6 segments deep, so they are not in `TranslationKey`. Key validity is enforced by the temporary completeness test + the byte gate instead.
 
 ### Phase 4 - Dialect inheritance dedup
 - [ ] `es_ES` overlay carries only divergences from `es`; `fr_CA` only from `fr_FR`; `en_CA` thin alias of `en`
