@@ -3306,8 +3306,23 @@ export class Sim {
     if (crit) dmg *= 2;
     const enrage = MOBS[mob.templateId]?.enrage;
     if (mob.enraged && enrage) dmg *= enrage.dmgMult;
+    const rawDmg = dmg; // pre-armor, post-crit/enrage — basis for cleave splash
     dmg *= 1 - armorReduction(this.effectiveArmor(target), mob.level);
     this.dealDamage(mob, target, Math.max(1, Math.round(dmg)), crit, 'physical', null, 'hit');
+    // Cleave: the swing splashes onto other players standing near the primary
+    // target, each taking the hit reduced by their own armor. Hostile mobs only,
+    // so a friendly pet swinging through mobSwing never cleaves its owner's party.
+    const cleave = MOBS[mob.templateId]?.cleave;
+    if (cleave && mob.hostile && !mob.dead) {
+      for (const meta of this.players.values()) {
+        const pe = this.entities.get(meta.entityId);
+        if (!pe || pe.dead || pe.id === target.id) continue;
+        if (dist2d(pe.pos, target.pos) > cleave.radius) continue;
+        let sd = rawDmg * cleave.mult;
+        sd *= 1 - armorReduction(this.effectiveArmor(pe), mob.level);
+        this.dealDamage(mob, pe, Math.max(1, Math.round(sd)), crit, 'physical', cleave.name ?? 'Cleave', 'hit', true);
+      }
+    }
     // thorns / lightning shield on the defender
     if (!mob.dead) {
       for (const a of target.auras) {

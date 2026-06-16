@@ -175,6 +175,9 @@ export interface MobTemplate {
   // for `duration`s (and optionally deals min..max damage). Telegraphed: the
   // first slam only lands one full `every` interval after combat starts.
   stomp?: { radius: number; every: number; duration: number; min?: number; max?: number; name: string; school?: string };
+  // Melee mechanic: each landed swing also splashes onto other players near the
+  // primary target for `mult` of the (pre-armor) hit. Classic-WoW Cleave.
+  cleave?: { radius: number; mult: number; name?: string };
 }
 
 export type AbilityEffect =

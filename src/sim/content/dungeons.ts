@@ -86,6 +86,7 @@ export const DUNGEON_MOBS: Record<string, MobTemplate> = {
       { itemId: 'eelscale_leggings', chance: 0.10, rollGroup: 'olen_bonus' },
     ], // his greaves are Maren's quest reward, not a drop
     scale: 1.2, color: 0x95a5a6,
+    cleave: { radius: 8, mult: 0.6, name: 'Cleave' },
   },
   vael_the_mistcaller: {
     id: 'vael_the_mistcaller', name: 'Vael the Mistcaller', minLevel: 13, maxLevel: 13, family: 'humanoid',
