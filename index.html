@@ -14,6 +14,10 @@
 <meta name="description" data-i18n-content="seo.description" content="Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!" />
 <link rel="manifest" href="/manifest.webmanifest" />
 
+<!-- Cloudflare Turnstile (bot gate on login/registration). Rendered explicitly
+     by src/main.ts only when VITE_TURNSTILE_SITEKEY is configured. -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <!-- Canonical URL -->
 <link rel="canonical" href="https://worldofclaudecraft.com/" />
 
@@ -2238,6 +2242,15 @@
     margin-bottom: var(--spacing-xs);
     font-family: var(--font-sans);
     font-weight: 500;
+  }
+
+  .auth-turnstile {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0;
+  }
+  .auth-turnstile:empty {
+    display: none;
   }
 
   .auth-error {
@@ -4588,8 +4601,11 @@
             </div>
           </div>
 
+          <!-- Cloudflare Turnstile widget mounts here when configured (src/main.ts). -->
+          <div id="cf-turnstile-container" class="auth-turnstile"></div>
+
           <div id="login-error" class="auth-error" aria-live="polite"></div>
-          
+
           <div class="auth-actions">
             <button type="submit" class="btn btn-primary" id="btn-login" data-i18n="auth.logIn">Log In</button>
             <button type="button" class="btn btn-secondary" id="btn-register" data-i18n="auth.createAccount">Create Account</button>

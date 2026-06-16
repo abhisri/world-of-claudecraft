@@ -20,6 +20,7 @@ import {
 } from './auth';
 import { json, readBody, isUniqueViolation } from './http_util';
 import { requestIp, rateLimited, authThrottled, recordAuthFailure, clearAuthFailures } from './ratelimit';
+import { verifyTurnstile } from './turnstile';
 import { handleAdminApi } from './admin';
 import { GameServer } from './game';
 import { REALM, REALM_DIRECTORY, REALM_ORIGINS } from './realm';
@@ -30,6 +31,9 @@ const STATIC_DIR = path.join(__dirname, '..', 'dist');
 const WIKI_URL = process.env.WIKI_URL ?? 'http://localhost:8080/wiki/index.php/Main_Page';
 // How long chat logs are kept (0 = forever); pruned at boot and daily.
 const CHAT_LOG_RETENTION_DAYS = Number(process.env.CHAT_LOG_RETENTION_DAYS ?? 90);
+// Cloudflare Turnstile secret. When unset (local dev / tests) registration and
+// login skip human verification entirely — see requireTurnstile below.
+const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET ?? '';
 
 const game = new GameServer();
 
@@ -111,6 +115,15 @@ function requestMetadata(req: http.IncomingMessage): { ip: string; userAgent: st
     ip: requestIp(req),
     userAgent: String(req.headers['user-agent'] ?? ''),
   };
+}
+
+// Gate account creation / login behind Cloudflare Turnstile. Returns true when
+// the request may proceed: trivially true when no secret is configured, else the
+// client-supplied token must verify. The English error is matched to a t() key
+// by userFacingApiError() in src/main.ts — keep the two strings in sync.
+async function passesTurnstile(req: http.IncomingMessage, body: Record<string, unknown>): Promise<boolean> {
+  if (!TURNSTILE_SECRET) return true;
+  return verifyTurnstile(String(body.turnstileToken ?? ''), TURNSTILE_SECRET, requestIp(req));
 }
 
 const MIME: Record<string, string> = {
@@ -215,6 +228,7 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
     }
     if (req.method === 'POST' && url === '/api/register') {
       const body = await readBody(req);
+      if (!(await passesTurnstile(req, body))) return json(res, 403, { error: 'verification failed, please try again' });
       if (!validUsernameShape(body.username)) return json(res, 400, { error: 'username must be 3-24 chars (letters, digits, _)' });
       if (offensiveName(body.username)) return json(res, 400, { error: 'username is not allowed' });
       if (!validPassword(body.password)) return json(res, 400, { error: 'password must be at least 6 chars' });
@@ -241,6 +255,7 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
     }
     if (req.method === 'POST' && url === '/api/login') {
       const body = await readBody(req);
+      if (!(await passesTurnstile(req, body))) return json(res, 403, { error: 'verification failed, please try again' });
       const username = typeof body.username === 'string' ? body.username : '';
       // Per-account brute-force throttle (#93). The message is identical to a
       // bad-password response so it never reveals whether the account exists.

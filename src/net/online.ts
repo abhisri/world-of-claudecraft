@@ -124,14 +124,14 @@ export class Api {
     return data;
   }
 
-  async register(username: string, password: string): Promise<void> {
-    const data = await this.post('/api/register', { username, password });
+  async register(username: string, password: string, turnstileToken = ''): Promise<void> {
+    const data = await this.post('/api/register', { username, password, turnstileToken });
     this.token = data.token;
     this.username = data.username;
   }
 
-  async login(username: string, password: string): Promise<void> {
-    const data = await this.post('/api/login', { username, password });
+  async login(username: string, password: string, turnstileToken = ''): Promise<void> {
+    const data = await this.post('/api/login', { username, password, turnstileToken });
     this.token = data.token;
     this.username = data.username;
   }

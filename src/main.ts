@@ -102,6 +102,8 @@ function userFacingApiError(err: unknown): string {
   if (normalized === 'this account has been banned.') return t('errors.api.accountBanned');
   if (normalized === 'character already in world') return t('errors.api.alreadyInWorld');
   if (normalized === 'this character must be renamed before entering the world.') return t('errors.api.renameBeforeEntering');
+  // Cloudflare Turnstile rejection on login/register (server/main.ts passesTurnstile).
+  if (normalized === 'verification failed, please try again') return t('errors.api.verificationFailed');
   // WebSocket disconnect reasons surfaced through the fatal overlay (net/online.ts).
   if (normalized === 'connection to the server was lost.') return t('loading.connectionLost');
   if (normalized === 'rejected by server') return t('loading.connectionRejected');
@@ -115,6 +117,50 @@ function userFacingApiError(err: unknown): string {
   // Transport/runtime failures are diagnostic code errors. Preserve their
   // English source text so browser logs and support reports match exactly.
   return text;
+}
+
+// --- Cloudflare Turnstile (bot gate on the login/register form) ---------------
+// The site key is injected at build time; when it is empty (local/offline dev or
+// a build without the env var) the widget never renders and the token is '', so
+// the server — which also skips verification without its secret — lets requests
+// through unchanged. The api.js <script> is in index.html.
+const TURNSTILE_SITEKEY = String(import.meta.env.VITE_TURNSTILE_SITEKEY ?? '');
+
+interface TurnstileApi {
+  render: (el: string | HTMLElement, opts: { sitekey: string }) => string;
+  getResponse: (widgetId?: string) => string | undefined;
+  reset: (widgetId?: string) => void;
+}
+let turnstileWidgetId: string | undefined;
+
+function turnstileApi(): TurnstileApi | undefined {
+  return (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+}
+
+// Render the widget once, retrying until the async api.js script is ready. Safe to
+// call repeatedly (idempotent) and a no-op when no site key is configured.
+function ensureTurnstile(): void {
+  if (!TURNSTILE_SITEKEY || turnstileWidgetId !== undefined) return;
+  const ts = turnstileApi();
+  const el = document.getElementById('cf-turnstile-container');
+  if (!ts || !el) {
+    window.setTimeout(ensureTurnstile, 200);
+    return;
+  }
+  turnstileWidgetId = ts.render(el, { sitekey: TURNSTILE_SITEKEY });
+}
+
+// The current single-use token, or '' when verification is not configured / not
+// yet solved. Tokens are consumed server-side, so reset after each attempt.
+function turnstileToken(): string {
+  const ts = turnstileApi();
+  if (!TURNSTILE_SITEKEY || !ts || turnstileWidgetId === undefined) return '';
+  return ts.getResponse(turnstileWidgetId) ?? '';
+}
+
+function resetTurnstile(): void {
+  const ts = turnstileApi();
+  if (ts && turnstileWidgetId !== undefined) ts.reset(turnstileWidgetId);
 }
 
 function localizedSiteUrl(lang: SupportedLanguage): string {
@@ -1107,6 +1153,9 @@ function switchMainView(targetId: string): void {
 function show(el: string): void {
   // Ensure the main view is switched to hero-view so play sub-panels are visible
   switchMainView('#hero-view');
+
+  // Mount the Turnstile widget the first time the login/register form appears.
+  if (el === '#login-panel') ensureTurnstile();
 
   const statsPanel = $('#project-stats-panel');
   if (statsPanel) {
@@ -2213,9 +2262,24 @@ function wireStartScreens(): void {
     const username = ($('#login-user') as unknown as HTMLInputElement).value.trim();
     const password = ($('#login-pass') as unknown as HTMLInputElement).value;
     loginError('');
+    const token = turnstileToken();
+    if (TURNSTILE_SITEKEY && !token) {
+      loginError(t('errors.api.verificationFailed'));
+      return;
+    }
     try {
-      if (mode === 'login') await api.login(username, password);
-      else await api.register(username, password);
+      if (mode === 'login') await api.login(username, password, token);
+      else await api.register(username, password, token);
+    } catch (err) {
+      // Auth itself failed (bad credentials, taken username, Turnstile reject…).
+      // The token is single-use, so refresh the widget for the next attempt.
+      loginError(userFacingApiError(err));
+      resetTurnstile();
+      return;
+    }
+    // Auth succeeded — a later realm-entry error is NOT a verification failure,
+    // so don't reset the widget or let the user re-submit the (now duplicate) auth.
+    try {
       $('#charselect-user').textContent = api.username ?? '';
       await enterRealmFlow();
     } catch (err) {
