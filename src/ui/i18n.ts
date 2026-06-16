@@ -5436,6 +5436,7 @@ const itemStringsEn = {
     },
     tooltip: {
       qualityKind: "{quality} {kind}",
+      currentlyEquipped: "Currently equipped", ifYouEquip: "If you equip this",
       damageSpeed: "{min} - {max} Damage  Speed {speed}",
       dps: "({dps} damage per second)",
       dagger: "Dagger",
@@ -5544,6 +5545,7 @@ const itemStrings = {
       stats: { armor: "Armadura", str: "Fuerza", agi: "Agilidad", sta: "Aguante", int: "Intelecto", spi: "Espíritu", attackPower: "Poder de ataque", dps: "Daño/seg", critChance: "Prob. de crítico", dodge: "Esquiva" },
       tooltip: {
         qualityKind: "{kind} {quality}", damageSpeed: "{min} - {max} de daño  Velocidad {speed}", dps: "({dps} de daño por segundo)", dagger: "Daga", armorStat: "{value} de armadura", stat: "+{value} {stat}",
+        currentlyEquipped: "Equipado actualmente", ifYouEquip: "Si equipas esto",
         useFood: "Uso: restaura {amount} de salud durante {seconds} s. Debes permanecer sentado mientras comes.", useDrink: "Uso: restaura {amount} de maná durante {seconds} s. Debes permanecer sentado mientras bebes.", questItem: "Objeto de misión", classes: "Clases: {classes}", sellPrice: "Precio de venta: {money}",
         clickBuy: "Haz clic para comprar", clickSell: "Haz clic para vender", clickEquip: "Haz clic para equipar", clickConsume: "Haz clic para consumir", clickTradeOffer: "Haz clic para ofrecer en el comercio", clickMarketList: "Haz clic para ponerlo en el mercado", cannotMarket: "No se puede vender en el mercado", cannotVendor: "No se puede vender a comerciantes", clickDestroy: "Haz clic para destruir",
       },
@@ -5567,6 +5569,7 @@ const itemStrings = {
       stats: { armor: "Armure", str: "Force", agi: "Agilité", sta: "Endurance", int: "Intelligence", spi: "Esprit", attackPower: "Puissance d'attaque", dps: "Dégâts/s", critChance: "Chances de critique", dodge: "Esquive" },
       tooltip: {
         qualityKind: "{kind} {quality}", damageSpeed: "{min} - {max} points de dégâts  Vitesse {speed}", dps: "({dps} dégâts par seconde)", dagger: "Dague", armorStat: "{value} armure", stat: "+{value} {stat}",
+        currentlyEquipped: "Actuellement équipé", ifYouEquip: "Si vous équipez ceci",
         useFood: "Utiliser : rend {amount} points de vie en {seconds} s. Vous devez rester assis en mangeant.", useDrink: "Utiliser : rend {amount} points de mana en {seconds} s. Vous devez rester assis en buvant.", questItem: "Objet de quête", classes: "Classes : {classes}", sellPrice: "Prix de vente : {money}",
         clickBuy: "Cliquer pour acheter", clickSell: "Cliquer pour vendre", clickEquip: "Cliquer pour équiper", clickConsume: "Cliquer pour consommer", clickTradeOffer: "Cliquer pour proposer en échange", clickMarketList: "Cliquer pour mettre au marché", cannotMarket: "Ne peut pas être vendu au marché", cannotVendor: "Ne peut pas être vendu aux marchands", clickDestroy: "Cliquer pour détruire",
       },
@@ -5591,6 +5594,7 @@ const itemStrings = {
       stats: { armor: "Armatura", str: "Forza", agi: "Agilità", sta: "Tempra", int: "Intelletto", spi: "Spirito", attackPower: "Potenza d'attacco", dps: "Danni/sec", critChance: "Prob. critico", dodge: "Schivata" },
       tooltip: {
         qualityKind: "{kind} {quality}", damageSpeed: "{min} - {max} danni  Velocità {speed}", dps: "({dps} danni al secondo)", dagger: "Pugnale", armorStat: "{value} armatura", stat: "+{value} {stat}",
+        currentlyEquipped: "Attualmente equipaggiato", ifYouEquip: "Se equipaggi questo",
         useFood: "Usa: ripristina {amount} salute in {seconds} s. Devi restare seduto mentre mangi.", useDrink: "Usa: ripristina {amount} mana in {seconds} s. Devi restare seduto mentre bevi.", questItem: "Oggetto missione", classes: "Classi: {classes}", sellPrice: "Prezzo di vendita: {money}",
         clickBuy: "Clicca per comprare", clickSell: "Clicca per vendere", clickEquip: "Clicca per equipaggiare", clickConsume: "Clicca per consumare", clickTradeOffer: "Clicca per offrire nello scambio", clickMarketList: "Clicca per mettere sul mercato", cannotMarket: "Non può essere venduto al mercato", cannotVendor: "Non può essere venduto ai mercanti", clickDestroy: "Clicca per distruggere",
       },
@@ -5613,6 +5617,7 @@ const itemStrings = {
       stats: { armor: "Rüstung", str: "Stärke", agi: "Beweglichkeit", sta: "Ausdauer", int: "Intelligenz", spi: "Willenskraft", attackPower: "Angriffskraft", dps: "Schaden/Sek.", critChance: "Krit. Chance", dodge: "Ausweichen" },
       tooltip: {
         qualityKind: "{quality} {kind}", damageSpeed: "{min} - {max} Schaden  Tempo {speed}", dps: "({dps} Schaden pro Sekunde)", dagger: "Dolch", armorStat: "{value} Rüstung", stat: "+{value} {stat}",
+        currentlyEquipped: "Derzeit angelegt", ifYouEquip: "Wenn du dies anlegst",
         useFood: "Benutzen: Stellt über {seconds} Sek. {amount} Gesundheit wieder her. Ihr müsst beim Essen sitzen bleiben.", useDrink: "Benutzen: Stellt über {seconds} Sek. {amount} Mana wieder her. Ihr müsst beim Trinken sitzen bleiben.", questItem: "Questgegenstand", classes: "Klassen: {classes}", sellPrice: "Verkaufspreis: {money}",
         clickBuy: "Zum Kaufen klicken", clickSell: "Zum Verkaufen klicken", clickEquip: "Zum Anlegen klicken", clickConsume: "Zum Verbrauchen klicken", clickTradeOffer: "Zum Anbieten im Handel klicken", clickMarketList: "Zum Einstellen auf dem Markt klicken", cannotMarket: "Kann nicht auf dem Markt verkauft werden", cannotVendor: "Kann nicht an Händler verkauft werden", clickDestroy: "Zum Zerstören klicken",
       },
@@ -5635,6 +5640,7 @@ const itemStrings = {
       stats: { armor: "护甲", str: "力量", agi: "敏捷", sta: "耐力", int: "智力", spi: "精神", attackPower: "攻击强度", dps: "每秒伤害", critChance: "暴击几率", dodge: "躲闪" },
       tooltip: {
         qualityKind: "{quality}{kind}", damageSpeed: "{min} - {max} 伤害  速度 {speed}", dps: "（每秒 {dps} 伤害）", dagger: "匕首", armorStat: "{value} 护甲", stat: "+{value} {stat}",
+        currentlyEquipped: "当前装备", ifYouEquip: "装备后",
         useFood: "使用：在 {seconds} 秒内恢复 {amount} 点生命值。进食时必须保持坐下。", useDrink: "使用：在 {seconds} 秒内恢复 {amount} 点法力值。饮水时必须保持坐下。", questItem: "任务物品", classes: "职业：{classes}", sellPrice: "出售价格：{money}",
         clickBuy: "点击购买", clickSell: "点击出售", clickEquip: "点击装备", clickConsume: "点击使用", clickTradeOffer: "点击加入交易", clickMarketList: "点击上架市场", cannotMarket: "不能在市场出售", cannotVendor: "不能卖给商人", clickDestroy: "点击摧毁",
       },
@@ -5657,6 +5663,7 @@ const itemStrings = {
       stats: { armor: "護甲", str: "力量", agi: "敏捷", sta: "耐力", int: "智力", spi: "精神", attackPower: "攻擊強度", dps: "每秒傷害", critChance: "爆擊機率", dodge: "閃躲" },
       tooltip: {
         qualityKind: "{quality}{kind}", damageSpeed: "{min} - {max} 傷害  速度 {speed}", dps: "（每秒 {dps} 傷害）", dagger: "匕首", armorStat: "{value} 護甲", stat: "+{value} {stat}",
+        currentlyEquipped: "目前裝備", ifYouEquip: "裝備後",
         useFood: "使用：在 {seconds} 秒內恢復 {amount} 點生命值。進食時必須保持坐下。", useDrink: "使用：在 {seconds} 秒內恢復 {amount} 點法力值。飲水時必須保持坐下。", questItem: "任務物品", classes: "職業：{classes}", sellPrice: "出售價格：{money}",
         clickBuy: "點擊購買", clickSell: "點擊出售", clickEquip: "點擊裝備", clickConsume: "點擊使用", clickTradeOffer: "點擊加入交易", clickMarketList: "點擊上架市場", cannotMarket: "不能在市場出售", cannotVendor: "不能賣給商人", clickDestroy: "點擊摧毀",
       },
@@ -5679,6 +5686,7 @@ const itemStrings = {
       stats: { armor: "방어도", str: "힘", agi: "민첩성", sta: "체력", int: "지능", spi: "정신력", attackPower: "전투력", dps: "초당 피해", critChance: "치명타율", dodge: "회피" },
       tooltip: {
         qualityKind: "{quality} {kind}", damageSpeed: "{min} - {max} 피해  속도 {speed}", dps: "(초당 피해 {dps})", dagger: "단검", armorStat: "방어도 {value}", stat: "+{value} {stat}",
+        currentlyEquipped: "현재 착용 중", ifYouEquip: "이것을 착용하면",
         useFood: "사용 효과: {seconds}초에 걸쳐 생명력 {amount} 회복. 먹는 동안 앉아 있어야 합니다.", useDrink: "사용 효과: {seconds}초에 걸쳐 마나 {amount} 회복. 마시는 동안 앉아 있어야 합니다.", questItem: "퀘스트 아이템", classes: "직업: {classes}", sellPrice: "판매 가격: {money}",
         clickBuy: "클릭하여 구매", clickSell: "클릭하여 판매", clickEquip: "클릭하여 장착", clickConsume: "클릭하여 사용", clickTradeOffer: "클릭하여 거래에 올리기", clickMarketList: "클릭하여 시장에 올리기", cannotMarket: "시장에서 판매할 수 없음", cannotVendor: "상인에게 판매할 수 없음", clickDestroy: "클릭하여 파괴",
       },
@@ -5701,6 +5709,7 @@ const itemStrings = {
       stats: { armor: "防御力", str: "筋力", agi: "敏捷性", sta: "スタミナ", int: "知力", spi: "精神力", attackPower: "攻撃力", dps: "秒間ダメージ", critChance: "クリティカル率", dodge: "回避" },
       tooltip: {
         qualityKind: "{quality} {kind}", damageSpeed: "{min} - {max} ダメージ  速度 {speed}", dps: "（秒間 {dps} ダメージ）", dagger: "短剣", armorStat: "防御力 {value}", stat: "+{value} {stat}",
+        currentlyEquipped: "現在の装備", ifYouEquip: "これを装備すると",
         useFood: "使用: {seconds}秒かけて体力を{amount}回復します。食事中は座ったままでいる必要があります。", useDrink: "使用: {seconds}秒かけてマナを{amount}回復します。飲んでいる間は座ったままでいる必要があります。", questItem: "クエストアイテム", classes: "クラス: {classes}", sellPrice: "売却価格: {money}",
         clickBuy: "クリックして購入", clickSell: "クリックして売却", clickEquip: "クリックして装備", clickConsume: "クリックして使用", clickTradeOffer: "クリックして取引に出す", clickMarketList: "クリックして市場に出す", cannotMarket: "市場では売却できません", cannotVendor: "商人には売却できません", clickDestroy: "クリックして破棄",
       },
@@ -5723,6 +5732,7 @@ const itemStrings = {
       stats: { armor: "Armadura", str: "Força", agi: "Agilidade", sta: "Vigor", int: "Intelecto", spi: "Espírito", attackPower: "Poder de ataque", dps: "Dano/s", critChance: "Chance crítica", dodge: "Esquiva" },
       tooltip: {
         qualityKind: "{kind} {quality}", damageSpeed: "{min} - {max} de dano  Velocidade {speed}", dps: "({dps} de dano por segundo)", dagger: "Adaga", armorStat: "{value} de armadura", stat: "+{value} {stat}",
+        currentlyEquipped: "Atualmente equipado", ifYouEquip: "Se você equipar isto",
         useFood: "Usar: restaura {amount} de vida ao longo de {seconds} s. É preciso permanecer sentado enquanto come.", useDrink: "Usar: restaura {amount} de mana ao longo de {seconds} s. É preciso permanecer sentado enquanto bebe.", questItem: "Item de missão", classes: "Classes: {classes}", sellPrice: "Preço de venda: {money}",
         clickBuy: "Clique para comprar", clickSell: "Clique para vender", clickEquip: "Clique para equipar", clickConsume: "Clique para consumir", clickTradeOffer: "Clique para oferecer na troca", clickMarketList: "Clique para colocar no mercado", cannotMarket: "Não pode ser vendido no mercado", cannotVendor: "Não pode ser vendido a mercadores", clickDestroy: "Clique para destruir",
       },
@@ -5745,6 +5755,7 @@ const itemStrings = {
       stats: { armor: "Броня", str: "Сила", agi: "Ловкость", sta: "Выносливость", int: "Интеллект", spi: "Дух", attackPower: "Сила атаки", dps: "Урон/сек", critChance: "Шанс крита", dodge: "Уклонение" },
       tooltip: {
         qualityKind: "{quality} {kind}", damageSpeed: "{min} - {max} урона  Скорость {speed}", dps: "({dps} урона в секунду)", dagger: "Кинжал", armorStat: "{value} брони", stat: "+{value} {stat}",
+        currentlyEquipped: "Сейчас надето", ifYouEquip: "Если надеть это",
         useFood: "Использование: восстанавливает {amount} здоровья за {seconds} сек. Нужно оставаться сидя во время еды.", useDrink: "Использование: восстанавливает {amount} маны за {seconds} сек. Нужно оставаться сидя во время питья.", questItem: "Предмет задания", classes: "Классы: {classes}", sellPrice: "Цена продажи: {money}",
         clickBuy: "Нажмите, чтобы купить", clickSell: "Нажмите, чтобы продать", clickEquip: "Нажмите, чтобы экипировать", clickConsume: "Нажмите, чтобы использовать", clickTradeOffer: "Нажмите, чтобы предложить в обмене", clickMarketList: "Нажмите, чтобы выставить на рынок", cannotMarket: "Нельзя продать на рынке", cannotVendor: "Нельзя продать торговцам", clickDestroy: "Нажмите, чтобы уничтожить",
       },

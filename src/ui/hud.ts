@@ -16,6 +16,7 @@ import {
   dist2d, xpForLevel, MAX_LEVEL, MELEE_RANGE, MILESTONES, virtualLevel, canPrestige, xpUntilNextPrestige,
 } from '../sim/types';
 import { xpBarView, formatXp } from './xp_bar';
+import { itemStatDeltas } from './item_compare';
 import { terrainHeight, WATER_LEVEL, roadDistance, generateDecorations } from '../sim/world';
 import type { Decoration } from '../sim/world';
 import { Meters } from './meters';
@@ -1004,7 +1005,7 @@ export class Hud {
     this.tooltipEl.style.display = 'none';
   }
 
-  private itemTooltip(item: ItemDef): string {
+  private itemTooltip(item: ItemDef, compare = true): string {
     const qColor = QUALITY_COLOR[item.quality ?? 'common'] ?? '#fff';
     let html = `<div class="tt-title" style="color:${qColor}">${esc(itemDisplayName(item))}</div>`;
     html += `<div class="tt-sub">${esc(t('itemUi.tooltip.qualityKind', {
@@ -1047,6 +1048,31 @@ export class Hud {
       html += `<div class="tt-sub">${esc(t('itemUi.tooltip.classes', { classes: item.requiredClass.map(classDisplayName).join(', ') }))}</div>`;
     }
     if (item.sellValue > 0) html += `<div class="tt-sub">${esc(t('itemUi.tooltip.sellPrice', { money: formatLocalizedMoney(item.sellValue) }))}</div>`;
+    if (compare) html += this.itemCompareBlock(item);
+    return html;
+  }
+
+  // Classic-WoW item comparison: when hovering an equippable item, append the
+  // item currently worn in that slot plus the stat change you'd see if you
+  // swapped to it (green = gain, red = loss). Reads IWorld.equipment, so it
+  // works identically offline and online.
+  private itemCompareBlock(item: ItemDef): string {
+    if (!item.slot) return '';
+    const equippedId = this.sim.equipment[item.slot];
+    if (!equippedId || equippedId === item.id) return '';
+    const equipped = ITEMS[equippedId];
+    if (!equipped) return '';
+    const deltas = itemStatDeltas(item, equipped)
+      .map((d) => {
+        const cls = d.delta > 0 ? 'tt-green' : 'tt-red';
+        const sign = d.delta > 0 ? '+' : '−'; // proper minus sign
+        return `<div class="${cls}">${sign}${Math.abs(d.delta).toFixed(d.decimals)} ${esc(t(`itemUi.stats.${d.stat}` as TranslationKey))}</div>`;
+      })
+      .join('');
+    let html = `<div class="tt-cmp"><div class="tt-cmp-head">${esc(t('itemUi.tooltip.currentlyEquipped'))}</div>`;
+    html += `<div class="tt-cmp-body">${this.itemTooltip(equipped, false)}</div>`;
+    if (deltas) html += `<div class="tt-cmp-head">${esc(t('itemUi.tooltip.ifYouEquip'))}</div>${deltas}`;
+    html += `</div>`;
     return html;
   }
 
