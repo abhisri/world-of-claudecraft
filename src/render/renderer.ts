@@ -17,6 +17,7 @@ import { plankTexture, sparkleTexture } from './textures';
 import { DungeonInteriors, ensureDungeonAssets } from './dungeon';
 import { buildGroundQuestObject } from './quest_objects';
 import { Vfx } from './vfx';
+import { Weather } from './weather';
 import {
   GFX, initGfxTier, sharedUniforms, SUN_ANCHOR, SUN_DIR, surfaceMat, urlForcedTier,
 } from './gfx';
@@ -244,6 +245,7 @@ export class Renderer {
   private time = 0;
   private frameIdx = 0;
   vfx: Vfx;
+  private weather: Weather;
 
   private lowGfx: boolean;
   private post: PostPipeline | null = null;
@@ -457,6 +459,9 @@ export class Renderer {
     });
     this.vfx.setViewportScale(this.webgl.domElement.clientHeight * this.webgl.getPixelRatio(), 60);
 
+    // ambient precipitation: biome-driven snow/rain that rides with the camera
+    this.weather = new Weather(this.scene, this.lowGfx);
+
     // post chain (bloom + grade, GTAO on ultra); low renders direct
     if (GFX.composer) this.post = buildComposer(this.webgl, this.scene, this.camera, this.viewport.width, this.viewport.height);
 
@@ -517,6 +522,11 @@ export class Renderer {
   /** Tone-mapping exposure multiplier (1.0 = the default look). */
   setBrightness(mult: number): void {
     this.webgl.toneMappingExposure = this.baseExposure * mult;
+  }
+
+  /** Toggle biome-driven ambient precipitation (snow/rain). */
+  setWeatherEnabled(on: boolean): void {
+    this.weather.setEnabled(on);
   }
 
   /** Resolution multiplier on top of the device pixel ratio (0.5..1). */
@@ -1295,6 +1305,12 @@ export class Renderer {
       this.skyView.setCameraZ(this.camera.position.z, dt);
       this.updateEnvBiome(dt);
     }
+    // precipitation only falls outdoors; indoors/underwater pass null to clear
+    this.weather.update(
+      this.camera.position,
+      dt,
+      this.fogState === 'outdoor' ? zoneBiomeAt(p.pos.z) : null,
+    );
     for (const sp of this.sunSprites) {
       sp.position.copy(this.camera.position).addScaledVector(this.sunDir, 760);
       sp.visible = this.fogState === 'outdoor';

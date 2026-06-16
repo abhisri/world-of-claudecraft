@@ -10432,6 +10432,7 @@ export const gameStrings = {
   },
   settings: {
     showOverflowXp: "Show Overflow XP",
+    weather: "Weather Effects",
   },
   // Talents & Specializations — UI chrome only (node/spec names are content,
   // rendered directly like ability names). Registered here so the panel routes
