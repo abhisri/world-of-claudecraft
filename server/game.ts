@@ -468,6 +468,14 @@ export class GameServer {
     meta: RequestMetadata & Partial<AccountChatMuteStatus> & { chatStrikes?: number } = {},
   ): ClientSession | { error: string } {
     if (this.sessionsByCharacterId.has(characterId)) return { error: 'character already in world' };
+    // Anti-bot: only ONE character per account may be in the world at a time. An account can
+    // still own up to 10 characters (creation is unaffected) — this only caps *simultaneous*
+    // online sessions, which is what bot/multibox farms abuse. GMs are exempt for supervision.
+    if (!isGm) {
+      for (const s of this.clients.values()) {
+        if (s.accountId === accountId) return { error: 'another character on this account is already in the world' };
+      }
+    }
     const pid = this.sim.addPlayer(cls, name, { state: state ?? undefined });
     if (isGm) {
       // GM characters: invulnerable, and always at the level cap (the row is
