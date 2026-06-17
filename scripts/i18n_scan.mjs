@@ -2,7 +2,8 @@
 //
 // A no-LLM, no-network scanner that records, per key per locale, whether a real
 // translation exists. It walks the full key universe - every `en` leaf, plus the
-// matcher DICT keys (sim_i18n + server_i18n) and the admin DICT keys - and for
+// matcher DICT keys (sim_i18n + server_i18n) and the admin keys (read sparsely
+// from the admin en base + overlays since Phase 8) - and for
 // each (key, locale) emits one of three states:
 //
 //   translated  the locale provides a real translation. Stores `srcHash` (a hash
@@ -12,9 +13,9 @@
 //               Seeded from the two hand-maintained allow-lists that used to live
 //               in tests/localization_fixes.test.ts (scripts/i18n_blocked_seed.mjs).
 //   pending     untranslated, or stale (the recorded English source drifted from
-//               the current one). EMPTY this phase: everything is still dense
-//               after Phase 4, so no key is genuinely missing a translation. Real
-//               sparseness - and a non-empty pending set - arrives in Phase 6.
+//               the current one). Non-empty since Phase 6 (game) and Phase 8
+//               (admin): a locale that omits an overlay key is pending - the
+//               resolved table English-fills it for non-release; release is gated.
 //
 // Determinism / reproducibility (the load-bearing property): the registry is a
 // PURE function of the current source files plus the static seeds - it does NOT
