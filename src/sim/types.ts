@@ -89,7 +89,15 @@ export interface WeaponInfo {
   dagger?: boolean; // backstab requires a dagger
 }
 
-export type EquipSlot = 'mainhand' | 'chest' | 'legs' | 'feet';
+export type EquipSlot =
+  | 'mainhand'
+  | 'helmet'
+  | 'shoulder'
+  | 'chest'
+  | 'waist'
+  | 'legs'
+  | 'gloves'
+  | 'feet';
 
 export type ItemUse =
   | { type: 'fishing' };
