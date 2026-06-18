@@ -1153,6 +1153,7 @@ const AURA_RECIPES: Record<string, IconRecipe> = {
   aura_incapacitate: r('storm', 'sky', ['eye']),
   aura_polymorph: r('arcane', 'pink', ['sheep_head']),
   aura_attackspeed: r('storm', 'ice', ['axe', { p: 'snowflake', ...BR }]),
+  aura_tongues: r('shadow', 'shadowPurple', ['skull'], ['motion']),
   aura_buff_sta: r('blood', 'blood', ['heart']),
   aura_buff_ap: r('fury', 'gold', ['fist']),
   aura_buff_armor: r('steel', 'steel', ['shield']),

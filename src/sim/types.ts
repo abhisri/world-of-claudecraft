@@ -47,7 +47,7 @@ export type AuraKind =
   | 'dot' | 'slow' | 'stun' | 'root' | 'incapacitate' | 'polymorph'
   | 'attackspeed' | 'debuff_ap' | 'buff_ap' | 'buff_armor' | 'buff_int' | 'buff_dodge' | 'buff_speed' | 'buff_haste'
   | 'hot' | 'absorb' | 'imbue' | 'buff_sta' | 'buff_allstats' | 'thorns' | 'form_bear'
-  | 'form_cat' | 'stealth' | 'defensive_stance' | 'righteous_fury' | 'sunder' | 'mortal_wound' | 'silence' | 'vulnerability' | 'hex';
+  | 'form_cat' | 'stealth' | 'defensive_stance' | 'righteous_fury' | 'sunder' | 'mortal_wound' | 'silence' | 'vulnerability' | 'hex' | 'tongues';
 
 export interface Aura {
   id: string; // ability id that applied it
@@ -241,6 +241,13 @@ export interface MobTemplate {
   // interval) for `duration`s. Rides the existing swingIntervalMult hook — no new
   // combat math. Distinct from a movement snare (`slow`) or an AP cut (`debuff_ap`).
   slowStrike?: { chance: number; mult: number; duration: number; name: string; school?: Aura['school'] };
+  // On-hit curse ("Curse of Tongues"): a landed melee swing has `chance` to garble
+  // the victim's incantations, stretching their SPELL CAST TIMES by `mult` (>1 =
+  // slower) for `duration`s. Read at cast-start so it composes with the already
+  // haste-resolved cast time — no new combat math. Distinct from `slowStrike` (melee
+  // swing speed) and `silence` (a full spell lockout): a casting victim still casts,
+  // just slower. Inert against rage/energy melee classes that never hard-cast.
+  tongues?: { chance: number; mult: number; duration: number; name: string; school?: Aura['school'] };
   // On-hit mechanic ("Mana Burn"): a landed melee swing has `chance` to drain a
   // flat `amount` of mana from a mana-using victim (casters). Rage/energy users
   // are unaffected. Drains only what mana the victim still has; no overkill.

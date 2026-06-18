@@ -124,7 +124,7 @@ const EMOTE_ALIASES: Record<string, string> = {
 // (buff_*, hot, absorb, imbue, stances, forms, stealth, thorns, attackspeed
 // haste) is treated as helpful/neutral. Used by /targetbuffs to tag each aura.
 const HARMFUL_AURA_KINDS: ReadonlySet<AuraKind> = new Set<AuraKind>([
-  'dot', 'slow', 'stun', 'root', 'incapacitate', 'polymorph', 'sunder', 'vulnerability',
+  'dot', 'slow', 'stun', 'root', 'incapacitate', 'polymorph', 'sunder', 'vulnerability', 'tongues',
 ]);
 
 function isHarmfulAura(kind: AuraKind): boolean {
@@ -186,7 +186,7 @@ const DEMON_HEAL_DURATION = 5;
 const DEMON_HEAL_TICK = 1;
 const TAMED_TARGET_RESPAWN_SECONDS = 60;
 const FRIENDLY_NPC_REJECTED_AURA_KINDS: ReadonlySet<AuraKind> = new Set([
-  'dot', 'slow', 'stun', 'root', 'incapacitate', 'polymorph', 'attackspeed', 'sunder', 'vulnerability',
+  'dot', 'slow', 'stun', 'root', 'incapacitate', 'polymorph', 'attackspeed', 'sunder', 'vulnerability', 'tongues',
 ]);
 
 function isRejectedFriendlyNpcAura(aura: Aura): boolean {
@@ -1333,6 +1333,14 @@ export class Sim {
   private isSilenced(e: Entity): boolean {
     return e.auras.some((a) => a.kind === 'silence');
   }
+  // Curse of Tongues: returns the spell cast-time multiplier (>=1) imposed by any
+  // active `tongues` aura, or 1 when unafflicted. Non-stacking across sources — the
+  // strongest curse wins (refresh-by-id keeps a single source from compounding).
+  private tonguesMult(e: Entity): number {
+    let m = 1;
+    for (const a of e.auras) if (a.kind === 'tongues') m = Math.max(m, a.value);
+    return m;
+  }
   private mobCanSwim(template: { family?: string; canSwim?: boolean } | undefined): boolean {
     return !!template;
   }
@@ -2012,11 +2020,13 @@ export class Sim {
     }
 
     if (res.castTime > 0 && !togglingOff) {
+      // Curse of Tongues stretches the resolved (already haste-adjusted) cast time.
+      const castTime = res.castTime * this.tonguesMult(p);
       p.castingAbility = ability.id;
-      p.castTotal = res.castTime;
-      p.castRemaining = res.castTime;
+      p.castTotal = castTime;
+      p.castRemaining = castTime;
       p.gcdRemaining = Math.max(p.gcdRemaining, gcd);
-      this.emit({ type: 'castStart', entityId: p.id, ability: ability.id, time: res.castTime });
+      this.emit({ type: 'castStart', entityId: p.id, ability: ability.id, time: castTime });
       return;
     }
 
@@ -4248,6 +4258,23 @@ export class Sim {
         value: slowStrike.mult,
         sourceId: mob.id,
         school: (slowStrike.school as Aura['school']) ?? 'physical',
+      });
+    }
+    // Curse of Tongues: a landed hit may garble the victim's incantations, stretching
+    // their spell cast times (`tonguesMult` reads this at cast-start). Refreshes by id
+    // and never stacks. Guarded on `hostile` so a friendly pet (mobSwing's other
+    // caller) never curses an ally; players only, since only players hard-cast here.
+    const tongues = MOBS[mob.templateId]?.tongues;
+    if (tongues && mob.hostile && target.kind === 'player' && !target.dead && this.rng.chance(tongues.chance)) {
+      this.applyAura(target, {
+        id: `tongues_${mob.templateId}`,
+        name: tongues.name,
+        kind: 'tongues',
+        remaining: tongues.duration,
+        duration: tongues.duration,
+        value: tongues.mult,
+        sourceId: mob.id,
+        school: (tongues.school as Aura['school']) ?? 'shadow',
       });
     }
     // Mana Burn: a landed hit may sap a flat amount of mana from a mana-using

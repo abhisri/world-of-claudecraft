@@ -230,6 +230,9 @@ export const ZONE2_MOBS: Record<string, MobTemplate> = {
     id: 'nhalia_mourner', name: 'Nhalia Mourner', minLevel: 11, maxLevel: 12, family: 'humanoid',
     hpBase: 46, hpPerLevel: 17, dmgBase: 8, dmgPerLevel: 2.3, attackSpeed: 2.0,
     armorPerLevel: 14, moveSpeed: 7, aggroRadius: 12,
+    // Curse of Tongues: the mourners' dirge garbles a caster's incantations, slowing
+    // their spell cast times by 30% for 10s on a landed hit (30% chance).
+    tongues: { chance: 0.3, mult: 1.3, duration: 10, name: 'Dirge of Tongues', school: 'shadow' },
     loot: [],
     scale: 0.95, color: 0x332044,
   },
