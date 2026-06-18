@@ -18,6 +18,16 @@ import {
   dist2d, xpForLevel, MAX_LEVEL, MELEE_RANGE, MILESTONES, virtualLevel, canPrestige, xpUntilNextPrestige,
 } from '../sim/types';
 import { xpBarView, formatXp } from './xp_bar';
+import { lowHealthVignette } from './low_health';
+import { absorbBarView } from './absorb_bar';
+import { itemStatDeltas } from './item_compare';
+import { formatClockTime } from './clock';
+import { formatMinimapCoords } from './coords';
+import { compassView } from './compass';
+import { clampMinimapZoom, nextMinimapZoom, isMinMinimapZoom, isMaxMinimapZoom, formatMinimapZoom, MINIMAP_ZOOM_DEFAULT } from './minimap_zoom';
+import { restView } from './rest_indicator';
+import { nearestSubzone } from './subzone';
+import { lowResourceView } from './low_resource';
 import { terrainHeight, WATER_LEVEL, roadDistance, generateDecorations } from '../sim/world';
 import type { Decoration } from '../sim/world';
 import { Meters } from './meters';
@@ -36,6 +46,7 @@ import { tEntity } from './entity_i18n';
 import { localizeServerText, localizeZone } from './server_i18n';
 import { localizeSimText, localizeSimAuraName } from './sim_i18n';
 import { tTalent, localizeTalentTitle } from './talent_i18n';
+import { type ChatClock, clampChatClock, formatChatTimestamp } from './chat_timestamp';
 import {
   talentsFor, computeTalentModifiers, validateAllocation, dormantNodes, pointsSpent,
   exportBuild, importBuild, cloneAllocation, talentPointsAtLevel, FIRST_TALENT_LEVEL,
@@ -139,6 +150,7 @@ const ITEM_KIND_LABEL_KEYS: Record<ItemDef['kind'], TranslationKey> = {
   drink: 'itemUi.kind.drink',
   tool: 'itemUi.kind.tool',
   potion: 'itemUi.kind.potion',
+  elixir: 'itemUi.kind.elixir',
 };
 const ITEM_STAT_LABEL_KEYS: Partial<Record<keyof Stats, TranslationKey>> = {
   armor: 'itemUi.stats.armor',
@@ -243,7 +255,7 @@ export class Hud {
   // Soft swear terms from the server (online only), masked in chat when the
   // player's "Filter Profanity" setting is on. Fed by main.ts from ClientWorld.
   private profanityWords: string[] = [];
-  private optionsView: 'main' | 'keybinds' | 'graphics' | 'audio' = 'main';
+  private optionsView: 'main' | 'keybinds' | 'graphics' | 'audio' | 'interface' = 'main';
   private capturingKey: { action: string; index: number } | null = null; // binding awaiting a key
   private keybindNote = '';
   private emoteWheelOpen = false;
@@ -252,9 +264,14 @@ export class Hud {
   private emoteWheelEl: HTMLDivElement | null = null;
   private emoteWheelPinned = false;
   private chatLogEl = $('#chatlog');
+  // Classic "Show Timestamps" interface option — off by default, persisted to
+  // localStorage. New chat lines get a bracketed wall-clock prefix when on.
+  private chatTimestamps = localStorage.getItem('chatTimestamps') === '1';
+  private chatClock: ChatClock = clampChatClock(localStorage.getItem('chatClock'));
   private combatLogEl = $('#combatlog');
   private errorEl = $('#error-msg');
   private bannerEl = $('#banner');
+  private subzoneEl = $('#subzone-banner');
   private tooltipEl = $('#tooltip');
   // Distinguishes a touch long-press "peek" (inspect, no action) from a tap.
   private peekGuard = new TouchPeekGuard();
@@ -288,8 +305,22 @@ export class Hud {
   private hotWriteCache = new Map<HTMLElement, string>();
   private hotDomWrites = 0;
   private hotDomSkippedWrites = 0;
+  private subzoneTimer: number | undefined;
+  private lastSubzone: string | null = null;
   private minimapCtx: CanvasRenderingContext2D;
   private minimapBg: HTMLCanvasElement;
+  private clockEl: HTMLElement | null = null;
+  private clock24 = false;          // 24-hour vs 12-hour AM/PM display
+  private lastClockText = '';       // avoid redundant DOM writes each frame
+  private lastCoordsText = ''; // cache so we only touch the DOM when coords change
+  // heading compass: a pool of rose-label spans built once, repositioned per frame
+  private compassMarks = new Map<string, HTMLElement>();
+  private compassHeadingEl: HTMLElement | null = null;
+  private lastCompassHeading = '';
+  // Minimap zoom: a multiplier on the minimap's base pixels-per-yard. Discrete
+  // presets (see minimap_zoom.ts), persisted to localStorage. 1 = shipped look.
+  private minimapZoom = MINIMAP_ZOOM_DEFAULT;
+  private minimapZoomLabel: HTMLElement | null = null;
   private mapBg: HTMLCanvasElement | null = null;
   private openLootMobId: number | null = null;
   private openVendorNpcId: number | null = null;
@@ -299,6 +330,11 @@ export class Hud {
   private questDialogReturnFocus: HTMLElement | null = null;
   private questLogReturnFocus: HTMLElement | null = null;
   private lastPortraitTarget = -999;
+  // swing timer: the period is captured from the reset edge (swingTimer jumping
+  // up), so the bar tracks real swing speed including haste / ranged weapons.
+  private swingPeriod = 0;
+  private lastSwingTimer = 0;
+  private lastLowResourceSig = '';
   // trading: locally staged offer, pushed to the server on change
   private stagedTrade: { items: InvSlot[]; copper: number } = { items: [], copper: 0 };
   private tradeWasOpen = false;
@@ -317,6 +353,7 @@ export class Hud {
   private arenaAllTime: Partial<Record<ArenaFormat, { name: string; class: string; level: number; rating: number; wins: number; losses: number }[]>> = {};
   private arenaLbFetchedAt: Partial<Record<ArenaFormat, number>> = {};
   private lastCombatEventAt = 0;
+  private lastResting = false;
   private lastZoneId = '';
   private mapZoneId = ''; // zone the cached map-window canvas was rendered for
   private mapZoom = 1; // world-map zoom: 1 = whole zone, up to MAP_MAX_ZOOM
@@ -390,6 +427,8 @@ export class Hud {
       if (target && (this.emoteWheelEl?.contains(target) || document.getElementById('mm-emote')?.contains(target) || document.getElementById('mobile-emote')?.contains(target))) return;
       this.hideEmoteWheel();
     });
+    this.initCompass();
+    this.initMinimapZoom(mm);
     this.releaseSpiritBtnEl.addEventListener('click', () => {
       if (this.sim.arenaInfo?.match) return;
       this.sim.releaseSpirit();
@@ -416,6 +455,19 @@ export class Hud {
       document.getElementById('mobile-controls')?.classList.remove('expanded');
       document.getElementById('mobile-more')?.classList.remove('active');
     });
+    // classic-WoW minimap clock: real local time under the minimap; click it to
+    // flip between 12-hour (AM/PM) and 24-hour display. Real-time clocks are a
+    // UI-only concern, so `new Date()` here is fine (the sim-only time ban
+    // doesn't apply — cf. meters.ts using performance.now()).
+    this.clockEl = $('#minimap-clock');
+    this.clock24 = (() => { try { return localStorage.getItem('clock24h') === '1'; } catch { return false; } })();
+    this.clockEl?.addEventListener('click', () => {
+      this.clock24 = !this.clock24;
+      try { localStorage.setItem('clock24h', this.clock24 ? '1' : '0'); } catch { /* private mode */ }
+      this.lastClockText = ''; // force a redraw in the new format
+      this.updateClock();
+    });
+    this.updateClock();
     // classic MMOs: the player interaction menu opens from the target portrait
     $('#target-frame').addEventListener('contextmenu', (ev) => {
       ev.preventDefault();
@@ -1076,7 +1128,7 @@ export class Hud {
     this.tooltipEl.style.display = 'none';
   }
 
-  private itemTooltip(item: ItemDef): string {
+  private itemTooltip(item: ItemDef, compare = true): string {
     const qColor = QUALITY_COLOR[item.quality ?? 'common'] ?? '#fff';
     let html = `<div class="tt-title" style="color:${qColor}">${esc(itemDisplayName(item))}</div>`;
     html += `<div class="tt-sub">${esc(t('itemUi.tooltip.qualityKind', {
@@ -1119,6 +1171,31 @@ export class Hud {
       html += `<div class="tt-sub">${esc(t('itemUi.tooltip.classes', { classes: item.requiredClass.map(classDisplayName).join(', ') }))}</div>`;
     }
     if (item.sellValue > 0) html += `<div class="tt-sub">${esc(t('itemUi.tooltip.sellPrice', { money: formatLocalizedMoney(item.sellValue) }))}</div>`;
+    if (compare) html += this.itemCompareBlock(item);
+    return html;
+  }
+
+  // Classic-WoW item comparison: when hovering an equippable item, append the
+  // item currently worn in that slot plus the stat change you'd see if you
+  // swapped to it (green = gain, red = loss). Reads IWorld.equipment, so it
+  // works identically offline and online.
+  private itemCompareBlock(item: ItemDef): string {
+    if (!item.slot) return '';
+    const equippedId = this.sim.equipment[item.slot];
+    if (!equippedId || equippedId === item.id) return '';
+    const equipped = ITEMS[equippedId];
+    if (!equipped) return '';
+    const deltas = itemStatDeltas(item, equipped)
+      .map((d) => {
+        const cls = d.delta > 0 ? 'tt-green' : 'tt-red';
+        const sign = d.delta > 0 ? '+' : '−'; // proper minus sign
+        return `<div class="${cls}">${sign}${Math.abs(d.delta).toFixed(d.decimals)} ${esc(t(`itemUi.stats.${d.stat}` as TranslationKey))}</div>`;
+      })
+      .join('');
+    let html = `<div class="tt-cmp"><div class="tt-cmp-head">${esc(t('itemUi.tooltip.currentlyEquipped'))}</div>`;
+    html += `<div class="tt-cmp-body">${this.itemTooltip(equipped, false)}</div>`;
+    if (deltas) html += `<div class="tt-cmp-head">${esc(t('itemUi.tooltip.ifYouEquip'))}</div>${deltas}`;
+    html += `</div>`;
     return html;
   }
 
@@ -1775,6 +1852,22 @@ export class Hud {
   // Frame update
   // -------------------------------------------------------------------------
 
+  // Pulsing red screen edge that fades in as the player nears death. Driven
+  // from the pure lowHealthVignette() curve; purely presentational (CSS vars on
+  // a fixed overlay), works on every GFX tier since it's DOM, not a post pass.
+  private updateLowHealthVignette(hp: number, maxHp: number): void {
+    const el = document.getElementById('low-health-vignette');
+    if (!el) return;
+    const v = lowHealthVignette(hp, maxHp);
+    if (!v.active) {
+      el.classList.remove('active');
+      return;
+    }
+    el.style.setProperty('--lhv-opacity', v.opacity.toFixed(3));
+    el.style.setProperty('--lhv-pulse', `${v.pulseSeconds.toFixed(3)}s`);
+    el.classList.add('active');
+  }
+
   update(): void {
     const sim = this.sim;
     const p = sim.player;
@@ -1799,12 +1892,15 @@ export class Hud {
     // player frame
     this.setText(this.pfLevelEl, String(p.level));
     this.setTransform(this.pfHpEl, `scaleX(${p.hp / Math.max(1, p.maxHp)})`);
+    this.updateAbsorb('#pf-absorb', p);
     this.setText(this.pfHpTextEl, `${p.hp} / ${p.maxHp}`);
+    this.updateLowHealthVignette(p.hp, p.maxHp);
     const resFrac = p.resource / Math.max(1, p.maxResource);
     this.setTransform(this.pfResEl, `scaleX(${resFrac})`);
     this.setText(this.pfResTextEl, `${Math.round(p.resource)} / ${p.maxResource}`);
     const resClass = 'bar ' + (p.resourceType === 'rage' ? 'rage' : p.resourceType === 'energy' ? 'energy' : 'mana');
     if (this.pfResourceEl.className !== resClass) this.pfResourceEl.className = resClass;
+    this.updateLowResource(p);
 
     // buff bar (player buffs + debuffs)
     this.renderAuras(this.buffBarEl, p, 'all');
@@ -1818,6 +1914,7 @@ export class Hud {
       this.setText(this.targetNameEl, entityDisplayName(target));
       this.setText(this.targetLevelEl, MOBS[target.templateId]?.boss ? '☠' : String(target.level));
       this.setTransform(this.targetHpEl, `scaleX(${target.hp / Math.max(1, target.maxHp)})`);
+      this.updateAbsorb('#tf-absorb', target.dead ? null : target);
       this.setText(this.targetHpTextEl, target.dead ? t('hud.core.dead') : `${target.hp} / ${target.maxHp}`);
       const targetNameColor = target.hostile ? 'var(--color-hostile)' : 'var(--color-friendly)';
       if (this.targetNameEl.style.color !== targetNameColor) this.targetNameEl.style.color = targetNameColor;
@@ -1881,6 +1978,29 @@ export class Hud {
       this.setWidth(this.castbarFillEl, '0%');
       this.setText(this.castbarLabelEl, '');
       this.setText(this.castbarTimerEl, '');
+    }
+
+    // swing timer — fills between melee/ranged auto-attack swings. swingTimer
+    // counts DOWN to 0 (ready); we recover the full interval from the reset
+    // edge so the bar stays accurate under haste and for ranged weapons.
+    const sw = $('#swingbar');
+    if (p.autoAttack && target && !target.dead && target.kind !== 'object') {
+      if (p.swingTimer > this.lastSwingTimer + 1e-4 || this.swingPeriod <= 0) {
+        this.swingPeriod = Math.max(p.swingTimer, p.weapon.speed);
+      }
+      this.lastSwingTimer = p.swingTimer;
+      const frac = this.swingPeriod > 0
+        ? Math.min(1, Math.max(0, 1 - p.swingTimer / this.swingPeriod))
+        : 1;
+      sw.style.display = 'block';
+      (sw.querySelector('.fill') as HTMLElement).style.width = `${(frac * 100).toFixed(1)}%`;
+      sw.classList.toggle('ready', p.swingTimer <= 0);
+      (sw.querySelector('.label') as HTMLElement).textContent =
+        p.swingTimer <= 0 ? 'Swing' : `${p.swingTimer.toFixed(1)}s`;
+    } else {
+      sw.style.display = 'none';
+      this.lastSwingTimer = 0;
+      this.swingPeriod = 0;
     }
 
     // action bar
@@ -1972,12 +2092,17 @@ export class Hud {
     // xp bar — pre-cap shows the level bar; post-cap fills toward the next
     // virtual level (Max-Level XP Overflow), with distinct prestige/gold styling.
     const showOverflow = (this.optionsHooks?.settings.get('showOverflowXp') ?? 1) >= 0.5;
-    const bar = xpBarView({ level: p.level, xp: sim.xp, lifetimeXp: sim.lifetimeXp, showOverflow });
+    const bar = xpBarView({ level: p.level, xp: sim.xp, lifetimeXp: sim.lifetimeXp, restedXp: sim.restedXp, showOverflow });
     this.setWidth(this.xpFillEl, `${(bar.fillFrac * 100).toFixed(1)}%`);
     $('#xpbar').style.setProperty('--xp-fill', bar.fillFrac.toFixed(4));
     $('#player-frame').style.setProperty('--xp-fill', bar.fillFrac.toFixed(4));
+    // Rested overlay sits ahead of the fill (classic inn-rested bonus preview).
+    const restedEl = $('#xpbar .rested') as HTMLElement;
+    restedEl.style.left = `${(bar.fillFrac * 100).toFixed(1)}%`;
+    restedEl.style.width = `${(bar.restedFrac * 100).toFixed(1)}%`;
     this.setText(this.xpLabelEl, bar.label);
     $('#xpbar').classList.toggle('overflow', bar.postCap);
+    $('#xpbar').classList.toggle('rested', bar.restedFrac > 0);
 
     const deadInArena = p.dead && !!this.sim.arenaInfo?.match;
     this.setDisplay(this.deathOverlayEl, p.dead ? 'flex' : 'none');
@@ -2005,6 +2130,15 @@ export class Hud {
         }
       }
 
+      // subzone text: a smaller banner when you step into a named landmark
+      // (classic "subzone" display). POIs are the same labels the minimap pins.
+      const subzone = inDungeon ? null
+        : nearestSubzone(p.pos.x, p.pos.z, currentZone.pois, this.lastSubzone);
+      if (subzone !== this.lastSubzone) {
+        this.lastSubzone = subzone;
+        if (subzone) this.showSubzone(subzone);
+      }
+
       // soundtrack: pick the zone theme and layer in combat percussion.
       // Combat = a mob is on us, or we traded blows in the last few seconds
       // (the wire protocol doesn't ship the inCombat flag).
@@ -2021,6 +2155,18 @@ export class Hud {
         currentZone.id, currentZone.biome, inHub, inDungeon, dungeon?.id ?? null,
       );
       music.update(zone, inCombat);
+
+      // classic combat indicator: crossed swords + red ring on the player portrait
+      $('#player-frame').classList.toggle('combat', inCombat);
+      // classic "resting" zZz on the player portrait while seated / recovering.
+      // Reads the seated booleans IWorld exposes; works offline + online alike.
+      const rest = restView({ sitting: !!p.sitting, eating: !!p.eating, drinking: !!p.drinking });
+      if (rest.resting !== this.lastResting) {
+        this.lastResting = rest.resting;
+        const restEl = $('#pf-rest');
+        restEl.classList.toggle('on', rest.resting);
+        restEl.title = rest.label;
+      }
 
       this.updateQuestTracker();
       this.updatePartyFrames();
@@ -2044,7 +2190,7 @@ export class Hud {
       $('#arena-window').style.display = 'none';
     }
     this.arenaMatchSeen = inArenaMatch;
-    if (fastHud) this.updateMinimap();
+    if (fastHud) { this.updateMinimap(); this.updateClock(); this.updateMinimapCoords(); this.updateCompass(); }
     if (slowHud && $('#social-window').classList.contains('open')) {
       const struct = this.socialStructSig();
       if (struct !== this.lastSocialStruct) {
@@ -2062,6 +2208,39 @@ export class Hud {
     }
   }
 
+  // Overlay the absorb-shield segment on a unit-frame health bar. A null entity
+  // (no target / dead) hides it.
+  private updateAbsorb(sel: string, e: Entity | null): void {
+    const el = $(sel) as HTMLElement;
+    const v = e ? absorbBarView(e) : { fillFrac: 0, overshield: false, total: 0 };
+    el.style.transform = `scaleX(${v.fillFrac})`;
+    el.classList.toggle('overshield', v.overshield);
+  }
+
+  // Classic "low mana/energy" warning: pulse the player resource bar when power
+  // runs low. Pure read of replicated state (resource/maxResource/type) so it
+  // works offline and online alike. Touches the DOM only on state change.
+  private updateLowResource(p: Entity): void {
+    const v = lowResourceView({ resource: p.resource, maxResource: p.maxResource, resourceType: p.resourceType });
+    const bar = $('#pf-resource') as HTMLElement;
+    // The resource className is rebuilt every frame just above this call, so the
+    // `.low` flag must be re-applied every frame too. Only the expensive style /
+    // label writes are diffed against the cached signature.
+    bar.classList.toggle('low', v.active);
+    const sig = v.active ? `${v.opacity.toFixed(2)}|${v.pulseSeconds.toFixed(2)}|${v.label}` : '';
+    if (sig === this.lastLowResourceSig) return;
+    this.lastLowResourceSig = sig;
+    const label = $('#pf-low-resource') as HTMLElement;
+    if (v.active) {
+      bar.style.setProperty('--lr-opacity', String(v.opacity));
+      bar.style.setProperty('--lr-pulse', `${v.pulseSeconds}s`);
+      label.textContent = v.label;
+      label.style.display = 'block';
+    } else {
+      label.style.display = 'none';
+    }
+  }
+
   private renderAuras(el: HTMLElement, e: Entity, mode: 'all' | 'debuffs'): void {
     // cheap diff: rebuild only when the aura set changes
     const sig = e.auras.map((a) => a.id + Math.ceil(a.remaining)).join('|');
@@ -2071,7 +2250,7 @@ export class Hud {
     for (const a of e.auras) {
       // A negative-value stat aura (e.g. a mob's Withering Wail sapping attack
       // power, or an Intellect-draining curse) is a debuff even though it reuses a buff_* kind.
-      const isDebuff = ['dot', 'slow', 'root', 'stun', 'incapacitate', 'polymorph', 'attackspeed', 'debuff_ap'].includes(a.kind)
+      const isDebuff = ['dot', 'slow', 'root', 'stun', 'incapacitate', 'polymorph', 'attackspeed', 'debuff_ap', 'blind', 'expose', 'spellvuln', 'lockout', 'vulnerability', 'hex', 'tongues', 'cost_tax', 'heal_absorb', 'critvuln'].includes(a.kind)
         || (a.kind.startsWith('buff_') && a.value < 0);
       if (mode === 'debuffs' && !isDebuff) continue;
       const d = document.createElement('div');
@@ -2156,6 +2335,104 @@ export class Hud {
     return c;
   }
 
+  // Refresh the minimap clock to the current real local time. Cheap to call
+  // every frame: the formatted string only changes once a minute, and we skip
+  // the DOM write whenever it is unchanged.
+  private updateClock(): void {
+    if (!this.clockEl) return;
+    const text = formatClockTime(new Date(), this.clock24);
+    if (text !== this.lastClockText) {
+      this.lastClockText = text;
+      this.clockEl.textContent = text;
+    }
+  }
+
+  // Classic-style coordinate readout pinned under the minimap. Reads only the
+  // player position (already mirrored online), and diffs against the last text
+  // so the DOM node is touched at most once per whole-yard step.
+  private updateMinimapCoords(): void {
+    const p = this.sim.player;
+    const text = formatMinimapCoords(p.pos.x, p.pos.z);
+    if (text === this.lastCoordsText) return;
+    this.lastCoordsText = text;
+    const el = $('#minimap-coords');
+    if (el) el.textContent = text;
+  }
+
+  // Build the compass rose-label pool once. Each of the 8 points gets a span
+  // that we later slide horizontally; positioning happens in updateCompass().
+  private initCompass(): void {
+    const track = $('#compass-track');
+    if (!track) return;
+    for (const label of ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']) {
+      const el = document.createElement('span');
+      el.className = 'compass-mark' + (label.length === 1 ? ' major' : '');
+      el.textContent = label;
+      track.appendChild(el);
+      this.compassMarks.set(label, el);
+    }
+    this.compassHeadingEl = $('#compass-heading');
+  }
+
+  private updateCompass(): void {
+    if (this.compassMarks.size === 0) return;
+    const view = compassView(this.sim.player.facing);
+    const visible = new Set<string>();
+    for (const m of view.marks) {
+      const el = this.compassMarks.get(m.label);
+      if (!el) continue;
+      visible.add(m.label);
+      // offsetFrac -1..1 → 0..100% across the strip; fade marks near the edges
+      el.style.left = `${(m.offsetFrac * 0.5 + 0.5) * 100}%`;
+      el.style.opacity = `${Math.max(0.2, 1 - Math.abs(m.offsetFrac) * 0.85)}`;
+      el.style.display = 'block';
+    }
+    for (const [label, el] of this.compassMarks) {
+      if (!visible.has(label)) el.style.display = 'none';
+    }
+    if (this.compassHeadingEl && view.heading !== this.lastCompassHeading) {
+      this.lastCompassHeading = view.heading;
+      this.compassHeadingEl.textContent = view.heading;
+    }
+  }
+
+  // Build the minimap zoom control: load the persisted level, wire the +/-
+  // buttons and a scroll-wheel handler over the minimap canvas. Pure DOM glue;
+  // all stepping/clamping math lives in minimap_zoom.ts.
+  private initMinimapZoom(mm: HTMLElement): void {
+    const saved = Number(localStorage.getItem('minimapZoom'));
+    this.minimapZoom = clampMinimapZoom(saved);
+    this.minimapZoomLabel = $('#minimap-zoom-label');
+    const inBtn = document.querySelector('#minimap-zoom-in');
+    const outBtn = document.querySelector('#minimap-zoom-out');
+    inBtn?.addEventListener('click', (e) => { e.stopPropagation(); this.setMinimapZoom(nextMinimapZoom(this.minimapZoom, +1)); });
+    outBtn?.addEventListener('click', (e) => { e.stopPropagation(); this.setMinimapZoom(nextMinimapZoom(this.minimapZoom, -1)); });
+    // scroll over the minimap to zoom (up = in), without scrolling the page
+    mm.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      this.setMinimapZoom(nextMinimapZoom(this.minimapZoom, (e as WheelEvent).deltaY < 0 ? +1 : -1));
+    }, { passive: false });
+    this.syncMinimapZoomUi();
+  }
+
+  private setMinimapZoom(z: number): void {
+    const next = clampMinimapZoom(z);
+    if (next === this.minimapZoom) return;
+    this.minimapZoom = next;
+    localStorage.setItem('minimapZoom', String(next));
+    this.syncMinimapZoomUi();
+  }
+
+  // Reflect the current zoom in the readout and disable the +/- buttons at the
+  // ends so the control communicates its own limits.
+  private syncMinimapZoomUi(): void {
+    if (this.minimapZoomLabel) this.minimapZoomLabel.textContent = formatMinimapZoom(this.minimapZoom);
+    const inBtn = document.querySelector('#minimap-zoom-in') as HTMLButtonElement | null;
+    const outBtn = document.querySelector('#minimap-zoom-out') as HTMLButtonElement | null;
+    if (inBtn) inBtn.disabled = isMaxMinimapZoom(this.minimapZoom);
+    if (outBtn) outBtn.disabled = isMinMinimapZoom(this.minimapZoom);
+  }
+
   private updateMinimap(): void {
     const ctx = this.minimapCtx;
     const S = 162;
@@ -2167,7 +2444,9 @@ export class Hud {
     ctx.arc(S / 2, S / 2, S / 2 - 2, 0, Math.PI * 2);
     ctx.clip();
     ctx.imageSmoothingEnabled = false;
-    const pxPerYard = 1.7;
+    // 1.7 is the historical base scale; the zoom multiplier shrinks the world
+    // radius shown so markers spread out as you zoom in (default 1 = unchanged).
+    const pxPerYard = 1.7 * this.minimapZoom;
     const bg = this.minimapBg;
     const bgPxPerYard = bg.width / (WORLD_MAX_X - WORLD_MIN_X);
     const sw = S / (pxPerYard / bgPxPerYard);
@@ -2770,7 +3049,12 @@ export class Hud {
         }
         case 'xp': {
           this.fct(sim.player, t('hud.core.xpFloat', { amount: ev.amount }), '#b974ff', false);
-          this.log(t('hud.core.xpGain', { amount: ev.amount }), '#a980d8');
+          if (ev.rested && ev.rested > 0) {
+            this.fct(sim.player, t('hud.core.xpFloatRested', { amount: ev.rested }), '#4a9eff', false);
+            this.log(t('hud.core.xpGainRested', { amount: ev.amount, rested: ev.rested }), '#a980d8');
+          } else {
+            this.log(t('hud.core.xpGain', { amount: ev.amount }), '#a980d8');
+          }
           break;
         }
         case 'levelup': {
@@ -3004,7 +3288,18 @@ export class Hud {
   }
 
   log(text: string, color = '#ccc'): void {
-    this.appendLog(this.chatLogEl, text, color);
+    this.appendLog(this.chatLogEl, text, color, true);
+  }
+
+  // Prepend a dim bracketed wall-clock prefix to a chat line when the "Show
+  // Timestamps" option is on. No-op otherwise. Wall-clock time is fine here —
+  // the determinism ban is sim-only.
+  private prependTimestamp(div: HTMLElement): void {
+    if (!this.chatTimestamps) return;
+    const ts = document.createElement('span');
+    ts.className = 'chat-ts';
+    ts.textContent = `${formatChatTimestamp(new Date(), this.chatClock)} `;
+    div.appendChild(ts);
   }
 
   private logZoneWelcome(zone: ZoneDef): void {
@@ -3016,6 +3311,7 @@ export class Hud {
     const wasNearBottom = this.chatLogEl.scrollHeight - this.chatLogEl.scrollTop - this.chatLogEl.clientHeight < 24;
     const div = document.createElement('div');
     div.style.color = color;
+    this.prependTimestamp(div);
     const sender = document.createElement('span');
     sender.className = 'chat-player-name';
     sender.textContent = name;
@@ -3317,11 +3613,12 @@ export class Hud {
     this.appendLog(this.combatLogEl, text, color);
   }
 
-  private appendLog(el: HTMLElement, text: string, color: string): void {
+  private appendLog(el: HTMLElement, text: string, color: string, timestamp = false): void {
     const wasNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
     const div = document.createElement('div');
-    div.textContent = text;
     div.style.color = color;
+    if (timestamp) this.prependTimestamp(div);
+    div.append(document.createTextNode(text));
     el.appendChild(div);
     while (el.children.length > 200) el.removeChild(el.firstChild!);
     if (wasNearBottom) el.scrollTop = el.scrollHeight;
@@ -3359,6 +3656,13 @@ export class Hud {
     this.bannerEl.style.opacity = '1';
     clearTimeout(this.bannerTimer);
     this.bannerTimer = window.setTimeout(() => { this.bannerEl.style.opacity = '0'; }, 2600);
+  }
+
+  showSubzone(text: string): void {
+    this.subzoneEl.textContent = text;
+    this.subzoneEl.style.opacity = '1';
+    clearTimeout(this.subzoneTimer);
+    this.subzoneTimer = window.setTimeout(() => { this.subzoneEl.style.opacity = '0'; }, 2600);
   }
 
   // -------------------------------------------------------------------------
@@ -5977,6 +6281,7 @@ export class Hud {
     if (this.optionsView === 'keybinds') { this.renderKeybinds(); return; }
     if (this.optionsView === 'graphics') { this.renderGraphics(); return; }
     if (this.optionsView === 'audio') { this.renderAudio(); return; }
+    if (this.optionsView === 'interface') { this.renderInterface(); return; }
     const el = $('#options-menu');
     el.innerHTML = `<div class="panel-title"><span>${esc(t('hud.options.gameMenu'))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('hud.options.returnToGame'))}">${svgIcon('close')}</button></div>`;
     const list = document.createElement('div');
@@ -5988,10 +6293,12 @@ export class Hud {
       b.addEventListener('click', () => { audio.click(); onClick(); });
       list.appendChild(b);
     };
-    const goto = (view: 'keybinds' | 'graphics' | 'audio') => { this.optionsView = view; this.keybindNote = ''; this.renderOptions(); };
+    const goto = (view: 'keybinds' | 'graphics' | 'audio' | 'interface') => { this.optionsView = view; this.keybindNote = ''; this.renderOptions(); };
     add(t('hud.options.keyBindings'), () => goto('keybinds'));
     add(t('hud.options.graphics'), () => goto('graphics'));
+    add(t('hud.options.interface'), () => goto('interface'));
     add(t('hud.options.audio'), () => goto('audio'));
+    add(t('hud.options.interface'), () => goto('interface'));
     add(t('hud.options.logout'), () => this.optionsHooks?.logout());
     add(t('hud.options.returnToGame'), () => this.closeOptions());
     el.appendChild(list);
@@ -5999,7 +6306,9 @@ export class Hud {
   }
 
   // A labelled slider bound to a numeric setting; live-applies via the hook.
-  private settingSlider(parent: HTMLElement, label: string, key: NumericSettingKey): void {
+  // opts.fmt renders the readout (default: a percentage); opts.step overrides the
+  // 0.05 increment for settings measured in whole units (e.g. FOV degrees).
+  private settingSlider(parent: HTMLElement, label: string, key: NumericSettingKey, opts?: { fmt?: (v: number) => string; step?: number }): void {
     const hooks = this.optionsHooks;
     if (!hooks) return;
     const r = SETTING_RANGES[key];
@@ -6013,22 +6322,23 @@ export class Hud {
     slider.className = 'set-slider';
     slider.min = String(r.min);
     slider.max = String(r.max);
-    slider.step = '0.05';
+    slider.step = String(opts?.step ?? 0.05);
     slider.value = String(hooks.settings.get(key));
     slider.setAttribute('aria-label', label);
     const val = document.createElement('span');
     val.className = 'set-val';
-    const pct = () => `${Math.round(hooks.settings.get(key) * 100)}%`;
-    val.textContent = pct();
+    const fmt = opts?.fmt ?? ((v: number) => `${Math.round(v * 100)}%`);
+    const readout = () => fmt(hooks.settings.get(key));
+    val.textContent = readout();
     slider.addEventListener('input', () => {
       hooks.onSettingChange(key, Number(slider.value));
-      val.textContent = pct();
+      val.textContent = readout();
     });
     row.append(name, slider, val);
     parent.appendChild(row);
   }
 
-  private settingToggle(parent: HTMLElement, label: string, key: 'fullscreen' | 'showOverflowXp'): void {
+  private settingToggle(parent: HTMLElement, label: string, key: 'fullscreen' | 'showOverflowXp' | 'weather'): void {
     const hooks = this.optionsHooks;
     if (!hooks) return;
     const row = document.createElement('div');
@@ -6050,6 +6360,34 @@ export class Hud {
       audio.click();
       const next = hooks.settings.get(key) >= 0.5 ? 0 : 1;
       hooks.onSettingChange(key, next);
+      sync();
+    });
+    row.append(name, toggle);
+    parent.appendChild(row);
+  }
+
+  // Like settingToggle but for a true/false BOOL_SETTINGS key (Interface panel).
+  private settingBoolToggle(parent: HTMLElement, label: string, key: BoolSettingKey): void {
+    const hooks = this.optionsHooks;
+    if (!hooks) return;
+    const row = document.createElement('div');
+    row.className = 'set-row';
+    const name = document.createElement('span');
+    name.className = 'set-name';
+    name.textContent = label;
+    const toggle = document.createElement('button');
+    toggle.className = 'btn set-toggle';
+    const sync = () => {
+      const on = hooks.settings.get(key);
+      toggle.textContent = on ? t('hud.options.on') : t('hud.options.off');
+      toggle.classList.toggle('off', !on);
+      toggle.setAttribute('aria-pressed', String(on));
+      toggle.setAttribute('aria-label', label);
+    };
+    sync();
+    toggle.addEventListener('click', () => {
+      audio.click();
+      hooks.onSettingChange(key, hooks.settings.set(key, !hooks.settings.get(key)));
       sync();
     });
     row.append(name, toggle);
@@ -6157,11 +6495,22 @@ export class Hud {
     // own rate, so phones get a dedicated sensitivity slider here.
     if (isPhoneTouchDevice()) this.settingSlider(body, t('hud.options.touchLookSpeed'), 'touchLookSpeed');
     this.settingSlider(body, t('hud.options.brightness'), 'brightness');
+    this.settingSlider(body, t('hud.options.fieldOfView'), 'cameraFov', { fmt: (v) => `${Math.round(v)}°`, step: 1 });
     this.settingSlider(body, t('hud.options.renderQuality'), 'renderScale');
     this.settingToggle(body, t('hud.options.fullscreen'), 'fullscreen');
     this.settingToggle(body, t('game.settings.showOverflowXp'), 'showOverflowXp');
     // Touch-only: lets phone players dim the on-screen joysticks + buttons.
     if (isPhoneTouchDevice()) this.settingSlider(body, t('hud.options.touchOpacity'), 'touchOpacity');
+    this.settingToggle(body, t('game.settings.weather'), 'weather');
+    // Touch-only: lets phone players size the on-screen joysticks to their hands.
+    if (isPhoneTouchDevice()) this.settingSlider(body, t('hud.options.joystickSize'), 'joystickScale');
+    // Touch-only: lets phone players size the on-screen action buttons to taste.
+    if (isPhoneTouchDevice()) this.settingSlider(body, t('hud.options.buttonSize'), 'actionButtonScale');
+    // Touch-only: a larger deadzone resists accidental drift from a resting
+    // thumb on the move stick; only meaningful with on-screen controls.
+    if (isPhoneTouchDevice()) this.settingSlider(body, t('hud.options.joystickDeadzone'), 'joystickDeadzone');
+    // Touch-only: flips the vertical axis of the on-screen camera joystick + swipe-look.
+    if (isPhoneTouchDevice()) this.settingBoolToggle(body, t('hud.options.invertLook'), 'touchInvertLook');
     const note = document.createElement('div');
     note.className = 'set-note';
     note.textContent = t('hud.options.graphicsNote');
@@ -6200,6 +6549,94 @@ export class Hud {
     row.append(name, toggle);
     body.appendChild(row);
     this.settingsViewFooter();
+  }
+
+  // Interface & Comfort panel: presentational HUD tuning + accessibility toggles
+  // (sliders/toggles persisted to the GameSettings store, applied via CSS in
+  // main.ts) plus the classic client-side "Show Timestamps" chat option. None of
+  // it touches the simulation.
+  private renderInterface(): void {
+    const body = this.settingsViewShell('Interface');
+    this.settingSlider(body, t('hud.options.hudOpacity'), 'hudOpacity');
+    this.settingSlider(body, t('hud.options.tooltipScale'), 'tooltipScale');
+    this.settingSlider(body, t('hud.options.fctScale'), 'fctScale');
+    this.settingSlider(body, t('hud.options.chatFontScale'), 'chatFontScale');
+    this.settingSlider(body, t('hud.options.chatOpacity'), 'chatOpacity');
+    this.settingBoolToggle(body, t('hud.options.compactChat'), 'compactChat');
+    this.settingBoolToggle(body, t('hud.options.frostedPanels'), 'frostedPanels');
+    this.settingBoolToggle(body, t('hud.options.highContrastText'), 'highContrastText');
+    this.settingBoolToggle(body, t('hud.options.reduceMotion'), 'reduceMotion');
+    this.settingBoolToggle(body, t('hud.options.showFps'), 'showFps');
+    this.settingBoolToggle(body, t('hud.options.invertLookY'), 'invertLookY');
+
+    // On/off toggle for chat timestamps.
+    const tsRow = document.createElement('div');
+    tsRow.className = 'set-row';
+    const tsName = document.createElement('span');
+    tsName.className = 'set-name';
+    tsName.textContent = 'Show Chat Timestamps';
+    const tsToggle = document.createElement('button');
+    tsToggle.className = 'btn set-toggle';
+
+    // 12/24-hour format selector — two segmented buttons, dimmed when off.
+    const fmtRow = document.createElement('div');
+    fmtRow.className = 'set-row';
+    const fmtName = document.createElement('span');
+    fmtName.className = 'set-name';
+    fmtName.textContent = 'Timestamp Format';
+    const seg = document.createElement('div');
+    seg.className = 'set-seg';
+    const btn12 = document.createElement('button');
+    btn12.className = 'btn set-seg-btn';
+    btn12.textContent = '12-hour';
+    const btn24 = document.createElement('button');
+    btn24.className = 'btn set-seg-btn';
+    btn24.textContent = '24-hour';
+    seg.append(btn12, btn24);
+    fmtRow.append(fmtName, seg);
+
+    const sync = () => {
+      tsToggle.textContent = this.chatTimestamps ? 'On' : 'Off';
+      tsToggle.classList.toggle('off', !this.chatTimestamps);
+      tsToggle.setAttribute('aria-pressed', String(this.chatTimestamps));
+      btn12.classList.toggle('active', this.chatClock === '12h');
+      btn24.classList.toggle('active', this.chatClock === '24h');
+      fmtRow.classList.toggle('disabled', !this.chatTimestamps);
+      btn12.disabled = !this.chatTimestamps;
+      btn24.disabled = !this.chatTimestamps;
+    };
+    sync();
+
+    tsToggle.addEventListener('click', () => {
+      audio.click();
+      this.chatTimestamps = !this.chatTimestamps;
+      localStorage.setItem('chatTimestamps', this.chatTimestamps ? '1' : '0');
+      sync();
+    });
+    const setClock = (clock: ChatClock) => {
+      if (!this.chatTimestamps) return;
+      audio.click();
+      this.chatClock = clock;
+      localStorage.setItem('chatClock', clock);
+      sync();
+    };
+    btn12.addEventListener('click', () => setClock('12h'));
+    btn24.addEventListener('click', () => setClock('24h'));
+
+    tsRow.append(tsName, tsToggle);
+    body.append(tsRow, fmtRow);
+
+    const note = document.createElement('div');
+    note.className = 'set-note';
+    note.textContent = 'Prefixes each new chat line with the time it arrived, e.g. [14:32]. Only affects messages received while the option is on.';
+    $('#options-menu').appendChild(note);
+
+    const back = document.createElement('button');
+    back.className = 'btn';
+    back.textContent = 'Back';
+    back.addEventListener('click', () => { audio.click(); this.optionsView = 'main'; this.renderOptions(); });
+    $('#options-menu').appendChild(back);
+    $('#options-menu').querySelector('[data-close]')?.addEventListener('click', () => this.closeOptions());
   }
 
   // Display name for an action row. Action-bar slots show the shortcut that

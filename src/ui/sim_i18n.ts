@@ -69,6 +69,7 @@ const baseEnTable = {
   "log.discarded": "Discarded {item}.",
   "log.equipped": "Equipped {item}.",
   "log.noFish": "No fish are biting.",
+  "log.rareCatch": "A rare catch! Something gleams on your line.",
   "log.sitEat": "You sit down to eat.",
   "log.sitDrink": "You sit down to drink.",
   "log.quaff": "You quaff {item}.",
@@ -79,6 +80,7 @@ const baseEnTable = {
   "loot.rollWin": "{winner} wins {item} ({roll})",
   "aura.tamed": "Tamed",
   "aura.causticSpores": "Caustic Spores",
+  "aura.elixirBear": "Might of the Bear",
 } as const;
 
 const petEnTable = {
@@ -180,6 +182,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "Discarded {item}.",
     "log.equipped": "Equipped {item}.",
     "log.noFish": "No fish are biting.",
+    "log.rareCatch": "A rare catch! Something gleams on your line.",
     "log.sitEat": "You sit down to eat.",
     "log.sitDrink": "You sit down to drink.",
     "log.quaff": "You quaff {item}.",
@@ -190,6 +193,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} wins {item} ({roll})",
     "aura.tamed": "Tamed",
     "aura.causticSpores": "Caustic Spores",
+    "aura.elixirBear": "Might of the Bear",
   },
   es: {
     "error.lineOfSight": "Sin línea de visión.",
@@ -245,6 +249,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "Has desechado {item}.",
     "log.equipped": "Has equipado {item}.",
     "log.noFish": "No pican los peces.",
+    "log.rareCatch": "¡Una captura rara! Algo brilla en tu sedal.",
     "log.sitEat": "Te sientas a comer.",
     "log.sitDrink": "Te sientas a beber.",
     "log.quaff": "Bebes {item}.",
@@ -255,6 +260,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} gana {item} ({roll})",
     "aura.tamed": "Domado",
     "aura.causticSpores": "Esporas Cáusticas",
+    "aura.elixirBear": "Poder del Oso",
   },
   es_ES: {
     "error.lineOfSight": "Sin línea de visión.",
@@ -310,6 +316,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "Has desechado {item}.",
     "log.equipped": "Has equipado {item}.",
     "log.noFish": "No pican los peces.",
+    "log.rareCatch": "¡Una captura rara! Algo brilla en tu sedal.",
     "log.sitEat": "Te sientas a comer.",
     "log.sitDrink": "Te sientas a beber.",
     "log.quaff": "Bebes {item}.",
@@ -320,6 +327,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} gana {item} ({roll})",
     "aura.tamed": "Domado",
     "aura.causticSpores": "Esporas Cáusticas",
+    "aura.elixirBear": "Poder del Oso",
   },
   fr_FR: {
     "error.lineOfSight": "Pas de ligne de vue.",
@@ -375,6 +383,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "{item} jeté.",
     "log.equipped": "{item} équipé.",
     "log.noFish": "Aucun poisson ne mord.",
+    "log.rareCatch": "Une prise rare ! Quelque chose scintille sur votre ligne.",
     "log.sitEat": "Vous vous asseyez pour manger.",
     "log.sitDrink": "Vous vous asseyez pour boire.",
     "log.quaff": "Vous buvez {item}.",
@@ -385,6 +394,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} remporte {item} ({roll})",
     "aura.tamed": "Apprivoisé",
     "aura.causticSpores": "Spores Caustiques",
+    "aura.elixirBear": "Puissance de l'Ours",
   },
   fr_CA: {
     "error.lineOfSight": "Pas de ligne de vue.",
@@ -440,6 +450,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "{item} jeté.",
     "log.equipped": "{item} équipé.",
     "log.noFish": "Aucun poisson ne mord.",
+    "log.rareCatch": "Une prise rare ! Quelque chose scintille sur votre ligne.",
     "log.sitEat": "Vous vous asseyez pour manger.",
     "log.sitDrink": "Vous vous asseyez pour boire.",
     "log.quaff": "Vous buvez {item}.",
@@ -450,6 +461,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} remporte {item} ({roll})",
     "aura.tamed": "Apprivoisé",
     "aura.causticSpores": "Spores Caustiques",
+    "aura.elixirBear": "Puissance de l'Ours",
   },
   en_CA: {
     "error.lineOfSight": "Line of sight.",
@@ -505,6 +517,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "Discarded {item}.",
     "log.equipped": "Equipped {item}.",
     "log.noFish": "No fish are biting.",
+    "log.rareCatch": "A rare catch! Something gleams on your line.",
     "log.sitEat": "You sit down to eat.",
     "log.sitDrink": "You sit down to drink.",
     "log.quaff": "You quaff {item}.",
@@ -515,6 +528,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} wins {item} ({roll})",
     "aura.tamed": "Tamed",
     "aura.causticSpores": "Caustic Spores",
+    "aura.elixirBear": "Might of the Bear",
   },
   it_IT: {
     "error.lineOfSight": "Nessuna linea di vista.",
@@ -570,6 +584,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "{item} scartato.",
     "log.equipped": "{item} equipaggiato.",
     "log.noFish": "I pesci non abboccano.",
+    "log.rareCatch": "Una cattura rara! Qualcosa luccica sulla tua lenza.",
     "log.sitEat": "Ti siedi a mangiare.",
     "log.sitDrink": "Ti siedi a bere.",
     "log.quaff": "Tracanni {item}.",
@@ -580,6 +595,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} vince {item} ({roll})",
     "aura.tamed": "Addomesticato",
     "aura.causticSpores": "Spore Caustiche",
+    "aura.elixirBear": "Potenza dell'Orso",
   },
   de_DE: {
     "error.lineOfSight": "Kein Sichtkontakt.",
@@ -635,6 +651,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "{item} weggeworfen.",
     "log.equipped": "{item} ausgerüstet.",
     "log.noFish": "Es beißen keine Fische.",
+    "log.rareCatch": "Ein seltener Fang! Etwas glänzt an deiner Angelschnur.",
     "log.sitEat": "Ihr setzt Euch zum Essen.",
     "log.sitDrink": "Ihr setzt Euch zum Trinken.",
     "log.quaff": "Ihr trinkt {item}.",
@@ -645,6 +662,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} gewinnt {item} ({roll})",
     "aura.tamed": "Gezähmt",
     "aura.causticSpores": "Ätzende Sporen",
+    "aura.elixirBear": "Macht des Bären",
   },
   zh_CN: {
     "error.lineOfSight": "目标不在视线内。",
@@ -700,6 +718,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "已丢弃{item}。",
     "log.equipped": "已装备{item}。",
     "log.noFish": "没有鱼上钩。",
+    "log.rareCatch": "稀有渔获！你的鱼线上有东西在闪光。",
     "log.sitEat": "你坐下来进食。",
     "log.sitDrink": "你坐下来饮水。",
     "log.quaff": "你饮下了{item}。",
@@ -710,6 +729,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner}赢得了{item}（{roll}）",
     "aura.tamed": "已驯服",
     "aura.causticSpores": "腐蚀孢子",
+    "aura.elixirBear": "巨熊之力",
   },
   zh_TW: {
     "error.lineOfSight": "目標不在視線內。",
@@ -765,6 +785,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "已丟棄 {item}。",
     "log.equipped": "已裝備 {item}。",
     "log.noFish": "沒有魚上鉤。",
+    "log.rareCatch": "稀有漁獲！你的釣線上有東西在閃光。",
     "log.sitEat": "你坐下來進食。",
     "log.sitDrink": "你坐下來飲水。",
     "log.quaff": "你喝下了 {item}。",
@@ -775,6 +796,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} 擲骰獲得 {item}（{roll}）",
     "aura.tamed": "馴服",
     "aura.causticSpores": "腐蝕孢子",
+    "aura.elixirBear": "巨熊之力",
   },
   ko_KR: {
     "error.lineOfSight": "시야가 막혀 있습니다.",
@@ -830,6 +852,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "{item}을(를) 버렸습니다.",
     "log.equipped": "{item}을(를) 착용했습니다.",
     "log.noFish": "입질이 없습니다.",
+    "log.rareCatch": "희귀한 낚시감! 낚싯줄에 무언가 반짝입니다.",
     "log.sitEat": "앉아서 음식을 먹습니다.",
     "log.sitDrink": "앉아서 음료를 마십니다.",
     "log.quaff": "{item}을(를) 들이켭니다.",
@@ -840,6 +863,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner}님이 {item}을(를) 획득했습니다 ({roll})",
     "aura.tamed": "길들여짐",
     "aura.causticSpores": "부식성 포자",
+    "aura.elixirBear": "곰의 힘",
   },
   ja_JP: {
     "error.lineOfSight": "視線が通っていません。",
@@ -895,6 +919,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "{item}を破棄しました。",
     "log.equipped": "{item}を装備しました。",
     "log.noFish": "魚がかかりません。",
+    "log.rareCatch": "珍しい釣果！糸の先で何かが光っている。",
     "log.sitEat": "座って食事を始めました。",
     "log.sitDrink": "座って水分補給を始めました。",
     "log.quaff": "{item}を飲み干しました。",
@@ -905,6 +930,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner}が{item}を獲得しました（{roll}）",
     "aura.tamed": "テイム",
     "aura.causticSpores": "腐食胞子",
+    "aura.elixirBear": "熊の力",
   },
   pt_BR: {
     "error.lineOfSight": "Sem linha de visão.",
@@ -960,6 +986,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "{item} descartado.",
     "log.equipped": "{item} equipado.",
     "log.noFish": "Os peixes não estão mordendo.",
+    "log.rareCatch": "Uma fisgada rara! Algo reluz na sua linha.",
     "log.sitEat": "Você se senta para comer.",
     "log.sitDrink": "Você se senta para beber.",
     "log.quaff": "Você bebe {item}.",
@@ -970,6 +997,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} vence {item} ({roll})",
     "aura.tamed": "Domado",
     "aura.causticSpores": "Esporos Cáusticos",
+    "aura.elixirBear": "Força do Urso",
   },
   ru_RU: {
     "error.lineOfSight": "Нет прямой видимости.",
@@ -1025,6 +1053,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.discarded": "Выброшено: {item}.",
     "log.equipped": "Экипировано: {item}.",
     "log.noFish": "Рыба не клюёт.",
+    "log.rareCatch": "Редкий улов! Что-то блестит на вашей леске.",
     "log.sitEat": "Вы садитесь, чтобы поесть.",
     "log.sitDrink": "Вы садитесь, чтобы попить.",
     "log.quaff": "Вы выпиваете {item}.",
@@ -1035,6 +1064,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "loot.rollWin": "{winner} выигрывает {item} ({roll})",
     "aura.tamed": "Приручён",
     "aura.causticSpores": "Едкие споры",
+    "aura.elixirBear": "Мощь Медведя",
   },
 };
 
@@ -1500,6 +1530,7 @@ function locPetMode(mode: string): string {
 // Flavor aura names (not abilities, not talents) shown in the buff frame / combat log.
 const AURA_NAME_KEY: Record<string, SimMessageKey> = {
   Tamed: 'aura.tamed',
+  'Might of the Bear': 'aura.elixirBear',
   Summoned: 'aura.summoned',
   Fed: 'aura.fed',
   'Caustic Spores': 'aura.causticSpores',
@@ -2037,8 +2068,27 @@ for (const key of Object.keys(enTable) as SimMessageKey[]) {
   EXACT[v] = key;
 }
 
+// /talents readout (src/sim/sim.ts talentsReadout): the sim assembles an English
+// summary; rebuild it here from t() keys. Spec names splice verbatim (English
+// content names) like player/build names. The breakdown sub-grammar is "Class N"
+// or "Class N, <spec> M"; the optional tail is " N unspent.".
+function locTalentBreakdown(s: string): string {
+  let m = /^Class (.+), (.+) (.+)$/.exec(s);
+  if (m) return t('game.talents.readout.breakdownSpec', { classPts: m[1], spec: m[2], specPts: m[3] });
+  m = /^Class (.+)$/.exec(s);
+  if (m) return t('game.talents.readout.breakdownClass', { classPts: m[1] });
+  return s;
+}
+function locTalentTail(s: string): string {
+  const m = /^ (.+) unspent\.$/.exec(s);
+  return m ? t('game.talents.readout.unspent', { count: m[1] }) : s;
+}
+
 type Rule = { re: RegExp; build: (m: RegExpExecArray) => string };
 const RULES: Rule[] = [
+  { re: /^Your class has no talent tree yet\.$/, build: () => t('game.talents.readout.noTree') },
+  { re: /^You have not unlocked talents yet — they begin at level (.+)\.$/, build: (m) => t('game.talents.readout.locked', { level: m[1] }) },
+  { re: /^Talents: (.+) — (.+)\/(.+) points spent \((.+)\)\.(.*)$/, build: (m) => t('game.talents.readout.summary', { head: m[1] === 'no specialization' ? t('game.talents.readout.noSpec') : m[1], spent: m[2], total: m[3], breakdown: locTalentBreakdown(m[4]) }) + (m[5] ? locTalentTail(m[5]) : '') },
   { re: /^The ritual circle is silent without the Crypt Keystone\.$/, build: () => tQuestExtra('ritualNeedsKey') },
   { re: /^My king was a good man\.$/, build: () => tQuestExtra('aldrenVision1') },
   { re: /^I swore my blade to him\.$/, build: () => tQuestExtra('aldrenVision2') },

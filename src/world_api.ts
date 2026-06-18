@@ -202,6 +202,8 @@ export interface IWorld {
   lifetimeXp: number;
   prestigeRank: number;
   unlockedMilestones: string[];
+  // Classic Rested XP pool (inn-rested kill-XP bonus); 0 when not rested.
+  restedXp: number;
   known: ResolvedAbility[];
   questLog: Map<string, QuestProgress>;
   questsDone: Set<string>;

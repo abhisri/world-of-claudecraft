@@ -225,7 +225,7 @@ const TELEPORT_SNAP_DIST_SQ = 40 * 40;
 
 function blankEntity(id: number): Entity {
   return {
-    id, kind: 'mob', templateId: '', name: '', level: 1, mendTimer: 0,
+    id, kind: 'mob', templateId: '', name: '', level: 1, mendTimer: 0, wardTimer: 0, rallyTimer: 0, warcryTimer: 0,
     pos: { x: 0, y: 0, z: 0 }, prevPos: { x: 0, y: 0, z: 0 }, facing: 0, prevFacing: 0,
     vx: 0, vz: 0, vy: 0, onGround: true, jumping: false, fallStartY: 0,
     hp: 1, maxHp: 1, resource: 0, maxResource: 0, resourceType: null,
@@ -241,7 +241,7 @@ function blankEntity(id: number): Entity {
     comboPoints: 0, comboTargetId: null, overpowerUntil: -1, potionCooldownUntil: -1, savedMana: 0,
     chargeTargetId: null, chargeTimeLeft: 0, chargePath: [], followTargetId: null,
     sitting: false, eating: null, drinking: null,
-    aiState: 'idle', tappedById: null, pulseTimer: 0, stompTimer: 0, detonateTimer: Infinity, firedSummons: 0, summonedIds: [], enraged: false, healedThisPull: false,
+    aiState: 'idle', tappedById: null, pulseTimer: 0, stompTimer: 0, stoneskinTimer: 0, terrifyTimer: 0, detonateTimer: Infinity, firedSummons: 0, summonedIds: [], enraged: false, healedThisPull: false,
     threat: new Map(), forcedTargetId: null, forcedTargetTimer: 0, ownerId: null, petMode: 'defensive', petTauntTimer: 0,
     spawnPos: { x: 0, y: 0, z: 0 }, leashAnchor: null, evadeStall: 0, fleeTimer: 0, hasFled: false, wanderTarget: null, wanderTimer: 0,
     aggroTargetId: null, respawnTimer: 0, corpseTimer: 0, lootable: false, loot: null,
@@ -263,6 +263,8 @@ export class ClientWorld implements IWorld {
   // Post-cap progression (Max-Level XP Overflow), mirrored from snapshot self.
   lifetimeXp = 0;
   prestigeRank = 0;
+  // Rested XP pool, mirrored from snapshot self.
+  restedXp = 0;
   unlockedMilestones: string[] = [];
   known: ResolvedAbility[] = [];
   // Talents & Specializations, mirrored from snapshot self (display + staging).
@@ -667,6 +669,7 @@ export class ClientWorld implements IWorld {
       e.comboTargetId = s.comboTgt ?? null;
       e.targetId = s.target ?? null;
       e.autoAttack = !!s.auto;
+      e.swingTimer = s.swing ?? e.swingTimer;
       e.queuedOnSwing = s.queued ?? null;
       e.stats = s.stats ?? e.stats;
       e.attackPower = s.ap ?? 0;
@@ -681,6 +684,7 @@ export class ClientWorld implements IWorld {
         : null;
       this.xp = s.xp ?? 0;
       this.lifetimeXp = s.lxp ?? 0;
+      this.restedXp = s.rxp ?? 0;
       this.prestigeRank = s.prk ?? 0;
       if (s.milestones !== undefined) this.unlockedMilestones = s.milestones;
       this.copper = s.copper ?? 0;

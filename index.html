@@ -416,6 +416,18 @@
   .np-name { font-size: 12px; font-weight: bold; font-family: var(--title-font); letter-spacing: 0.3px; }
   .np-hpbar { width: 78px; height: 6px; background: #2a0000; border: 1px solid #000; margin: 1px auto 0; border-radius: 2px; }
   .np-hpfill { height: 100%; background: linear-gradient(#48e060, #1d7a32); border-radius: 2px; }
+  .np-castbar { position: relative; width: 78px; height: 8px; background: #1a1205; border: 1px solid #000;
+    margin: 1px auto 0; border-radius: 2px; overflow: hidden; }
+  .np-castfill { height: 100%; background: linear-gradient(#ffe27a, #d99a18); border-radius: 1px; transition: width 0.05s linear; }
+  .np-castbar.channel .np-castfill { background: linear-gradient(#7ad0ff, #2f7fd6); }
+  .np-castlabel { position: absolute; inset: 0; font-size: 8px; line-height: 8px; font-weight: bold;
+    color: #fff; text-shadow: 1px 1px 1px #000; letter-spacing: 0.2px; }
+  /* threat plate: this mob is aggroed on me — red bar + soft glow */
+  .nameplate.np-threat .np-hpbar { border-color: #ff5a4a; box-shadow: 0 0 6px #ff3b2e99; }
+  .nameplate.np-threat .np-hpfill { background: linear-gradient(#ff6b5e, #a01818); }
+  /* classic "dragon frame" cue: elite mobs get a golden bar frame, bosses a red one */
+  .np-hpbar.elite { border-color: #f2c84b; box-shadow: 0 0 5px 1px #f2c84baa, inset 0 0 2px #ffe9a0cc; }
+  .np-hpbar.boss { border-color: #ff5a3c; box-shadow: 0 0 7px 1px #ff5a3ccc, inset 0 0 2px #ffd2a0dd; }
   .np-marker { font-size: 24px; font-weight: bold; height: 26px; font-family: var(--title-font); }
   .np-marker.avail { color: var(--gold); text-shadow: 0 0 6px #ffd10088, 1px 1px 2px #000; }
   .np-marker.ready { color: var(--gold); text-shadow: 0 0 6px #ffd10088, 1px 1px 2px #000; }
@@ -487,12 +499,33 @@
     display: flex; align-items: center; justify-content: center;
     text-shadow: 1px 1px 1px #000; z-index: 3;
   }
+  /* crossed-swords combat indicator on the player portrait (classic WoW) */
+  .combat-flash {
+    position: absolute; top: -4px; right: -4px; width: 22px; height: 22px;
+    display: none; align-items: center; justify-content: center;
+    color: #ff5040; font-size: 15px; line-height: 1; z-index: 4;
+    pointer-events: none; text-shadow: 0 0 4px #000, 0 0 6px #ff5040;
+  }
+  #player-frame.combat .combat-flash { display: flex; animation: pf-combat-pulse 1s ease-in-out infinite; }
+  #player-frame.combat .portrait { border-color: #e74c3c; box-shadow: 0 0 8px #e74c3c99, inset 0 0 12px #0009; }
   .uf-bars { width: 190px; margin-left: -8px; padding: 5px 8px 5px 14px;
     background: var(--panel-bg); border: 2px solid var(--border); outline: 1px solid #000;
     border-radius: 0 6px 6px 0; box-shadow: 0 2px 10px #000a; }
   #target-frame .portrait-wrap { order: 2; }
   #target-frame .uf-bars { order: 1; margin-left: 0; margin-right: -8px; border-radius: 6px 0 0 6px; padding: 5px 14px 5px 8px; }
   #target-frame .level-chip { left: auto; right: -3px; }
+  /* "resting" zZz marker on the player portrait while seated / eating / drinking */
+  .rest-indicator {
+    position: absolute; top: -6px; right: -6px; width: 22px; height: 22px;
+    border-radius: 50%; z-index: 3; display: none;
+    align-items: center; justify-content: center;
+    color: #aee3ff; font-weight: bold; font-size: 13px; font-style: italic;
+    text-shadow: 0 0 6px #4fc3ff, 1px 1px 1px #000;
+    background: radial-gradient(circle at 40% 35%, #14304a, #08141c);
+    border: 2px solid #4fc3ff88; box-shadow: 0 0 8px #4fc3ff66;
+  }
+  .rest-indicator.on { display: flex; animation: rest-pulse 2s ease-in-out infinite; }
+  @keyframes rest-pulse { 0%, 100% { opacity: 1; transform: translateY(0); } 50% { opacity: 0.55; transform: translateY(-2px); } }
   .uf-name { font-size: 13px; font-weight: bold; font-family: var(--title-font); color: var(--gold);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 1px 1px 2px #000; }
   .bar { position: relative; height: 15px; background: #1a1a1a; border: 1px solid #000; margin-top: 3px; border-radius: 2px; overflow: hidden; }
@@ -503,6 +536,34 @@
   .mana .bar-fill { background-color: var(--color-mana); }
   .rage .bar-fill { background-color: var(--color-rage); }
   .energy .bar-fill { background-color: var(--color-energy); }
+  /* Damage-absorb shield overlay (Power Word: Shield, Ice Barrier, …): a hatched
+     translucent segment laid over the health bar, extending past current health. */
+  .bar-absorb { position: absolute; inset: 0; width: 100%; transform-origin: left; transform: scaleX(0);
+    background: repeating-linear-gradient(115deg, rgba(255,255,255,0.42) 0 5px, rgba(190,225,255,0.16) 5px 10px);
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.4); pointer-events: none; transition: transform 0.12s linear; }
+  .bar-absorb.overshield { background: repeating-linear-gradient(115deg, rgba(255,236,160,0.55) 0 5px, rgba(255,214,90,0.24) 5px 10px);
+    box-shadow: inset 0 0 7px rgba(255,225,140,0.6); }
+  /* Low-mana/energy warning: the resource fill pulses brighter and a short
+     caption appears at the end of the bar. Driven by --lr-opacity / --lr-pulse
+     set from the HUD (intensity scales as the bar nears empty). */
+  .bar.low { --lr-opacity: 0.7; --lr-pulse: 1s; }
+  .bar.low .bar-fill {
+    box-shadow: 0 0 5px 1px rgba(150, 205, 255, var(--lr-opacity)), inset 0 0 4px rgba(220, 240, 255, 0.9);
+    animation: low-resource-pulse var(--lr-pulse) ease-in-out infinite;
+  }
+  .bar.energy.low .bar-fill { box-shadow: 0 0 5px 1px rgba(255, 225, 110, var(--lr-opacity)), inset 0 0 4px rgba(255, 245, 200, 0.9); }
+  .low-resource-label {
+    display: none; position: absolute; top: 0; right: 5px; line-height: 15px;
+    font-size: 9px; font-weight: bold; letter-spacing: 0.5px;
+    color: #eaf4ff; text-shadow: 0 0 3px #000, 1px 1px 1px #000; text-transform: uppercase; pointer-events: none;
+    animation: low-resource-pulse var(--lr-pulse, 1s) ease-in-out infinite;
+  }
+  .bar.energy.low .low-resource-label { color: #fff3c2; }
+  @keyframes low-resource-pulse { 0%, 100% { filter: brightness(1); opacity: 0.6; } 50% { filter: brightness(1.7); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .bar.low .bar-fill, .low-resource-label { animation: none; }
+    .low-resource-label { opacity: 1; }
+  }
   .combo-row { display: flex; gap: 4px; margin-top: 4px; height: 10px; }
   .combo-pip { width: 12px; height: 10px; border-radius: 50%; border: 1px solid #5c2020; background: #2a0d0d; }
   .combo-pip.on { background: radial-gradient(circle at 35% 30%, #ff7a5e, #c0392b); box-shadow: 0 0 5px #ff5533aa; border-color: #ffad99; }
@@ -525,12 +586,24 @@
     color: #fff; text-shadow: 1px 1px 2px #000; font-family: var(--title-font); }
   #castbar .timer { position: absolute; top: 0; right: 6px; line-height: 21px; font-size: 11px;
     color: #fff; text-shadow: 1px 1px 2px #000; font-family: var(--title-font); font-variant-numeric: tabular-nums; }
+  /* swing timer: sits just under the cast bar, steel-on-amber to read as melee */
+  #swingbar { position: absolute; left: 50%; transform: translateX(-50%); bottom: 174px; width: 220px;
+    height: 12px; display: none; border: 1px solid var(--border); outline: 1px solid #000; border-radius: 3px;
+    background: #0c0a07; overflow: hidden; }
+  #swingbar .fill { height: 100%; width: 0%; background: linear-gradient(#ffcf7a, #d97b1e 60%, #8a4a10);
+    box-shadow: inset 0 1px 0 #fff4; transition: width 60ms linear; }
+  #swingbar.ready .fill { background: linear-gradient(#d8e8ff, #8fb6e6 60%, #5b86b8); }
+  #swingbar .label { position: absolute; inset: 0; text-align: center; font-size: 9px; line-height: 12px;
+    color: #fff; text-shadow: 1px 1px 1px #000; font-family: var(--title-font); letter-spacing: .5px; }
 
   /* ---------- bottom cluster ---------- */
   #bottom-bar { position: absolute; left: 50%; transform: translateX(-50%); bottom: 6px; text-align: center; }
   #xpbar { width: 612px; height: 10px; background: #14101e; border: 1px solid #000; outline: 1px solid #3a3148;
     margin: 0 auto 4px; position: relative; border-radius: 2px; overflow: hidden; }
   #xpbar .fill { height: 100%; width: 0%; background: linear-gradient(#b85eff, #6a1bb0); transition: background .3s; }
+  /* Rested XP overlay (classic inn-rested bonus): a blue segment ahead of the fill. */
+  #xpbar .rested { position: absolute; top: 0; height: 100%; left: 0; width: 0%; background: linear-gradient(#5fb0ff, #2b6fd0); opacity: 0.5; }
+  #xpbar.rested { outline-color: #2b6fd0; box-shadow: 0 0 6px #4a9eff55; }
   #xpbar .ticks { position: absolute; inset: 0; display: flex; }
   #xpbar .ticks i { flex: 1; border-right: 1px solid #00000055; }
   #xpbar .label { position: absolute; inset: 0; font-size: 9px; color: #fff; text-align: center; line-height: 10px; text-shadow: 1px 1px 1px #000; opacity: 0; transition: opacity .15s; }
@@ -685,6 +758,49 @@
   #minimap-wrap { position: absolute; right: 12px; top: 10px; width: 170px; text-align: center; }
   #zone-label { font-size: 13px; color: var(--gold); font-family: var(--title-font); text-shadow: 1px 1px 3px #000; margin-bottom: 3px; letter-spacing: 0.5px; }
   #minimap { border-radius: 50%; border: 4px solid var(--border); outline: 1px solid #000; box-shadow: 0 0 14px #000c, inset 0 0 20px #0008; }
+  /* Digital clock pinned to the bottom of the minimap ring, classic-WoW style. */
+  #minimap-clock { position: absolute; left: 50%; bottom: -3px; transform: translateX(-50%);
+    min-width: 52px; padding: 1px 8px; cursor: pointer; user-select: none;
+    font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: .4px;
+    color: var(--gold); text-shadow: 1px 1px 2px #000;
+    background: radial-gradient(circle at 50% 30%, #2c2c3a, #14141d);
+    border: 2px solid var(--border); border-radius: 8px; box-shadow: 0 2px 4px #0009, inset 0 1px 0 #ffffff14; }
+  #minimap-clock:hover { color: #fff; border-color: #c9a86a; }
+  #minimap-coords { margin-top: 4px; display: inline-block; padding: 1px 8px; font-size: 11px; font-variant-numeric: tabular-nums;
+    color: #e8d9b0; background: #0008; border: 1px solid var(--border); border-radius: 9px; text-shadow: 1px 1px 2px #000; letter-spacing: 0.3px; }
+
+  /* heading compass — a horizontal rose strip beneath the minimap */
+  #compass { position: relative; width: 162px; margin: 5px auto 0; }
+  #compass-strip { position: relative; height: 18px; overflow: hidden;
+    border: 2px solid var(--border); border-radius: 5px;
+    background: linear-gradient(#1c1a14, #100f0b);
+    box-shadow: inset 0 0 8px #000a;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+  #compass-track { position: absolute; inset: 0; }
+  .compass-mark { position: absolute; top: 50%; transform: translate(-50%, -50%);
+    font-family: var(--title-font); font-size: 11px; color: #b9ad86;
+    text-shadow: 1px 1px 2px #000; pointer-events: none; white-space: nowrap; }
+  .compass-mark.major { font-size: 13px; color: var(--gold); font-weight: 700; }
+  /* the fixed centre caret marks the direction the player faces */
+  #compass-center { position: absolute; left: 50%; top: -2px; width: 0; height: 0;
+    transform: translateX(-50%); border-left: 5px solid transparent;
+    border-right: 5px solid transparent; border-top: 6px solid var(--gold);
+    filter: drop-shadow(0 1px 1px #000); }
+  #compass-heading { margin-top: 2px; font-family: var(--title-font); font-size: 12px;
+    color: var(--gold); letter-spacing: 1px; text-shadow: 1px 1px 2px #000; }
+  /* minimap zoom control: a compact gold pill pinned to the bottom rim of the
+     round minimap. Vertical centre holds the live zoom readout (e.g. "2×"). */
+  #minimap-zoom { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 4px; padding: 1px 4px; z-index: 2;
+    background: radial-gradient(circle at 50% 30%, #2c2c3a, #15151f); border: 1px solid #4a3d1d;
+    border-radius: 9px; box-shadow: 0 1px 3px #000a; }
+  .minimap-zoom-btn { width: 17px; height: 17px; padding: 0; line-height: 1; font-size: 14px; font-weight: bold;
+    color: #d8c89a; background: none; border: none; cursor: pointer; border-radius: 4px; font-family: var(--title-font); }
+  .minimap-zoom-btn:hover:not(:disabled) { color: #fff; background: #ffffff1a; }
+  .minimap-zoom-btn:disabled { opacity: 0.3; cursor: default; }
+  #minimap-zoom-label { min-width: 24px; font-size: 11px; color: var(--gold); font-family: var(--title-font);
+    text-shadow: 1px 1px 2px #000; letter-spacing: 0.3px; }
 
   /* ---------- community HUD ---------- */
   /* Discord/GitHub: bottom-right, directly below the micro-menu, right-aligned with it. */
@@ -1202,6 +1318,11 @@
   .set-choice-btn { margin: 0; min-height: 40px; padding: 3px 9px; font-size: 12px; }
   .set-choice-btn.sel { outline: 1px solid var(--gold); box-shadow: inset 0 0 8px #ffd10033; color: #fff4c7; }
   .set-note { font-size: 11px; color: #b9ac82; margin: 6px 0 2px; line-height: 1.4; }
+  .set-seg { display: flex; gap: 4px; }
+  .set-seg-btn { margin: 0; padding: 3px 12px; opacity: 0.7; }
+  .set-seg-btn.active { opacity: 1; box-shadow: 0 0 0 1px var(--gold) inset; color: #ffd9a0; }
+  .set-row.disabled { opacity: 0.45; }
+  .chat-ts { color: #8f8a76; font-variant-numeric: tabular-nums; }
 
   /* ---------- emote wheel ---------- */
   #emote-wheel { position: absolute; left: 50%; top: 50%; width: 330px; height: 330px;
@@ -1247,6 +1368,11 @@
   #tooltip .tt-desc { color: #ffd100; margin-top: 4px; font-size: 11.5px; }
   #tooltip .tt-stat { color: #fff; font-size: 11.5px; }
   #tooltip .tt-green { color: #1eff00; font-size: 11.5px; }
+  #tooltip .tt-red { color: #ff5040; font-size: 11.5px; }
+  /* item comparison block (hover an equippable item to see the worn one + deltas) */
+  #tooltip .tt-cmp { margin-top: 6px; padding-top: 5px; border-top: 1px solid #3a3526; }
+  #tooltip .tt-cmp-head { color: #8a7f5e; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; margin-top: 3px; }
+  #tooltip .tt-cmp-body { opacity: .7; }
 
   /* ---------- floating combat text ---------- */
   .fct { position: absolute; font-weight: bold; pointer-events: none; text-shadow: 1px 1px 3px #000;
@@ -1256,6 +1382,47 @@
   @keyframes fct-rise { from { opacity: 1; margin-top: 0; } to { opacity: 0; margin-top: -76px; } }
   @keyframes fct-crit { 0% { opacity: 1; margin-top: 0; } 15% { transform: translate(-50%,-50%) scale(1.5); }
     100% { opacity: 0; margin-top: -86px; transform: translate(-50%,-50%) scale(1); } }
+  /* Combat-text size — Interface > Combat Text Size (--fct-scale, default 1). */
+  .fct { font-size: calc(17px * var(--fct-scale, 1)); }
+  .fct.crit { font-size: calc(26px * var(--fct-scale, 1)); }
+
+  /* ---------- Interface & Comfort settings ----------
+     Each rule is driven by a CSS custom property set on :root from main.ts, or by
+     a body class toggled there. Defaults reproduce the classic look exactly. */
+  /* Tooltip Text Size (--tooltip-scale). Children carry explicit px sizes, so each
+     is rescaled rather than relying on cascade. */
+  #tooltip { font-size: calc(12px * var(--tooltip-scale, 1)); }
+  #tooltip .tt-title { font-size: calc(13.5px * var(--tooltip-scale, 1)); }
+  #tooltip .tt-sub { font-size: calc(11px * var(--tooltip-scale, 1)); }
+  #tooltip .tt-desc, #tooltip .tt-stat, #tooltip .tt-green { font-size: calc(11.5px * var(--tooltip-scale, 1)); }
+  /* Chat Text Size (--chat-font-scale) + Chat Background Opacity (--chat-opacity). */
+  .chat-pane { font-size: calc(11px * var(--chat-font-scale, 1)); }
+  #chatlog-frame { background: linear-gradient(170deg,
+      rgba(21, 21, 31, var(--chat-opacity, 0.95)) 0%,
+      rgba(8, 8, 13, var(--chat-opacity, 0.95)) 100%); }
+  /* HUD Opacity (--hud-opacity) — fades frames/windows as a whole. */
+  .panel, .window { opacity: var(--hud-opacity, 1); }
+  /* Compact Chat — shorter chat frame for a smaller footprint. */
+  body.compact-chat #chatlog-frame { height: 120px; }
+  /* High-Contrast Text — thicker dark outline behind HUD labels. */
+  body.high-contrast-text .chat-pane div,
+  body.high-contrast-text .panel,
+  body.high-contrast-text .set-name,
+  body.high-contrast-text .tt-stat,
+  body.high-contrast-text .tt-desc { text-shadow: 0 0 2px #000, 1px 1px 2px #000, -1px -1px 2px #000; }
+  /* Reduce Motion — drop HUD animations/transitions (mirrors prefers-reduced-motion). */
+  body.reduce-motion .fct { animation-duration: 0.01ms !important; }
+  body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  /* Frosted Panels — opt-in backdrop blur behind HUD panels & windows. */
+  body.frosted-panels .panel, body.frosted-panels .window {
+    backdrop-filter: blur(7px) saturate(1.05); -webkit-backdrop-filter: blur(7px) saturate(1.05); }
+  /* Show FPS — small readout, hidden until toggled on (main.ts flips display). */
+  #fps-overlay { position: absolute; top: 6px; right: 8px; display: none; z-index: 60;
+    font-family: var(--title-font); font-size: 12px; color: var(--gold); pointer-events: none;
+    text-shadow: 1px 1px 2px #000; background: rgba(8, 8, 13, 0.55); padding: 2px 7px;
+    border-radius: 4px; border: 1px solid #463a1c; }
 
   /* ---------- center messages ---------- */
   #error-msg { position: absolute; left: 50%; top: 21%; transform: translateX(-50%); color: #ff2020;
@@ -1264,6 +1431,28 @@
   #banner { position: absolute; left: 50%; top: 28%; transform: translateX(-50%); color: var(--gold);
     font-size: 38px; font-weight: bold; text-shadow: 0 0 18px #00000088, 2px 2px 6px #000; opacity: 0;
     transition: opacity 1.2s; pointer-events: none; font-family: var(--title-font); letter-spacing: 1px; white-space: nowrap; }
+  #subzone-banner { position: absolute; left: 50%; top: 35%; transform: translateX(-50%); color: #fff;
+    font-size: 22px; font-weight: bold; text-shadow: 0 0 14px #00000088, 1px 1px 4px #000; opacity: 0;
+    transition: opacity 1.2s; pointer-events: none; font-family: var(--title-font); letter-spacing: 1px; white-space: nowrap; }
+
+  /* ---------- low-health screen vignette ---------- */
+  /* Pulsing red edge glow that fades in as the player nears death. Opacity and
+     pulse cadence are driven from JS via the --lhv-* custom properties; the
+     element stays hidden (display:none) until .active is set. Sits above the
+     world but below the HUD frames, and never eats pointer events. */
+  #low-health-vignette { position: fixed; inset: 0; display: none; z-index: 4; pointer-events: none;
+    --lhv-opacity: 0; --lhv-pulse: 1.6s;
+    background: radial-gradient(ellipse at center,
+      rgba(120,0,0,0) 42%, rgba(150,0,0,0.35) 74%, rgba(190,0,0,0.85) 100%);
+    animation: lhv-breathe var(--lhv-pulse) ease-in-out infinite; }
+  #low-health-vignette.active { display: block; }
+  @keyframes lhv-breathe {
+    0%, 100% { opacity: calc(var(--lhv-opacity) * 0.55); }
+    50%      { opacity: var(--lhv-opacity); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #low-health-vignette { animation: none; opacity: var(--lhv-opacity); }
+  }
 
   /* ---------- death overlay ---------- */
   #death-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at center, #40000077 0%, #300000bb 100%);
@@ -3899,6 +4088,10 @@
     border: 2px solid #b7a35a80; background: radial-gradient(circle at 50% 50%, #1b1b2960 0%, #0b0b1280 62%, #0505089a 100%);
     box-shadow: 0 3px 18px #0008, inset 0 1px 0 #ffffff12, inset 0 0 26px #0008;
     opacity: 0.4; transition: opacity .18s ease;
+    /* Joystick Size setting: grow/shrink from the anchored bottom corner so the
+       pad stays in the same screen position while resizing. --joy-scale is set
+       on #mobile-controls by applySetting('joystickScale'). */
+    transform: scale(var(--joy-scale, 1)); transform-origin: left bottom;
   }
   body.mobile-touch .mobile-joystick.active { opacity: 1; }
   @media (prefers-reduced-motion: reduce) {
@@ -3924,7 +4117,15 @@
     box-shadow: 0 3px 18px #0008, inset 0 1px 0 #ffffff12, inset 0 0 26px #0008, 0 0 16px 3px #e3c66a55;
   }
   body.mobile-touch #mobile-camera-joystick {
-    left: auto; right: max(18px, env(safe-area-inset-right));
+    left: auto; right: max(18px, env(safe-area-inset-right)); transform-origin: right bottom;
+  }
+  body.mobile-touch #mobile-camera-joystick.recentering {
+    animation: mobile-recenter-pulse 0.22s ease-out;
+  }
+  @keyframes mobile-recenter-pulse {
+    0% { box-shadow: 0 3px 18px #0008, inset 0 1px 0 #ffffff12, inset 0 0 26px #0008; border-color: #b7a35a80; }
+    45% { box-shadow: 0 0 22px 4px #e3d47588, inset 0 0 26px #0008; border-color: #e3d475e0; }
+    100% { box-shadow: 0 3px 18px #0008, inset 0 1px 0 #ffffff12, inset 0 0 26px #0008; border-color: #b7a35a80; }
   }
   body.mobile-touch .mobile-stick {
     position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%;
@@ -3935,7 +4136,8 @@
     position: absolute; left: 0; right: 0; bottom: -18px; text-align: center; font-size: 9px; color: #c8b888; text-shadow: 1px 1px 2px #000;
   }
   body.mobile-touch #mobile-combat-controls {
-    position: absolute; left: 50%; bottom: calc(3px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+    position: absolute; left: 50%; bottom: calc(3px + env(safe-area-inset-bottom));
+    transform: translateX(-50%) scale(var(--btn-scale, 1)); transform-origin: center bottom;
     display: grid; grid-template-columns: 124px repeat(6, 58px); gap: 8px; pointer-events: auto; align-items: end; z-index: 30;
   }
   body.mobile-touch .mobile-btn {
@@ -4227,6 +4429,12 @@
   body.mobile-touch .community-link.donate { display: inline-flex; width: 100%; padding: 0 9px; font-size: 12px; }
   body.mobile-touch #chatlog-wrap { left: max(10px, env(safe-area-inset-left)); bottom: calc(160px + env(safe-area-inset-bottom)); width: min(340px, calc(100vw - 20px)); display: none; z-index: 24; }
   body.mobile-touch.mobile-chat-open #chatlog-wrap { display: block; }
+  /* Long-pressing the Chat button toggles a read-only peek at the log without
+     raising the keyboard composer. It must not eat taps meant for the world. */
+  body.mobile-touch.mobile-chatlog-peek #chatlog-wrap { display: block; pointer-events: none; }
+  body.mobile-touch.mobile-chatlog-peek #mobile-chat {
+    border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 10px #c9a84d66;
+  }
   body.mobile-touch #chatlog-frame { height: 126px; }
   body.mobile-touch #chatlog-tabs { transform: scale(0.92); transform-origin: left bottom; }
   body.mobile-touch #chat-input {
@@ -4978,6 +5186,7 @@
       white-space: normal;
       overflow-wrap: anywhere;
     }
+    body.mobile-touch #subzone-banner { top: 25%; font-size: 18px; }
     body.mobile-touch #error-msg { top: 16%; font-size: 16px; }
     body.mobile-touch #mobile-preflight .preflight-panel { width: min(520px, 84vw); padding: 18px 22px; }
     body.mobile-touch #mobile-preflight h2 { font-size: 22px; }
@@ -5904,6 +6113,7 @@
 
   <template id="game-ui-template">
   <div id="ui">
+    <div id="fps-overlay" aria-hidden="true"></div>
     <div id="click-move-marker" class="click-move-marker" aria-hidden="true">
       <span class="ctm-arrow ctm-n"></span>
       <span class="ctm-arrow ctm-e"></span>
@@ -5918,7 +6128,7 @@
       </div>
       <div class="uf-bars">
         <div class="uf-name" id="tf-name"></div>
-        <div class="bar hp"><div class="bar-fill" id="tf-hp"></div><div class="bar-text" id="tf-hp-text"></div></div>
+        <div class="bar hp"><div class="bar-fill" id="tf-hp"></div><div class="bar-absorb" id="tf-absorb"></div><div class="bar-text" id="tf-hp-text"></div></div>
         <div class="combo-row" id="combo-row"></div>
         <div class="uf-buffs" id="tf-debuffs"></div>
       </div>
@@ -5933,10 +6143,22 @@
     <div id="trade-window" class="window panel"></div>
 
     <div id="castbar"><div class="fill"></div><div class="label"></div><div class="timer"></div></div>
+    <div id="swingbar"><div class="fill"></div><div class="label"></div></div>
 
     <div id="minimap-wrap">
       <div id="zone-label" data-i18n="entities.zones.eastbrook_vale.name">Eastbrook Vale</div>
       <canvas id="minimap" width="162" height="162"></canvas>
+      <div id="minimap-clock" title="Local time — click to toggle 12/24-hour">--:--</div>
+      <div id="minimap-coords" title="Your current world coordinates" aria-label="Coordinates">0, 0</div>
+      <div id="compass" aria-label="Heading compass">
+        <div id="compass-strip"><div id="compass-track"></div></div>
+        <div id="compass-center"></div>
+        <div id="compass-heading">N</div>
+      <div id="minimap-zoom" aria-label="Minimap zoom">
+        <button class="minimap-zoom-btn" id="minimap-zoom-out" title="Zoom out" aria-label="Zoom out minimap">&minus;</button>
+        <span id="minimap-zoom-label" aria-live="polite">1×</span>
+        <button class="minimap-zoom-btn" id="minimap-zoom-in" title="Zoom in" aria-label="Zoom in minimap">+</button>
+      </div>
     </div>
 
     <div id="community-hud" data-i18n-aria="hud.core.communityLinks" aria-label="Community links">
@@ -5970,15 +6192,17 @@
             <div class="portrait-wrap">
               <div class="portrait"><canvas id="pf-portrait" width="54" height="54"></canvas></div>
               <div class="level-chip" id="pf-level">1</div>
+              <div class="combat-flash" id="pf-combat" title="In Combat">⚔</div>
+              <div class="rest-indicator" id="pf-rest" title="Resting">z</div>
             </div>
             <div class="uf-bars">
               <div class="uf-name" id="pf-name"></div>
-              <div class="bar hp"><div class="bar-fill" id="pf-hp"></div><div class="bar-text" id="pf-hp-text"></div></div>
-              <div class="bar mana" id="pf-resource"><div class="bar-fill" id="pf-res"></div><div class="bar-text" id="pf-res-text"></div></div>
+              <div class="bar hp"><div class="bar-fill" id="pf-hp"></div><div class="bar-absorb" id="pf-absorb"></div><div class="bar-text" id="pf-hp-text"></div></div>
+              <div class="bar mana" id="pf-resource"><div class="bar-fill" id="pf-res"></div><div class="bar-text" id="pf-res-text"></div><div class="low-resource-label" id="pf-low-resource"></div></div>
             </div>
           </div>
           <div id="petbar" class="panel"></div>
-          <div id="xpbar"><div class="fill"></div><div class="ticks"></div><div class="label"></div></div>
+          <div id="xpbar"><div class="fill"></div><div class="rested"></div><div class="ticks"></div><div class="label"></div></div>
           <div id="actionbar" class="panel"></div>
         </div>
         <div id="meters-window" class="panel">
@@ -6055,6 +6279,8 @@
 
     <div id="error-msg"></div>
     <div id="banner"></div>
+    <div id="low-health-vignette"></div>
+    <div id="subzone-banner"></div>
 
     <div id="death-overlay">
       <h2 data-i18n="hud.core.deathTitle">You have died.</h2>

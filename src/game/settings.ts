@@ -18,6 +18,10 @@ export const SETTING_RANGES = {
   foliageDensity: { min: 0, max: 1, def: 1 },
   effectsQuality: { min: 0, max: 1, def: 1 },
   shadowQuality: { min: 0, max: 1, def: 1 },
+  // vertical camera field of view in degrees. def 60 keeps the shipped look;
+  // a wider FOV shows more of the world (good for situational awareness) while
+  // a narrower one zooms in. Purely a comfort/visibility preference.
+  cameraFov: { min: 55, max: 100, def: 60 },
   renderScale: { min: 0.5, max: 1, def: 1 },
   fullscreen: { min: 0, max: 1, def: 1 },
   // on by default: post-cap players see their overflow/virtual-level bar; turn
@@ -37,6 +41,38 @@ export const SETTING_RANGES = {
   // 1.0 (fully opaque) by default; touch-only. Lets phone players dim the
   // on-screen joysticks + buttons so they obscure less of the world.
   touchOpacity: { min: 0.3, max: 1, def: 1 },
+  // on by default: biome-driven ambient snow/rain. Stored 0/1 so it reuses the
+  // existing settingToggle UI; players on weak machines can switch it off.
+  weather: { min: 0, max: 1, def: 1 },
+  // touch-only: scales both on-screen joysticks from their anchored corner so
+  // players can size the thumb pads to their hands (0.7x–1.3x). 1.0 = stock.
+  joystickScale: { min: 0.7, max: 1.3, def: 1 },
+  // touch only: scale the on-screen action button cluster so players with
+  // larger or smaller thumbs can size the controls to taste (default 1.0x).
+  // Surfaced in the Esc menu only on phone-touch devices.
+  actionButtonScale: { min: 0.8, max: 1.3, def: 1 },
+  // touch-only: how far the move thumbstick must travel before it registers
+  // movement. Higher values resist accidental drift on a jittery thumb; lower
+  // values make the stick more responsive. Default matches the old fixed 0.22.
+  joystickDeadzone: { min: 0.1, max: 0.4, def: 0.22 },
+
+  // --- Interface & Comfort pack: presentational HUD tuning, applied via CSS
+  // custom properties in main.ts. All default to 1.0 (unchanged look) and are
+  // purely client-side display choices — they never touch the sim. ---
+  // Scales the hover tooltip's text so small-screen / low-vision players can
+  // read item & ability tooltips without squinting.
+  tooltipScale: { min: 0.85, max: 1.5, def: 1 },
+  // Scales the combat-log / chat text independently of tooltips.
+  chatFontScale: { min: 0.85, max: 1.4, def: 1 },
+  // Dims the chat frame's backdrop so it obscures less of the world (1 = the
+  // classic opaque frame, lower = more see-through).
+  chatOpacity: { min: 0.3, max: 1, def: 1 },
+  // Scales floating combat text (the damage/heal numbers over units). Bigger
+  // for readability on a TV; smaller to declutter a busy fight.
+  fctScale: { min: 0.7, max: 1.8, def: 1 },
+  // Fades the HUD panels & windows as a whole; lets players see more of the
+  // world behind their frames without hiding them entirely.
+  hudOpacity: { min: 0.5, max: 1, def: 1 },
 } as const;
 
 export const BOOL_SETTINGS = {
@@ -54,6 +90,32 @@ export const BOOL_SETTINGS = {
   // toward the cursor, auto-attacking the enemy under it or the nearest one met
   // along the way. Opt-in because it replaces the classic keyboard control scheme.
   attackMove: { def: false },
+  // off by default: invert the vertical axis of the touch camera joystick (and
+  // swipe-to-look) so pushing the stick up tilts the camera down — the classic
+  // flight-sim / console preference some touch players reach for (#323-adjacent)
+  touchInvertLook: { def: false },
+
+  // --- Interface & Comfort pack (booleans). ---
+  // off by default: drop every HUD cross-fade / panel animation, for players
+  // who get motion-sick or just want instant windows. Mirrors the built-in
+  // prefers-reduced-motion handling as an explicit in-game switch.
+  reduceMotion: { def: false },
+  // off by default: thicken the dark outline behind HUD text so labels stay
+  // legible against bright terrain (a low-vision / high-glare aid).
+  highContrastText: { def: false },
+  // off by default: an opt-in frosted-glass blur behind HUD panels & windows.
+  // Off keeps the classic crisp look (and zero GPU cost); on softens the world
+  // showing through translucent frames.
+  frostedPanels: { def: false },
+  // off by default: shrink the chat frame to a compact height so it covers
+  // less of the lower-left world view.
+  compactChat: { def: false },
+  // off by default: show a small frames-per-second readout in the corner for
+  // players tuning their graphics settings.
+  showFps: { def: false },
+  // off by default: invert the vertical axis of mouselook (push mouse forward
+  // to look down), the classic flight-sim preference.
+  invertLookY: { def: false },
 } as const;
 
 export type NumericSettingKey = keyof typeof SETTING_RANGES;

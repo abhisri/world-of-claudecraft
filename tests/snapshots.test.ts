@@ -119,9 +119,20 @@ describe('delta snapshots', () => {
       expect(snap.self, `self.${key} resent although unchanged`).not.toHaveProperty(key);
     }
     // the always-on fields are still present every snapshot
-    for (const key of ['x', 'z', 'hp', 'mhp', 'res', 'gcd', 'xp', 'copper', 'target']) {
+    for (const key of ['x', 'z', 'hp', 'mhp', 'res', 'gcd', 'swing', 'xp', 'copper', 'target']) {
       expect(snap.self).toHaveProperty(key);
     }
+  });
+
+  it('mirrors the swing timer to the online client for the swing-timer HUD bar', () => {
+    const player = server.sim.entities.get(session.pid)!;
+    player.swingTimer = 1.7;
+    broadcast(server);
+    const snap = lastSnap(fc.sent);
+    expect(snap.self.swing).toBeCloseTo(1.7, 1);
+    const client = bareClient(session.pid);
+    (client as any).applySnapshot(snap);
+    expect(client.player.swingTimer).toBeCloseTo(1.7, 1);
   });
 
   it('sell command forwards bounded stack quantities', () => {

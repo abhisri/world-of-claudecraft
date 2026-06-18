@@ -25,7 +25,8 @@ export const en: EnTranslations = {
       "maxLevel": "MAX LEVEL",
       "totalXp": "total XP",
       "lv": "Lv",
-      "toNext": "to next"
+      "toNext": "to next",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progression",
@@ -72,7 +73,12 @@ export const en: EnTranslations = {
       "needXp": "more lifetime XP to prestige"
     },
     "settings": {
-      "showOverflowXp": "Show Overflow XP"
+      "showOverflowXp": "Show Overflow XP",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talents",
@@ -131,7 +137,16 @@ export const en: EnTranslations = {
       "noBuilds": "No saved builds",
       "save": "Save",
       "comingSoonTitle": "Talents coming soon",
-      "comingSoonBody": "This class does not have talent trees yet. You can keep playing normally; full trees will arrive in a future update."
+      "comingSoonBody": "This class does not have talent trees yet. You can keep playing normally; full trees will arrive in a future update.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -491,6 +506,8 @@ export const en: EnTranslations = {
       "levelLog": "You have reached level {level}!",
       "xpGain": "You gain {amount} experience.",
       "xpFloat": "+{amount} XP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "You have died.",
       "releaseSpirit": "Release Spirit",
       "chatTab": "Chat",
@@ -499,7 +516,7 @@ export const en: EnTranslations = {
       "communityLinks": "Community links",
       "mobileControls": "Mobile controls",
       "mobileMove": "Move",
-      "mobileCamera": "Camera",
+      "mobileCamera": "Camera — double-tap to recenter",
       "mobileAttack": "Attack",
       "mobileTarget": "Target",
       "mobileChat": "Chat",
@@ -520,6 +537,7 @@ export const en: EnTranslations = {
       "keyBindings": "Key Bindings",
       "graphics": "Graphics",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Logout",
       "returnToGame": "Return to Game",
       "resetToDefaults": "Reset to Defaults",
@@ -543,15 +561,33 @@ export const en: EnTranslations = {
       "terrainLow": "Low",
       "terrainHigh": "High",
       "touchOpacity": "Touch Controls Opacity",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "Graphics Quality and Terrain Detail apply after a reload.",
       "reloadNow": "Reload Now",
       "fullscreen": "Fullscreen",
       "touchLookSpeed": "Touch Look Speed",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Left-handed Touch",
       "filterProfanity": "Filter Profanity",
       "clickMoveButton": "Click Move Button",
       "clickToMove": "Click to Move",
       "graphicsNote": "Lower Camera Speed for a calmer mouselook. Render Quality below 100% boosts FPS on weaker machines.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Sound Effects",
       "musicVolume": "Music Volume",
       "music": "Music",
@@ -1109,7 +1145,8 @@ export const en: EnTranslations = {
       "food": "Food",
       "drink": "Drink",
       "tool": "Tool",
-      "potion": "Potion"
+      "potion": "Potion",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armor",
@@ -1125,6 +1162,8 @@ export const en: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality} {kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} Damage Speed {speed}",
       "dps": "({dps} damage per second)",
       "dagger": "Dagger",
@@ -1248,6 +1287,14 @@ export const en: EnTranslations = {
         "name": "Battle Shout",
         "description": "Increases your attack power by 20 for 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Charge",
         "description": "Charges an enemy, generating 9 rage and stunning it for 1 sec. 8-25 yd range."
@@ -1316,6 +1363,10 @@ export const en: EnTranslations = {
         "name": "Conjure Water",
         "description": "Conjures 2 bottles of water, restoring mana when drunk. Higher ranks conjure purer water."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Fire Blast",
         "description": "Blasts the enemy for {damage} Fire damage. Instant."
@@ -1339,6 +1390,10 @@ export const en: EnTranslations = {
       "scorch": {
         "name": "Scorch",
         "description": "Scorches the enemy for {damage} Fire damage. Quick to cast."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Ice Barrier",
@@ -1388,6 +1443,46 @@ export const en: EnTranslations = {
         "name": "Adrenaline Rush",
         "description": "Your blood runs hot, instantly restoring 60 energy."
       },
+      "garrote": {
+        "name": "Garrote",
+        "description": "Garrote the enemy, causing damage now and bleeding it for {damage} over 18 sec. Must be stealthed. Awards 1 combo point."
+      },
+      "cheap_shot": {
+        "name": "Cheap Shot",
+        "description": "Strike the target, stunning it for 4 sec. Must be stealthed. Awards 2 combo points."
+      },
+      "sap": {
+        "name": "Sap",
+        "description": "Incapacitates the target for 8 sec. Must be stealthed and out of combat. Any damage breaks the effect."
+      },
+      "crippling_poison": {
+        "name": "Crippling Poison",
+        "description": "Strikes the target with a crippling poison, dealing {damage} Nature damage and slowing its movement speed by 50% for 12 sec."
+      },
+      "expose_armor": {
+        "name": "Expose Armor",
+        "description": "Finishing move that exposes the target, reducing its armor. More combo points spent build into a deeper cut."
+      },
+      "rupture": {
+        "name": "Rupture",
+        "description": "Finishing move that wounds the target, causing it to bleed for {damage} over 16 sec."
+      },
+      "vanish": {
+        "name": "Vanish",
+        "description": "Vanish from sight, entering Stealth even in combat. You move 30% slower while hidden. Lasts up to 10 sec."
+      },
+      "instant_poison": {
+        "name": "Instant Poison",
+        "description": "Coats your weapon for 30 min, causing each of your melee swings to deal 8 additional Nature damage."
+      },
+      "deadly_poison": {
+        "name": "Deadly Poison",
+        "description": "Coats your weapon for 30 min, causing each of your melee swings to deal 14 additional Nature damage."
+      },
+      "blind": {
+        "name": "Blind",
+        "description": "Blinds the target, causing it to wander disoriented for 8 sec. Any damage breaks the effect."
+      },
       "seal_of_righteousness": {
         "name": "Seal of Righteousness",
         "description": "Fills you with Holy power for 30 sec, causing each of your melee swings to deal 4 additional Holy damage. Unleash with Judgement."
@@ -1436,6 +1531,10 @@ export const en: EnTranslations = {
         "name": "Righteous Fury",
         "description": "Increases the threat generated by your Holy damage by 60% for 30 min. The tanking paladin's cornerstone."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Tame Beast",
         "description": "Begins taming a beast to be your companion. It must be your level or lower and not an elite. Your pet follows you, attacks your enemies, and holds threat of its own. You may have one pet at a time."
@@ -1471,6 +1570,10 @@ export const en: EnTranslations = {
       "wing_clip": {
         "name": "Wing Clip",
         "description": "Inflicts a wound that slows the enemy by 40% for 10 sec."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspect of the Cheetah",
@@ -1548,9 +1651,17 @@ export const en: EnTranslations = {
         "name": "Flame Shock",
         "description": "Sears the target with fire for 25 damage plus {damage} over 12 sec."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Frost Shock",
         "description": "Instantly shocks the target with frost for {damage} Frost damage and slows its movement by 50% for 8 sec."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Ghost Wolf",
@@ -1668,6 +1779,46 @@ export const en: EnTranslations = {
         "name": "Starfire",
         "description": "Calls down a bolt of stellar fire, causing {damage} Arcane damage."
       },
+      "travel_form": {
+        "name": "Travel Form",
+        "description": "Take on a swift travel form, increasing movement speed by 40%. Cannot be used in combat."
+      },
+      "enrage": {
+        "name": "Enrage",
+        "description": "Generates 20 rage instantly. Bear Form only."
+      },
+      "bash": {
+        "name": "Bash",
+        "description": "Stuns the target for 2 sec. Bear Form only."
+      },
+      "faerie_fire": {
+        "name": "Faerie Fire",
+        "description": "Decreases the target's armor by 35 for 40 sec."
+      },
+      "hibernate": {
+        "name": "Hibernate",
+        "description": "Forces the target into a deep sleep for up to 8 sec. Any damage will awaken it."
+      },
+      "dash": {
+        "name": "Dash",
+        "description": "Sprint forward, increasing movement speed by 50% for 15 sec. Wolf Form only."
+      },
+      "pounce": {
+        "name": "Pounce",
+        "description": "A stealth opener that stuns the target for 2 sec. Awards 1 combo point. Wolf Form only."
+      },
+      "insect_swarm": {
+        "name": "Insect Swarm",
+        "description": "The enemy is swarmed by insects, taking {damage} Nature damage over 12 sec."
+      },
+      "tigers_fury": {
+        "name": "Tiger's Fury",
+        "description": "Increases attack power by 40 for 6 sec. Wolf Form only."
+      },
+      "rip": {
+        "name": "Rip",
+        "description": "Finishing move that causes Bleed damage over 12 sec. Consumes combo points. Wolf Form only."
+      },
       "mortal_strike": {
         "name": "Mortal Strike",
         "description": "A vicious strike dealing weapon damage plus {damage}. (Arms signature)"
@@ -1695,6 +1846,26 @@ export const en: EnTranslations = {
       "summon_voidwalker": {
         "name": "Summon Voidwalker",
         "description": "Summons a Voidwalker under the command of the Warlock. The Voidwalker is a sturdy demon that taunts your enemies and soaks up punishment. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_succubus": {
+        "name": "Summon Succubus",
+        "description": "Summons a Succubus under the command of the Warlock. The Succubus is a fragile demon that strikes quickly and hits hard in melee. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_felhunter": {
+        "name": "Summon Felhunter",
+        "description": "Summons a Felhunter under the command of the Warlock. The Felhunter harries enemies from range with Shadow Bite and excels at hunting spellcasters. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_felguard": {
+        "name": "Summon Felguard",
+        "description": "Summons a Felguard under the command of the Warlock. The Felguard is a durable melee demon that wades into battle and holds its own. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_infernal": {
+        "name": "Summon Infernal",
+        "description": "Binds an Infernal to your will — a hulking juggernaut with crushing melee and the deepest health and armor of any demon. A long cooldown gates its raw power. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_doomguard": {
+        "name": "Summon Doomguard",
+        "description": "Binds a Doomguard to your will — an elite demon that rains heavy Shadow damage from afar. A long cooldown gates its devastating power. Summoning a new demon dismisses your current one. You may have one demon at a time."
       },
       "bear_charge": {
         "name": "Bear Charge",
@@ -2147,6 +2318,51 @@ export const en: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Cracked Wyrm Scale"
       },
+      "conjured_bread": {
+        "name": "Conjured Bread"
+      },
+      "conjured_bread2": {
+        "name": "Conjured Pumpernickel"
+      },
+      "conjured_bread3": {
+        "name": "Conjured Sweet Roll"
+      },
+      "roadwardens_helm": {
+        "name": "Roadwarden's Helm"
+      },
+      "wayfarers_hood": {
+        "name": "Wayfarer's Hood"
+      },
+      "acolytes_circlet": {
+        "name": "Acolyte's Circlet"
+      },
+      "reinforced_pauldrons": {
+        "name": "Reinforced Pauldrons"
+      },
+      "embroidered_mantle": {
+        "name": "Embroidered Mantle"
+      },
+      "sturdy_belt": {
+        "name": "Sturdy Traveler's Belt"
+      },
+      "silk_sash": {
+        "name": "Woven Silk Sash"
+      },
+      "roughspun_gloves": {
+        "name": "Roughspun Gloves"
+      },
+      "bristlehide_spaulders": {
+        "name": "Bristlehide Spaulders"
+      },
+      "sableweb_cord": {
+        "name": "Sableweb Cord"
+      },
+      "gorraks_cleaver": {
+        "name": "Gorrak's Cleaver"
+      },
+      "mossy_handwraps": {
+        "name": "Mossgrown Handwraps"
+      },
       "bristleback_maul": {
         "name": "Bristleback Maul"
       },
@@ -2293,6 +2509,96 @@ export const en: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Wyrmshadow Treads"
+      },
+      "glimmerfin_koi": {
+        "name": "Glimmerfin Koi"
+      },
+      "raw_bog_eel": {
+        "name": "Raw Bog Eel"
+      },
+      "raw_frostgill_trout": {
+        "name": "Raw Frostgill Trout"
+      },
+      "raw_marsh_pike": {
+        "name": "Raw Marsh Pike"
+      },
+      "raw_river_perch": {
+        "name": "Raw River Perch"
+      },
+      "raw_stonescale_carp": {
+        "name": "Raw Stonescale Carp"
+      },
+      "soggy_boot": {
+        "name": "Soggy Boot"
+      },
+      "elixir_of_the_bear": {
+        "name": "Elixir of the Bear"
+      },
+      "lesser_healing_potion": {
+        "name": "Lesser Healing Potion"
+      },
+      "lesser_mana_potion": {
+        "name": "Lesser Mana Potion"
+      },
+      "healing_potion": {
+        "name": "Healing Potion"
+      },
+      "mana_potion": {
+        "name": "Mana Potion"
+      },
+      "tunnelkings_spade": {
+        "name": "Tunnelking's Spade"
+      },
+      "brutoks_maul": {
+        "name": "Brutok's Maul"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Cracked Ogre Tusk"
+      },
+      "crag_warden_cudgel": {
+        "name": "Crag Warden Cudgel"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Cragmaw Prowlboots"
+      },
+      "drowned_tide_scepter": {
+        "name": "Drowned Tide Scepter"
+      },
+      "emberfang_warblade": {
+        "name": "Emberfang Warblade"
+      },
+      "emberwing_cinderscale": {
+        "name": "Emberwing Cinderscale"
+      },
+      "emberwing_legguards": {
+        "name": "Emberwing Legguards"
+      },
+      "gravewardens_shiv": {
+        "name": "Gravewarden's Shiv"
+      },
+      "hollow_vigil_staff": {
+        "name": "Staff of the Hollow Vigil"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Maldrec's Soulbinder"
+      },
+      "oathbound_greaves": {
+        "name": "Oathbound Greaves"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Skullsmasher's Warbelt"
+      },
+      "skullsplitter_dirk": {
+        "name": "Skullsplitter Dirk"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Sloomtooth's Tidefang"
+      },
+      "tidereaver_gaff": {
+        "name": "Tidereaver Gaff"
+      },
+      "verlans_oathblade": {
+        "name": "Verlan's Oathblade"
       },
       "briny_idol": {
         "name": "Briny Idol"
@@ -2634,6 +2940,42 @@ export const en: EnTranslations = {
       },
       "voidwalker": {
         "name": "Voidwalker"
+      },
+      "succubus": {
+        "name": "Succubus"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Skullsmasher"
+      },
+      "captain_verlan": {
+        "name": "Captain Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Old Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth the Drowned"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar the Emberwing"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Wraithbinder Maldrec"
+      },
+      "felhunter": {
+        "name": "Felhunter"
+      },
+      "felguard": {
+        "name": "Felguard"
+      },
+      "infernal": {
+        "name": "Infernal"
+      },
+      "doomguard": {
+        "name": "Doomguard"
       },
       "choirmother_selthe": {
         "name": "Choirmother Selthe"
@@ -3731,7 +4073,8 @@ export const es: EnTranslations = {
       "maxLevel": "NIVEL MÁX.",
       "totalXp": "EXP total",
       "lv": "Nv",
-      "toNext": "para el siguiente"
+      "toNext": "para el siguiente",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progreso",
@@ -3778,7 +4121,12 @@ export const es: EnTranslations = {
       "needXp": "más EXP de por vida para prestigio"
     },
     "settings": {
-      "showOverflowXp": "Mostrar EXP excedente"
+      "showOverflowXp": "Mostrar EXP excedente",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talentos",
@@ -3837,7 +4185,16 @@ export const es: EnTranslations = {
       "noBuilds": "Sin configuraciones guardadas",
       "save": "Guardar",
       "comingSoonTitle": "Talentos próximamente",
-      "comingSoonBody": "Esta clase aún no tiene árboles de talentos. Puedes seguir jugando normalmente; los árboles completos llegarán en una actualización futura."
+      "comingSoonBody": "Esta clase aún no tiene árboles de talentos. Puedes seguir jugando normalmente; los árboles completos llegarán en una actualización futura.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -4197,6 +4554,8 @@ export const es: EnTranslations = {
       "levelLog": "Has alcanzado el nivel {level}.",
       "xpGain": "Ganas {amount} de experiencia.",
       "xpFloat": "+{amount} XP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Has muerto.",
       "releaseSpirit": "Liberar espíritu",
       "chatTab": "Chat",
@@ -4226,6 +4585,7 @@ export const es: EnTranslations = {
       "keyBindings": "Atajos de teclado",
       "graphics": "Gráficos",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Cerrar sesión",
       "returnToGame": "Volver al juego",
       "resetToDefaults": "Restablecer valores",
@@ -4249,15 +4609,33 @@ export const es: EnTranslations = {
       "terrainLow": "Bajo",
       "terrainHigh": "Alto",
       "touchOpacity": "Opacidad de controles táctiles",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "La calidad gráfica y el detalle del terreno se aplican al recargar.",
       "reloadNow": "Recargar ahora",
       "fullscreen": "Pantalla completa",
       "touchLookSpeed": "Velocidad de cámara táctil",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Modo zurdo táctil",
       "filterProfanity": "Filtrar lenguaje",
       "clickMoveButton": "Botón de clic para mover",
       "clickToMove": "Clic para moverse",
       "graphicsNote": "Baja la velocidad de cámara para un control más tranquilo. La calidad de renderizado bajo 100% mejora los FPS en equipos modestos.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Efectos de sonido",
       "musicVolume": "Volumen de música",
       "music": "Música",
@@ -4815,7 +5193,8 @@ export const es: EnTranslations = {
       "food": "Comida",
       "drink": "Bebida",
       "tool": "Herramienta",
-      "potion": "Poción"
+      "potion": "Poción",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armadura",
@@ -4831,6 +5210,8 @@ export const es: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{kind} {quality}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} de daño Velocidad {speed}",
       "dps": "({dps} de daño por segundo)",
       "dagger": "Daga",
@@ -4954,6 +5335,14 @@ export const es: EnTranslations = {
         "name": "Grito de batalla",
         "description": "Aumenta tu poder de ataque en 20 durante 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Cargar",
         "description": "Carga contra un enemigo, genera 9 de ira y lo aturde durante 1 s. Alcance de 8-25 m."
@@ -5022,6 +5411,10 @@ export const es: EnTranslations = {
         "name": "Crear agua",
         "description": "Crea 2 botellas de agua que restauran maná al beberlas. Los rangos superiores crean agua más pura."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Explosión de Fuego",
         "description": "Explota contra el enemigo y causa {damage} de daño de Fuego. Instantáneo."
@@ -5045,6 +5438,10 @@ export const es: EnTranslations = {
       "scorch": {
         "name": "Agostar",
         "description": "Agosta al enemigo por {damage} de daño de Fuego. Lanzamiento rápido."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Barrera de Hielo",
@@ -5094,6 +5491,46 @@ export const es: EnTranslations = {
         "name": "Subidón de adrenalina",
         "description": "Tu sangre se enciende y restaura al instante 60 de energía."
       },
+      "garrote": {
+        "name": "Garrote",
+        "description": "Estrangula al enemigo con un garrote, infligiendo daño de inmediato y haciéndolo sangrar {damage} durante 18 s. Debes estar en sigilo. Otorga 1 punto de combo."
+      },
+      "cheap_shot": {
+        "name": "Ataque artero",
+        "description": "Golpea al objetivo, aturdiéndolo durante 4 s. Debes estar en sigilo. Otorga 2 puntos de combo."
+      },
+      "sap": {
+        "name": "Pasmar",
+        "description": "Incapacita al objetivo durante 8 s. Debes estar en sigilo y fuera de combate. Cualquier daño rompe el efecto."
+      },
+      "crippling_poison": {
+        "name": "Veneno tullidor",
+        "description": "Golpea al objetivo con un veneno tullidor, infligiendo {damage} de daño de Naturaleza y reduciendo su velocidad de movimiento un 50% durante 12 s."
+      },
+      "expose_armor": {
+        "name": "Exponer armadura",
+        "description": "Movimiento final que deja al descubierto al objetivo, reduciendo su armadura. Cuantos más puntos de combo se gasten, más profundo es el corte."
+      },
+      "rupture": {
+        "name": "Descoyuntar",
+        "description": "Movimiento final que hiere al objetivo, haciéndolo sangrar {damage} durante 16 s."
+      },
+      "vanish": {
+        "name": "Esfumarse",
+        "description": "Desaparece de la vista, entrando en Sigilo incluso en combate. Te mueves un 30% más lento mientras estás oculto. Dura hasta 10 s."
+      },
+      "instant_poison": {
+        "name": "Veneno instantáneo",
+        "description": "Recubre tu arma durante 30 min, haciendo que cada uno de tus golpes cuerpo a cuerpo inflija 8 de daño de Naturaleza adicional."
+      },
+      "deadly_poison": {
+        "name": "Veneno mortal",
+        "description": "Recubre tu arma durante 30 min, haciendo que cada uno de tus golpes cuerpo a cuerpo inflija 14 de daño de Naturaleza adicional."
+      },
+      "blind": {
+        "name": "Cegar",
+        "description": "Ciega al objetivo, haciéndolo deambular desorientado durante 8 s. Cualquier daño rompe el efecto."
+      },
       "seal_of_righteousness": {
         "name": "Sello de rectitud",
         "description": "Te llena de poder Sagrado durante 30 s, haciendo que cada golpe cuerpo a cuerpo inflija 4 de daño Sagrado adicional. Desátalo con Sentencia."
@@ -5142,6 +5579,10 @@ export const es: EnTranslations = {
         "name": "Furia recta",
         "description": "Aumenta un 60% la amenaza generada por tu daño Sagrado durante 30 min. La piedra angular del paladín tanque."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Domesticar bestia",
         "description": "Comienza a domesticar una bestia para que sea tu compañera. Debe ser de tu nivel o inferior y no ser élite. Tu mascota te sigue, ataca a tus enemigos y genera su propia amenaza. Solo puedes tener una mascota a la vez."
@@ -5177,6 +5618,10 @@ export const es: EnTranslations = {
       "wing_clip": {
         "name": "Cortar alas",
         "description": "Inflige una herida que ralentiza al enemigo un 40% durante 10 s."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspecto del guepardo",
@@ -5254,9 +5699,17 @@ export const es: EnTranslations = {
         "name": "Choque de llamas",
         "description": "Abrasa al objetivo con fuego por 25 de daño más {damage} durante 12 s."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Choque de Escarcha",
         "description": "Golpea al objetivo al instante con escarcha por {damage} de daño de Escarcha y reduce su velocidad de movimiento un 50% durante 8 s."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Lobo fantasmal",
@@ -5374,6 +5827,46 @@ export const es: EnTranslations = {
         "name": "Fuego estelar",
         "description": "Invoca una descarga de fuego estelar que causa {damage} de daño Arcano."
       },
+      "travel_form": {
+        "name": "Forma de viaje",
+        "description": "Adopta una veloz forma de viaje, aumentando la velocidad de movimiento un 40%. No se puede usar en combate."
+      },
+      "enrage": {
+        "name": "Enfurecer",
+        "description": "Genera 20 de furia al instante. Solo forma de oso."
+      },
+      "bash": {
+        "name": "Mazazo",
+        "description": "Aturde al objetivo durante 2 s. Solo forma de oso."
+      },
+      "faerie_fire": {
+        "name": "Fuego feérico",
+        "description": "Reduce la armadura del objetivo en 35 durante 40 s."
+      },
+      "hibernate": {
+        "name": "Hibernar",
+        "description": "Sume al objetivo en un sueño profundo de hasta 8 s. Cualquier daño lo despertará."
+      },
+      "dash": {
+        "name": "Carrera",
+        "description": "Esprinta hacia delante, aumentando la velocidad de movimiento un 50% durante 15 s. Solo forma felina."
+      },
+      "pounce": {
+        "name": "Abalanzarse",
+        "description": "Apertura desde el sigilo que aturde al objetivo durante 2 s. Otorga 1 punto de combo. Solo forma felina."
+      },
+      "insect_swarm": {
+        "name": "Enjambre de insectos",
+        "description": "Un enjambre de insectos acosa al enemigo, causando {damage} de daño de Naturaleza durante 12 s."
+      },
+      "tigers_fury": {
+        "name": "Furia del tigre",
+        "description": "Aumenta el poder de ataque en 40 durante 6 s. Solo forma felina."
+      },
+      "rip": {
+        "name": "Desgarrar",
+        "description": "Remate que causa daño de sangrado durante 12 s. Consume puntos de combo. Solo forma felina."
+      },
       "mortal_strike": {
         "name": "Golpe mortal",
         "description": "Ataque brutal que inflige daño de arma más {damage}. (habilidad distintiva de Armas)"
@@ -5401,6 +5894,26 @@ export const es: EnTranslations = {
       "summon_voidwalker": {
         "name": "Invocar caminante del Vacío",
         "description": "Invoca a un Caminante del Vacío bajo el mando del brujo. El Caminante del Vacío es un demonio resistente que provoca a tus enemigos y encaja el castigo. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_succubus": {
+        "name": "Invocar súcubo",
+        "description": "Invoca a una Súcubo bajo el mando del brujo. La Súcubo es un demonio frágil que golpea con rapidez y pega fuerte en el cuerpo a cuerpo. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_felhunter": {
+        "name": "Invocar cazador vil",
+        "description": "Invoca a un Cazador vil bajo el mando del brujo. El Cazador vil acosa a los enemigos desde la distancia con Mordedura de las Sombras y sobresale cazando lanzadores de hechizos. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_felguard": {
+        "name": "Invocar guardia vil",
+        "description": "Invoca a un Guardia vil bajo el mando del brujo. El Guardia vil es un demonio cuerpo a cuerpo resistente que se adentra en la batalla y aguanta por sí mismo. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_infernal": {
+        "name": "Invocar infernal",
+        "description": "Somete a un Infernal a tu voluntad: un coloso descomunal con un cuerpo a cuerpo demoledor y la mayor salud y armadura de todos los demonios. Un largo tiempo de reutilización refrena su poder bruto. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_doomguard": {
+        "name": "Invocar guardián del Terror",
+        "description": "Somete a un Guardián del Terror a tu voluntad: un demonio de élite que descarga un fuerte daño de las Sombras desde lejos. Un largo tiempo de reutilización refrena su poder devastador. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
       },
       "bear_charge": {
         "name": "Embestida del oso",
@@ -5853,6 +6366,51 @@ export const es: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Escama de wyrm agrietada"
       },
+      "conjured_bread": {
+        "name": "Pan invocado"
+      },
+      "conjured_bread2": {
+        "name": "Pan negro invocado"
+      },
+      "conjured_bread3": {
+        "name": "Bollo dulce invocado"
+      },
+      "roadwardens_helm": {
+        "name": "Yelmo del guardián del camino"
+      },
+      "wayfarers_hood": {
+        "name": "Capucha del viajero"
+      },
+      "acolytes_circlet": {
+        "name": "Diadema del acólito"
+      },
+      "reinforced_pauldrons": {
+        "name": "Hombreras reforzadas"
+      },
+      "embroidered_mantle": {
+        "name": "Manto bordado"
+      },
+      "sturdy_belt": {
+        "name": "Cinturón resistente del viajero"
+      },
+      "silk_sash": {
+        "name": "Faja de seda tejida"
+      },
+      "roughspun_gloves": {
+        "name": "Guantes de tela basta"
+      },
+      "bristlehide_spaulders": {
+        "name": "Hombreras de piel de cerdas"
+      },
+      "sableweb_cord": {
+        "name": "Cordón de Sableweb"
+      },
+      "gorraks_cleaver": {
+        "name": "Hendedor de Gorrak"
+      },
+      "mossy_handwraps": {
+        "name": "Envolturas cubiertas de musgo"
+      },
       "bristleback_maul": {
         "name": "Maza Bristleback"
       },
@@ -5999,6 +6557,96 @@ export const es: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Botines Sombravermis"
+      },
+      "glimmerfin_koi": {
+        "name": "Koi de aletas brillantes"
+      },
+      "raw_bog_eel": {
+        "name": "Anguila de ciénaga cruda"
+      },
+      "raw_frostgill_trout": {
+        "name": "Trucha de agallas gélidas cruda"
+      },
+      "raw_marsh_pike": {
+        "name": "Lucio de marisma crudo"
+      },
+      "raw_river_perch": {
+        "name": "Perca de río cruda"
+      },
+      "raw_stonescale_carp": {
+        "name": "Carpa de escamas pétreas cruda"
+      },
+      "soggy_boot": {
+        "name": "Bota empapada"
+      },
+      "elixir_of_the_bear": {
+        "name": "Elixir del Oso"
+      },
+      "lesser_healing_potion": {
+        "name": "Poción de curación menor"
+      },
+      "lesser_mana_potion": {
+        "name": "Poción de maná menor"
+      },
+      "healing_potion": {
+        "name": "Poción de curación"
+      },
+      "mana_potion": {
+        "name": "Poción de maná"
+      },
+      "tunnelkings_spade": {
+        "name": "Pala del Rey Túnel"
+      },
+      "brutoks_maul": {
+        "name": "Mazo de Brutok"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Colmillo de ogro agrietado"
+      },
+      "crag_warden_cudgel": {
+        "name": "Garrote del guardián del risco"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Botas acechadoras de Cragmaw"
+      },
+      "drowned_tide_scepter": {
+        "name": "Cetro de la marea ahogada"
+      },
+      "emberfang_warblade": {
+        "name": "Espada de guerra colmillo de brasa"
+      },
+      "emberwing_cinderscale": {
+        "name": "Escama de ceniza de Aladebrasa"
+      },
+      "emberwing_legguards": {
+        "name": "Quijotes de Aladebrasa"
+      },
+      "gravewardens_shiv": {
+        "name": "Punzón del guardián de tumbas"
+      },
+      "hollow_vigil_staff": {
+        "name": "Bastón de la vigilia hueca"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Atadora de almas de Maldrec"
+      },
+      "oathbound_greaves": {
+        "name": "Grebas del juramento"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Cinturón de guerra del rompecráneos"
+      },
+      "skullsplitter_dirk": {
+        "name": "Daga partecráneos"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Colmillo de marea de Sloomtooth"
+      },
+      "tidereaver_gaff": {
+        "name": "Bichero del segamareas"
+      },
+      "verlans_oathblade": {
+        "name": "Espada del juramento de Verlan"
       },
       "briny_idol": {
         "name": "Ídolo salobre"
@@ -6340,6 +6988,42 @@ export const es: EnTranslations = {
       },
       "voidwalker": {
         "name": "Caminante del Vacío"
+      },
+      "succubus": {
+        "name": "Súcubo"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Rompecráneos"
+      },
+      "captain_verlan": {
+        "name": "Capitán Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Viejo Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth el Ahogado"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar Aladebrasa"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Maldrec el Ataespectros"
+      },
+      "felhunter": {
+        "name": "Cazador vil"
+      },
+      "felguard": {
+        "name": "Guardia vil"
+      },
+      "infernal": {
+        "name": "Infernal"
+      },
+      "doomguard": {
+        "name": "Guardián del Terror"
       },
       "choirmother_selthe": {
         "name": "Selthe, madre del coro"
@@ -7437,7 +8121,8 @@ export const es_ES: EnTranslations = {
       "maxLevel": "NIVEL MÁX.",
       "totalXp": "EXP total",
       "lv": "Nv",
-      "toNext": "para el siguiente"
+      "toNext": "para el siguiente",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progreso",
@@ -7484,7 +8169,12 @@ export const es_ES: EnTranslations = {
       "needXp": "más EXP de por vida para prestigio"
     },
     "settings": {
-      "showOverflowXp": "Mostrar EXP excedente"
+      "showOverflowXp": "Mostrar EXP excedente",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talentos",
@@ -7543,7 +8233,16 @@ export const es_ES: EnTranslations = {
       "noBuilds": "Sin configuraciones guardadas",
       "save": "Guardar",
       "comingSoonTitle": "Talentos próximamente",
-      "comingSoonBody": "Esta clase aún no tiene árboles de talentos. Puedes seguir jugando normalmente; los árboles completos llegarán en una actualización futura."
+      "comingSoonBody": "Esta clase aún no tiene árboles de talentos. Puedes seguir jugando normalmente; los árboles completos llegarán en una actualización futura.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -7903,6 +8602,8 @@ export const es_ES: EnTranslations = {
       "levelLog": "Has alcanzado el nivel {level}.",
       "xpGain": "Ganas {amount} de experiencia.",
       "xpFloat": "+{amount} XP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Has muerto.",
       "releaseSpirit": "Liberar espíritu",
       "chatTab": "Chat",
@@ -7932,6 +8633,7 @@ export const es_ES: EnTranslations = {
       "keyBindings": "Atajos de teclado",
       "graphics": "Gráficos",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Cerrar sesión",
       "returnToGame": "Volver al juego",
       "resetToDefaults": "Restablecer valores",
@@ -7955,15 +8657,33 @@ export const es_ES: EnTranslations = {
       "terrainLow": "Bajo",
       "terrainHigh": "Alto",
       "touchOpacity": "Opacidad de controles táctiles",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "La calidad gráfica y el detalle del terreno se aplican al recargar.",
       "reloadNow": "Recargar ahora",
       "fullscreen": "Pantalla completa",
       "touchLookSpeed": "Velocidad de cámara táctil",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Modo zurdo táctil",
       "filterProfanity": "Filtrar lenguaje",
       "clickMoveButton": "Botón de clic para mover",
       "clickToMove": "Clic para moverse",
       "graphicsNote": "Baja la velocidad de cámara para un control más tranquilo. La calidad de renderizado bajo 100% mejora los FPS en equipos modestos.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Efectos de sonido",
       "musicVolume": "Volumen de música",
       "music": "Música",
@@ -8521,7 +9241,8 @@ export const es_ES: EnTranslations = {
       "food": "Comida",
       "drink": "Bebida",
       "tool": "Herramienta",
-      "potion": "Poción"
+      "potion": "Poción",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armadura",
@@ -8537,6 +9258,8 @@ export const es_ES: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{kind} {quality}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} de daño Velocidad {speed}",
       "dps": "({dps} de daño por segundo)",
       "dagger": "Daga",
@@ -8660,6 +9383,14 @@ export const es_ES: EnTranslations = {
         "name": "Grito de batalla",
         "description": "Aumenta tu poder de ataque en 20 durante 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Cargar",
         "description": "Carga contra un enemigo, genera 9 de ira y lo aturde durante 1 s. Alcance de 8-25 m."
@@ -8728,6 +9459,10 @@ export const es_ES: EnTranslations = {
         "name": "Crear agua",
         "description": "Crea 2 botellas de agua que restauran maná al beberlas. Los rangos superiores crean agua más pura."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Explosión de Fuego",
         "description": "Explota contra el enemigo y causa {damage} de daño de Fuego. Instantáneo."
@@ -8751,6 +9486,10 @@ export const es_ES: EnTranslations = {
       "scorch": {
         "name": "Agostar",
         "description": "Agosta al enemigo por {damage} de daño de Fuego. Lanzamiento rápido."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Barrera de Hielo",
@@ -8800,6 +9539,46 @@ export const es_ES: EnTranslations = {
         "name": "Subidón de adrenalina",
         "description": "Tu sangre se enciende y restaura al instante 60 de energía."
       },
+      "garrote": {
+        "name": "Garrote",
+        "description": "Estrangula al enemigo con un garrote, infligiendo daño de inmediato y haciéndolo sangrar {damage} durante 18 s. Debes estar en sigilo. Otorga 1 punto de combo."
+      },
+      "cheap_shot": {
+        "name": "Ataque artero",
+        "description": "Golpea al objetivo, aturdiéndolo durante 4 s. Debes estar en sigilo. Otorga 2 puntos de combo."
+      },
+      "sap": {
+        "name": "Pasmar",
+        "description": "Incapacita al objetivo durante 8 s. Debes estar en sigilo y fuera de combate. Cualquier daño rompe el efecto."
+      },
+      "crippling_poison": {
+        "name": "Veneno tullidor",
+        "description": "Golpea al objetivo con un veneno tullidor, infligiendo {damage} de daño de Naturaleza y reduciendo su velocidad de movimiento un 50% durante 12 s."
+      },
+      "expose_armor": {
+        "name": "Exponer armadura",
+        "description": "Movimiento final que deja al descubierto al objetivo, reduciendo su armadura. Cuantos más puntos de combo se gasten, más profundo es el corte."
+      },
+      "rupture": {
+        "name": "Descoyuntar",
+        "description": "Movimiento final que hiere al objetivo, haciéndolo sangrar {damage} durante 16 s."
+      },
+      "vanish": {
+        "name": "Esfumarse",
+        "description": "Desaparece de la vista, entrando en Sigilo incluso en combate. Te mueves un 30% más lento mientras estás oculto. Dura hasta 10 s."
+      },
+      "instant_poison": {
+        "name": "Veneno instantáneo",
+        "description": "Recubre tu arma durante 30 min, haciendo que cada uno de tus golpes cuerpo a cuerpo inflija 8 de daño de Naturaleza adicional."
+      },
+      "deadly_poison": {
+        "name": "Veneno mortal",
+        "description": "Recubre tu arma durante 30 min, haciendo que cada uno de tus golpes cuerpo a cuerpo inflija 14 de daño de Naturaleza adicional."
+      },
+      "blind": {
+        "name": "Cegar",
+        "description": "Ciega al objetivo, haciéndolo deambular desorientado durante 8 s. Cualquier daño rompe el efecto."
+      },
       "seal_of_righteousness": {
         "name": "Sello de rectitud",
         "description": "Te llena de poder Sagrado durante 30 s, haciendo que cada golpe cuerpo a cuerpo inflija 4 de daño Sagrado adicional. Desátalo con Sentencia."
@@ -8848,6 +9627,10 @@ export const es_ES: EnTranslations = {
         "name": "Furia recta",
         "description": "Aumenta un 60% la amenaza generada por tu daño Sagrado durante 30 min. La piedra angular del paladín tanque."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Domesticar bestia",
         "description": "Comienza a domesticar una bestia para que sea tu compañera. Debe ser de tu nivel o inferior y no ser élite. Tu mascota te sigue, ataca a tus enemigos y genera su propia amenaza. Solo puedes tener una mascota a la vez."
@@ -8883,6 +9666,10 @@ export const es_ES: EnTranslations = {
       "wing_clip": {
         "name": "Cortar alas",
         "description": "Inflige una herida que ralentiza al enemigo un 40% durante 10 s."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspecto del guepardo",
@@ -8960,9 +9747,17 @@ export const es_ES: EnTranslations = {
         "name": "Choque de llamas",
         "description": "Abrasa al objetivo con fuego por 25 de daño más {damage} durante 12 s."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Choque de Escarcha",
         "description": "Golpea al objetivo al instante con escarcha por {damage} de daño de Escarcha y reduce su velocidad de movimiento un 50% durante 8 s."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Lobo fantasmal",
@@ -9080,6 +9875,46 @@ export const es_ES: EnTranslations = {
         "name": "Fuego estelar",
         "description": "Invoca una descarga de fuego estelar que causa {damage} de daño Arcano."
       },
+      "travel_form": {
+        "name": "Forma de viaje",
+        "description": "Adopta una veloz forma de viaje, aumentando la velocidad de movimiento un 40%. No se puede usar en combate."
+      },
+      "enrage": {
+        "name": "Enfurecer",
+        "description": "Genera 20 de furia al instante. Solo forma de oso."
+      },
+      "bash": {
+        "name": "Mazazo",
+        "description": "Aturde al objetivo durante 2 s. Solo forma de oso."
+      },
+      "faerie_fire": {
+        "name": "Fuego feérico",
+        "description": "Reduce la armadura del objetivo en 35 durante 40 s."
+      },
+      "hibernate": {
+        "name": "Hibernar",
+        "description": "Sume al objetivo en un sueño profundo de hasta 8 s. Cualquier daño lo despertará."
+      },
+      "dash": {
+        "name": "Carrera",
+        "description": "Esprinta hacia delante, aumentando la velocidad de movimiento un 50% durante 15 s. Solo forma felina."
+      },
+      "pounce": {
+        "name": "Abalanzarse",
+        "description": "Apertura desde el sigilo que aturde al objetivo durante 2 s. Otorga 1 punto de combo. Solo forma felina."
+      },
+      "insect_swarm": {
+        "name": "Enjambre de insectos",
+        "description": "Un enjambre de insectos acosa al enemigo, causando {damage} de daño de Naturaleza durante 12 s."
+      },
+      "tigers_fury": {
+        "name": "Furia del tigre",
+        "description": "Aumenta el poder de ataque en 40 durante 6 s. Solo forma felina."
+      },
+      "rip": {
+        "name": "Desgarrar",
+        "description": "Remate que causa daño de sangrado durante 12 s. Consume puntos de combo. Solo forma felina."
+      },
       "mortal_strike": {
         "name": "Golpe mortal",
         "description": "Ataque brutal que inflige daño de arma más {damage}. (habilidad distintiva de Armas)"
@@ -9107,6 +9942,26 @@ export const es_ES: EnTranslations = {
       "summon_voidwalker": {
         "name": "Invocar caminante del Vacío",
         "description": "Invoca a un Caminante del Vacío bajo el mando del brujo. El Caminante del Vacío es un demonio resistente que provoca a tus enemigos y encaja el castigo. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_succubus": {
+        "name": "Invocar súcubo",
+        "description": "Invoca a una Súcubo bajo el mando del brujo. La Súcubo es un demonio frágil que golpea con rapidez y pega fuerte en el cuerpo a cuerpo. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_felhunter": {
+        "name": "Invocar cazador vil",
+        "description": "Invoca a un Cazador vil bajo el mando del brujo. El Cazador vil acosa a los enemigos desde la distancia con Mordedura de las Sombras y sobresale cazando lanzadores de hechizos. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_felguard": {
+        "name": "Invocar guardia vil",
+        "description": "Invoca a un Guardia vil bajo el mando del brujo. El Guardia vil es un demonio cuerpo a cuerpo resistente que se adentra en la batalla y aguanta por sí mismo. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_infernal": {
+        "name": "Invocar infernal",
+        "description": "Somete a un Infernal a tu voluntad: un coloso descomunal con un cuerpo a cuerpo demoledor y la mayor salud y armadura de todos los demonios. Un largo tiempo de reutilización refrena su poder bruto. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
+      },
+      "summon_doomguard": {
+        "name": "Invocar guardián del Terror",
+        "description": "Somete a un Guardián del Terror a tu voluntad: un demonio de élite que descarga un fuerte daño de las Sombras desde lejos. Un largo tiempo de reutilización refrena su poder devastador. Invocar un nuevo demonio descarta el actual. Solo puedes tener un demonio a la vez."
       },
       "bear_charge": {
         "name": "Embestida del oso",
@@ -9559,6 +10414,51 @@ export const es_ES: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Escama de wyrm agrietada"
       },
+      "conjured_bread": {
+        "name": "Pan invocado"
+      },
+      "conjured_bread2": {
+        "name": "Pan negro invocado"
+      },
+      "conjured_bread3": {
+        "name": "Bollo dulce invocado"
+      },
+      "roadwardens_helm": {
+        "name": "Yelmo del guardián del camino"
+      },
+      "wayfarers_hood": {
+        "name": "Capucha del viajero"
+      },
+      "acolytes_circlet": {
+        "name": "Diadema del acólito"
+      },
+      "reinforced_pauldrons": {
+        "name": "Hombreras reforzadas"
+      },
+      "embroidered_mantle": {
+        "name": "Manto bordado"
+      },
+      "sturdy_belt": {
+        "name": "Cinturón resistente del viajero"
+      },
+      "silk_sash": {
+        "name": "Faja de seda tejida"
+      },
+      "roughspun_gloves": {
+        "name": "Guantes de tela basta"
+      },
+      "bristlehide_spaulders": {
+        "name": "Hombreras de piel de cerdas"
+      },
+      "sableweb_cord": {
+        "name": "Cordón de Sableweb"
+      },
+      "gorraks_cleaver": {
+        "name": "Hendedor de Gorrak"
+      },
+      "mossy_handwraps": {
+        "name": "Envolturas cubiertas de musgo"
+      },
       "bristleback_maul": {
         "name": "Maza Bristleback"
       },
@@ -9705,6 +10605,96 @@ export const es_ES: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Botines Sombravermis"
+      },
+      "glimmerfin_koi": {
+        "name": "Koi de aletas brillantes"
+      },
+      "raw_bog_eel": {
+        "name": "Anguila de ciénaga cruda"
+      },
+      "raw_frostgill_trout": {
+        "name": "Trucha de agallas gélidas cruda"
+      },
+      "raw_marsh_pike": {
+        "name": "Lucio de marisma crudo"
+      },
+      "raw_river_perch": {
+        "name": "Perca de río cruda"
+      },
+      "raw_stonescale_carp": {
+        "name": "Carpa de escamas pétreas cruda"
+      },
+      "soggy_boot": {
+        "name": "Bota empapada"
+      },
+      "elixir_of_the_bear": {
+        "name": "Elixir del Oso"
+      },
+      "lesser_healing_potion": {
+        "name": "Poción de curación menor"
+      },
+      "lesser_mana_potion": {
+        "name": "Poción de maná menor"
+      },
+      "healing_potion": {
+        "name": "Poción de curación"
+      },
+      "mana_potion": {
+        "name": "Poción de maná"
+      },
+      "tunnelkings_spade": {
+        "name": "Pala del Rey Túnel"
+      },
+      "brutoks_maul": {
+        "name": "Mazo de Brutok"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Colmillo de ogro agrietado"
+      },
+      "crag_warden_cudgel": {
+        "name": "Garrote del guardián del risco"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Botas acechadoras de Cragmaw"
+      },
+      "drowned_tide_scepter": {
+        "name": "Cetro de la marea ahogada"
+      },
+      "emberfang_warblade": {
+        "name": "Espada de guerra colmillo de brasa"
+      },
+      "emberwing_cinderscale": {
+        "name": "Escama de ceniza de Aladebrasa"
+      },
+      "emberwing_legguards": {
+        "name": "Quijotes de Aladebrasa"
+      },
+      "gravewardens_shiv": {
+        "name": "Punzón del guardián de tumbas"
+      },
+      "hollow_vigil_staff": {
+        "name": "Bastón de la vigilia hueca"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Atadora de almas de Maldrec"
+      },
+      "oathbound_greaves": {
+        "name": "Grebas del juramento"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Cinturón de guerra del rompecráneos"
+      },
+      "skullsplitter_dirk": {
+        "name": "Daga partecráneos"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Colmillo de marea de Sloomtooth"
+      },
+      "tidereaver_gaff": {
+        "name": "Bichero del segamareas"
+      },
+      "verlans_oathblade": {
+        "name": "Espada del juramento de Verlan"
       },
       "briny_idol": {
         "name": "Ídolo salobre"
@@ -10046,6 +11036,42 @@ export const es_ES: EnTranslations = {
       },
       "voidwalker": {
         "name": "Caminante del Vacío"
+      },
+      "succubus": {
+        "name": "Súcubo"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Rompecráneos"
+      },
+      "captain_verlan": {
+        "name": "Capitán Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Viejo Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth el Ahogado"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar Aladebrasa"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Maldrec el Ataespectros"
+      },
+      "felhunter": {
+        "name": "Cazador vil"
+      },
+      "felguard": {
+        "name": "Guardia vil"
+      },
+      "infernal": {
+        "name": "Infernal"
+      },
+      "doomguard": {
+        "name": "Guardián del Terror"
       },
       "choirmother_selthe": {
         "name": "Selthe, madre del coro"
@@ -11143,7 +12169,8 @@ export const fr_FR: EnTranslations = {
       "maxLevel": "NIVEAU MAX.",
       "totalXp": "EXP totale",
       "lv": "Niv.",
-      "toNext": "avant le suivant"
+      "toNext": "avant le suivant",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progression",
@@ -11190,7 +12217,12 @@ export const fr_FR: EnTranslations = {
       "needXp": "EXP à vie supplémentaire pour le prestige"
     },
     "settings": {
-      "showOverflowXp": "Afficher l'EXP excédentaire"
+      "showOverflowXp": "Afficher l'EXP excédentaire",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talents",
@@ -11249,7 +12281,16 @@ export const fr_FR: EnTranslations = {
       "noBuilds": "Aucune configuration sauvegardée",
       "save": "Sauvegarder",
       "comingSoonTitle": "Talents à venir",
-      "comingSoonBody": "Cette classe n'a pas encore d'arbres de talents. Vous pouvez continuer à jouer normalement; les arbres complets arriveront dans une future mise à jour."
+      "comingSoonBody": "Cette classe n'a pas encore d'arbres de talents. Vous pouvez continuer à jouer normalement; les arbres complets arriveront dans une future mise à jour.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -11609,6 +12650,8 @@ export const fr_FR: EnTranslations = {
       "levelLog": "Vous avez atteint le niveau {level} !",
       "xpGain": "Vous gagnez {amount} points d'expérience.",
       "xpFloat": "+{amount} XP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Vous êtes mort.",
       "releaseSpirit": "Libérer l'esprit",
       "chatTab": "Discussion",
@@ -11638,6 +12681,7 @@ export const fr_FR: EnTranslations = {
       "keyBindings": "Raccourcis clavier",
       "graphics": "Graphismes",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Déconnexion",
       "returnToGame": "Retour au jeu",
       "resetToDefaults": "Réinitialiser",
@@ -11661,15 +12705,33 @@ export const fr_FR: EnTranslations = {
       "terrainLow": "Bas",
       "terrainHigh": "Élevé",
       "touchOpacity": "Opacité des commandes tactiles",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "La qualité graphique et le détail du terrain s'appliquent après un rechargement.",
       "reloadNow": "Recharger maintenant",
       "fullscreen": "Plein écran",
       "touchLookSpeed": "Vitesse caméra tactile",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Mode gaucher tactile",
       "filterProfanity": "Filtrer le langage",
       "clickMoveButton": "Bouton clic pour déplacer",
       "clickToMove": "Cliquer pour se déplacer",
       "graphicsNote": "Réduisez la vitesse de caméra pour une visée plus calme. Une qualité de rendu sous 100 % améliore les FPS sur les machines modestes.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Effets sonores",
       "musicVolume": "Volume de la musique",
       "music": "Musique",
@@ -12227,7 +13289,8 @@ export const fr_FR: EnTranslations = {
       "food": "Nourriture",
       "drink": "Boisson",
       "tool": "Outil",
-      "potion": "Potion"
+      "potion": "Potion",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armure",
@@ -12243,6 +13306,8 @@ export const fr_FR: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{kind} {quality}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} points de dégâts Vitesse {speed}",
       "dps": "({dps} dégâts par seconde)",
       "dagger": "Dague",
@@ -12366,6 +13431,14 @@ export const fr_FR: EnTranslations = {
         "name": "Cri de guerre",
         "description": "Augmente votre puissance d'attaque de 20 pendant 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Charge",
         "description": "Charge un ennemi, génère 9 rage et l'étourdit pendant 1 s. Portée de 8-25 m."
@@ -12434,6 +13507,10 @@ export const fr_FR: EnTranslations = {
         "name": "Invocation d'eau",
         "description": "Invoque 2 bouteilles d'eau qui restaurent du mana une fois bues. Les rangs supérieurs invoquent une eau plus pure."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Trait de feu",
         "description": "Frappe l'ennemi pour {damage} points de dégâts de Feu. Instantané."
@@ -12457,6 +13534,10 @@ export const fr_FR: EnTranslations = {
       "scorch": {
         "name": "Brûlure",
         "description": "Brûle l'ennemi pour {damage} points de dégâts de Feu. Incantation rapide."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Barrière de glace",
@@ -12506,6 +13587,46 @@ export const fr_FR: EnTranslations = {
         "name": "Poussée d'adrénaline",
         "description": "Votre sang s'embrase et restaure instantanément 60 énergie."
       },
+      "garrote": {
+        "name": "Garrot",
+        "description": "Garrotte l'ennemi, infligeant des dégâts immédiats et le faisant saigner de {damage} pendant 18 s. Vous devez être camouflé. Confère 1 point de combo."
+      },
+      "cheap_shot": {
+        "name": "Coup bas",
+        "description": "Frappe la cible, l'étourdissant pendant 4 s. Vous devez être camouflé. Confère 2 points de combo."
+      },
+      "sap": {
+        "name": "Assommer",
+        "description": "Neutralise la cible pendant 8 s. Vous devez être camouflé et hors combat. Le moindre dégât rompt l'effet."
+      },
+      "crippling_poison": {
+        "name": "Poison affaiblissant",
+        "description": "Frappe la cible avec un poison affaiblissant, infligeant {damage} dégâts de Nature et réduisant sa vitesse de déplacement de 50% pendant 12 s."
+      },
+      "expose_armor": {
+        "name": "Exposer l'armure",
+        "description": "Coup de grâce qui expose la cible, réduisant son armure. Plus vous dépensez de points de combo, plus l'entaille est profonde."
+      },
+      "rupture": {
+        "name": "Rupture",
+        "description": "Coup de grâce qui blesse la cible, la faisant saigner de {damage} pendant 16 s."
+      },
+      "vanish": {
+        "name": "Disparition",
+        "description": "Vous disparaissez et entrez en Camouflage, même en plein combat. Vous vous déplacez 30% plus lentement tant que vous êtes dissimulé. Dure jusqu'à 10 s."
+      },
+      "instant_poison": {
+        "name": "Poison instantané",
+        "description": "Enduit votre arme pendant 30 min, chacune de vos attaques en mêlée infligeant 8 dégâts de Nature supplémentaires."
+      },
+      "deadly_poison": {
+        "name": "Poison mortel",
+        "description": "Enduit votre arme pendant 30 min, chacune de vos attaques en mêlée infligeant 14 dégâts de Nature supplémentaires."
+      },
+      "blind": {
+        "name": "Cécité",
+        "description": "Aveugle la cible, la faisant errer désorientée pendant 8 s. Le moindre dégât rompt l'effet."
+      },
       "seal_of_righteousness": {
         "name": "Sceau de piété",
         "description": "Vous remplit de puissance Sacrée pendant 30 s, faisant infliger 4 points de dégâts Sacrés supplémentaires à chacune de vos frappes de mêlée. Libérez-le avec Jugement."
@@ -12554,6 +13675,10 @@ export const fr_FR: EnTranslations = {
         "name": "Fureur vertueuse",
         "description": "Augmente de 60% la menace générée par vos dégâts Sacrés pendant 30 min. La pierre angulaire du paladin tank."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Apprivoiser une bête",
         "description": "Commence à apprivoiser une bête pour en faire votre compagnon. Elle doit être de votre niveau ou moins et ne pas être élite. Votre familier vous suit, attaque vos ennemis et génère sa propre menace. Vous ne pouvez avoir qu'un familier à la fois."
@@ -12589,6 +13714,10 @@ export const fr_FR: EnTranslations = {
       "wing_clip": {
         "name": "Coupure d'ailes",
         "description": "Inflige une blessure qui ralentit l'ennemi de 40% pendant 10 s."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspect du guépard",
@@ -12666,9 +13795,17 @@ export const fr_FR: EnTranslations = {
         "name": "Horion de flammes",
         "description": "Brûle la cible par le feu pour 25 points de dégâts plus {damage} en 12 s."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Horion de givre",
         "description": "Frappe instantanément la cible par le givre pour {damage} points de dégâts de Givre et ralentit son déplacement de 50% pendant 8 s."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Loup fantôme",
@@ -12786,6 +13923,46 @@ export const fr_FR: EnTranslations = {
         "name": "Feu stellaire",
         "description": "Fait tomber un trait de feu stellaire qui inflige {damage} points de dégâts des Arcanes."
       },
+      "travel_form": {
+        "name": "Forme de voyage",
+        "description": "Prend une forme de voyage rapide, augmentant la vitesse de déplacement de 40%. Inutilisable en combat."
+      },
+      "enrage": {
+        "name": "Furie",
+        "description": "Génère 20 points de rage instantanément. Forme d'ours uniquement."
+      },
+      "bash": {
+        "name": "Coup de massue",
+        "description": "Étourdit la cible pendant 2 s. Forme d'ours uniquement."
+      },
+      "faerie_fire": {
+        "name": "Feu féerique",
+        "description": "Diminue l'armure de la cible de 35 pendant 40 s."
+      },
+      "hibernate": {
+        "name": "Hibernation",
+        "description": "Plonge la cible dans un sommeil profond pendant 8 s maximum. Tout dégât la réveille."
+      },
+      "dash": {
+        "name": "Sprint",
+        "description": "Bondit en avant, augmentant la vitesse de déplacement de 50% pendant 15 s. Forme de félin uniquement."
+      },
+      "pounce": {
+        "name": "Bondir",
+        "description": "Ouverture furtive qui étourdit la cible pendant 2 s. Confère 1 point de combo. Forme de félin uniquement."
+      },
+      "insect_swarm": {
+        "name": "Nuée d'insectes",
+        "description": "L'ennemi est assailli par une nuée d'insectes, subissant {damage} points de dégâts de Nature sur 12 s."
+      },
+      "tigers_fury": {
+        "name": "Furie du tigre",
+        "description": "Augmente la puissance d'attaque de 40 pendant 6 s. Forme de félin uniquement."
+      },
+      "rip": {
+        "name": "Lacération",
+        "description": "Coup de grâce qui inflige des dégâts de saignement sur 12 s. Consomme les points de combo. Forme de félin uniquement."
+      },
       "mortal_strike": {
         "name": "Frappe mortelle",
         "description": "Frappe vicieuse infligeant les dégâts de l'arme plus {damage}. (signature Armes)"
@@ -12813,6 +13990,26 @@ export const fr_FR: EnTranslations = {
       "summon_voidwalker": {
         "name": "Invoquer un marcheur du Vide",
         "description": "Invoque un Marcheur du Vide sous le commandement du démoniste. Le Marcheur du Vide est un démon robuste qui provoque vos ennemis et encaisse les coups. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_succubus": {
+        "name": "Invoquer une succube",
+        "description": "Invoque une Succube sous le commandement du démoniste. La Succube est un démon fragile qui frappe vite et fort au corps à corps. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_felhunter": {
+        "name": "Invoquer un limier corrompu",
+        "description": "Invoque un Limier corrompu sous le commandement du démoniste. Le Limier corrompu harcèle les ennemis à distance avec sa Morsure des ombres et excelle dans la traque des lanceurs de sorts. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_felguard": {
+        "name": "Invoquer un gangregarde",
+        "description": "Invoque un Gangregarde sous le commandement du démoniste. Le Gangregarde est un démon de mêlée résistant qui se jette dans la bataille et tient bon. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_infernal": {
+        "name": "Invoquer un infernal",
+        "description": "Soumet un Infernal à votre volonté — un colosse implacable doté d'une puissance de mêlée écrasante et des points de vie et de l'armure les plus élevés de tous les démons. Un long temps de recharge bride sa puissance brute. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_doomguard": {
+        "name": "Invoquer un seigneur de l'effroi",
+        "description": "Soumet un Seigneur de l'effroi à votre volonté — un démon d'élite qui déverse de lourds dégâts d'Ombre à distance. Un long temps de recharge bride sa puissance dévastatrice. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
       },
       "bear_charge": {
         "name": "Charge de l'ours",
@@ -13265,6 +14462,51 @@ export const fr_FR: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Écaille de wyrm fendue"
       },
+      "conjured_bread": {
+        "name": "Pain conjuré"
+      },
+      "conjured_bread2": {
+        "name": "Pain noir conjuré"
+      },
+      "conjured_bread3": {
+        "name": "Brioche conjurée"
+      },
+      "roadwardens_helm": {
+        "name": "Heaume du gardien des routes"
+      },
+      "wayfarers_hood": {
+        "name": "Capuche du voyageur"
+      },
+      "acolytes_circlet": {
+        "name": "Diadème de l'acolyte"
+      },
+      "reinforced_pauldrons": {
+        "name": "Spallières renforcées"
+      },
+      "embroidered_mantle": {
+        "name": "Manteau brodé"
+      },
+      "sturdy_belt": {
+        "name": "Ceinture solide du voyageur"
+      },
+      "silk_sash": {
+        "name": "Écharpe de soie tissée"
+      },
+      "roughspun_gloves": {
+        "name": "Gants de toile grossière"
+      },
+      "bristlehide_spaulders": {
+        "name": "Spallières en cuir hérissé"
+      },
+      "sableweb_cord": {
+        "name": "Cordon de Sableweb"
+      },
+      "gorraks_cleaver": {
+        "name": "Fendoir de Gorrak"
+      },
+      "mossy_handwraps": {
+        "name": "Mitaines moussues"
+      },
       "bristleback_maul": {
         "name": "Maillet Bristleback"
       },
@@ -13411,6 +14653,96 @@ export const fr_FR: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Bottines Ombrewyrm"
+      },
+      "glimmerfin_koi": {
+        "name": "Koï aux nageoires scintillantes"
+      },
+      "raw_bog_eel": {
+        "name": "Anguille des marais crue"
+      },
+      "raw_frostgill_trout": {
+        "name": "Truite aux ouïes givrées crue"
+      },
+      "raw_marsh_pike": {
+        "name": "Brochet des marais cru"
+      },
+      "raw_river_perch": {
+        "name": "Perche de rivière crue"
+      },
+      "raw_stonescale_carp": {
+        "name": "Carpe aux écailles de pierre crue"
+      },
+      "soggy_boot": {
+        "name": "Botte détrempée"
+      },
+      "elixir_of_the_bear": {
+        "name": "Élixir de l'Ours"
+      },
+      "lesser_healing_potion": {
+        "name": "Potion de soins inférieure"
+      },
+      "lesser_mana_potion": {
+        "name": "Potion de mana inférieure"
+      },
+      "healing_potion": {
+        "name": "Potion de soins"
+      },
+      "mana_potion": {
+        "name": "Potion de mana"
+      },
+      "tunnelkings_spade": {
+        "name": "Bêche du Roi des Tunnels"
+      },
+      "brutoks_maul": {
+        "name": "Maillet de Brutok"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Défense d'ogre fêlée"
+      },
+      "crag_warden_cudgel": {
+        "name": "Gourdin du gardien des falaises"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Bottes rôdeuses de Cragmaw"
+      },
+      "drowned_tide_scepter": {
+        "name": "Sceptre de la marée noyée"
+      },
+      "emberfang_warblade": {
+        "name": "Lame de guerre crocs-de-braise"
+      },
+      "emberwing_cinderscale": {
+        "name": "Écaille de cendre d'Aile-de-braise"
+      },
+      "emberwing_legguards": {
+        "name": "Jambières d'Aile-de-braise"
+      },
+      "gravewardens_shiv": {
+        "name": "Surin du gardien des tombes"
+      },
+      "hollow_vigil_staff": {
+        "name": "Bâton de la veille creuse"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Lieur d'âmes de Maldrec"
+      },
+      "oathbound_greaves": {
+        "name": "Jambières du serment"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Ceinturon de guerre du briseur de crânes"
+      },
+      "skullsplitter_dirk": {
+        "name": "Dague fend-crâne"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Croc-de-marée de Sloomtooth"
+      },
+      "tidereaver_gaff": {
+        "name": "Gaffe du fendeur de marées"
+      },
+      "verlans_oathblade": {
+        "name": "Lame du serment de Verlan"
       },
       "briny_idol": {
         "name": "Idole saumâtre"
@@ -13752,6 +15084,42 @@ export const fr_FR: EnTranslations = {
       },
       "voidwalker": {
         "name": "Marcheur du Vide"
+      },
+      "succubus": {
+        "name": "Succube"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Brise-crânes"
+      },
+      "captain_verlan": {
+        "name": "Capitaine Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Vieux Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth le Noyé"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar Aile-de-braise"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Maldrec le Lie-spectres"
+      },
+      "felhunter": {
+        "name": "Limier corrompu"
+      },
+      "felguard": {
+        "name": "Gangregarde"
+      },
+      "infernal": {
+        "name": "Infernal"
+      },
+      "doomguard": {
+        "name": "Seigneur de l'effroi"
       },
       "choirmother_selthe": {
         "name": "Selthe, mère de chœur"
@@ -14849,7 +16217,8 @@ export const fr_CA: EnTranslations = {
       "maxLevel": "NIVEAU MAX.",
       "totalXp": "EXP totale",
       "lv": "Niv.",
-      "toNext": "avant le suivant"
+      "toNext": "avant le suivant",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progression",
@@ -14896,7 +16265,12 @@ export const fr_CA: EnTranslations = {
       "needXp": "EXP à vie supplémentaire pour le prestige"
     },
     "settings": {
-      "showOverflowXp": "Afficher l'EXP excédentaire"
+      "showOverflowXp": "Afficher l'EXP excédentaire",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talents",
@@ -14955,7 +16329,16 @@ export const fr_CA: EnTranslations = {
       "noBuilds": "Aucune configuration sauvegardée",
       "save": "Sauvegarder",
       "comingSoonTitle": "Talents à venir",
-      "comingSoonBody": "Cette classe n'a pas encore d'arbres de talents. Vous pouvez continuer à jouer normalement; les arbres complets arriveront dans une future mise à jour."
+      "comingSoonBody": "Cette classe n'a pas encore d'arbres de talents. Vous pouvez continuer à jouer normalement; les arbres complets arriveront dans une future mise à jour.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -15315,6 +16698,8 @@ export const fr_CA: EnTranslations = {
       "levelLog": "Vous avez atteint le niveau {level} !",
       "xpGain": "Vous gagnez {amount} points d'expérience.",
       "xpFloat": "+{amount} XP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Vous êtes mort.",
       "releaseSpirit": "Libérer l'esprit",
       "chatTab": "Discussion",
@@ -15344,6 +16729,7 @@ export const fr_CA: EnTranslations = {
       "keyBindings": "Raccourcis clavier",
       "graphics": "Graphismes",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Déconnexion",
       "returnToGame": "Retour au jeu",
       "resetToDefaults": "Réinitialiser",
@@ -15367,15 +16753,33 @@ export const fr_CA: EnTranslations = {
       "terrainLow": "Bas",
       "terrainHigh": "Élevé",
       "touchOpacity": "Opacité des commandes tactiles",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "La qualité graphique et le détail du terrain s'appliquent après un rechargement.",
       "reloadNow": "Recharger maintenant",
       "fullscreen": "Plein écran",
       "touchLookSpeed": "Vitesse caméra tactile",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Mode gaucher tactile",
       "filterProfanity": "Filtrer le langage",
       "clickMoveButton": "Bouton clic pour déplacer",
       "clickToMove": "Cliquer pour se déplacer",
       "graphicsNote": "Réduisez la vitesse de caméra pour une visée plus calme. Une qualité de rendu sous 100 % améliore les FPS sur les machines modestes.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Effets sonores",
       "musicVolume": "Volume de la musique",
       "music": "Musique",
@@ -15933,7 +17337,8 @@ export const fr_CA: EnTranslations = {
       "food": "Nourriture",
       "drink": "Boisson",
       "tool": "Outil",
-      "potion": "Potion"
+      "potion": "Potion",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armure",
@@ -15949,6 +17354,8 @@ export const fr_CA: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{kind} {quality}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} points de dégâts Vitesse {speed}",
       "dps": "({dps} dégâts par seconde)",
       "dagger": "Dague",
@@ -16072,6 +17479,14 @@ export const fr_CA: EnTranslations = {
         "name": "Cri de guerre",
         "description": "Augmente votre puissance d'attaque de 20 pendant 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Charge",
         "description": "Charge un ennemi, génère 9 rage et l'étourdit pendant 1 s. Portée de 8-25 m."
@@ -16140,6 +17555,10 @@ export const fr_CA: EnTranslations = {
         "name": "Invocation d'eau",
         "description": "Invoque 2 bouteilles d'eau qui restaurent du mana une fois bues. Les rangs supérieurs invoquent une eau plus pure."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Trait de feu",
         "description": "Frappe l'ennemi pour {damage} points de dégâts de Feu. Instantané."
@@ -16163,6 +17582,10 @@ export const fr_CA: EnTranslations = {
       "scorch": {
         "name": "Brûlure",
         "description": "Brûle l'ennemi pour {damage} points de dégâts de Feu. Incantation rapide."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Barrière de glace",
@@ -16212,6 +17635,46 @@ export const fr_CA: EnTranslations = {
         "name": "Poussée d'adrénaline",
         "description": "Votre sang s'embrase et restaure instantanément 60 énergie."
       },
+      "garrote": {
+        "name": "Garrot",
+        "description": "Garrotte l'ennemi, infligeant des dégâts immédiats et le faisant saigner de {damage} pendant 18 s. Vous devez être camouflé. Confère 1 point de combo."
+      },
+      "cheap_shot": {
+        "name": "Coup bas",
+        "description": "Frappe la cible, l'étourdissant pendant 4 s. Vous devez être camouflé. Confère 2 points de combo."
+      },
+      "sap": {
+        "name": "Assommer",
+        "description": "Neutralise la cible pendant 8 s. Vous devez être camouflé et hors combat. Le moindre dégât rompt l'effet."
+      },
+      "crippling_poison": {
+        "name": "Poison affaiblissant",
+        "description": "Frappe la cible avec un poison affaiblissant, infligeant {damage} dégâts de Nature et réduisant sa vitesse de déplacement de 50% pendant 12 s."
+      },
+      "expose_armor": {
+        "name": "Exposer l'armure",
+        "description": "Coup de grâce qui expose la cible, réduisant son armure. Plus vous dépensez de points de combo, plus l'entaille est profonde."
+      },
+      "rupture": {
+        "name": "Rupture",
+        "description": "Coup de grâce qui blesse la cible, la faisant saigner de {damage} pendant 16 s."
+      },
+      "vanish": {
+        "name": "Disparition",
+        "description": "Vous disparaissez et entrez en Camouflage, même en plein combat. Vous vous déplacez 30% plus lentement tant que vous êtes dissimulé. Dure jusqu'à 10 s."
+      },
+      "instant_poison": {
+        "name": "Poison instantané",
+        "description": "Enduit votre arme pendant 30 min, chacune de vos attaques en mêlée infligeant 8 dégâts de Nature supplémentaires."
+      },
+      "deadly_poison": {
+        "name": "Poison mortel",
+        "description": "Enduit votre arme pendant 30 min, chacune de vos attaques en mêlée infligeant 14 dégâts de Nature supplémentaires."
+      },
+      "blind": {
+        "name": "Cécité",
+        "description": "Aveugle la cible, la faisant errer désorientée pendant 8 s. Le moindre dégât rompt l'effet."
+      },
       "seal_of_righteousness": {
         "name": "Sceau de piété",
         "description": "Vous remplit de puissance Sacrée pendant 30 s, faisant infliger 4 points de dégâts Sacrés supplémentaires à chacune de vos frappes de mêlée. Libérez-le avec Jugement."
@@ -16260,6 +17723,10 @@ export const fr_CA: EnTranslations = {
         "name": "Fureur vertueuse",
         "description": "Augmente de 60% la menace générée par vos dégâts Sacrés pendant 30 min. La pierre angulaire du paladin tank."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Apprivoiser une bête",
         "description": "Commence à apprivoiser une bête pour en faire votre compagnon. Elle doit être de votre niveau ou moins et ne pas être élite. Votre familier vous suit, attaque vos ennemis et génère sa propre menace. Vous ne pouvez avoir qu'un familier à la fois."
@@ -16295,6 +17762,10 @@ export const fr_CA: EnTranslations = {
       "wing_clip": {
         "name": "Coupure d'ailes",
         "description": "Inflige une blessure qui ralentit l'ennemi de 40% pendant 10 s."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspect du guépard",
@@ -16372,9 +17843,17 @@ export const fr_CA: EnTranslations = {
         "name": "Horion de flammes",
         "description": "Brûle la cible par le feu pour 25 points de dégâts plus {damage} en 12 s."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Horion de givre",
         "description": "Frappe instantanément la cible par le givre pour {damage} points de dégâts de Givre et ralentit son déplacement de 50% pendant 8 s."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Loup fantôme",
@@ -16492,6 +17971,46 @@ export const fr_CA: EnTranslations = {
         "name": "Feu stellaire",
         "description": "Fait tomber un trait de feu stellaire qui inflige {damage} points de dégâts des Arcanes."
       },
+      "travel_form": {
+        "name": "Forme de voyage",
+        "description": "Prend une forme de voyage rapide, augmentant la vitesse de déplacement de 40%. Inutilisable en combat."
+      },
+      "enrage": {
+        "name": "Furie",
+        "description": "Génère 20 points de rage instantanément. Forme d'ours uniquement."
+      },
+      "bash": {
+        "name": "Coup de massue",
+        "description": "Étourdit la cible pendant 2 s. Forme d'ours uniquement."
+      },
+      "faerie_fire": {
+        "name": "Feu féerique",
+        "description": "Diminue l'armure de la cible de 35 pendant 40 s."
+      },
+      "hibernate": {
+        "name": "Hibernation",
+        "description": "Plonge la cible dans un sommeil profond pendant 8 s maximum. Tout dégât la réveille."
+      },
+      "dash": {
+        "name": "Sprint",
+        "description": "Bondit en avant, augmentant la vitesse de déplacement de 50% pendant 15 s. Forme de félin uniquement."
+      },
+      "pounce": {
+        "name": "Bondir",
+        "description": "Ouverture furtive qui étourdit la cible pendant 2 s. Confère 1 point de combo. Forme de félin uniquement."
+      },
+      "insect_swarm": {
+        "name": "Nuée d'insectes",
+        "description": "L'ennemi est assailli par une nuée d'insectes, subissant {damage} points de dégâts de Nature sur 12 s."
+      },
+      "tigers_fury": {
+        "name": "Furie du tigre",
+        "description": "Augmente la puissance d'attaque de 40 pendant 6 s. Forme de félin uniquement."
+      },
+      "rip": {
+        "name": "Lacération",
+        "description": "Coup de grâce qui inflige des dégâts de saignement sur 12 s. Consomme les points de combo. Forme de félin uniquement."
+      },
       "mortal_strike": {
         "name": "Frappe mortelle",
         "description": "Frappe vicieuse infligeant les dégâts de l'arme plus {damage}. (signature Armes)"
@@ -16519,6 +18038,26 @@ export const fr_CA: EnTranslations = {
       "summon_voidwalker": {
         "name": "Invoquer un marcheur du Vide",
         "description": "Invoque un Marcheur du Vide sous le commandement du démoniste. Le Marcheur du Vide est un démon robuste qui provoque vos ennemis et encaisse les coups. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_succubus": {
+        "name": "Invoquer une succube",
+        "description": "Invoque une Succube sous le commandement du démoniste. La Succube est un démon fragile qui frappe vite et fort au corps à corps. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_felhunter": {
+        "name": "Invoquer un limier corrompu",
+        "description": "Invoque un Limier corrompu sous le commandement du démoniste. Le Limier corrompu harcèle les ennemis à distance avec sa Morsure des ombres et excelle dans la traque des lanceurs de sorts. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_felguard": {
+        "name": "Invoquer un gangregarde",
+        "description": "Invoque un Gangregarde sous le commandement du démoniste. Le Gangregarde est un démon de mêlée résistant qui se jette dans la bataille et tient bon. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_infernal": {
+        "name": "Invoquer un infernal",
+        "description": "Soumet un Infernal à votre volonté — un colosse implacable doté d'une puissance de mêlée écrasante et des points de vie et de l'armure les plus élevés de tous les démons. Un long temps de recharge bride sa puissance brute. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
+      },
+      "summon_doomguard": {
+        "name": "Invoquer un seigneur de l'effroi",
+        "description": "Soumet un Seigneur de l'effroi à votre volonté — un démon d'élite qui déverse de lourds dégâts d'Ombre à distance. Un long temps de recharge bride sa puissance dévastatrice. Invoquer un nouveau démon renvoie celui que vous avez. Vous ne pouvez avoir qu'un démon à la fois."
       },
       "bear_charge": {
         "name": "Charge de l'ours",
@@ -16971,6 +18510,51 @@ export const fr_CA: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Écaille de wyrm fendue"
       },
+      "conjured_bread": {
+        "name": "Pain conjuré"
+      },
+      "conjured_bread2": {
+        "name": "Pain noir conjuré"
+      },
+      "conjured_bread3": {
+        "name": "Brioche conjurée"
+      },
+      "roadwardens_helm": {
+        "name": "Heaume du gardien des routes"
+      },
+      "wayfarers_hood": {
+        "name": "Capuche du voyageur"
+      },
+      "acolytes_circlet": {
+        "name": "Diadème de l'acolyte"
+      },
+      "reinforced_pauldrons": {
+        "name": "Spallières renforcées"
+      },
+      "embroidered_mantle": {
+        "name": "Manteau brodé"
+      },
+      "sturdy_belt": {
+        "name": "Ceinture solide du voyageur"
+      },
+      "silk_sash": {
+        "name": "Écharpe de soie tissée"
+      },
+      "roughspun_gloves": {
+        "name": "Gants de toile grossière"
+      },
+      "bristlehide_spaulders": {
+        "name": "Spallières en cuir hérissé"
+      },
+      "sableweb_cord": {
+        "name": "Cordon de Sableweb"
+      },
+      "gorraks_cleaver": {
+        "name": "Fendoir de Gorrak"
+      },
+      "mossy_handwraps": {
+        "name": "Mitaines moussues"
+      },
       "bristleback_maul": {
         "name": "Maillet Bristleback"
       },
@@ -17117,6 +18701,96 @@ export const fr_CA: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Bottines Ombrewyrm"
+      },
+      "glimmerfin_koi": {
+        "name": "Koï aux nageoires scintillantes"
+      },
+      "raw_bog_eel": {
+        "name": "Anguille des marais crue"
+      },
+      "raw_frostgill_trout": {
+        "name": "Truite aux ouïes givrées crue"
+      },
+      "raw_marsh_pike": {
+        "name": "Brochet des marais cru"
+      },
+      "raw_river_perch": {
+        "name": "Perche de rivière crue"
+      },
+      "raw_stonescale_carp": {
+        "name": "Carpe aux écailles de pierre crue"
+      },
+      "soggy_boot": {
+        "name": "Botte détrempée"
+      },
+      "elixir_of_the_bear": {
+        "name": "Élixir de l'Ours"
+      },
+      "lesser_healing_potion": {
+        "name": "Potion de soins inférieure"
+      },
+      "lesser_mana_potion": {
+        "name": "Potion de mana inférieure"
+      },
+      "healing_potion": {
+        "name": "Potion de soins"
+      },
+      "mana_potion": {
+        "name": "Potion de mana"
+      },
+      "tunnelkings_spade": {
+        "name": "Bêche du Roi des Tunnels"
+      },
+      "brutoks_maul": {
+        "name": "Maillet de Brutok"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Défense d'ogre fêlée"
+      },
+      "crag_warden_cudgel": {
+        "name": "Gourdin du gardien des falaises"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Bottes rôdeuses de Cragmaw"
+      },
+      "drowned_tide_scepter": {
+        "name": "Sceptre de la marée noyée"
+      },
+      "emberfang_warblade": {
+        "name": "Lame de guerre crocs-de-braise"
+      },
+      "emberwing_cinderscale": {
+        "name": "Écaille de cendre d'Aile-de-braise"
+      },
+      "emberwing_legguards": {
+        "name": "Jambières d'Aile-de-braise"
+      },
+      "gravewardens_shiv": {
+        "name": "Surin du gardien des tombes"
+      },
+      "hollow_vigil_staff": {
+        "name": "Bâton de la veille creuse"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Lieur d'âmes de Maldrec"
+      },
+      "oathbound_greaves": {
+        "name": "Jambières du serment"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Ceinturon de guerre du briseur de crânes"
+      },
+      "skullsplitter_dirk": {
+        "name": "Dague fend-crâne"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Croc-de-marée de Sloomtooth"
+      },
+      "tidereaver_gaff": {
+        "name": "Gaffe du fendeur de marées"
+      },
+      "verlans_oathblade": {
+        "name": "Lame du serment de Verlan"
       },
       "briny_idol": {
         "name": "Idole saumâtre"
@@ -17458,6 +19132,42 @@ export const fr_CA: EnTranslations = {
       },
       "voidwalker": {
         "name": "Marcheur du Vide"
+      },
+      "succubus": {
+        "name": "Succube"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Brise-crânes"
+      },
+      "captain_verlan": {
+        "name": "Capitaine Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Vieux Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth le Noyé"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar Aile-de-braise"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Maldrec le Lie-spectres"
+      },
+      "felhunter": {
+        "name": "Limier corrompu"
+      },
+      "felguard": {
+        "name": "Gangregarde"
+      },
+      "infernal": {
+        "name": "Infernal"
+      },
+      "doomguard": {
+        "name": "Seigneur de l'effroi"
       },
       "choirmother_selthe": {
         "name": "Selthe, mère de chœur"
@@ -18555,7 +20265,8 @@ export const en_CA: EnTranslations = {
       "maxLevel": "MAX LEVEL",
       "totalXp": "total XP",
       "lv": "Lv",
-      "toNext": "to next"
+      "toNext": "to next",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progression",
@@ -18602,7 +20313,12 @@ export const en_CA: EnTranslations = {
       "needXp": "more lifetime XP to prestige"
     },
     "settings": {
-      "showOverflowXp": "Show Overflow XP"
+      "showOverflowXp": "Show Overflow XP",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talents",
@@ -18661,7 +20377,16 @@ export const en_CA: EnTranslations = {
       "noBuilds": "No saved builds",
       "save": "Save",
       "comingSoonTitle": "Talents coming soon",
-      "comingSoonBody": "This class does not have talent trees yet. You can keep playing normally; full trees will arrive in a future update."
+      "comingSoonBody": "This class does not have talent trees yet. You can keep playing normally; full trees will arrive in a future update.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -19021,6 +20746,8 @@ export const en_CA: EnTranslations = {
       "levelLog": "You have reached level {level}!",
       "xpGain": "You gain {amount} experience.",
       "xpFloat": "+{amount} XP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "You have died.",
       "releaseSpirit": "Release Spirit",
       "chatTab": "Chat",
@@ -19029,7 +20756,7 @@ export const en_CA: EnTranslations = {
       "communityLinks": "Community links",
       "mobileControls": "Mobile controls",
       "mobileMove": "Move",
-      "mobileCamera": "Camera",
+      "mobileCamera": "Camera — double-tap to recenter",
       "mobileAttack": "Attack",
       "mobileTarget": "Target",
       "mobileChat": "Chat",
@@ -19050,6 +20777,7 @@ export const en_CA: EnTranslations = {
       "keyBindings": "Key Bindings",
       "graphics": "Graphics",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Logout",
       "returnToGame": "Return to Game",
       "resetToDefaults": "Reset to Defaults",
@@ -19073,15 +20801,33 @@ export const en_CA: EnTranslations = {
       "terrainLow": "Low",
       "terrainHigh": "High",
       "touchOpacity": "Touch Controls Opacity",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "Graphics Quality and Terrain Detail apply after a reload.",
       "reloadNow": "Reload Now",
       "fullscreen": "Fullscreen",
       "touchLookSpeed": "Touch Look Speed",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Left-handed Touch",
       "filterProfanity": "Filter Profanity",
       "clickMoveButton": "Click Move Button",
       "clickToMove": "Click to Move",
       "graphicsNote": "Lower Camera Speed for a calmer mouselook. Render Quality below 100% boosts FPS on weaker machines.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Sound Effects",
       "musicVolume": "Music Volume",
       "music": "Music",
@@ -19639,7 +21385,8 @@ export const en_CA: EnTranslations = {
       "food": "Food",
       "drink": "Drink",
       "tool": "Tool",
-      "potion": "Potion"
+      "potion": "Potion",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armor",
@@ -19655,6 +21402,8 @@ export const en_CA: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality} {kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} Damage Speed {speed}",
       "dps": "({dps} damage per second)",
       "dagger": "Dagger",
@@ -19778,6 +21527,14 @@ export const en_CA: EnTranslations = {
         "name": "Battle Shout",
         "description": "Increases your attack power by 20 for 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Charge",
         "description": "Charges an enemy, generating 9 rage and stunning it for 1 sec. 8-25 yd range."
@@ -19846,6 +21603,10 @@ export const en_CA: EnTranslations = {
         "name": "Conjure Water",
         "description": "Conjures 2 bottles of water, restoring mana when drunk. Higher ranks conjure purer water."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Fire Blast",
         "description": "Blasts the enemy for {damage} Fire damage. Instant."
@@ -19869,6 +21630,10 @@ export const en_CA: EnTranslations = {
       "scorch": {
         "name": "Scorch",
         "description": "Scorches the enemy for {damage} Fire damage. Quick to cast."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Ice Barrier",
@@ -19918,6 +21683,46 @@ export const en_CA: EnTranslations = {
         "name": "Adrenaline Rush",
         "description": "Your blood runs hot, instantly restoring 60 energy."
       },
+      "garrote": {
+        "name": "Garrote",
+        "description": "Garrote the enemy, causing damage now and bleeding it for {damage} over 18 sec. Must be stealthed. Awards 1 combo point."
+      },
+      "cheap_shot": {
+        "name": "Cheap Shot",
+        "description": "Strike the target, stunning it for 4 sec. Must be stealthed. Awards 2 combo points."
+      },
+      "sap": {
+        "name": "Sap",
+        "description": "Incapacitates the target for 8 sec. Must be stealthed and out of combat. Any damage breaks the effect."
+      },
+      "crippling_poison": {
+        "name": "Crippling Poison",
+        "description": "Strikes the target with a crippling poison, dealing {damage} Nature damage and slowing its movement speed by 50% for 12 sec."
+      },
+      "expose_armor": {
+        "name": "Expose Armor",
+        "description": "Finishing move that exposes the target, reducing its armor. More combo points spent build into a deeper cut."
+      },
+      "rupture": {
+        "name": "Rupture",
+        "description": "Finishing move that wounds the target, causing it to bleed for {damage} over 16 sec."
+      },
+      "vanish": {
+        "name": "Vanish",
+        "description": "Vanish from sight, entering Stealth even in combat. You move 30% slower while hidden. Lasts up to 10 sec."
+      },
+      "instant_poison": {
+        "name": "Instant Poison",
+        "description": "Coats your weapon for 30 min, causing each of your melee swings to deal 8 additional Nature damage."
+      },
+      "deadly_poison": {
+        "name": "Deadly Poison",
+        "description": "Coats your weapon for 30 min, causing each of your melee swings to deal 14 additional Nature damage."
+      },
+      "blind": {
+        "name": "Blind",
+        "description": "Blinds the target, causing it to wander disoriented for 8 sec. Any damage breaks the effect."
+      },
       "seal_of_righteousness": {
         "name": "Seal of Righteousness",
         "description": "Fills you with Holy power for 30 sec, causing each of your melee swings to deal 4 additional Holy damage. Unleash with Judgement."
@@ -19966,6 +21771,10 @@ export const en_CA: EnTranslations = {
         "name": "Righteous Fury",
         "description": "Increases the threat generated by your Holy damage by 60% for 30 min. The tanking paladin's cornerstone."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Tame Beast",
         "description": "Begins taming a beast to be your companion. It must be your level or lower and not an elite. Your pet follows you, attacks your enemies, and holds threat of its own. You may have one pet at a time."
@@ -20001,6 +21810,10 @@ export const en_CA: EnTranslations = {
       "wing_clip": {
         "name": "Wing Clip",
         "description": "Inflicts a wound that slows the enemy by 40% for 10 sec."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspect of the Cheetah",
@@ -20078,9 +21891,17 @@ export const en_CA: EnTranslations = {
         "name": "Flame Shock",
         "description": "Sears the target with fire for 25 damage plus {damage} over 12 sec."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Frost Shock",
         "description": "Instantly shocks the target with frost for {damage} Frost damage and slows its movement by 50% for 8 sec."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Ghost Wolf",
@@ -20198,6 +22019,46 @@ export const en_CA: EnTranslations = {
         "name": "Starfire",
         "description": "Calls down a bolt of stellar fire, causing {damage} Arcane damage."
       },
+      "travel_form": {
+        "name": "Travel Form",
+        "description": "Take on a swift travel form, increasing movement speed by 40%. Cannot be used in combat."
+      },
+      "enrage": {
+        "name": "Enrage",
+        "description": "Generates 20 rage instantly. Bear Form only."
+      },
+      "bash": {
+        "name": "Bash",
+        "description": "Stuns the target for 2 sec. Bear Form only."
+      },
+      "faerie_fire": {
+        "name": "Faerie Fire",
+        "description": "Decreases the target's armor by 35 for 40 sec."
+      },
+      "hibernate": {
+        "name": "Hibernate",
+        "description": "Forces the target into a deep sleep for up to 8 sec. Any damage will awaken it."
+      },
+      "dash": {
+        "name": "Dash",
+        "description": "Sprint forward, increasing movement speed by 50% for 15 sec. Wolf Form only."
+      },
+      "pounce": {
+        "name": "Pounce",
+        "description": "A stealth opener that stuns the target for 2 sec. Awards 1 combo point. Wolf Form only."
+      },
+      "insect_swarm": {
+        "name": "Insect Swarm",
+        "description": "The enemy is swarmed by insects, taking {damage} Nature damage over 12 sec."
+      },
+      "tigers_fury": {
+        "name": "Tiger's Fury",
+        "description": "Increases attack power by 40 for 6 sec. Wolf Form only."
+      },
+      "rip": {
+        "name": "Rip",
+        "description": "Finishing move that causes Bleed damage over 12 sec. Consumes combo points. Wolf Form only."
+      },
       "mortal_strike": {
         "name": "Mortal Strike",
         "description": "A vicious strike dealing weapon damage plus {damage}. (Arms signature)"
@@ -20225,6 +22086,26 @@ export const en_CA: EnTranslations = {
       "summon_voidwalker": {
         "name": "Summon Voidwalker",
         "description": "Summons a Voidwalker under the command of the Warlock. The Voidwalker is a sturdy demon that taunts your enemies and soaks up punishment. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_succubus": {
+        "name": "Summon Succubus",
+        "description": "Summons a Succubus under the command of the Warlock. The Succubus is a fragile demon that strikes quickly and hits hard in melee. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_felhunter": {
+        "name": "Summon Felhunter",
+        "description": "Summons a Felhunter under the command of the Warlock. The Felhunter harries enemies from range with Shadow Bite and excels at hunting spellcasters. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_felguard": {
+        "name": "Summon Felguard",
+        "description": "Summons a Felguard under the command of the Warlock. The Felguard is a durable melee demon that wades into battle and holds its own. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_infernal": {
+        "name": "Summon Infernal",
+        "description": "Binds an Infernal to your will — a hulking juggernaut with crushing melee and the deepest health and armor of any demon. A long cooldown gates its raw power. Summoning a new demon dismisses your current one. You may have one demon at a time."
+      },
+      "summon_doomguard": {
+        "name": "Summon Doomguard",
+        "description": "Binds a Doomguard to your will — an elite demon that rains heavy Shadow damage from afar. A long cooldown gates its devastating power. Summoning a new demon dismisses your current one. You may have one demon at a time."
       },
       "bear_charge": {
         "name": "Bear Charge",
@@ -20677,6 +22558,51 @@ export const en_CA: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Cracked Wyrm Scale"
       },
+      "conjured_bread": {
+        "name": "Conjured Bread"
+      },
+      "conjured_bread2": {
+        "name": "Conjured Pumpernickel"
+      },
+      "conjured_bread3": {
+        "name": "Conjured Sweet Roll"
+      },
+      "roadwardens_helm": {
+        "name": "Roadwarden's Helm"
+      },
+      "wayfarers_hood": {
+        "name": "Wayfarer's Hood"
+      },
+      "acolytes_circlet": {
+        "name": "Acolyte's Circlet"
+      },
+      "reinforced_pauldrons": {
+        "name": "Reinforced Pauldrons"
+      },
+      "embroidered_mantle": {
+        "name": "Embroidered Mantle"
+      },
+      "sturdy_belt": {
+        "name": "Sturdy Traveler's Belt"
+      },
+      "silk_sash": {
+        "name": "Woven Silk Sash"
+      },
+      "roughspun_gloves": {
+        "name": "Roughspun Gloves"
+      },
+      "bristlehide_spaulders": {
+        "name": "Bristlehide Spaulders"
+      },
+      "sableweb_cord": {
+        "name": "Sableweb Cord"
+      },
+      "gorraks_cleaver": {
+        "name": "Gorrak's Cleaver"
+      },
+      "mossy_handwraps": {
+        "name": "Mossgrown Handwraps"
+      },
       "bristleback_maul": {
         "name": "Bristleback Maul"
       },
@@ -20823,6 +22749,96 @@ export const en_CA: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Wyrmshadow Treads"
+      },
+      "glimmerfin_koi": {
+        "name": "Glimmerfin Koi"
+      },
+      "raw_bog_eel": {
+        "name": "Raw Bog Eel"
+      },
+      "raw_frostgill_trout": {
+        "name": "Raw Frostgill Trout"
+      },
+      "raw_marsh_pike": {
+        "name": "Raw Marsh Pike"
+      },
+      "raw_river_perch": {
+        "name": "Raw River Perch"
+      },
+      "raw_stonescale_carp": {
+        "name": "Raw Stonescale Carp"
+      },
+      "soggy_boot": {
+        "name": "Soggy Boot"
+      },
+      "elixir_of_the_bear": {
+        "name": "Elixir of the Bear"
+      },
+      "lesser_healing_potion": {
+        "name": "Lesser Healing Potion"
+      },
+      "lesser_mana_potion": {
+        "name": "Lesser Mana Potion"
+      },
+      "healing_potion": {
+        "name": "Healing Potion"
+      },
+      "mana_potion": {
+        "name": "Mana Potion"
+      },
+      "tunnelkings_spade": {
+        "name": "Tunnelking's Spade"
+      },
+      "brutoks_maul": {
+        "name": "Brutok's Maul"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Cracked Ogre Tusk"
+      },
+      "crag_warden_cudgel": {
+        "name": "Crag Warden Cudgel"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Cragmaw Prowlboots"
+      },
+      "drowned_tide_scepter": {
+        "name": "Drowned Tide Scepter"
+      },
+      "emberfang_warblade": {
+        "name": "Emberfang Warblade"
+      },
+      "emberwing_cinderscale": {
+        "name": "Emberwing Cinderscale"
+      },
+      "emberwing_legguards": {
+        "name": "Emberwing Legguards"
+      },
+      "gravewardens_shiv": {
+        "name": "Gravewarden's Shiv"
+      },
+      "hollow_vigil_staff": {
+        "name": "Staff of the Hollow Vigil"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Maldrec's Soulbinder"
+      },
+      "oathbound_greaves": {
+        "name": "Oathbound Greaves"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Skullsmasher's Warbelt"
+      },
+      "skullsplitter_dirk": {
+        "name": "Skullsplitter Dirk"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Sloomtooth's Tidefang"
+      },
+      "tidereaver_gaff": {
+        "name": "Tidereaver Gaff"
+      },
+      "verlans_oathblade": {
+        "name": "Verlan's Oathblade"
       },
       "briny_idol": {
         "name": "Briny Idol"
@@ -21164,6 +23180,42 @@ export const en_CA: EnTranslations = {
       },
       "voidwalker": {
         "name": "Voidwalker"
+      },
+      "succubus": {
+        "name": "Succubus"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Skullsmasher"
+      },
+      "captain_verlan": {
+        "name": "Captain Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Old Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth the Drowned"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar the Emberwing"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Wraithbinder Maldrec"
+      },
+      "felhunter": {
+        "name": "Felhunter"
+      },
+      "felguard": {
+        "name": "Felguard"
+      },
+      "infernal": {
+        "name": "Infernal"
+      },
+      "doomguard": {
+        "name": "Doomguard"
       },
       "choirmother_selthe": {
         "name": "Choirmother Selthe"
@@ -22261,7 +24313,8 @@ export const it_IT: EnTranslations = {
       "maxLevel": "LIVELLO MAX",
       "totalXp": "PE totali",
       "lv": "Liv",
-      "toNext": "al prossimo"
+      "toNext": "al prossimo",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progressione",
@@ -22308,7 +24361,12 @@ export const it_IT: EnTranslations = {
       "needXp": "PE totali in più per il prestigio"
     },
     "settings": {
-      "showOverflowXp": "Mostra PE eccedenti"
+      "showOverflowXp": "Mostra PE eccedenti",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talenti",
@@ -22367,7 +24425,16 @@ export const it_IT: EnTranslations = {
       "noBuilds": "Nessuna build salvata",
       "save": "Salva",
       "comingSoonTitle": "Talenti in arrivo",
-      "comingSoonBody": "Questa classe non ha ancora alberi dei talenti. Puoi continuare a giocare normalmente; gli alberi completi arriveranno in un futuro aggiornamento."
+      "comingSoonBody": "Questa classe non ha ancora alberi dei talenti. Puoi continuare a giocare normalmente; gli alberi completi arriveranno in un futuro aggiornamento.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -22727,6 +24794,8 @@ export const it_IT: EnTranslations = {
       "levelLog": "Hai raggiunto il livello {level}!",
       "xpGain": "Guadagni {amount} esperienza.",
       "xpFloat": "+{amount} PE",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Sei morto.",
       "releaseSpirit": "Libera spirito",
       "chatTab": "Chat",
@@ -22756,6 +24825,7 @@ export const it_IT: EnTranslations = {
       "keyBindings": "Comandi da tastiera",
       "graphics": "Grafica",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Esci",
       "returnToGame": "Torna al gioco",
       "resetToDefaults": "Ripristina predefiniti",
@@ -22779,15 +24849,33 @@ export const it_IT: EnTranslations = {
       "terrainLow": "Basso",
       "terrainHigh": "Alto",
       "touchOpacity": "Opacità comandi touch",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "Qualità grafica e dettaglio terreno si applicano dopo un ricaricamento.",
       "reloadNow": "Ricarica ora",
       "fullscreen": "Schermo intero",
       "touchLookSpeed": "Velocità camera touch",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Touch per mancini",
       "filterProfanity": "Filtra linguaggio",
       "clickMoveButton": "Pulsante clic per muovere",
       "clickToMove": "Clicca per muoverti",
       "graphicsNote": "Riduci la velocità della camera per un mouselook più stabile. La qualità rendering sotto il 100% aumenta gli FPS sui dispositivi meno potenti.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Effetti sonori",
       "musicVolume": "Volume musica",
       "music": "Musica",
@@ -23345,7 +25433,8 @@ export const it_IT: EnTranslations = {
       "food": "Cibo",
       "drink": "Bevanda",
       "tool": "Strumento",
-      "potion": "Pozione"
+      "potion": "Pozione",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armatura",
@@ -23361,6 +25450,8 @@ export const it_IT: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{kind} {quality}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} danni Velocità {speed}",
       "dps": "({dps} danni al secondo)",
       "dagger": "Pugnale",
@@ -23484,6 +25575,14 @@ export const it_IT: EnTranslations = {
         "name": "Urlo di Battaglia",
         "description": "Aumenta la tua potenza d'attacco di 20 per 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Carica",
         "description": "Carica un nemico, genera 9 rabbia e lo stordisce per 1 s. Portata 8-25 m."
@@ -23552,6 +25651,10 @@ export const it_IT: EnTranslations = {
         "name": "Evoca Acqua",
         "description": "Evoca 2 bottiglie d'acqua che ripristinano mana quando bevute. I ranghi superiori evocano acqua più pura."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Esplosione di Fuoco",
         "description": "Investe il nemico per {damage} danni da Fuoco. Istantaneo."
@@ -23575,6 +25678,10 @@ export const it_IT: EnTranslations = {
       "scorch": {
         "name": "Bruciatura",
         "description": "Brucia il nemico per {damage} danni da Fuoco. Lancio rapido."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Barriera di Ghiaccio",
@@ -23624,6 +25731,46 @@ export const it_IT: EnTranslations = {
         "name": "Scarica di Adrenalina",
         "description": "Il sangue ti ribolle e ripristina istantaneamente 60 energia."
       },
+      "garrote": {
+        "name": "Garrota",
+        "description": "Garrota il nemico, infliggendo danni immediati e provocando sanguinamento per {damage} in 18 sec. Devi essere furtivo. Conferisce 1 punto combo."
+      },
+      "cheap_shot": {
+        "name": "Colpo Furtivo",
+        "description": "Colpisce il bersaglio, stordendolo per 4 sec. Devi essere furtivo. Conferisce 2 punti combo."
+      },
+      "sap": {
+        "name": "Tramortimento",
+        "description": "Incapacita il bersaglio per 8 sec. Devi essere furtivo e fuori dal combattimento. Qualsiasi danno interrompe l'effetto."
+      },
+      "crippling_poison": {
+        "name": "Veleno Immobilizzante",
+        "description": "Colpisce il bersaglio con un veleno immobilizzante, infliggendo {damage} danni della Natura e rallentando la sua velocità di movimento del 50% per 12 sec."
+      },
+      "expose_armor": {
+        "name": "Esposizione Corazza",
+        "description": "Mossa finale che espone il bersaglio, riducendone la corazza. Più punti combo spesi approfondiscono il taglio."
+      },
+      "rupture": {
+        "name": "Lacerazione",
+        "description": "Mossa finale che ferisce il bersaglio, provocando sanguinamento per {damage} in 16 sec."
+      },
+      "vanish": {
+        "name": "Eclissarsi",
+        "description": "Scompari dalla vista, entrando in Furtività anche in combattimento. Ti muovi il 30% più lentamente mentre sei nascosto. Dura fino a 10 sec."
+      },
+      "instant_poison": {
+        "name": "Veleno Istantaneo",
+        "description": "Ricopre la tua arma per 30 min, facendo sì che ognuno dei tuoi attacchi in mischia infligga 8 danni della Natura aggiuntivi."
+      },
+      "deadly_poison": {
+        "name": "Veleno Letale",
+        "description": "Ricopre la tua arma per 30 min, facendo sì che ognuno dei tuoi attacchi in mischia infligga 14 danni della Natura aggiuntivi."
+      },
+      "blind": {
+        "name": "Accecamento",
+        "description": "Acceca il bersaglio, facendolo vagare disorientato per 8 sec. Qualsiasi danno interrompe l'effetto."
+      },
       "seal_of_righteousness": {
         "name": "Sigillo della Rettitudine",
         "description": "Ti riempie di potere Sacro per 30 s, facendo infliggere 4 danni Sacri aggiuntivi a ogni tuo colpo in mischia. Scatenalo con Giudizio."
@@ -23672,6 +25819,10 @@ export const it_IT: EnTranslations = {
         "name": "Furia Virtuosa",
         "description": "Aumenta del 60% la minaccia generata dai tuoi danni Sacri per 30 min. Il cardine del paladino difensore."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Addomestica Bestia",
         "description": "Inizia ad addomesticare una bestia come compagna. Deve essere del tuo livello o inferiore e non élite. Il tuo famiglio ti segue, attacca i tuoi nemici e mantiene la propria minaccia. Puoi avere un solo famiglio alla volta."
@@ -23707,6 +25858,10 @@ export const it_IT: EnTranslations = {
       "wing_clip": {
         "name": "Taglia Ali",
         "description": "Infligge una ferita che rallenta il nemico del 40% per 10 s."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspetto del Ghepardo",
@@ -23784,9 +25939,17 @@ export const it_IT: EnTranslations = {
         "name": "Folgore del Fuoco",
         "description": "Brucia il bersaglio con il fuoco per 25 danni più {damage} in 12 s."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Folgore del Gelo",
         "description": "Scuote istantaneamente il bersaglio col gelo per {damage} danni da Gelo e rallenta il movimento del 50% per 8 s."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Lupo Spettrale",
@@ -23904,6 +26067,46 @@ export const it_IT: EnTranslations = {
         "name": "Fuoco Stellare",
         "description": "Richiama un dardo di fuoco stellare, infliggendo {damage} danni Arcani."
       },
+      "travel_form": {
+        "name": "Forma da Viaggio",
+        "description": "Assume una rapida forma da viaggio, aumentando la velocità di movimento del 40%. Non utilizzabile in combattimento."
+      },
+      "enrage": {
+        "name": "Furia incontrollata",
+        "description": "Genera 20 punti ira all'istante. Solo Forma d'Orso."
+      },
+      "bash": {
+        "name": "Frastornare",
+        "description": "Stordisce il bersaglio per 2 sec. Solo Forma d'Orso."
+      },
+      "faerie_fire": {
+        "name": "Fuoco Fatato",
+        "description": "Riduce l'armatura del bersaglio di 35 per 40 sec."
+      },
+      "hibernate": {
+        "name": "Letargo",
+        "description": "Costringe il bersaglio in un sonno profondo per un massimo di 8 sec. Qualsiasi danno lo risveglia."
+      },
+      "dash": {
+        "name": "Scatto",
+        "description": "Scatta in avanti, aumentando la velocità di movimento del 50% per 15 sec. Solo Forma Felina."
+      },
+      "pounce": {
+        "name": "Balzo",
+        "description": "Apertura furtiva che stordisce il bersaglio per 2 sec. Conferisce 1 punto combo. Solo Forma Felina."
+      },
+      "insect_swarm": {
+        "name": "Sciame d'Insetti",
+        "description": "Il nemico è assalito da uno sciame di insetti, subendo {damage} danni da Natura in 12 sec."
+      },
+      "tigers_fury": {
+        "name": "Furia della Tigre",
+        "description": "Aumenta la potenza d'attacco di 40 per 6 sec. Solo Forma Felina."
+      },
+      "rip": {
+        "name": "Squartare",
+        "description": "Mossa finale che infligge danni da sanguinamento in 12 sec. Consuma i punti combo. Solo Forma Felina."
+      },
       "mortal_strike": {
         "name": "Colpo Mortale",
         "description": "Un colpo feroce che infligge danni dell'arma più {damage}. (firma Armi)"
@@ -23931,6 +26134,26 @@ export const it_IT: EnTranslations = {
       "summon_voidwalker": {
         "name": "Evoca camminatore del Vuoto",
         "description": "Evoca un Camminatore del Vuoto al comando dello stregone. Il Camminatore del Vuoto è un demone robusto che provoca i tuoi nemici e assorbe i colpi. Evocare un nuovo demone congeda quello attuale. Puoi avere un solo demone alla volta."
+      },
+      "summon_succubus": {
+        "name": "Evoca succube",
+        "description": "Evoca una Succube al comando dello stregone. La Succube è un demone fragile che colpisce rapidamente e infligge gravi danni in mischia. Evocare un nuovo demone congeda quello attuale. Puoi avere un solo demone alla volta."
+      },
+      "summon_felhunter": {
+        "name": "Evoca segugio vile",
+        "description": "Evoca un Segugio vile al comando dello stregone. Il Segugio vile tormenta i nemici a distanza con Morso d'ombra ed eccelle nel cacciare gli incantatori. Evocare un nuovo demone congeda quello attuale. Puoi avere un solo demone alla volta."
+      },
+      "summon_felguard": {
+        "name": "Evoca guardia vile",
+        "description": "Evoca una Guardia vile al comando dello stregone. La Guardia vile è un robusto demone da mischia che si getta nella battaglia e sa difendersi. Evocare un nuovo demone congeda quello attuale. Puoi avere un solo demone alla volta."
+      },
+      "summon_infernal": {
+        "name": "Evoca infernale",
+        "description": "Vincola un Infernale al tuo volere: un colosso possente con una mischia devastante e la salute e l'armatura più elevate di qualsiasi demone. Un lungo tempo di recupero ne limita la potenza bruta. Evocare un nuovo demone congeda quello attuale. Puoi avere un solo demone alla volta."
+      },
+      "summon_doomguard": {
+        "name": "Evoca guardia del Terrore",
+        "description": "Vincola una Guardia del Terrore al tuo volere: un demone d'élite che scaglia da lontano ingenti danni d'Ombra. Un lungo tempo di recupero ne limita la potenza devastante. Evocare un nuovo demone congeda quello attuale. Puoi avere un solo demone alla volta."
       },
       "bear_charge": {
         "name": "Carica dell'Orso",
@@ -24383,6 +26606,51 @@ export const it_IT: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Scaglia di wyrm incrinata"
       },
+      "conjured_bread": {
+        "name": "Pane evocato"
+      },
+      "conjured_bread2": {
+        "name": "Pane nero evocato"
+      },
+      "conjured_bread3": {
+        "name": "Panino dolce evocato"
+      },
+      "roadwardens_helm": {
+        "name": "Elmo del guardiano della strada"
+      },
+      "wayfarers_hood": {
+        "name": "Cappuccio del viandante"
+      },
+      "acolytes_circlet": {
+        "name": "Cerchietto dell'accolito"
+      },
+      "reinforced_pauldrons": {
+        "name": "Spallacci rinforzati"
+      },
+      "embroidered_mantle": {
+        "name": "Mantello ricamato"
+      },
+      "sturdy_belt": {
+        "name": "Cintura robusta del viandante"
+      },
+      "silk_sash": {
+        "name": "Fascia di seta intrecciata"
+      },
+      "roughspun_gloves": {
+        "name": "Guanti di tela grezza"
+      },
+      "bristlehide_spaulders": {
+        "name": "Spallacci di pelle setolosa"
+      },
+      "sableweb_cord": {
+        "name": "Cordone di Sableweb"
+      },
+      "gorraks_cleaver": {
+        "name": "Mannaia di Gorrak"
+      },
+      "mossy_handwraps": {
+        "name": "Manopole muschiose"
+      },
       "bristleback_maul": {
         "name": "Maglio Bristleback"
       },
@@ -24529,6 +26797,96 @@ export const it_IT: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Calzari Ombrawyrm"
+      },
+      "glimmerfin_koi": {
+        "name": "Koi dalle pinne scintillanti"
+      },
+      "raw_bog_eel": {
+        "name": "Anguilla di palude cruda"
+      },
+      "raw_frostgill_trout": {
+        "name": "Trota dalle branchie gelide cruda"
+      },
+      "raw_marsh_pike": {
+        "name": "Luccio di palude crudo"
+      },
+      "raw_river_perch": {
+        "name": "Persico di fiume crudo"
+      },
+      "raw_stonescale_carp": {
+        "name": "Carpa dalle scaglie di pietra cruda"
+      },
+      "soggy_boot": {
+        "name": "Stivale fradicio"
+      },
+      "elixir_of_the_bear": {
+        "name": "Elisir dell'Orso"
+      },
+      "lesser_healing_potion": {
+        "name": "Pozione di cura inferiore"
+      },
+      "lesser_mana_potion": {
+        "name": "Pozione di mana inferiore"
+      },
+      "healing_potion": {
+        "name": "Pozione di cura"
+      },
+      "mana_potion": {
+        "name": "Pozione di mana"
+      },
+      "tunnelkings_spade": {
+        "name": "Vanga del Re dei Tunnel"
+      },
+      "brutoks_maul": {
+        "name": "Mazza di Brutok"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Zanna d'ogre incrinata"
+      },
+      "crag_warden_cudgel": {
+        "name": "Randello del guardiano della rupe"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Stivali predatori di Cragmaw"
+      },
+      "drowned_tide_scepter": {
+        "name": "Scettro della marea annegata"
+      },
+      "emberfang_warblade": {
+        "name": "Spada da guerra zanna di brace"
+      },
+      "emberwing_cinderscale": {
+        "name": "Squama di cenere di Aladibrace"
+      },
+      "emberwing_legguards": {
+        "name": "Gambali di Aladibrace"
+      },
+      "gravewardens_shiv": {
+        "name": "Pugnale del guardiano delle tombe"
+      },
+      "hollow_vigil_staff": {
+        "name": "Bastone della veglia cava"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Legatore d'anime di Maldrec"
+      },
+      "oathbound_greaves": {
+        "name": "Gambali del giuramento"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Cintura da guerra dello spaccacranio"
+      },
+      "skullsplitter_dirk": {
+        "name": "Daga spaccacranio"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Zanna di marea di Sloomtooth"
+      },
+      "tidereaver_gaff": {
+        "name": "Gancio del falciamaree"
+      },
+      "verlans_oathblade": {
+        "name": "Lama del giuramento di Verlan"
       },
       "briny_idol": {
         "name": "Idolo Salmastro"
@@ -24870,6 +27228,42 @@ export const it_IT: EnTranslations = {
       },
       "voidwalker": {
         "name": "Camminatore del Vuoto"
+      },
+      "succubus": {
+        "name": "Succube"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Spaccacranio"
+      },
+      "captain_verlan": {
+        "name": "Capitano Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Vecchio Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth l'Annegato"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar Aladibrace"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Maldrec il Legaspettri"
+      },
+      "felhunter": {
+        "name": "Segugio vile"
+      },
+      "felguard": {
+        "name": "Guardia vile"
+      },
+      "infernal": {
+        "name": "Infernale"
+      },
+      "doomguard": {
+        "name": "Guardia del Terrore"
       },
       "choirmother_selthe": {
         "name": "Selthe Madre del Coro"
@@ -25967,7 +28361,8 @@ export const de_DE: EnTranslations = {
       "maxLevel": "MAX. STUFE",
       "totalXp": "EP gesamt",
       "lv": "St.",
-      "toNext": "bis zur nächsten"
+      "toNext": "bis zur nächsten",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Fortschritt",
@@ -26014,7 +28409,12 @@ export const de_DE: EnTranslations = {
       "needXp": "mehr Lebenszeit-EP für Prestige"
     },
     "settings": {
-      "showOverflowXp": "Überschuss-EP anzeigen"
+      "showOverflowXp": "Überschuss-EP anzeigen",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talente",
@@ -26073,7 +28473,16 @@ export const de_DE: EnTranslations = {
       "noBuilds": "Keine gespeicherten Builds",
       "save": "Speichern",
       "comingSoonTitle": "Talente folgen bald",
-      "comingSoonBody": "Diese Klasse hat noch keine Talentbäume. Ihr könnt normal weiterspielen; vollständige Bäume kommen in einem zukünftigen Update."
+      "comingSoonBody": "Diese Klasse hat noch keine Talentbäume. Ihr könnt normal weiterspielen; vollständige Bäume kommen in einem zukünftigen Update.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -26433,6 +28842,8 @@ export const de_DE: EnTranslations = {
       "levelLog": "Ihr habt Stufe {level} erreicht!",
       "xpGain": "Ihr erhaltet {amount} Erfahrung.",
       "xpFloat": "+{amount} EP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Ihr seid gestorben.",
       "releaseSpirit": "Geist freigeben",
       "chatTab": "Chat",
@@ -26462,6 +28873,7 @@ export const de_DE: EnTranslations = {
       "keyBindings": "Tastenbelegung",
       "graphics": "Grafik",
       "audio": "Audio",
+      "interface": "Interface",
       "logout": "Ausloggen",
       "returnToGame": "Zurück zum Spiel",
       "resetToDefaults": "Standardwerte",
@@ -26485,15 +28897,33 @@ export const de_DE: EnTranslations = {
       "terrainLow": "Niedrig",
       "terrainHigh": "Hoch",
       "touchOpacity": "Deckkraft der Touch-Steuerung",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "Grafikqualität und Geländedetail werden nach dem Neuladen angewendet.",
       "reloadNow": "Jetzt neu laden",
       "fullscreen": "Vollbild",
       "touchLookSpeed": "Touch-Kamerageschwindigkeit",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Linkshänder-Touch",
       "filterProfanity": "Schimpfwörter filtern",
       "clickMoveButton": "Klick-Bewegungstaste",
       "clickToMove": "Klicken zum Bewegen",
       "graphicsNote": "Senkt die Kamerageschwindigkeit für ruhigere Maussteuerung. Renderqualität unter 100 % verbessert die FPS auf schwächeren Geräten.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Soundeffekte",
       "musicVolume": "Musiklautstärke",
       "music": "Musik",
@@ -27051,7 +29481,8 @@ export const de_DE: EnTranslations = {
       "food": "Essen",
       "drink": "Getränk",
       "tool": "Werkzeug",
-      "potion": "Trank"
+      "potion": "Trank",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Rüstung",
@@ -27067,6 +29498,8 @@ export const de_DE: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality} {kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} Schaden Tempo {speed}",
       "dps": "({dps} Schaden pro Sekunde)",
       "dagger": "Dolch",
@@ -27190,6 +29623,14 @@ export const de_DE: EnTranslations = {
         "name": "Schlachtruf",
         "description": "Erhöht eure Angriffskraft 2 Min. lang um 20."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Sturmangriff",
         "description": "Stürmt auf einen Gegner zu, erzeugt 9 Wut und betäubt ihn 1 Sek. lang. Reichweite 8-25 m."
@@ -27258,6 +29699,10 @@ export const de_DE: EnTranslations = {
         "name": "Wasser herbeizaubern",
         "description": "Beschwört 2 Flaschen Wasser, die beim Trinken Mana wiederherstellen. Höhere Ränge beschwören reineres Wasser."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Feuerschlag",
         "description": "Trifft den Gegner für {damage} Feuerschaden. Sofort."
@@ -27281,6 +29726,10 @@ export const de_DE: EnTranslations = {
       "scorch": {
         "name": "Versengen",
         "description": "Versengt den Gegner für {damage} Feuerschaden. Schnell zu wirken."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Eisbarriere",
@@ -27330,6 +29779,46 @@ export const de_DE: EnTranslations = {
         "name": "Adrenalinrausch",
         "description": "Euer Blut kocht und stellt sofort 60 Energie wieder her."
       },
+      "garrote": {
+        "name": "Erwürgen",
+        "description": "Erwürgt den Gegner, verursacht sofort Schaden und lässt ihn 18 Sek. lang um {damage} bluten. Erfordert Verstohlenheit. Gewährt 1 Combopunkt."
+      },
+      "cheap_shot": {
+        "name": "Wilder Hieb",
+        "description": "Trifft das Ziel und betäubt es 4 Sek. lang. Erfordert Verstohlenheit. Gewährt 2 Combopunkte."
+      },
+      "sap": {
+        "name": "Kopfnuss",
+        "description": "Macht das Ziel 8 Sek. lang handlungsunfähig. Erfordert Verstohlenheit und außerhalb des Kampfes zu sein. Jeder Schaden bricht den Effekt."
+      },
+      "crippling_poison": {
+        "name": "Lähmendes Gift",
+        "description": "Trifft das Ziel mit einem lähmenden Gift, verursacht {damage} Naturschaden und verringert sein Bewegungstempo 12 Sek. lang um 50%."
+      },
+      "expose_armor": {
+        "name": "Rüstung zerreißen",
+        "description": "Finishing-Move, der das Ziel entblößt und seine Rüstung verringert. Mehr eingesetzte Combopunkte führen zu einem tieferen Schnitt."
+      },
+      "rupture": {
+        "name": "Rupturieren",
+        "description": "Finishing-Move, der das Ziel verwundet und es 16 Sek. lang um {damage} bluten lässt."
+      },
+      "vanish": {
+        "name": "Verschwinden",
+        "description": "Verschwindet aus dem Blickfeld und tretet selbst im Kampf in Verstohlenheit. Ihr bewegt euch 30% langsamer, solange ihr verborgen seid. Hält bis zu 10 Sek. an."
+      },
+      "instant_poison": {
+        "name": "Sofortgift",
+        "description": "Überzieht eure Waffe 30 Min. lang, sodass jeder eurer Nahkampfschwünge 8 zusätzlichen Naturschaden verursacht."
+      },
+      "deadly_poison": {
+        "name": "Tödliches Gift",
+        "description": "Überzieht eure Waffe 30 Min. lang, sodass jeder eurer Nahkampfschwünge 14 zusätzlichen Naturschaden verursacht."
+      },
+      "blind": {
+        "name": "Blenden",
+        "description": "Blendet das Ziel, sodass es 8 Sek. lang desorientiert umherirrt. Jeder Schaden bricht den Effekt."
+      },
       "seal_of_righteousness": {
         "name": "Siegel der Rechtschaffenheit",
         "description": "Erfüllt euch 30 Sek. lang mit Heiliger Macht, sodass jeder Nahkampfschwung 4 zusätzlichen Heiligschaden verursacht. Mit Richturteil entfesseln."
@@ -27378,6 +29867,10 @@ export const de_DE: EnTranslations = {
         "name": "Zorn der Gerechtigkeit",
         "description": "Erhöht die durch euren Heiligschaden erzeugte Bedrohung 30 Min. lang um 60%. Der Grundpfeiler des Tank-Paladins."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Wildtier zähmen",
         "description": "Beginnt, ein Wildtier als Begleiter zu zähmen. Es muss eure Stufe oder niedriger haben und darf kein Elitegegner sein. Euer Begleiter folgt euch, greift eure Gegner an und hält eigene Bedrohung. Ihr könnt nur einen Begleiter zugleich haben."
@@ -27413,6 +29906,10 @@ export const de_DE: EnTranslations = {
       "wing_clip": {
         "name": "Zurechtstutzen",
         "description": "Verursacht eine Wunde, die den Gegner 10 Sek. lang um 40% verlangsamt."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspekt des Geparden",
@@ -27490,9 +29987,17 @@ export const de_DE: EnTranslations = {
         "name": "Flammenschock",
         "description": "Versengt das Ziel mit Feuer für 25 Schaden plus {damage} über 12 Sek."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Frostschock",
         "description": "Schockt das Ziel sofort mit Frost für {damage} Frostschaden und verlangsamt seine Bewegung 8 Sek. lang um 50%."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Geisterwolf",
@@ -27610,6 +30115,46 @@ export const de_DE: EnTranslations = {
         "name": "Sternenfeuer",
         "description": "Ruft einen Bolzen aus Sternenfeuer herab, der {damage} Arkanschaden verursacht."
       },
+      "travel_form": {
+        "name": "Reisegestalt",
+        "description": "Nehmt eine flinke Reisegestalt an, was das Lauftempo um 40% erhöht. Im Kampf nicht einsetzbar."
+      },
+      "enrage": {
+        "name": "Wutanfall",
+        "description": "Erzeugt sofort 20 Wut. Nur in Bärengestalt."
+      },
+      "bash": {
+        "name": "Knüppeln",
+        "description": "Betäubt das Ziel 2 Sek. lang. Nur in Bärengestalt."
+      },
+      "faerie_fire": {
+        "name": "Feenfeuer",
+        "description": "Verringert die Rüstung des Ziels 40 Sek. lang um 35."
+      },
+      "hibernate": {
+        "name": "Winterschlaf",
+        "description": "Versetzt das Ziel bis zu 8 Sek. in tiefen Schlaf. Jeglicher Schaden weckt es auf."
+      },
+      "dash": {
+        "name": "Sprint",
+        "description": "Sprintet vorwärts und erhöht das Lauftempo 15 Sek. lang um 50%. Nur in Katzengestalt."
+      },
+      "pounce": {
+        "name": "Anspringen",
+        "description": "Ein Eröffnungsangriff aus der Verstohlenheit, der das Ziel 2 Sek. lang betäubt. Gewährt 1 Combopunkt. Nur in Katzengestalt."
+      },
+      "insect_swarm": {
+        "name": "Insektenschwarm",
+        "description": "Der Gegner wird von Insekten umschwärmt und erleidet {damage} Naturschaden über 12 Sek."
+      },
+      "tigers_fury": {
+        "name": "Zorn des Tigers",
+        "description": "Erhöht die Angriffskraft 6 Sek. lang um 40. Nur in Katzengestalt."
+      },
+      "rip": {
+        "name": "Zerfetzen",
+        "description": "Finishing-Move, der über 12 Sek. Blutungsschaden verursacht. Verbraucht Combopunkte. Nur in Katzengestalt."
+      },
       "mortal_strike": {
         "name": "Tödlicher Stoß",
         "description": "Ein bösartiger Schlag, der Waffenschaden plus {damage} verursacht. (Waffen-Signatur)"
@@ -27637,6 +30182,26 @@ export const de_DE: EnTranslations = {
       "summon_voidwalker": {
         "name": "Leerwandler beschwören",
         "description": "Beschwört einen Leerwandler unter dem Befehl des Hexenmeisters. Der Leerwandler ist ein zäher Dämon, der Eure Feinde verhöhnt und Schaden einsteckt. Das Beschwören eines neuen Dämons entlässt Euren aktuellen. Ihr könnt nur einen Dämon zur Zeit haben."
+      },
+      "summon_succubus": {
+        "name": "Sukkubus beschwören",
+        "description": "Beschwört einen Sukkubus unter dem Befehl des Hexenmeisters. Der Sukkubus ist ein zerbrechlicher Dämon, der schnell zuschlägt und im Nahkampf hart austeilt. Das Beschwören eines neuen Dämons entlässt Euren aktuellen. Ihr könnt nur einen Dämon zur Zeit haben."
+      },
+      "summon_felhunter": {
+        "name": "Teufelsjäger beschwören",
+        "description": "Beschwört einen Teufelsjäger unter dem Befehl des Hexenmeisters. Der Teufelsjäger setzt Feinden aus der Ferne mit Schattenbiss zu und ist hervorragend darin, Zauberwirker zu jagen. Das Beschwören eines neuen Dämons entlässt Euren aktuellen. Ihr könnt nur einen Dämon zur Zeit haben."
+      },
+      "summon_felguard": {
+        "name": "Teufelswache beschwören",
+        "description": "Beschwört eine Teufelswache unter dem Befehl des Hexenmeisters. Die Teufelswache ist ein widerstandsfähiger Nahkampfdämon, der sich in die Schlacht wirft und sich behauptet. Das Beschwören eines neuen Dämons entlässt Euren aktuellen. Ihr könnt nur einen Dämon zur Zeit haben."
+      },
+      "summon_infernal": {
+        "name": "Inferno beschwören",
+        "description": "Bindet ein Inferno an Euren Willen – einen wuchtigen Koloss mit zermalmendem Nahkampf und den höchsten Lebens- und Rüstungswerten aller Dämonen. Eine lange Abklingzeit zügelt seine rohe Kraft. Das Beschwören eines neuen Dämons entlässt Euren aktuellen. Ihr könnt nur einen Dämon zur Zeit haben."
+      },
+      "summon_doomguard": {
+        "name": "Schreckenswache beschwören",
+        "description": "Bindet eine Schreckenswache an Euren Willen – einen Elitedämon, der aus der Ferne schweren Schattenschaden niederregnen lässt. Eine lange Abklingzeit zügelt seine verheerende Kraft. Das Beschwören eines neuen Dämons entlässt Euren aktuellen. Ihr könnt nur einen Dämon zur Zeit haben."
       },
       "bear_charge": {
         "name": "Bärensturm",
@@ -28089,6 +30654,51 @@ export const de_DE: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Gesprungene Wyrmschuppe"
       },
+      "conjured_bread": {
+        "name": "Herbeigezaubertes Brot"
+      },
+      "conjured_bread2": {
+        "name": "Herbeigezaubertes Schwarzbrot"
+      },
+      "conjured_bread3": {
+        "name": "Herbeigezauberte Süße Schnecke"
+      },
+      "roadwardens_helm": {
+        "name": "Helm des Wegwächters"
+      },
+      "wayfarers_hood": {
+        "name": "Kapuze des Wanderers"
+      },
+      "acolytes_circlet": {
+        "name": "Reif des Akolythen"
+      },
+      "reinforced_pauldrons": {
+        "name": "Verstärkte Schulterstücke"
+      },
+      "embroidered_mantle": {
+        "name": "Bestickter Schultermantel"
+      },
+      "sturdy_belt": {
+        "name": "Stabiler Reisegürtel"
+      },
+      "silk_sash": {
+        "name": "Gewebte Seidenschärpe"
+      },
+      "roughspun_gloves": {
+        "name": "Grobe Handschuhe"
+      },
+      "bristlehide_spaulders": {
+        "name": "Borstenhaut-Schulterstücke"
+      },
+      "sableweb_cord": {
+        "name": "Sableweb-Schnur"
+      },
+      "gorraks_cleaver": {
+        "name": "Gorraks Hackbeil"
+      },
+      "mossy_handwraps": {
+        "name": "Bemooste Handwickel"
+      },
       "bristleback_maul": {
         "name": "Bristleback-Schlägel"
       },
@@ -28235,6 +30845,96 @@ export const de_DE: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Wyrmschattentreter"
+      },
+      "glimmerfin_koi": {
+        "name": "Schimmerflossen-Koi"
+      },
+      "raw_bog_eel": {
+        "name": "Roher Mooraal"
+      },
+      "raw_frostgill_trout": {
+        "name": "Rohe Frostkiemen-Forelle"
+      },
+      "raw_marsh_pike": {
+        "name": "Roher Sumpfhecht"
+      },
+      "raw_river_perch": {
+        "name": "Roher Flussbarsch"
+      },
+      "raw_stonescale_carp": {
+        "name": "Roher Steinschuppen-Karpfen"
+      },
+      "soggy_boot": {
+        "name": "Durchnässter Stiefel"
+      },
+      "elixir_of_the_bear": {
+        "name": "Elixier des Bären"
+      },
+      "lesser_healing_potion": {
+        "name": "Geringer Heiltrank"
+      },
+      "lesser_mana_potion": {
+        "name": "Geringer Manatrank"
+      },
+      "healing_potion": {
+        "name": "Heiltrank"
+      },
+      "mana_potion": {
+        "name": "Manatrank"
+      },
+      "tunnelkings_spade": {
+        "name": "Spaten des Tunnelkönigs"
+      },
+      "brutoks_maul": {
+        "name": "Brutoks Streitkolben"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Rissiger Ogerhauer"
+      },
+      "crag_warden_cudgel": {
+        "name": "Knüppel des Felswächters"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Schleicherstiefel von Cragmaw"
+      },
+      "drowned_tide_scepter": {
+        "name": "Zepter der ertrunkenen Flut"
+      },
+      "emberfang_warblade": {
+        "name": "Glutzahn-Kriegsklinge"
+      },
+      "emberwing_cinderscale": {
+        "name": "Aschenschuppe von Glutschwinge"
+      },
+      "emberwing_legguards": {
+        "name": "Beinschienen von Glutschwinge"
+      },
+      "gravewardens_shiv": {
+        "name": "Stilett des Grabwächters"
+      },
+      "hollow_vigil_staff": {
+        "name": "Stab der hohlen Wacht"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Maldrecs Seelenbinder"
+      },
+      "oathbound_greaves": {
+        "name": "Eidgebundene Beinschienen"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Kriegsgürtel des Schädelschmetterers"
+      },
+      "skullsplitter_dirk": {
+        "name": "Schädelspalterdolch"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Sloomzahns Flutzahn"
+      },
+      "tidereaver_gaff": {
+        "name": "Flutschnitter-Enterhaken"
+      },
+      "verlans_oathblade": {
+        "name": "Verlans Eidklinge"
       },
       "briny_idol": {
         "name": "Salzlaken-Götze"
@@ -28576,6 +31276,42 @@ export const de_DE: EnTranslations = {
       },
       "voidwalker": {
         "name": "Leerwandler"
+      },
+      "succubus": {
+        "name": "Sukkubus"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Schädelschmetterer"
+      },
+      "captain_verlan": {
+        "name": "Hauptmann Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Alter Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomzahn der Ertrunkene"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar Glutschwinge"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Maldrec der Geisterbinder"
+      },
+      "felhunter": {
+        "name": "Teufelsjäger"
+      },
+      "felguard": {
+        "name": "Teufelswache"
+      },
+      "infernal": {
+        "name": "Inferno"
+      },
+      "doomguard": {
+        "name": "Schreckenswache"
       },
       "choirmother_selthe": {
         "name": "Chormutter Selthe"
@@ -29673,7 +32409,8 @@ export const zh_CN: EnTranslations = {
       "maxLevel": "满级",
       "totalXp": "总经验",
       "lv": "等级",
-      "toNext": "到下一级"
+      "toNext": "到下一级",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "进度",
@@ -29720,7 +32457,12 @@ export const zh_CN: EnTranslations = {
       "needXp": "更多终身经验才可声望晋升"
     },
     "settings": {
-      "showOverflowXp": "显示溢出经验"
+      "showOverflowXp": "显示溢出经验",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "天赋",
@@ -29779,7 +32521,16 @@ export const zh_CN: EnTranslations = {
       "noBuilds": "没有已保存配置",
       "save": "保存",
       "comingSoonTitle": "天赋即将推出",
-      "comingSoonBody": "此职业还没有天赋树。你可以继续正常游玩；完整天赋树会在未来更新中到来。"
+      "comingSoonBody": "此职业还没有天赋树。你可以继续正常游玩；完整天赋树会在未来更新中到来。",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -30139,6 +32890,8 @@ export const zh_CN: EnTranslations = {
       "levelLog": "你已达到 {level} 级！",
       "xpGain": "你获得 {amount} 点经验。",
       "xpFloat": "+{amount} 经验",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "你已经死亡。",
       "releaseSpirit": "释放灵魂",
       "chatTab": "聊天",
@@ -30168,6 +32921,7 @@ export const zh_CN: EnTranslations = {
       "keyBindings": "按键绑定",
       "graphics": "图形",
       "audio": "音频",
+      "interface": "Interface",
       "logout": "退出登录",
       "returnToGame": "返回游戏",
       "resetToDefaults": "恢复默认",
@@ -30191,15 +32945,33 @@ export const zh_CN: EnTranslations = {
       "terrainLow": "低",
       "terrainHigh": "高",
       "touchOpacity": "触控控件透明度",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "图形质量和地形细节会在重新加载后生效。",
       "reloadNow": "立即重新加载",
       "fullscreen": "全屏",
       "touchLookSpeed": "触屏视角速度",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "左手触屏模式",
       "filterProfanity": "过滤脏话",
       "clickMoveButton": "点击移动按键",
       "clickToMove": "点击移动",
       "graphicsNote": "降低镜头速度可让鼠标视角更平稳。渲染质量低于 100% 可在较弱设备上提升 FPS。",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "音效",
       "musicVolume": "音乐音量",
       "music": "音乐",
@@ -30757,7 +33529,8 @@ export const zh_CN: EnTranslations = {
       "food": "食物",
       "drink": "饮料",
       "tool": "工具",
-      "potion": "药水"
+      "potion": "药水",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "护甲",
@@ -30773,6 +33546,8 @@ export const zh_CN: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality}{kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} 伤害 速度 {speed}",
       "dps": "（每秒 {dps} 伤害）",
       "dagger": "匕首",
@@ -30896,6 +33671,14 @@ export const zh_CN: EnTranslations = {
         "name": "战斗怒吼",
         "description": "使你的攻击强度提高 20，持续 2 分钟。"
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "冲锋",
         "description": "向一名敌人冲锋，产生 9 点怒气并使其昏迷 1 秒。8-25 码距离。"
@@ -30964,6 +33747,10 @@ export const zh_CN: EnTranslations = {
         "name": "造水术",
         "description": "制造 2 瓶水，饮用后恢复法力。更高等级可制造更纯净的水。"
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "火焰冲击",
         "description": "冲击敌人，造成 {damage} 点火焰伤害。瞬发。"
@@ -30987,6 +33774,10 @@ export const zh_CN: EnTranslations = {
       "scorch": {
         "name": "灼烧",
         "description": "灼烧敌人，造成 {damage} 点火焰伤害。施法迅速。"
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "寒冰护体",
@@ -31036,6 +33827,46 @@ export const zh_CN: EnTranslations = {
         "name": "冲动",
         "description": "热血沸腾，立即恢复 60 点能量。"
       },
+      "garrote": {
+        "name": "锁喉",
+        "description": "勒住敌人的喉咙，立即造成伤害，并使其流血，在 18 秒内受到 {damage} 点伤害。必须处于潜行状态。奖励 1 个连击点。"
+      },
+      "cheap_shot": {
+        "name": "偷袭",
+        "description": "攻击目标，使其昏迷 4 秒。必须处于潜行状态。奖励 2 个连击点。"
+      },
+      "sap": {
+        "name": "闷棍",
+        "description": "使目标无法行动，持续 8 秒。必须处于潜行状态且不在战斗中。任何伤害都会打破效果。"
+      },
+      "crippling_poison": {
+        "name": "致残毒药",
+        "description": "以致残毒药攻击目标，造成 {damage} 点自然伤害，并使其移动速度降低 50%，持续 12 秒。"
+      },
+      "expose_armor": {
+        "name": "破甲",
+        "description": "终结技，使目标护甲值降低。消耗的连击点越多，削减得越深。"
+      },
+      "rupture": {
+        "name": "割裂",
+        "description": "终结技，撕裂目标，使其流血，在 16 秒内受到 {damage} 点伤害。"
+      },
+      "vanish": {
+        "name": "消失",
+        "description": "从视野中消失，即使在战斗中也能进入潜行状态。隐身时你的移动速度降低 30%。持续最多 10 秒。"
+      },
+      "instant_poison": {
+        "name": "速效毒药",
+        "description": "为你的武器淬毒，持续 30 分钟，使你的每次近战攻击额外造成 8 点自然伤害。"
+      },
+      "deadly_poison": {
+        "name": "致命毒药",
+        "description": "为你的武器淬毒，持续 30 分钟，使你的每次近战攻击额外造成 14 点自然伤害。"
+      },
+      "blind": {
+        "name": "致盲",
+        "description": "使目标失明，导致其神志不清地四处游荡，持续 8 秒。任何伤害都会打破效果。"
+      },
       "seal_of_righteousness": {
         "name": "正义圣印",
         "description": "使你充满神圣能量，持续 30 秒，使每次近战挥击造成 4 点额外神圣伤害。可用审判释放。"
@@ -31084,6 +33915,10 @@ export const zh_CN: EnTranslations = {
         "name": "正义之怒",
         "description": "使你的神圣伤害产生的威胁值提高 60%，持续 30 分钟。防护圣骑士的核心技能。"
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "驯服野兽",
         "description": "开始驯服一只野兽作为你的伙伴。它必须不高于你的等级，且不能是精英。你的宠物会跟随你、攻击敌人，并保持自己的威胁值。同一时间只能拥有一只宠物。"
@@ -31119,6 +33954,10 @@ export const zh_CN: EnTranslations = {
       "wing_clip": {
         "name": "摔绊",
         "description": "造成伤口，使敌人移动速度降低 40%，持续 10 秒。"
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "猎豹守护",
@@ -31196,9 +34035,17 @@ export const zh_CN: EnTranslations = {
         "name": "烈焰震击",
         "description": "用火焰灼烧目标，造成 25 点伤害，并在 12 秒内额外造成 {damage}。"
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "冰霜震击",
         "description": "立即以冰霜冲击目标，造成 {damage} 点冰霜伤害，并使其移动速度降低 50%，持续 8 秒。"
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "幽魂之狼",
@@ -31316,6 +34163,46 @@ export const zh_CN: EnTranslations = {
         "name": "星火术",
         "description": "召下一道星辰之火，造成 {damage} 点奥术伤害。"
       },
+      "travel_form": {
+        "name": "旅行形态",
+        "description": "化为迅捷的旅行形态，使移动速度提高 40%。无法在战斗中使用。"
+      },
+      "enrage": {
+        "name": "激怒",
+        "description": "立即生成 20 点怒气。仅限熊形态。"
+      },
+      "bash": {
+        "name": "重击",
+        "description": "昏迷目标 2 秒。仅限熊形态。"
+      },
+      "faerie_fire": {
+        "name": "精灵之火",
+        "description": "使目标的护甲降低 35，持续 40 秒。"
+      },
+      "hibernate": {
+        "name": "休眠",
+        "description": "迫使目标陷入深度睡眠，最多持续 8 秒。任何伤害都会将其唤醒。"
+      },
+      "dash": {
+        "name": "急奔",
+        "description": "向前冲刺，使移动速度提高 50%，持续 15 秒。仅限猎豹形态。"
+      },
+      "pounce": {
+        "name": "扑击",
+        "description": "一个潜行开场技，昏迷目标 2 秒。奖励 1 个连击点。仅限猎豹形态。"
+      },
+      "insect_swarm": {
+        "name": "虫群",
+        "description": "敌人被虫群侵袭，在 12 秒内受到 {damage} 点自然伤害。"
+      },
+      "tigers_fury": {
+        "name": "猛虎之怒",
+        "description": "使攻击强度提高 40，持续 6 秒。仅限猎豹形态。"
+      },
+      "rip": {
+        "name": "割裂",
+        "description": "终结技，在 12 秒内造成流血伤害。消耗连击点。仅限猎豹形态。"
+      },
       "mortal_strike": {
         "name": "致死打击",
         "description": "凶狠打击，造成武器伤害外加 {damage} 点伤害。（武器专精标志技能）"
@@ -31343,6 +34230,26 @@ export const zh_CN: EnTranslations = {
       "summon_voidwalker": {
         "name": "召唤虚空行者",
         "description": "召唤一只听从术士命令的虚空行者。虚空行者是一种坚韧的恶魔，会嘲讽你的敌人并承受打击。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+      },
+      "summon_succubus": {
+        "name": "召唤魅魔",
+        "description": "召唤一只听从术士命令的魅魔。魅魔是一种脆弱的恶魔，会快速出手并在近战中造成重创。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+      },
+      "summon_felhunter": {
+        "name": "召唤地狱猎犬",
+        "description": "召唤一只听从术士命令的地狱猎犬。地狱猎犬会用暗影撕咬从远处骚扰敌人，擅长猎杀施法者。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+      },
+      "summon_felguard": {
+        "name": "召唤恶魔卫士",
+        "description": "召唤一只听从术士命令的恶魔卫士。恶魔卫士是一种坚韧的近战恶魔，会冲入战斗并独当一面。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+      },
+      "summon_infernal": {
+        "name": "召唤地狱火",
+        "description": "将一只地狱火束缚于你的意志之下——这是一头庞大的破坏巨兽，拥有毁灭性的近战能力，以及所有恶魔中最深厚的生命与护甲。漫长的冷却时间限制了它的原始威力。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+      },
+      "summon_doomguard": {
+        "name": "召唤末日守卫",
+        "description": "将一只末日守卫束缚于你的意志之下——这是一种精英恶魔，会从远处倾泻沉重的暗影伤害。漫长的冷却时间限制了它的毁灭性威力。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "bear_charge": {
         "name": "野熊冲锋",
@@ -31795,6 +34702,51 @@ export const zh_CN: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "裂开的龙鳞"
       },
+      "conjured_bread": {
+        "name": "魔法面包"
+      },
+      "conjured_bread2": {
+        "name": "魔法黑麦面包"
+      },
+      "conjured_bread3": {
+        "name": "魔法甜面包"
+      },
+      "roadwardens_helm": {
+        "name": "路卫头盔"
+      },
+      "wayfarers_hood": {
+        "name": "旅人兜帽"
+      },
+      "acolytes_circlet": {
+        "name": "见习者头环"
+      },
+      "reinforced_pauldrons": {
+        "name": "强化肩甲"
+      },
+      "embroidered_mantle": {
+        "name": "绣纹披肩"
+      },
+      "sturdy_belt": {
+        "name": "坚固旅行腰带"
+      },
+      "silk_sash": {
+        "name": "编织丝绸腰带"
+      },
+      "roughspun_gloves": {
+        "name": "粗纺手套"
+      },
+      "bristlehide_spaulders": {
+        "name": "鬃皮肩甲"
+      },
+      "sableweb_cord": {
+        "name": "黑网腰绳"
+      },
+      "gorraks_cleaver": {
+        "name": "戈拉克的劈刀"
+      },
+      "mossy_handwraps": {
+        "name": "苔藓护手"
+      },
       "bristleback_maul": {
         "name": "硬鬃重槌"
       },
@@ -31941,6 +34893,96 @@ export const zh_CN: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "龙影足垫"
+      },
+      "glimmerfin_koi": {
+        "name": "微光鳍锦鲤"
+      },
+      "raw_bog_eel": {
+        "name": "生沼泽鳗鱼"
+      },
+      "raw_frostgill_trout": {
+        "name": "生霜鳃鳟鱼"
+      },
+      "raw_marsh_pike": {
+        "name": "生沼泽狗鱼"
+      },
+      "raw_river_perch": {
+        "name": "生河鲈鱼"
+      },
+      "raw_stonescale_carp": {
+        "name": "生石鳞鲤鱼"
+      },
+      "soggy_boot": {
+        "name": "湿透的靴子"
+      },
+      "elixir_of_the_bear": {
+        "name": "巨熊药剂"
+      },
+      "lesser_healing_potion": {
+        "name": "次级治疗药水"
+      },
+      "lesser_mana_potion": {
+        "name": "次级法力药水"
+      },
+      "healing_potion": {
+        "name": "治疗药水"
+      },
+      "mana_potion": {
+        "name": "法力药水"
+      },
+      "tunnelkings_spade": {
+        "name": "隧道王之铲"
+      },
+      "brutoks_maul": {
+        "name": "布鲁托克的巨槌"
+      },
+      "cracked_ogre_tusk": {
+        "name": "破裂的食人魔獠牙"
+      },
+      "crag_warden_cudgel": {
+        "name": "峭壁守卫者短棍"
+      },
+      "cragmaw_prowlboots": {
+        "name": "裂颚潜行靴"
+      },
+      "drowned_tide_scepter": {
+        "name": "溺亡潮汐权杖"
+      },
+      "emberfang_warblade": {
+        "name": "炽牙战刃"
+      },
+      "emberwing_cinderscale": {
+        "name": "炽翼煤鳞"
+      },
+      "emberwing_legguards": {
+        "name": "炽翼护腿"
+      },
+      "gravewardens_shiv": {
+        "name": "守墓人尖刀"
+      },
+      "hollow_vigil_staff": {
+        "name": "空寂守望之杖"
+      },
+      "maldrecs_soulbinder": {
+        "name": "玛尔德雷克的缚魂器"
+      },
+      "oathbound_greaves": {
+        "name": "誓约护胫"
+      },
+      "skullsmasher_warbelt": {
+        "name": "碎颅者战腰带"
+      },
+      "skullsplitter_dirk": {
+        "name": "裂颅匕首"
+      },
+      "sloomtooth_tidefang": {
+        "name": "涝牙的潮汐之牙"
+      },
+      "tidereaver_gaff": {
+        "name": "裂潮者钩杆"
+      },
+      "verlans_oathblade": {
+        "name": "维尔兰的誓约之刃"
       },
       "briny_idol": {
         "name": "咸海神像"
@@ -32282,6 +35324,42 @@ export const zh_CN: EnTranslations = {
       },
       "voidwalker": {
         "name": "虚空行者"
+      },
+      "succubus": {
+        "name": "魅魔"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "碎颅者布鲁托克"
+      },
+      "captain_verlan": {
+        "name": "维尔兰队长"
+      },
+      "old_cragmaw": {
+        "name": "老裂颚"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "溺亡者涝牙"
+      },
+      "voskar_emberwing": {
+        "name": "炽翼沃斯卡"
+      },
+      "wraithbinder_maldrec": {
+        "name": "缚魂者玛尔德雷克"
+      },
+      "felhunter": {
+        "name": "地狱猎犬"
+      },
+      "felguard": {
+        "name": "恶魔卫士"
+      },
+      "infernal": {
+        "name": "地狱火"
+      },
+      "doomguard": {
+        "name": "末日守卫"
       },
       "choirmother_selthe": {
         "name": "唱诗母塞尔瑟"
@@ -33379,7 +36457,8 @@ export const zh_TW: EnTranslations = {
       "maxLevel": "滿級",
       "totalXp": "總經驗",
       "lv": "等級",
-      "toNext": "到下一級"
+      "toNext": "到下一級",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "進度",
@@ -33426,7 +36505,12 @@ export const zh_TW: EnTranslations = {
       "needXp": "更多終身經驗才可威望晉升"
     },
     "settings": {
-      "showOverflowXp": "顯示溢出經驗"
+      "showOverflowXp": "顯示溢出經驗",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "天賦",
@@ -33485,7 +36569,16 @@ export const zh_TW: EnTranslations = {
       "noBuilds": "沒有已儲存配置",
       "save": "儲存",
       "comingSoonTitle": "天賦即將推出",
-      "comingSoonBody": "此職業還沒有天賦樹。你可以繼續正常遊玩；完整天賦樹會在未來更新中到來。"
+      "comingSoonBody": "此職業還沒有天賦樹。你可以繼續正常遊玩；完整天賦樹會在未來更新中到來。",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -33845,6 +36938,8 @@ export const zh_TW: EnTranslations = {
       "levelLog": "你已達到 {level} 級！",
       "xpGain": "你獲得 {amount} 點經驗值。",
       "xpFloat": "+{amount} 經驗值",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "你已經死亡。",
       "releaseSpirit": "釋放靈魂",
       "chatTab": "聊天",
@@ -33874,6 +36969,7 @@ export const zh_TW: EnTranslations = {
       "keyBindings": "按鍵設定",
       "graphics": "圖形",
       "audio": "音訊",
+      "interface": "Interface",
       "logout": "登出",
       "returnToGame": "返回遊戲",
       "resetToDefaults": "恢復預設",
@@ -33897,15 +36993,33 @@ export const zh_TW: EnTranslations = {
       "terrainLow": "低",
       "terrainHigh": "高",
       "touchOpacity": "觸控控制透明度",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "圖形品質和地形細節會在重新載入後生效。",
       "reloadNow": "立即重新載入",
       "fullscreen": "全螢幕",
       "touchLookSpeed": "觸控視角速度",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "左手觸控模式",
       "filterProfanity": "過濾髒話",
       "clickMoveButton": "點擊移動按鍵",
       "clickToMove": "點擊移動",
       "graphicsNote": "降低鏡頭速度可讓滑鼠視角更平穩。渲染品質低於 100% 可在較弱裝置上提升 FPS。",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "音效",
       "musicVolume": "音樂音量",
       "music": "音樂",
@@ -34463,7 +37577,8 @@ export const zh_TW: EnTranslations = {
       "food": "食物",
       "drink": "飲料",
       "tool": "工具",
-      "potion": "藥水"
+      "potion": "藥水",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "護甲",
@@ -34479,6 +37594,8 @@ export const zh_TW: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality}{kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} 傷害 速度 {speed}",
       "dps": "（每秒 {dps} 傷害）",
       "dagger": "匕首",
@@ -34602,6 +37719,14 @@ export const zh_TW: EnTranslations = {
         "name": "戰鬥怒吼",
         "description": "使你的攻擊強度提高 20，持續 2 分鐘。"
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "衝鋒",
         "description": "向一名敵人衝鋒，產生 9 點怒氣並使其昏迷 1 秒。8-25 碼距離。"
@@ -34670,6 +37795,10 @@ export const zh_TW: EnTranslations = {
         "name": "造水術",
         "description": "製造 2 瓶水，飲用後恢復法力。更高等級可製造更純淨的水。"
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "火焰衝擊",
         "description": "衝擊敵人，造成 {damage} 點火焰傷害。瞬發。"
@@ -34693,6 +37822,10 @@ export const zh_TW: EnTranslations = {
       "scorch": {
         "name": "灼燒",
         "description": "灼燒敵人，造成 {damage} 點火焰傷害。施法迅速。"
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "寒冰護體",
@@ -34742,6 +37875,46 @@ export const zh_TW: EnTranslations = {
         "name": "衝動",
         "description": "熱血沸騰，立即恢復 60 點能量。"
       },
+      "garrote": {
+        "name": "鎖喉",
+        "description": "勒住敵人的咽喉，立即造成傷害，並使其在 18 秒內流血損失 {damage} 點生命。必須處於潛行狀態。獎勵 1 個連擊點。"
+      },
+      "cheap_shot": {
+        "name": "偷襲",
+        "description": "攻擊目標，使其昏迷 4 秒。必須處於潛行狀態。獎勵 2 個連擊點。"
+      },
+      "sap": {
+        "name": "悶棍",
+        "description": "使目標無法行動，持續 8 秒。必須處於潛行狀態且脫離戰鬥。任何傷害都會破除此效果。"
+      },
+      "crippling_poison": {
+        "name": "致殘毒藥",
+        "description": "以致殘毒藥攻擊目標，造成 {damage} 點自然傷害，並使其移動速度降低 50%，持續 12 秒。"
+      },
+      "expose_armor": {
+        "name": "破甲",
+        "description": "終結技，使目標破綻盡露，降低其護甲。消耗越多連擊點，撕裂得越深。"
+      },
+      "rupture": {
+        "name": "割裂",
+        "description": "終結技，撕裂目標的傷口，使其在 16 秒內流血損失 {damage} 點生命。"
+      },
+      "vanish": {
+        "name": "消失",
+        "description": "從視野中消失，即使在戰鬥中也能進入潛行狀態。隱身時你的移動速度降低 30%。最多持續 10 秒。"
+      },
+      "instant_poison": {
+        "name": "速效毒藥",
+        "description": "在你的武器上塗抹毒藥，持續 30 分鐘，使你的每次近戰揮擊額外造成 8 點自然傷害。"
+      },
+      "deadly_poison": {
+        "name": "致命毒藥",
+        "description": "在你的武器上塗抹毒藥，持續 30 分鐘，使你的每次近戰揮擊額外造成 14 點自然傷害。"
+      },
+      "blind": {
+        "name": "致盲",
+        "description": "使目標目盲，迷茫地四處遊蕩，持續 8 秒。任何傷害都會破除此效果。"
+      },
       "seal_of_righteousness": {
         "name": "正義聖印",
         "description": "使你充滿神聖能量，持續 30 秒，使每次近戰揮擊造成 4 點額外神聖傷害。可用審判釋放。"
@@ -34790,6 +37963,10 @@ export const zh_TW: EnTranslations = {
         "name": "正義之怒",
         "description": "使你的神聖傷害產生的威脅值提高 60%，持續 30 分鐘。防護聖騎士的核心技能。"
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "馴服野獸",
         "description": "開始馴服一隻野獸作為你的夥伴。牠必須不高於你的等級，且不能是精英。你的寵物會跟隨你、攻擊敵人，並保持自己的威脅值。同一時間只能擁有一隻寵物。"
@@ -34825,6 +38002,10 @@ export const zh_TW: EnTranslations = {
       "wing_clip": {
         "name": "摔絆",
         "description": "造成傷口，使敵人移動速度降低 40%，持續 10 秒。"
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "獵豹守護",
@@ -34902,9 +38083,17 @@ export const zh_TW: EnTranslations = {
         "name": "烈焰震擊",
         "description": "用火焰灼燒目標，造成 25 點傷害，並在 12 秒內額外造成 {damage}。"
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "冰霜震擊",
         "description": "立即以冰霜衝擊目標，造成 {damage} 點冰霜傷害，並使其移動速度降低 50%，持續 8 秒。"
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "幽魂之狼",
@@ -35022,6 +38211,46 @@ export const zh_TW: EnTranslations = {
         "name": "星火術",
         "description": "召下一道星辰之火，造成 {damage} 點秘法傷害。"
       },
+      "travel_form": {
+        "name": "旅行形態",
+        "description": "化為迅捷的旅行形態，使移動速度提高 40%。無法在戰鬥中使用。"
+      },
+      "enrage": {
+        "name": "激怒",
+        "description": "立即生成 20 點怒氣。僅限熊形態。"
+      },
+      "bash": {
+        "name": "重擊",
+        "description": "昏迷目標 2 秒。僅限熊形態。"
+      },
+      "faerie_fire": {
+        "name": "精靈之火",
+        "description": "使目標的護甲降低 35，持續 40 秒。"
+      },
+      "hibernate": {
+        "name": "休眠",
+        "description": "迫使目標陷入深度睡眠，最多持續 8 秒。任何傷害都會將其喚醒。"
+      },
+      "dash": {
+        "name": "急奔",
+        "description": "向前衝刺，使移動速度提高 50%，持續 15 秒。僅限獵豹形態。"
+      },
+      "pounce": {
+        "name": "撲擊",
+        "description": "一個潛行開場技，昏迷目標 2 秒。獎勵 1 個連擊點。僅限獵豹形態。"
+      },
+      "insect_swarm": {
+        "name": "蟲群",
+        "description": "敵人被蟲群侵襲，在 12 秒內受到 {damage} 點自然傷害。"
+      },
+      "tigers_fury": {
+        "name": "猛虎之怒",
+        "description": "使攻擊強度提高 40，持續 6 秒。僅限獵豹形態。"
+      },
+      "rip": {
+        "name": "割裂",
+        "description": "終結技，在 12 秒內造成流血傷害。消耗連擊點。僅限獵豹形態。"
+      },
       "mortal_strike": {
         "name": "致死打擊",
         "description": "凶狠打擊，造成武器傷害外加 {damage} 點傷害。（武器專精標誌技能）"
@@ -35049,6 +38278,26 @@ export const zh_TW: EnTranslations = {
       "summon_voidwalker": {
         "name": "召喚虛空行者",
         "description": "召喚一隻聽從術士命令的虛空行者。虛空行者是一種堅韌的惡魔，會嘲諷你的敵人並承受打擊。召喚新的惡魔會驅散你目前的惡魔。你同時只能擁有一隻惡魔。"
+      },
+      "summon_succubus": {
+        "name": "召喚魅魔",
+        "description": "召喚一隻聽從術士命令的魅魔。魅魔是一種脆弱的惡魔，攻擊迅速且近戰傷害強勁。召喚新的惡魔會驅散你目前的惡魔。你同時只能擁有一隻惡魔。"
+      },
+      "summon_felhunter": {
+        "name": "召喚地獄獵犬",
+        "description": "召喚一隻聽從術士命令的地獄獵犬。地獄獵犬以暗影撕咬從遠處騷擾敵人，尤其擅長獵殺施法者。召喚新的惡魔會驅散你目前的惡魔。你同時只能擁有一隻惡魔。"
+      },
+      "summon_felguard": {
+        "name": "召喚惡魔守衛",
+        "description": "召喚一隻聽從術士命令的惡魔守衛。惡魔守衛是一種堅韌的近戰惡魔，會衝入戰鬥並獨當一面。召喚新的惡魔會驅散你目前的惡魔。你同時只能擁有一隻惡魔。"
+      },
+      "summon_infernal": {
+        "name": "召喚地獄火",
+        "description": "將一隻地獄火束縛於你的意志之下——這是一頭巨大的猛獸，擁有毀滅性的近戰攻擊，以及所有惡魔中最雄厚的生命值與護甲。漫長的冷卻時間限制了牠的原始力量。召喚新的惡魔會驅散你目前的惡魔。你同時只能擁有一隻惡魔。"
+      },
+      "summon_doomguard": {
+        "name": "召喚末日守衛",
+        "description": "將一隻末日守衛束縛於你的意志之下——這是一種精英惡魔，會從遠處降下沉重的暗影傷害。漫長的冷卻時間限制了牠的毀滅性力量。召喚新的惡魔會驅散你目前的惡魔。你同時只能擁有一隻惡魔。"
       },
       "bear_charge": {
         "name": "猛熊衝鋒",
@@ -35501,6 +38750,51 @@ export const zh_TW: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "裂開的龍鱗"
       },
+      "conjured_bread": {
+        "name": "魔法麵包"
+      },
+      "conjured_bread2": {
+        "name": "魔法黑麥麵包"
+      },
+      "conjured_bread3": {
+        "name": "魔法甜麵包"
+      },
+      "roadwardens_helm": {
+        "name": "路衛頭盔"
+      },
+      "wayfarers_hood": {
+        "name": "旅人兜帽"
+      },
+      "acolytes_circlet": {
+        "name": "見習者頭環"
+      },
+      "reinforced_pauldrons": {
+        "name": "強化肩甲"
+      },
+      "embroidered_mantle": {
+        "name": "繡紋披肩"
+      },
+      "sturdy_belt": {
+        "name": "堅固旅行腰帶"
+      },
+      "silk_sash": {
+        "name": "編織絲綢腰帶"
+      },
+      "roughspun_gloves": {
+        "name": "粗紡手套"
+      },
+      "bristlehide_spaulders": {
+        "name": "鬃皮肩甲"
+      },
+      "sableweb_cord": {
+        "name": "黑網腰繩"
+      },
+      "gorraks_cleaver": {
+        "name": "戈拉克的劈刀"
+      },
+      "mossy_handwraps": {
+        "name": "苔蘚護手"
+      },
       "bristleback_maul": {
         "name": "硬鬃重槌"
       },
@@ -35647,6 +38941,96 @@ export const zh_TW: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "龍影足墊"
+      },
+      "glimmerfin_koi": {
+        "name": "微光鰭錦鯉"
+      },
+      "raw_bog_eel": {
+        "name": "生沼澤鰻魚"
+      },
+      "raw_frostgill_trout": {
+        "name": "生霜鰓鱒魚"
+      },
+      "raw_marsh_pike": {
+        "name": "生沼澤狗魚"
+      },
+      "raw_river_perch": {
+        "name": "生河鱸魚"
+      },
+      "raw_stonescale_carp": {
+        "name": "生石鱗鯉魚"
+      },
+      "soggy_boot": {
+        "name": "濕透的靴子"
+      },
+      "elixir_of_the_bear": {
+        "name": "巨熊藥劑"
+      },
+      "lesser_healing_potion": {
+        "name": "次級治療藥水"
+      },
+      "lesser_mana_potion": {
+        "name": "次級法力藥水"
+      },
+      "healing_potion": {
+        "name": "治療藥水"
+      },
+      "mana_potion": {
+        "name": "法力藥水"
+      },
+      "tunnelkings_spade": {
+        "name": "隧道王之鏟"
+      },
+      "brutoks_maul": {
+        "name": "布魯托克的巨槌"
+      },
+      "cracked_ogre_tusk": {
+        "name": "破裂的食人魔獠牙"
+      },
+      "crag_warden_cudgel": {
+        "name": "峭壁守衛者短棍"
+      },
+      "cragmaw_prowlboots": {
+        "name": "裂顎潛行靴"
+      },
+      "drowned_tide_scepter": {
+        "name": "溺亡潮汐權杖"
+      },
+      "emberfang_warblade": {
+        "name": "熾牙戰刃"
+      },
+      "emberwing_cinderscale": {
+        "name": "熾翼煤鱗"
+      },
+      "emberwing_legguards": {
+        "name": "熾翼護腿"
+      },
+      "gravewardens_shiv": {
+        "name": "守墓人尖刀"
+      },
+      "hollow_vigil_staff": {
+        "name": "空寂守望之杖"
+      },
+      "maldrecs_soulbinder": {
+        "name": "瑪爾德雷克的縛魂器"
+      },
+      "oathbound_greaves": {
+        "name": "誓約護脛"
+      },
+      "skullsmasher_warbelt": {
+        "name": "碎顱者戰腰帶"
+      },
+      "skullsplitter_dirk": {
+        "name": "裂顱匕首"
+      },
+      "sloomtooth_tidefang": {
+        "name": "澇牙的潮汐之牙"
+      },
+      "tidereaver_gaff": {
+        "name": "裂潮者鉤桿"
+      },
+      "verlans_oathblade": {
+        "name": "維爾蘭的誓約之刃"
       },
       "briny_idol": {
         "name": "鹹海神像"
@@ -35988,6 +39372,42 @@ export const zh_TW: EnTranslations = {
       },
       "voidwalker": {
         "name": "虛空行者"
+      },
+      "succubus": {
+        "name": "魅魔"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "碎顱者布魯托克"
+      },
+      "captain_verlan": {
+        "name": "維爾蘭隊長"
+      },
+      "old_cragmaw": {
+        "name": "老裂顎"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "溺亡者澇牙"
+      },
+      "voskar_emberwing": {
+        "name": "熾翼沃斯卡"
+      },
+      "wraithbinder_maldrec": {
+        "name": "縛魂者瑪爾德雷克"
+      },
+      "felhunter": {
+        "name": "地獄獵犬"
+      },
+      "felguard": {
+        "name": "惡魔守衛"
+      },
+      "infernal": {
+        "name": "地獄火"
+      },
+      "doomguard": {
+        "name": "末日守衛"
       },
       "choirmother_selthe": {
         "name": "唱詩之母瑟爾瑟"
@@ -37085,7 +40505,8 @@ export const ko_KR: EnTranslations = {
       "maxLevel": "최대 레벨",
       "totalXp": "총 경험치",
       "lv": "레벨",
-      "toNext": "다음까지"
+      "toNext": "다음까지",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "진행도",
@@ -37132,7 +40553,12 @@ export const ko_KR: EnTranslations = {
       "needXp": "명예 승급까지 필요한 추가 누적 경험치"
     },
     "settings": {
-      "showOverflowXp": "초과 경험치 표시"
+      "showOverflowXp": "초과 경험치 표시",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "특성",
@@ -37191,7 +40617,16 @@ export const ko_KR: EnTranslations = {
       "noBuilds": "저장한 빌드 없음",
       "save": "저장",
       "comingSoonTitle": "특성 준비 중",
-      "comingSoonBody": "이 직업은 아직 특성 트리가 없습니다. 계속 정상적으로 플레이할 수 있으며 전체 트리는 향후 업데이트에 추가됩니다."
+      "comingSoonBody": "이 직업은 아직 특성 트리가 없습니다. 계속 정상적으로 플레이할 수 있으며 전체 트리는 향후 업데이트에 추가됩니다.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -37551,6 +40986,8 @@ export const ko_KR: EnTranslations = {
       "levelLog": "{level} 레벨이 되었습니다!",
       "xpGain": "경험치 {amount}을 획득했습니다.",
       "xpFloat": "+{amount} 경험치",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "사망했습니다.",
       "releaseSpirit": "영혼 풀어주기",
       "chatTab": "채팅",
@@ -37580,6 +41017,7 @@ export const ko_KR: EnTranslations = {
       "keyBindings": "키 설정",
       "graphics": "그래픽",
       "audio": "오디오",
+      "interface": "Interface",
       "logout": "로그아웃",
       "returnToGame": "게임으로 돌아가기",
       "resetToDefaults": "기본값 복원",
@@ -37603,15 +41041,33 @@ export const ko_KR: EnTranslations = {
       "terrainLow": "낮음",
       "terrainHigh": "높음",
       "touchOpacity": "터치 조작 투명도",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "그래픽 품질과 지형 세부 묘사는 새로고침 후 적용됩니다.",
       "reloadNow": "지금 새로고침",
       "fullscreen": "전체 화면",
       "touchLookSpeed": "터치 시점 속도",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "왼손잡이 터치",
       "filterProfanity": "비속어 필터",
       "clickMoveButton": "클릭 이동 버튼",
       "clickToMove": "클릭하여 이동",
       "graphicsNote": "카메라 속도를 낮추면 마우스 시점이 더 안정됩니다. 렌더 품질을 100% 아래로 낮추면 낮은 사양 장치에서 FPS가 향상됩니다.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "효과음",
       "musicVolume": "음악 음량",
       "music": "음악",
@@ -38169,7 +41625,8 @@ export const ko_KR: EnTranslations = {
       "food": "음식",
       "drink": "음료",
       "tool": "도구",
-      "potion": "물약"
+      "potion": "물약",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "방어도",
@@ -38185,6 +41642,8 @@ export const ko_KR: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality} {kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} 피해 속도 {speed}",
       "dps": "(초당 피해 {dps})",
       "dagger": "단검",
@@ -38308,6 +41767,14 @@ export const ko_KR: EnTranslations = {
         "name": "전투의 외침",
         "description": "2분 동안 전투력이 20만큼 증가합니다."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "돌진",
         "description": "적에게 돌진하여 분노 9를 생성하고 1초 동안 기절시킵니다. 사거리 8-25yd."
@@ -38376,6 +41843,10 @@ export const ko_KR: EnTranslations = {
         "name": "물 창조",
         "description": "마시면 마나를 회복하는 물병 2개를 창조합니다. 높은 등급은 더 순수한 물을 창조합니다."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "화염 작열",
         "description": "적에게 {damage}의 화염 피해를 입힙니다. 즉시 시전됩니다."
@@ -38399,6 +41870,10 @@ export const ko_KR: EnTranslations = {
       "scorch": {
         "name": "불태우기",
         "description": "적을 불태워 {damage}의 화염 피해를 입힙니다. 빠르게 시전합니다."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "얼음 보호막",
@@ -38448,6 +41923,46 @@ export const ko_KR: EnTranslations = {
         "name": "아드레날린 촉진",
         "description": "피가 끓어올라 즉시 기력 60을 회복합니다."
       },
+      "garrote": {
+        "name": "목조르기",
+        "description": "적의 목을 졸라 즉시 피해를 입히고 18초에 걸쳐 {damage}의 출혈 피해를 입힙니다. 은신 상태여야 합니다. 연계 점수 1점을 얻습니다."
+      },
+      "cheap_shot": {
+        "name": "비열한 습격",
+        "description": "대상을 가격해 4초 동안 기절시킵니다. 은신 상태여야 합니다. 연계 점수 2점을 얻습니다."
+      },
+      "sap": {
+        "name": "관자놀이 가격",
+        "description": "대상을 8초 동안 무력화합니다. 은신 상태이며 전투 중이 아니어야 합니다. 피해를 받으면 효과가 해제됩니다."
+      },
+      "crippling_poison": {
+        "name": "무력화 독",
+        "description": "대상을 무력화 독으로 가격해 {damage}의 자연 피해를 입히고 12초 동안 이동 속도를 50%만큼 감소시킵니다."
+      },
+      "expose_armor": {
+        "name": "방어구 노출",
+        "description": "대상의 약점을 드러내 방어도를 감소시키는 결정타입니다. 연계 점수를 많이 소모할수록 더 깊게 베어 들어갑니다."
+      },
+      "rupture": {
+        "name": "파열",
+        "description": "대상에게 상처를 입혀 16초에 걸쳐 {damage}의 출혈 피해를 입히는 결정타입니다."
+      },
+      "vanish": {
+        "name": "소멸",
+        "description": "시야에서 사라져 전투 중에도 은신 상태가 됩니다. 숨어 있는 동안 이동 속도가 30% 감소합니다. 최대 10초 동안 지속됩니다."
+      },
+      "instant_poison": {
+        "name": "속효성 독",
+        "description": "30분 동안 무기에 독을 발라 근접 공격마다 8의 추가 자연 피해를 입힙니다."
+      },
+      "deadly_poison": {
+        "name": "맹독",
+        "description": "30분 동안 무기에 독을 발라 근접 공격마다 14의 추가 자연 피해를 입힙니다."
+      },
+      "blind": {
+        "name": "실명",
+        "description": "대상의 눈을 멀게 해 8초 동안 방향을 잃고 헤매게 만듭니다. 피해를 받으면 효과가 해제됩니다."
+      },
       "seal_of_righteousness": {
         "name": "정의의 문장",
         "description": "30초 동안 신성한 힘으로 가득 차 근접 공격마다 4의 추가 신성 피해를 입힙니다. 심판으로 해방할 수 있습니다."
@@ -38496,6 +42011,10 @@ export const ko_KR: EnTranslations = {
         "name": "정의의 격노",
         "description": "30분 동안 자신의 신성 피해가 생성하는 위협 수준이 60%만큼 증가합니다. 방어 성기사의 핵심입니다."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "야수 길들이기",
         "description": "야수를 길들여 동료로 삼기 시작합니다. 야수는 자신의 레벨 이하이며 정예가 아니어야 합니다. 소환수는 주인을 따르고 적을 공격하며 자체 위협 수준을 유지합니다. 한 번에 하나의 소환수만 둘 수 있습니다."
@@ -38531,6 +42050,10 @@ export const ko_KR: EnTranslations = {
       "wing_clip": {
         "name": "날개 절단",
         "description": "상처를 내어 10초 동안 적의 이동 속도를 40%만큼 감소시킵니다."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "치타의 상",
@@ -38608,9 +42131,17 @@ export const ko_KR: EnTranslations = {
         "name": "화염 충격",
         "description": "대상을 불태워 25의 피해를 입히고 12초에 걸쳐 추가로 {damage}의 피해를 입힙니다."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "냉기 충격",
         "description": "대상을 즉시 냉기로 강타해 {damage}의 냉기 피해를 입히고 8초 동안 이동 속도를 50%만큼 감소시킵니다."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "늑대 정령",
@@ -38728,6 +42259,46 @@ export const ko_KR: EnTranslations = {
         "name": "별빛 화살",
         "description": "별의 불꽃을 불러 내려 {damage}의 비전 피해를 입힙니다."
       },
+      "travel_form": {
+        "name": "여행 형태",
+        "description": "날렵한 여행 형태로 변신하여 이동 속도를 40% 증가시킵니다. 전투 중에는 사용할 수 없습니다."
+      },
+      "enrage": {
+        "name": "격노",
+        "description": "즉시 분노 20을 생성합니다. 곰 변신 전용."
+      },
+      "bash": {
+        "name": "곤봉 세례",
+        "description": "대상을 2초 동안 기절시킵니다. 곰 변신 전용."
+      },
+      "faerie_fire": {
+        "name": "요정의 불꽃",
+        "description": "대상의 방어도를 40초 동안 35만큼 감소시킵니다."
+      },
+      "hibernate": {
+        "name": "동면",
+        "description": "대상을 최대 8초 동안 깊은 잠에 빠뜨립니다. 피해를 입으면 깨어납니다."
+      },
+      "dash": {
+        "name": "질주",
+        "description": "앞으로 돌진하여 이동 속도를 15초 동안 50% 증가시킵니다. 표범 변신 전용."
+      },
+      "pounce": {
+        "name": "덮치기",
+        "description": "은신 상태에서 사용하는 시작 공격으로 대상을 2초 동안 기절시킵니다. 연계 점수 1점을 얻습니다. 표범 변신 전용."
+      },
+      "insect_swarm": {
+        "name": "곤충 떼",
+        "description": "적이 곤충 떼에 휩싸여 12초에 걸쳐 {damage}의 자연 피해를 입습니다."
+      },
+      "tigers_fury": {
+        "name": "호랑이의 분노",
+        "description": "공격력을 6초 동안 40만큼 증가시킵니다. 표범 변신 전용."
+      },
+      "rip": {
+        "name": "찢기",
+        "description": "12초에 걸쳐 출혈 피해를 입히는 결정타입니다. 연계 점수를 소모합니다. 표범 변신 전용."
+      },
       "mortal_strike": {
         "name": "죽음의 일격",
         "description": "잔혹한 일격으로 무기 피해에 {damage}의 피해를 더합니다. (무기 특화 대표 기술)"
@@ -38755,6 +42326,26 @@ export const ko_KR: EnTranslations = {
       "summon_voidwalker": {
         "name": "공허추적자 소환",
         "description": "흑마법사의 명령을 따르는 공허추적자를 소환합니다. 공허추적자는 적을 도발하고 피해를 견뎌내는 튼튼한 악마입니다. 새로운 악마를 소환하면 현재 악마는 사라집니다. 한 번에 하나의 악마만 부릴 수 있습니다."
+      },
+      "summon_succubus": {
+        "name": "서큐버스 소환",
+        "description": "흑마법사의 명령을 따르는 서큐버스를 소환합니다. 서큐버스는 연약한 악마이지만 빠르게 공격하며 근접전에서 강력한 피해를 입힙니다. 새로운 악마를 소환하면 현재 악마는 사라집니다. 한 번에 하나의 악마만 부릴 수 있습니다."
+      },
+      "summon_felhunter": {
+        "name": "지옥사냥개 소환",
+        "description": "흑마법사의 명령을 따르는 지옥사냥개를 소환합니다. 지옥사냥개는 어둠의 이빨로 멀리서 적을 괴롭히며 시전자를 사냥하는 데 능합니다. 새로운 악마를 소환하면 현재 악마는 사라집니다. 한 번에 하나의 악마만 부릴 수 있습니다."
+      },
+      "summon_felguard": {
+        "name": "지옥수호병 소환",
+        "description": "흑마법사의 명령을 따르는 지옥수호병을 소환합니다. 지옥수호병은 전장에 뛰어들어 굳건히 버티는 튼튼한 근접 악마입니다. 새로운 악마를 소환하면 현재 악마는 사라집니다. 한 번에 하나의 악마만 부릴 수 있습니다."
+      },
+      "summon_infernal": {
+        "name": "지옥불정령 소환",
+        "description": "지옥불정령을 당신의 의지에 결속합니다. 지옥불정령은 모든 악마 중 가장 높은 생명력과 방어도를 지닌 거대한 파괴자로, 강력한 근접 공격을 가합니다. 긴 재사용 대기시간이 그 막강한 힘을 제한합니다. 새로운 악마를 소환하면 현재 악마는 사라집니다. 한 번에 하나의 악마만 부릴 수 있습니다."
+      },
+      "summon_doomguard": {
+        "name": "파멸의 수호병 소환",
+        "description": "파멸의 수호병을 당신의 의지에 결속합니다. 파멸의 수호병은 멀리서 강력한 암흑 피해를 퍼붓는 정예 악마입니다. 긴 재사용 대기시간이 그 파괴적인 힘을 제한합니다. 새로운 악마를 소환하면 현재 악마는 사라집니다. 한 번에 하나의 악마만 부릴 수 있습니다."
       },
       "bear_charge": {
         "name": "곰 돌진",
@@ -39207,6 +42798,51 @@ export const ko_KR: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "갈라진 고룡 비늘"
       },
+      "conjured_bread": {
+        "name": "마력의 빵"
+      },
+      "conjured_bread2": {
+        "name": "마력의 호밀빵"
+      },
+      "conjured_bread3": {
+        "name": "마력의 단빵"
+      },
+      "roadwardens_helm": {
+        "name": "도로 수호자의 투구"
+      },
+      "wayfarers_hood": {
+        "name": "방랑자의 두건"
+      },
+      "acolytes_circlet": {
+        "name": "수습 사제의 머리띠"
+      },
+      "reinforced_pauldrons": {
+        "name": "강화된 어깨보호구"
+      },
+      "embroidered_mantle": {
+        "name": "자수 망토"
+      },
+      "sturdy_belt": {
+        "name": "튼튼한 여행자의 허리띠"
+      },
+      "silk_sash": {
+        "name": "직조 비단 띠"
+      },
+      "roughspun_gloves": {
+        "name": "거친 장갑"
+      },
+      "bristlehide_spaulders": {
+        "name": "뻣뻣한 가죽 어깨보호구"
+      },
+      "sableweb_cord": {
+        "name": "검은거미줄 끈"
+      },
+      "gorraks_cleaver": {
+        "name": "고라크의 고기칼"
+      },
+      "mossy_handwraps": {
+        "name": "이끼 낀 손싸개"
+      },
       "bristleback_maul": {
         "name": "뻣센등뼈 철퇴"
       },
@@ -39353,6 +42989,96 @@ export const ko_KR: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "고룡그림자 발보호구"
+      },
+      "glimmerfin_koi": {
+        "name": "반짝이는 지느러미 코이"
+      },
+      "raw_bog_eel": {
+        "name": "날 늪지 뱀장어"
+      },
+      "raw_frostgill_trout": {
+        "name": "날 서리아가미 송어"
+      },
+      "raw_marsh_pike": {
+        "name": "날 늪지 강꼬치고기"
+      },
+      "raw_river_perch": {
+        "name": "날 강농어"
+      },
+      "raw_stonescale_carp": {
+        "name": "날 돌비늘 잉어"
+      },
+      "soggy_boot": {
+        "name": "흠뻑 젖은 장화"
+      },
+      "elixir_of_the_bear": {
+        "name": "곰의 비약"
+      },
+      "lesser_healing_potion": {
+        "name": "하급 치유 물약"
+      },
+      "lesser_mana_potion": {
+        "name": "하급 마나 물약"
+      },
+      "healing_potion": {
+        "name": "치유 물약"
+      },
+      "mana_potion": {
+        "name": "마나 물약"
+      },
+      "tunnelkings_spade": {
+        "name": "굴왕의 삽"
+      },
+      "brutoks_maul": {
+        "name": "브루톡의 망치"
+      },
+      "cracked_ogre_tusk": {
+        "name": "금 간 오우거 엄니"
+      },
+      "crag_warden_cudgel": {
+        "name": "바위 수호자의 곤봉"
+      },
+      "cragmaw_prowlboots": {
+        "name": "크래그모의 잠행 장화"
+      },
+      "drowned_tide_scepter": {
+        "name": "익사한 조수의 셉터"
+      },
+      "emberfang_warblade": {
+        "name": "잿불송곳니 전투검"
+      },
+      "emberwing_cinderscale": {
+        "name": "잿불날개의 잿비늘"
+      },
+      "emberwing_legguards": {
+        "name": "잿불날개의 다리보호구"
+      },
+      "gravewardens_shiv": {
+        "name": "무덤지기의 단도"
+      },
+      "hollow_vigil_staff": {
+        "name": "공허한 불침번의 지팡이"
+      },
+      "maldrecs_soulbinder": {
+        "name": "말드렉의 영혼결속기"
+      },
+      "oathbound_greaves": {
+        "name": "맹세로 묶인 정강이받이"
+      },
+      "skullsmasher_warbelt": {
+        "name": "해골분쇄자의 전투 허리띠"
+      },
+      "skullsplitter_dirk": {
+        "name": "두개골 쪼개기 단검"
+      },
+      "sloomtooth_tidefang": {
+        "name": "슬룸투스의 조수송곳니"
+      },
+      "tidereaver_gaff": {
+        "name": "조수가르기의 갈고리"
+      },
+      "verlans_oathblade": {
+        "name": "베를란의 맹세검"
       },
       "briny_idol": {
         "name": "소금기 어린 우상"
@@ -39694,6 +43420,42 @@ export const ko_KR: EnTranslations = {
       },
       "voidwalker": {
         "name": "공허추적자"
+      },
+      "succubus": {
+        "name": "서큐버스"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "해골분쇄자 브루톡"
+      },
+      "captain_verlan": {
+        "name": "베를란 대장"
+      },
+      "old_cragmaw": {
+        "name": "늙은 크래그모"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "익사한 슬룸투스"
+      },
+      "voskar_emberwing": {
+        "name": "잿불날개 보스카르"
+      },
+      "wraithbinder_maldrec": {
+        "name": "영혼결속자 말드렉"
+      },
+      "felhunter": {
+        "name": "지옥사냥개"
+      },
+      "felguard": {
+        "name": "지옥수호병"
+      },
+      "infernal": {
+        "name": "지옥불정령"
+      },
+      "doomguard": {
+        "name": "파멸의 수호병"
       },
       "choirmother_selthe": {
         "name": "성가대모 셀세"
@@ -40791,7 +44553,8 @@ export const ja_JP: EnTranslations = {
       "maxLevel": "最大レベル",
       "totalXp": "総経験値",
       "lv": "Lv",
-      "toNext": "次まで"
+      "toNext": "次まで",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "進行",
@@ -40838,7 +44601,12 @@ export const ja_JP: EnTranslations = {
       "needXp": "威信までに必要な追加累計経験値"
     },
     "settings": {
-      "showOverflowXp": "超過経験値を表示"
+      "showOverflowXp": "超過経験値を表示",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "タレント",
@@ -40897,7 +44665,16 @@ export const ja_JP: EnTranslations = {
       "noBuilds": "保存ビルドなし",
       "save": "保存",
       "comingSoonTitle": "タレント準備中",
-      "comingSoonBody": "このクラスにはまだタレントツリーがありません。通常通りプレイできます。完全なツリーは今後のアップデートで追加されます。"
+      "comingSoonBody": "このクラスにはまだタレントツリーがありません。通常通りプレイできます。完全なツリーは今後のアップデートで追加されます。",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -41257,6 +45034,8 @@ export const ja_JP: EnTranslations = {
       "levelLog": "レベル {level}になりました！",
       "xpGain": "{amount}の経験値を獲得しました。",
       "xpFloat": "+{amount} 経験値",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "死亡しました。",
       "releaseSpirit": "霊魂を解放",
       "chatTab": "チャット",
@@ -41286,6 +45065,7 @@ export const ja_JP: EnTranslations = {
       "keyBindings": "キー設定",
       "graphics": "グラフィック",
       "audio": "オーディオ",
+      "interface": "Interface",
       "logout": "ログアウト",
       "returnToGame": "ゲームに戻る",
       "resetToDefaults": "初期設定に戻す",
@@ -41309,15 +45089,33 @@ export const ja_JP: EnTranslations = {
       "terrainLow": "低",
       "terrainHigh": "高",
       "touchOpacity": "タッチ操作の不透明度",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "グラフィック品質と地形の詳細は再読み込み後に適用されます。",
       "reloadNow": "今すぐ再読み込み",
       "fullscreen": "フルスクリーン",
       "touchLookSpeed": "タッチ視点速度",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "左利きタッチ",
       "filterProfanity": "暴言フィルター",
       "clickMoveButton": "クリック移動ボタン",
       "clickToMove": "クリック移動",
       "graphicsNote": "カメラ速度を下げるとマウス視点が落ち着きます。描画品質を100%未満にすると、低性能環境でFPSが向上します。",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "効果音",
       "musicVolume": "音楽音量",
       "music": "音楽",
@@ -41875,7 +45673,8 @@ export const ja_JP: EnTranslations = {
       "food": "食べ物",
       "drink": "飲み物",
       "tool": "道具",
-      "potion": "ポーション"
+      "potion": "ポーション",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "防御力",
@@ -41891,6 +45690,8 @@ export const ja_JP: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality} {kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} ダメージ 速度 {speed}",
       "dps": "（秒間 {dps} ダメージ）",
       "dagger": "短剣",
@@ -42014,6 +45815,14 @@ export const ja_JP: EnTranslations = {
         "name": "バトルシャウト",
         "description": "2分間、攻撃力が20増加します。"
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "チャージ",
         "description": "敵に突撃し、怒りを9生成して1秒間スタンさせます。射程8-25yd。"
@@ -42082,6 +45891,10 @@ export const ja_JP: EnTranslations = {
         "name": "水の召喚",
         "description": "飲むとマナを回復する水の瓶を2本召喚します。高ランクではより純粋な水を召喚します。"
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "ファイアブラスト",
         "description": "敵を爆炎で打ち、{damage} の火炎ダメージを与えます。即時発動。"
@@ -42105,6 +45918,10 @@ export const ja_JP: EnTranslations = {
       "scorch": {
         "name": "スコーチ",
         "description": "敵を焼き、{damage} の火炎ダメージを与えます。詠唱が速い呪文です。"
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "アイスバリア",
@@ -42154,6 +45971,46 @@ export const ja_JP: EnTranslations = {
         "name": "アドレナリンラッシュ",
         "description": "血が熱くなり、即座にエネルギーを60回復します。"
       },
+      "garrote": {
+        "name": "ガロット",
+        "description": "敵を絞め、即座にダメージを与えるとともに、18秒かけて{damage}の出血ダメージを与えます。ステルス状態でなければなりません。コンボポイントを1獲得します。"
+      },
+      "cheap_shot": {
+        "name": "チープショット",
+        "description": "対象を打って4秒間スタンさせます。ステルス状態でなければなりません。コンボポイントを2獲得します。"
+      },
+      "sap": {
+        "name": "サップ",
+        "description": "対象を8秒間行動不能にします。ステルス状態かつ戦闘外でなければなりません。ダメージを受けると効果が切れます。"
+      },
+      "crippling_poison": {
+        "name": "クリップリング・ポイズン",
+        "description": "対象をクリップリング・ポイズンで攻撃し、{damage}の自然ダメージを与えるとともに、移動速度を12秒間50%低下させます。"
+      },
+      "expose_armor": {
+        "name": "エクスポーズ・アーマー",
+        "description": "対象の防御を崩し、アーマーを低下させるフィニッシュムーブです。消費したコンボポイントが多いほど、より深く切り込みます。"
+      },
+      "rupture": {
+        "name": "ラプチャー",
+        "description": "対象に傷を負わせ、16秒かけて{damage}の出血ダメージを与えるフィニッシュムーブです。"
+      },
+      "vanish": {
+        "name": "ヴァニッシュ",
+        "description": "視界から消え、戦闘中でもステルス状態に入ります。隠れている間は移動速度が30%低下します。最大10秒間持続します。"
+      },
+      "instant_poison": {
+        "name": "インスタント・ポイズン",
+        "description": "武器に30分間毒を塗り、近接攻撃ごとに8の追加自然ダメージを与えます。"
+      },
+      "deadly_poison": {
+        "name": "デッドリー・ポイズン",
+        "description": "武器に30分間毒を塗り、近接攻撃ごとに14の追加自然ダメージを与えます。"
+      },
+      "blind": {
+        "name": "ブラインド",
+        "description": "対象を盲目にし、8秒間混乱してさまよわせます。ダメージを受けると効果が切れます。"
+      },
       "seal_of_righteousness": {
         "name": "正義のシール",
         "description": "30秒間、聖なる力で満たされ、近接攻撃ごとに4の追加神聖ダメージを与えます。ジャッジメントで解放します。"
@@ -42202,6 +46059,10 @@ export const ja_JP: EnTranslations = {
         "name": "正義の怒り",
         "description": "30分間、あなたの神聖ダメージが生成する脅威が60%増加します。タンク役パラディンの要です。"
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "獣の調教",
         "description": "獣を仲間にするための調教を始めます。獣はあなたのレベル以下で、エリートであってはなりません。ペットはあなたに従い、敵を攻撃し、独自の脅威を保ちます。同時に連れられるペットは1体だけです。"
@@ -42237,6 +46098,10 @@ export const ja_JP: EnTranslations = {
       "wing_clip": {
         "name": "ウィングクリップ",
         "description": "傷を負わせ、10秒間、敵の移動速度を40%低下させます。"
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "チーターの相",
@@ -42314,9 +46179,17 @@ export const ja_JP: EnTranslations = {
         "name": "フレイムショック",
         "description": "対象を炎で焼き、25ダメージに加えて12秒間で {damage} のダメージを与えます。"
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "フロストショック",
         "description": "対象を冷気で即座に打ち、{damage} の冷気ダメージを与え、8秒間、移動速度を50%低下させます。"
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "ゴーストウルフ",
@@ -42434,6 +46307,46 @@ export const ja_JP: EnTranslations = {
         "name": "スターファイア",
         "description": "星の炎を呼び下ろし、{damage} の秘術ダメージを与えます。"
       },
+      "travel_form": {
+        "name": "トラベルフォーム",
+        "description": "素早い移動形態になり、移動速度を40%上昇させます。戦闘中は使用できません。"
+      },
+      "enrage": {
+        "name": "激怒",
+        "description": "即座にレイジを20生成します。ベアフォーム専用。"
+      },
+      "bash": {
+        "name": "殴打",
+        "description": "対象を2秒間スタンさせます。ベアフォーム専用。"
+      },
+      "faerie_fire": {
+        "name": "フェアリーファイア",
+        "description": "対象の防御力を40秒間35低下させます。"
+      },
+      "hibernate": {
+        "name": "ハイバネート",
+        "description": "対象を最大8秒間深い眠りに落とします。ダメージを受けると目を覚まします。"
+      },
+      "dash": {
+        "name": "ダッシュ",
+        "description": "前方へ駆け出し、移動速度を15秒間50%上昇させます。キャットフォーム専用。"
+      },
+      "pounce": {
+        "name": "パウンス",
+        "description": "隠密状態から放つ先制攻撃で、対象を2秒間スタンさせます。コンボポイントを1獲得します。キャットフォーム専用。"
+      },
+      "insect_swarm": {
+        "name": "インセクトスウォーム",
+        "description": "敵が虫の群れに襲われ、12秒かけて{damage}の自然ダメージを受けます。"
+      },
+      "tigers_fury": {
+        "name": "タイガーフューリー",
+        "description": "攻撃力を6秒間40上昇させます。キャットフォーム専用。"
+      },
+      "rip": {
+        "name": "リップ",
+        "description": "12秒かけて出血ダメージを与えるフィニッシュムーブです。コンボポイントを消費します。キャットフォーム専用。"
+      },
       "mortal_strike": {
         "name": "致死打撃",
         "description": "凶悪な一撃で武器ダメージに加えて {damage} のダメージを与えます。（武器シグネチャー）"
@@ -42461,6 +46374,26 @@ export const ja_JP: EnTranslations = {
       "summon_voidwalker": {
         "name": "ヴォイドウォーカーの召喚",
         "description": "ウォーロックの命令に従うヴォイドウォーカーを召喚します。ヴォイドウォーカーは敵を挑発し攻撃を受け止める頑強な悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+      },
+      "summon_succubus": {
+        "name": "サキュバスの召喚",
+        "description": "ウォーロックの命令に従うサキュバスを召喚します。サキュバスは素早く攻撃し近接戦闘で大きなダメージを与える脆い悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+      },
+      "summon_felhunter": {
+        "name": "フェルハンターの召喚",
+        "description": "ウォーロックの命令に従うフェルハンターを召喚します。フェルハンターはシャドウバイトで遠くから敵を悩ませ、呪文の使い手を狩るのに長けています。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+      },
+      "summon_felguard": {
+        "name": "フェルガードの召喚",
+        "description": "ウォーロックの命令に従うフェルガードを召喚します。フェルガードは戦場に踏み込んで持ちこたえる頑丈な近接悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+      },
+      "summon_infernal": {
+        "name": "インファーナルの召喚",
+        "description": "インファーナルを意のままに束縛します。圧倒的な近接攻撃と、あらゆる悪魔の中で最も深い生命力と防御力を備えた巨大な破壊兵器です。長い再使用時間がその純然たる力を制限します。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+      },
+      "summon_doomguard": {
+        "name": "ドゥームガードの召喚",
+        "description": "ドゥームガードを意のままに束縛します。遠方から強力なシャドウダメージを降らせるエリート悪魔です。長い再使用時間がその破壊的な力を制限します。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "bear_charge": {
         "name": "ベアチャージ",
@@ -42913,6 +46846,51 @@ export const ja_JP: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "割れたワームの鱗"
       },
+      "conjured_bread": {
+        "name": "魔法のパン"
+      },
+      "conjured_bread2": {
+        "name": "魔法のライ麦パン"
+      },
+      "conjured_bread3": {
+        "name": "魔法の菓子パン"
+      },
+      "roadwardens_helm": {
+        "name": "道守りの兜"
+      },
+      "wayfarers_hood": {
+        "name": "旅人のフード"
+      },
+      "acolytes_circlet": {
+        "name": "見習いのサークレット"
+      },
+      "reinforced_pauldrons": {
+        "name": "強化された肩当て"
+      },
+      "embroidered_mantle": {
+        "name": "刺繍のマント"
+      },
+      "sturdy_belt": {
+        "name": "丈夫な旅人のベルト"
+      },
+      "silk_sash": {
+        "name": "織絹のサッシュ"
+      },
+      "roughspun_gloves": {
+        "name": "粗布の手袋"
+      },
+      "bristlehide_spaulders": {
+        "name": "剛毛革の肩当て"
+      },
+      "sableweb_cord": {
+        "name": "セーブルウェブの紐"
+      },
+      "gorraks_cleaver": {
+        "name": "ゴラクのクリーバー"
+      },
+      "mossy_handwraps": {
+        "name": "苔むした手甲"
+      },
       "bristleback_maul": {
         "name": "ブリストルバックの大槌"
       },
@@ -43059,6 +47037,96 @@ export const ja_JP: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "ワーム影の足具"
+      },
+      "glimmerfin_koi": {
+        "name": "きらめきヒレの錦鯉"
+      },
+      "raw_bog_eel": {
+        "name": "生の沼ウナギ"
+      },
+      "raw_frostgill_trout": {
+        "name": "生の霜エラマス"
+      },
+      "raw_marsh_pike": {
+        "name": "生の沼カワカマス"
+      },
+      "raw_river_perch": {
+        "name": "生の川スズキ"
+      },
+      "raw_stonescale_carp": {
+        "name": "生の石鱗コイ"
+      },
+      "soggy_boot": {
+        "name": "ずぶ濡れのブーツ"
+      },
+      "elixir_of_the_bear": {
+        "name": "熊のエリクサー"
+      },
+      "lesser_healing_potion": {
+        "name": "下級回復のポーション"
+      },
+      "lesser_mana_potion": {
+        "name": "下級マナのポーション"
+      },
+      "healing_potion": {
+        "name": "回復のポーション"
+      },
+      "mana_potion": {
+        "name": "マナのポーション"
+      },
+      "tunnelkings_spade": {
+        "name": "トンネルキングのスペード"
+      },
+      "brutoks_maul": {
+        "name": "ブルトークの大槌"
+      },
+      "cracked_ogre_tusk": {
+        "name": "ひびの入ったオーガの牙"
+      },
+      "crag_warden_cudgel": {
+        "name": "岩壁の番人の棍棒"
+      },
+      "cragmaw_prowlboots": {
+        "name": "クラッグモウの忍び歩きブーツ"
+      },
+      "drowned_tide_scepter": {
+        "name": "溺れた潮の笏"
+      },
+      "emberfang_warblade": {
+        "name": "燃え牙の戦刃"
+      },
+      "emberwing_cinderscale": {
+        "name": "燃え翼の燼鱗"
+      },
+      "emberwing_legguards": {
+        "name": "燃え翼の脚甲"
+      },
+      "gravewardens_shiv": {
+        "name": "墓守りの短刀"
+      },
+      "hollow_vigil_staff": {
+        "name": "虚ろな守夜の杖"
+      },
+      "maldrecs_soulbinder": {
+        "name": "マルドレクの魂縛り"
+      },
+      "oathbound_greaves": {
+        "name": "誓約の具足"
+      },
+      "skullsmasher_warbelt": {
+        "name": "頭蓋砕きの戦帯"
+      },
+      "skullsplitter_dirk": {
+        "name": "頭蓋割りのダーク"
+      },
+      "sloomtooth_tidefang": {
+        "name": "スルームトゥースの潮牙"
+      },
+      "tidereaver_gaff": {
+        "name": "潮裂きのギャフ"
+      },
+      "verlans_oathblade": {
+        "name": "ヴァーランの誓約刃"
       },
       "briny_idol": {
         "name": "潮辛の偶像"
@@ -43400,6 +47468,42 @@ export const ja_JP: EnTranslations = {
       },
       "voidwalker": {
         "name": "ヴォイドウォーカー"
+      },
+      "succubus": {
+        "name": "サキュバス"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "頭蓋砕きブルトーク"
+      },
+      "captain_verlan": {
+        "name": "ヴァーラン隊長"
+      },
+      "old_cragmaw": {
+        "name": "老いたるクラッグモウ"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "溺れし者スルームトゥース"
+      },
+      "voskar_emberwing": {
+        "name": "燃え翼のヴォスカル"
+      },
+      "wraithbinder_maldrec": {
+        "name": "魂縛りマルドレク"
+      },
+      "felhunter": {
+        "name": "フェルハンター"
+      },
+      "felguard": {
+        "name": "フェルガード"
+      },
+      "infernal": {
+        "name": "インファーナル"
+      },
+      "doomguard": {
+        "name": "ドゥームガード"
       },
       "choirmother_selthe": {
         "name": "聖歌母セルセ"
@@ -44497,7 +48601,8 @@ export const pt_BR: EnTranslations = {
       "maxLevel": "NÍVEL MAX.",
       "totalXp": "EXP total",
       "lv": "Nv",
-      "toNext": "para o próximo"
+      "toNext": "para o próximo",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Progressão",
@@ -44544,7 +48649,12 @@ export const pt_BR: EnTranslations = {
       "needXp": "mais EXP vitalícia para prestigiar"
     },
     "settings": {
-      "showOverflowXp": "Mostrar EXP excedente"
+      "showOverflowXp": "Mostrar EXP excedente",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Talentos",
@@ -44603,7 +48713,16 @@ export const pt_BR: EnTranslations = {
       "noBuilds": "Nenhuma build salva",
       "save": "Salvar",
       "comingSoonTitle": "Talentos em breve",
-      "comingSoonBody": "Esta classe ainda não tem árvores de talentos. Você pode continuar jogando normalmente; as árvores completas chegarão em uma atualização futura."
+      "comingSoonBody": "Esta classe ainda não tem árvores de talentos. Você pode continuar jogando normalmente; as árvores completas chegarão em uma atualização futura.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -44963,6 +49082,8 @@ export const pt_BR: EnTranslations = {
       "levelLog": "Você alcançou o nível {level}!",
       "xpGain": "Você ganha {amount} de experiência.",
       "xpFloat": "+{amount} XP",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Você morreu.",
       "releaseSpirit": "Liberar espírito",
       "chatTab": "Chat",
@@ -44992,6 +49113,7 @@ export const pt_BR: EnTranslations = {
       "keyBindings": "Atalhos de teclado",
       "graphics": "Gráficos",
       "audio": "Áudio",
+      "interface": "Interface",
       "logout": "Sair",
       "returnToGame": "Voltar ao jogo",
       "resetToDefaults": "Restaurar padrões",
@@ -45015,15 +49137,33 @@ export const pt_BR: EnTranslations = {
       "terrainLow": "Baixo",
       "terrainHigh": "Alto",
       "touchOpacity": "Opacidade dos controles de toque",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "Qualidade gráfica e detalhe do terreno são aplicados após recarregar.",
       "reloadNow": "Recarregar agora",
       "fullscreen": "Tela cheia",
       "touchLookSpeed": "Velocidade da câmera por toque",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Toque para canhotos",
       "filterProfanity": "Filtrar palavrões",
       "clickMoveButton": "Botão de clique para mover",
       "clickToMove": "Clique para mover",
       "graphicsNote": "Reduza a velocidade da câmera para um mouselook mais calmo. Qualidade de renderização abaixo de 100% melhora o FPS em máquinas mais fracas.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Efeitos sonoros",
       "musicVolume": "Volume da música",
       "music": "Música",
@@ -45581,7 +49721,8 @@ export const pt_BR: EnTranslations = {
       "food": "Comida",
       "drink": "Bebida",
       "tool": "Ferramenta",
-      "potion": "Poção"
+      "potion": "Poção",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Armadura",
@@ -45597,6 +49738,8 @@ export const pt_BR: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{kind} {quality}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} de dano Velocidade {speed}",
       "dps": "({dps} de dano por segundo)",
       "dagger": "Adaga",
@@ -45720,6 +49863,14 @@ export const pt_BR: EnTranslations = {
         "name": "Grito de Batalha",
         "description": "Aumenta seu poder de ataque em 20 por 2 min."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Investida",
         "description": "Investe contra um inimigo, gera 9 de raiva e o atordoa por 1 s. Alcance de 8-25 m."
@@ -45788,6 +49939,10 @@ export const pt_BR: EnTranslations = {
         "name": "Conjurar Água",
         "description": "Conjura 2 garrafas de água que restauram mana quando bebidas. Graus superiores conjuram água mais pura."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Impacto de Fogo",
         "description": "Explode contra o inimigo, causando {damage} de dano de Fogo. Instantâneo."
@@ -45811,6 +49966,10 @@ export const pt_BR: EnTranslations = {
       "scorch": {
         "name": "Chamuscar",
         "description": "Chamusca o inimigo com {damage} de dano de Fogo. Lançamento rápido."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Barreira de Gelo",
@@ -45860,6 +50019,46 @@ export const pt_BR: EnTranslations = {
         "name": "Descarga de Adrenalina",
         "description": "Seu sangue ferve, restaurando 60 de energia instantaneamente."
       },
+      "garrote": {
+        "name": "Garrote",
+        "description": "Garroteia o inimigo, causando dano imediato e fazendo-o sangrar por {damage} ao longo de 18 s. Requer modo furtivo. Concede 1 ponto de combo."
+      },
+      "cheap_shot": {
+        "name": "Golpe Baixo",
+        "description": "Atinge o alvo, atordoando-o por 4 s. Requer modo furtivo. Concede 2 pontos de combo."
+      },
+      "sap": {
+        "name": "Nocaute",
+        "description": "Incapacita o alvo por 8 s. Requer modo furtivo e estar fora de combate. Qualquer dano quebra o efeito."
+      },
+      "crippling_poison": {
+        "name": "Veneno Aleijante",
+        "description": "Atinge o alvo com um veneno aleijante, causando {damage} de dano da Natureza e reduzindo sua velocidade de movimento em 50% por 12 s."
+      },
+      "expose_armor": {
+        "name": "Expor Armadura",
+        "description": "Golpe final que expõe o alvo, reduzindo sua armadura. Mais pontos de combo gastos aprofundam o corte."
+      },
+      "rupture": {
+        "name": "Ruptura",
+        "description": "Golpe final que fere o alvo, fazendo-o sangrar por {damage} ao longo de 16 s."
+      },
+      "vanish": {
+        "name": "Desaparecer",
+        "description": "Some de vista, entrando em modo furtivo mesmo em combate. Você se move 30% mais devagar enquanto escondido. Dura até 10 s."
+      },
+      "instant_poison": {
+        "name": "Veneno Instantâneo",
+        "description": "Reveste sua arma por 30 min, fazendo cada um de seus golpes corpo a corpo causar 8 de dano adicional da Natureza."
+      },
+      "deadly_poison": {
+        "name": "Veneno Mortal",
+        "description": "Reveste sua arma por 30 min, fazendo cada um de seus golpes corpo a corpo causar 14 de dano adicional da Natureza."
+      },
+      "blind": {
+        "name": "Cegar",
+        "description": "Cega o alvo, fazendo-o vagar desorientado por 8 s. Qualquer dano quebra o efeito."
+      },
       "seal_of_righteousness": {
         "name": "Selo da Retidão",
         "description": "Enche você de poder Sagrado por 30 s, fazendo cada golpe corpo a corpo causar 4 de dano Sagrado adicional. Libere com Julgamento."
@@ -45908,6 +50107,10 @@ export const pt_BR: EnTranslations = {
         "name": "Fúria Íntegra",
         "description": "Aumenta a ameaça gerada pelo seu dano Sagrado em 60% por 30 min. A base do paladino tanque."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Domar Fera",
         "description": "Começa a domar uma fera para ser sua companheira. Ela deve ser do seu nível ou menor e não pode ser elite. Seu ajudante segue você, ataca seus inimigos e mantém a própria ameaça. Você pode ter um ajudante por vez."
@@ -45943,6 +50146,10 @@ export const pt_BR: EnTranslations = {
       "wing_clip": {
         "name": "Cortar Asas",
         "description": "Inflige um ferimento que reduz a velocidade do inimigo em 40% por 10 s."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Aspecto da Chita",
@@ -46020,9 +50227,17 @@ export const pt_BR: EnTranslations = {
         "name": "Choque Flamejante",
         "description": "Queima o alvo com fogo, causando 25 de dano mais {damage} ao longo de 12 s."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Choque Gélido",
         "description": "Choca o alvo instantaneamente com gelo, causando {damage} de dano de Gelo e reduzindo a velocidade de movimento em 50% por 8 s."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Lobo Fantasma",
@@ -46140,6 +50355,46 @@ export const pt_BR: EnTranslations = {
         "name": "Fogo Estelar",
         "description": "Invoca um raio de fogo estelar, causando {damage} de dano Arcano."
       },
+      "travel_form": {
+        "name": "Forma de Viagem",
+        "description": "Assume uma rápida forma de viagem, aumentando a velocidade de movimento em 40%. Não pode ser usada em combate."
+      },
+      "enrage": {
+        "name": "Enfurecer",
+        "description": "Gera 20 de fúria instantaneamente. Apenas Forma de Urso."
+      },
+      "bash": {
+        "name": "Pancada",
+        "description": "Atordoa o alvo por 2 s. Apenas Forma de Urso."
+      },
+      "faerie_fire": {
+        "name": "Fogo Feérico",
+        "description": "Reduz a armadura do alvo em 35 por 40 s."
+      },
+      "hibernate": {
+        "name": "Hibernar",
+        "description": "Força o alvo a um sono profundo por até 8 s. Qualquer dano o desperta."
+      },
+      "dash": {
+        "name": "Corrida",
+        "description": "Dispara para a frente, aumentando a velocidade de movimento em 50% por 15 s. Apenas Forma Felina."
+      },
+      "pounce": {
+        "name": "Bote",
+        "description": "Abertura furtiva que atordoa o alvo por 2 s. Concede 1 ponto de combo. Apenas Forma Felina."
+      },
+      "insect_swarm": {
+        "name": "Enxame de Insetos",
+        "description": "O inimigo é atacado por um enxame de insetos, sofrendo {damage} de dano de Natureza ao longo de 12 s."
+      },
+      "tigers_fury": {
+        "name": "Fúria do Tigre",
+        "description": "Aumenta o poder de ataque em 40 por 6 s. Apenas Forma Felina."
+      },
+      "rip": {
+        "name": "Rasgar",
+        "description": "Golpe final que causa dano de sangramento ao longo de 12 s. Consome pontos de combo. Apenas Forma Felina."
+      },
       "mortal_strike": {
         "name": "Golpe Mortal",
         "description": "Um golpe cruel que causa dano da arma mais {damage}. (assinatura de Armas)"
@@ -46167,6 +50422,26 @@ export const pt_BR: EnTranslations = {
       "summon_voidwalker": {
         "name": "Invocar caminhante do Vazio",
         "description": "Invoca um Caminhante do Vazio sob o comando do bruxo. O Caminhante do Vazio é um demônio resistente que provoca seus inimigos e absorve o castigo. Invocar um novo demônio dispensa o atual. Você só pode ter um demônio por vez."
+      },
+      "summon_succubus": {
+        "name": "Invocar súcubo",
+        "description": "Invoca uma Súcubo sob o comando do bruxo. A Súcubo é um demônio frágil que ataca rapidamente e golpeia com força no corpo a corpo. Invocar um novo demônio dispensa o atual. Você só pode ter um demônio por vez."
+      },
+      "summon_felhunter": {
+        "name": "Invocar caçador vil",
+        "description": "Invoca um Caçador Vil sob o comando do bruxo. O Caçador Vil atormenta os inimigos à distância com a Mordida Sombria e se destaca na caça a conjuradores. Invocar um novo demônio dispensa o atual. Você só pode ter um demônio por vez."
+      },
+      "summon_felguard": {
+        "name": "Invocar guarda vil",
+        "description": "Invoca um Guarda Vil sob o comando do bruxo. O Guarda Vil é um demônio resistente de corpo a corpo que avança para a batalha e se mantém firme. Invocar um novo demônio dispensa o atual. Você só pode ter um demônio por vez."
+      },
+      "summon_infernal": {
+        "name": "Invocar infernal",
+        "description": "Vincula um Infernal à sua vontade — um colosso imponente com um corpo a corpo esmagador e a maior vida e armadura entre todos os demônios. Uma longa recarga limita seu poder bruto. Invocar um novo demônio dispensa o atual. Você só pode ter um demônio por vez."
+      },
+      "summon_doomguard": {
+        "name": "Invocar guarda sinistro",
+        "description": "Vincula um Guarda Sinistro à sua vontade — um demônio de elite que faz chover pesado dano Sombrio à distância. Uma longa recarga limita seu poder devastador. Invocar um novo demônio dispensa o atual. Você só pode ter um demônio por vez."
       },
       "bear_charge": {
         "name": "Investida do Urso",
@@ -46619,6 +50894,51 @@ export const pt_BR: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Escama de wyrm rachada"
       },
+      "conjured_bread": {
+        "name": "Pão conjurado"
+      },
+      "conjured_bread2": {
+        "name": "Pão preto conjurado"
+      },
+      "conjured_bread3": {
+        "name": "Pãozinho doce conjurado"
+      },
+      "roadwardens_helm": {
+        "name": "Elmo do guardião da estrada"
+      },
+      "wayfarers_hood": {
+        "name": "Capuz do viajante"
+      },
+      "acolytes_circlet": {
+        "name": "Diadema do acólito"
+      },
+      "reinforced_pauldrons": {
+        "name": "Ombreiras reforçadas"
+      },
+      "embroidered_mantle": {
+        "name": "Manto bordado"
+      },
+      "sturdy_belt": {
+        "name": "Cinto resistente do viajante"
+      },
+      "silk_sash": {
+        "name": "Faixa de seda tecida"
+      },
+      "roughspun_gloves": {
+        "name": "Luvas de tecido grosseiro"
+      },
+      "bristlehide_spaulders": {
+        "name": "Ombreiras de couro eriçado"
+      },
+      "sableweb_cord": {
+        "name": "Cordão de Sableweb"
+      },
+      "gorraks_cleaver": {
+        "name": "Cutelo de Gorrak"
+      },
+      "mossy_handwraps": {
+        "name": "Manoplas musgosas"
+      },
       "bristleback_maul": {
         "name": "Malho Bristleback"
       },
@@ -46765,6 +51085,96 @@ export const pt_BR: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Pisantes Sombra de Wyrm"
+      },
+      "glimmerfin_koi": {
+        "name": "Koi de nadadeiras cintilantes"
+      },
+      "raw_bog_eel": {
+        "name": "Enguia de brejo crua"
+      },
+      "raw_frostgill_trout": {
+        "name": "Truta de guelras gélidas crua"
+      },
+      "raw_marsh_pike": {
+        "name": "Lúcio de pântano cru"
+      },
+      "raw_river_perch": {
+        "name": "Perca de rio crua"
+      },
+      "raw_stonescale_carp": {
+        "name": "Carpa de escamas de pedra crua"
+      },
+      "soggy_boot": {
+        "name": "Bota encharcada"
+      },
+      "elixir_of_the_bear": {
+        "name": "Elixir do Urso"
+      },
+      "lesser_healing_potion": {
+        "name": "Poção de cura menor"
+      },
+      "lesser_mana_potion": {
+        "name": "Poção de mana menor"
+      },
+      "healing_potion": {
+        "name": "Poção de cura"
+      },
+      "mana_potion": {
+        "name": "Poção de mana"
+      },
+      "tunnelkings_spade": {
+        "name": "Pá do Rei dos Túneis"
+      },
+      "brutoks_maul": {
+        "name": "Marreta de Brutok"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Presa de ogro rachada"
+      },
+      "crag_warden_cudgel": {
+        "name": "Porrete do guardião do penhasco"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Botas furtivas de Cragmaw"
+      },
+      "drowned_tide_scepter": {
+        "name": "Cetro da maré afogada"
+      },
+      "emberfang_warblade": {
+        "name": "Lâmina de guerra presa de brasa"
+      },
+      "emberwing_cinderscale": {
+        "name": "Escama de cinza de Asa-de-brasa"
+      },
+      "emberwing_legguards": {
+        "name": "Grevas de Asa-de-brasa"
+      },
+      "gravewardens_shiv": {
+        "name": "Adaga do guardião dos túmulos"
+      },
+      "hollow_vigil_staff": {
+        "name": "Cajado da vigília oca"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Atador de almas de Maldrec"
+      },
+      "oathbound_greaves": {
+        "name": "Grevas do juramento"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Cinturão de guerra do quebra-crânios"
+      },
+      "skullsplitter_dirk": {
+        "name": "Adaga racha-crânio"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Presa-de-maré de Sloomtooth"
+      },
+      "tidereaver_gaff": {
+        "name": "Gancho do ceifa-marés"
+      },
+      "verlans_oathblade": {
+        "name": "Lâmina do juramento de Verlan"
       },
       "briny_idol": {
         "name": "Ídolo Salobro"
@@ -47106,6 +51516,42 @@ export const pt_BR: EnTranslations = {
       },
       "voidwalker": {
         "name": "Caminhante do Vazio"
+      },
+      "succubus": {
+        "name": "Súcubo"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Brutok Quebra-crânios"
+      },
+      "captain_verlan": {
+        "name": "Capitão Verlan"
+      },
+      "old_cragmaw": {
+        "name": "Velho Cragmaw"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Sloomtooth o Afogado"
+      },
+      "voskar_emberwing": {
+        "name": "Voskar Asa-de-brasa"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Maldrec o Atador-de-espectros"
+      },
+      "felhunter": {
+        "name": "Caçador Vil"
+      },
+      "felguard": {
+        "name": "Guarda Vil"
+      },
+      "infernal": {
+        "name": "Infernal"
+      },
+      "doomguard": {
+        "name": "Guarda Sinistro"
       },
       "choirmother_selthe": {
         "name": "Mãe-do-Coro Selthe"
@@ -48203,7 +52649,8 @@ export const ru_RU: EnTranslations = {
       "maxLevel": "МАКС. УРОВЕНЬ",
       "totalXp": "всего опыта",
       "lv": "Ур.",
-      "toNext": "до следующего"
+      "toNext": "до следующего",
+      "rested": "Rested"
     },
     "progression": {
       "heading": "Прогресс",
@@ -48250,7 +52697,12 @@ export const ru_RU: EnTranslations = {
       "needXp": "еще общего опыта до престижа"
     },
     "settings": {
-      "showOverflowXp": "Показывать лишний опыт"
+      "showOverflowXp": "Показывать лишний опыт",
+      "weather": "Weather Effects"
+    },
+    "hud": {
+      "lowMana": "Low Mana",
+      "lowEnergy": "Low Energy"
     },
     "talents": {
       "title": "Таланты",
@@ -48309,7 +52761,16 @@ export const ru_RU: EnTranslations = {
       "noBuilds": "Нет сохраненных билдов",
       "save": "Сохранить",
       "comingSoonTitle": "Таланты скоро появятся",
-      "comingSoonBody": "У этого класса еще нет деревьев талантов. Можно продолжать играть как обычно; полные деревья появятся в будущем обновлении."
+      "comingSoonBody": "У этого класса еще нет деревьев талантов. Можно продолжать играть как обычно; полные деревья появятся в будущем обновлении.",
+      "readout": {
+        "noTree": "Your class has no talent tree yet.",
+        "locked": "You have not unlocked talents yet — they begin at level {level}.",
+        "noSpec": "no specialization",
+        "summary": "Talents: {head} — {spent}/{total} points spent ({breakdown}).",
+        "breakdownClass": "Class {classPts}",
+        "breakdownSpec": "Class {classPts}, {spec} {specPts}",
+        "unspent": " {count} unspent."
+      }
     }
   },
   "nav": {
@@ -48669,6 +53130,8 @@ export const ru_RU: EnTranslations = {
       "levelLog": "Вы достигли уровня {level}!",
       "xpGain": "Вы получаете {amount} опыта.",
       "xpFloat": "+{amount} опыта",
+      "xpFloatRested": "+{amount} rested",
+      "xpGainRested": "You gain {amount} experience ({rested} bonus from resting).",
       "deathTitle": "Вы погибли.",
       "releaseSpirit": "Освободить дух",
       "chatTab": "Чат",
@@ -48698,6 +53161,7 @@ export const ru_RU: EnTranslations = {
       "keyBindings": "Назначение клавиш",
       "graphics": "Графика",
       "audio": "Звук",
+      "interface": "Interface",
       "logout": "Выйти",
       "returnToGame": "Вернуться в игру",
       "resetToDefaults": "Сбросить настройки",
@@ -48721,15 +53185,33 @@ export const ru_RU: EnTranslations = {
       "terrainLow": "Низкая",
       "terrainHigh": "Высокая",
       "touchOpacity": "Прозрачность сенсорного управления",
+      "invertLook": "Invert Look (Touch)",
       "graphicsReloadNote": "Качество графики и детализация местности применяются после перезагрузки.",
       "reloadNow": "Перезагрузить сейчас",
       "fullscreen": "Полный экран",
       "touchLookSpeed": "Скорость обзора (касание)",
+      "joystickSize": "Joystick Size",
+      "buttonSize": "Button Size",
+      "joystickDeadzone": "Joystick Deadzone",
       "leftHandedTouch": "Управление для левшей",
       "filterProfanity": "Фильтр нецензурной лексики",
       "clickMoveButton": "Кнопка клика для движения",
       "clickToMove": "Движение по щелчку",
       "graphicsNote": "Уменьшите скорость камеры для более спокойного обзора мышью. Качество рендера ниже 100% повышает FPS на слабых устройствах.",
+      "fieldOfView": "Field of View",
+      "hudOpacity": "HUD Opacity",
+      "tooltipScale": "Tooltip Text Size",
+      "fctScale": "Combat Text Size",
+      "chatFontScale": "Chat Text Size",
+      "chatOpacity": "Chat Background Opacity",
+      "compactChat": "Compact Chat",
+      "frostedPanels": "Frosted Panels",
+      "highContrastText": "High-Contrast Text",
+      "reduceMotion": "Reduce Motion",
+      "showFps": "Show FPS",
+      "invertLookY": "Invert Look (Y)",
+      "fpsReadout": "{fps} FPS",
+      "interfaceNote": "These options change only your own view and are saved on this device.",
       "soundEffects": "Звуковые эффекты",
       "musicVolume": "Громкость музыки",
       "music": "Музыка",
@@ -49287,7 +53769,8 @@ export const ru_RU: EnTranslations = {
       "food": "Еда",
       "drink": "Напиток",
       "tool": "Инструмент",
-      "potion": "Зелье"
+      "potion": "Зелье",
+      "elixir": "Elixir"
     },
     "stats": {
       "armor": "Броня",
@@ -49303,6 +53786,8 @@ export const ru_RU: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "{quality} {kind}",
+      "currentlyEquipped": "Currently equipped",
+      "ifYouEquip": "If you equip this",
       "damageSpeed": "{min} - {max} урона Скорость {speed}",
       "dps": "({dps} урона в секунду)",
       "dagger": "Кинжал",
@@ -49426,6 +53911,14 @@ export const ru_RU: EnTranslations = {
         "name": "Боевой крик",
         "description": "Повышает вашу силу атаки на 20 на 2 мин."
       },
+      "commanding_shout": {
+        "name": "Commanding Shout",
+        "description": "Increases your Stamina by 6 for 2 min."
+      },
+      "demoralizing_shout": {
+        "name": "Demoralizing Shout",
+        "description": "Lets out a fearsome shout, reducing the attack power of all nearby enemies by 30 for 30 sec."
+      },
       "charge": {
         "name": "Рывок",
         "description": "Вы бросаетесь к врагу, накапливаете 9 ярости и оглушаете его на 1 сек. Дальность 8-25 м."
@@ -49494,6 +53987,10 @@ export const ru_RU: EnTranslations = {
         "name": "Сотворение воды",
         "description": "Создает 2 бутылки воды, восстанавливающей ману при питье. Более высокие ранги создают более чистую воду."
       },
+      "conjure_food": {
+        "name": "Conjure Food",
+        "description": "Conjures 2 servings of bread, restoring health when eaten. Higher ranks conjure heartier fare."
+      },
       "fire_blast": {
         "name": "Огненный взрыв",
         "description": "Поражает врага на {damage} ед. урона от огня. Мгновенно."
@@ -49517,6 +54014,10 @@ export const ru_RU: EnTranslations = {
       "scorch": {
         "name": "Ожог",
         "description": "Обжигает врага, нанося {damage} ед. урона от огня. Быстрое заклинание."
+      },
+      "pyroblast": {
+        "name": "Pyroblast",
+        "description": "Hurls an immense fiery boulder that causes {damage} Fire damage plus additional damage over time."
       },
       "ice_barrier": {
         "name": "Ледяная преграда",
@@ -49566,6 +54067,46 @@ export const ru_RU: EnTranslations = {
         "name": "Выброс адреналина",
         "description": "Кровь закипает, мгновенно восстанавливая 60 энергии."
       },
+      "garrote": {
+        "name": "Гаррота",
+        "description": "Душит врага гарротой, нанося урон сразу и {damage} от кровотечения в течение 18 сек. Требуется незаметность. Дает 1 очко серии."
+      },
+      "cheap_shot": {
+        "name": "Удар исподтишка",
+        "description": "Бьет цель, оглушая ее на 4 сек. Требуется незаметность. Дает 2 очка серии."
+      },
+      "sap": {
+        "name": "Ошеломление",
+        "description": "Выводит цель из строя на 8 сек. Требуется незаметность и нахождение вне боя. Любой урон прерывает эффект."
+      },
+      "crippling_poison": {
+        "name": "Калечащий яд",
+        "description": "Поражает цель калечащим ядом, нанося {damage} ед. урона от сил природы и замедляя ее скорость передвижения на 50% в течение 12 сек."
+      },
+      "expose_armor": {
+        "name": "Вскрытие брони",
+        "description": "Завершающий прием, который оголяет цель, снижая ее броню. Чем больше затрачено очков серии, тем глубже разрез."
+      },
+      "rupture": {
+        "name": "Кровопускание",
+        "description": "Завершающий прием, который ранит цель, вызывая кровотечение на {damage} в течение 16 сек."
+      },
+      "vanish": {
+        "name": "Исчезновение",
+        "description": "Исчезает из виду, входя в незаметность даже в бою. Пока вы скрыты, вы двигаетесь на 30% медленнее. Длится до 10 сек."
+      },
+      "instant_poison": {
+        "name": "Быстродействующий яд",
+        "description": "Покрывает ваше оружие ядом на 30 мин, заставляя каждый ваш удар в ближнем бою наносить 8 дополнительных ед. урона от сил природы."
+      },
+      "deadly_poison": {
+        "name": "Смертельный яд",
+        "description": "Покрывает ваше оружие ядом на 30 мин, заставляя каждый ваш удар в ближнем бою наносить 14 дополнительных ед. урона от сил природы."
+      },
+      "blind": {
+        "name": "Ослепление",
+        "description": "Ослепляет цель, заставляя ее дезориентированно бродить в течение 8 сек. Любой урон прерывает эффект."
+      },
       "seal_of_righteousness": {
         "name": "Печать праведности",
         "description": "Наполняет вас силой Света на 30 сек., заставляя каждый удар в ближнем бою наносить 4 ед. дополнительного урона от светлой магии. Высвобождается Правосудием."
@@ -49614,6 +54155,10 @@ export const ru_RU: EnTranslations = {
         "name": "Праведное неистовство",
         "description": "Повышает угрозу от вашего урона светлой магией на 60% на 30 мин. Основа паладина-танка."
       },
+      "retribution_aura": {
+        "name": "Retribution Aura",
+        "description": "Surrounds you with holy energy for 30 min, dealing 5 Holy damage to any enemy that strikes you in melee."
+      },
       "tame_beast": {
         "name": "Приручение зверя",
         "description": "Начинает приручать зверя в качестве спутника. Он должен быть не выше вашего уровня и не элитным. Ваш питомец следует за вами, атакует врагов и удерживает собственную угрозу. Одновременно можно иметь одного питомца."
@@ -49649,6 +54194,10 @@ export const ru_RU: EnTranslations = {
       "wing_clip": {
         "name": "Подрезать крылья",
         "description": "Наносит рану, замедляющую врага на 40% на 10 сек."
+      },
+      "aspect_of_the_monkey": {
+        "name": "Aspect of the Monkey",
+        "description": "Take on the aspect of the monkey, increasing your dodge chance by 8% for 30 min."
       },
       "aspect_of_the_cheetah": {
         "name": "Дух гепарда",
@@ -49726,9 +54275,17 @@ export const ru_RU: EnTranslations = {
         "name": "Огненный шок",
         "description": "Обжигает цель огнем, нанося 25 ед. урона и еще {damage} за 12 сек."
       },
+      "flametongue_weapon": {
+        "name": "Flametongue Weapon",
+        "description": "Imbues your weapon with elemental fire: each swing deals 8 additional Fire damage for 5 min."
+      },
       "frost_shock": {
         "name": "Ледяной шок",
         "description": "Мгновенно поражает цель льдом, нанося {damage} ед. урона от магии льда и снижая скорость передвижения на 50% на 8 сек."
+      },
+      "frostbrand_weapon": {
+        "name": "Frostbrand Weapon",
+        "description": "Imbues your weapon with biting frost: each swing deals 8 additional damage for 5 min."
       },
       "ghost_wolf": {
         "name": "Призрачный волк",
@@ -49846,6 +54403,46 @@ export const ru_RU: EnTranslations = {
         "name": "Звездный огонь",
         "description": "Обрушивает вспышку звездного огня, нанося {damage} ед. урона от тайной магии."
       },
+      "travel_form": {
+        "name": "Походная форма",
+        "description": "Принимает быструю походную форму, повышая скорость передвижения на 40%. Нельзя использовать в бою."
+      },
+      "enrage": {
+        "name": "Озлобление",
+        "description": "Мгновенно генерирует 20 ед. ярости. Только в облике медведя."
+      },
+      "bash": {
+        "name": "Ошеломление",
+        "description": "Оглушает цель на 2 сек. Только в облике медведя."
+      },
+      "faerie_fire": {
+        "name": "Колдовской огонь",
+        "description": "Снижает броню цели на 35 на 40 сек."
+      },
+      "hibernate": {
+        "name": "Спячка",
+        "description": "Погружает цель в глубокий сон на срок до 8 сек. Любой урон пробуждает ее."
+      },
+      "dash": {
+        "name": "Рывок",
+        "description": "Рывок вперед, повышающий скорость передвижения на 50% на 15 сек. Только в облике кошки."
+      },
+      "pounce": {
+        "name": "Прыжок",
+        "description": "Открывающая атака из скрытности, оглушающая цель на 2 сек. Дает 1 прием серии. Только в облике кошки."
+      },
+      "insect_swarm": {
+        "name": "Рой насекомых",
+        "description": "Враг атакован роем насекомых и получает {damage} ед. урона от сил Природы в течение 12 сек."
+      },
+      "tigers_fury": {
+        "name": "Ярость тигра",
+        "description": "Повышает силу атаки на 40 на 6 сек. Только в облике кошки."
+      },
+      "rip": {
+        "name": "Разрывание",
+        "description": "Завершающий прием, наносящий урон от кровотечения в течение 12 сек. Расходует приемы серии. Только в облике кошки."
+      },
       "mortal_strike": {
         "name": "Смертельный удар",
         "description": "Жестокий удар, наносящий урон оружием плюс {damage}. (ключевая способность ветки «Оружие»)"
@@ -49873,6 +54470,26 @@ export const ru_RU: EnTranslations = {
       "summon_voidwalker": {
         "name": "Призыв стража Бездны",
         "description": "Призывает Стража Бездны под командование чернокнижника. Страж Бездны — крепкий демон, который провоцирует ваших врагов и принимает удары на себя. Призыв нового демона отпускает текущего. Одновременно у вас может быть только один демон."
+      },
+      "summon_succubus": {
+        "name": "Призыв суккуба",
+        "description": "Призывает Суккуба под командование чернокнижника. Суккуб — хрупкий демон, который стремительно атакует и наносит тяжёлый урон в ближнем бою. Призыв нового демона отпускает текущего. Одновременно у вас может быть только один демон."
+      },
+      "summon_felhunter": {
+        "name": "Призыв охотника Скверны",
+        "description": "Призывает Охотника Скверны под командование чернокнижника. Охотник Скверны изводит врагов на расстоянии Укусом Тьмы и превосходно охотится на заклинателей. Призыв нового демона отпускает текущего. Одновременно у вас может быть только один демон."
+      },
+      "summon_felguard": {
+        "name": "Призыв стража Скверны",
+        "description": "Призывает Стража Скверны под командование чернокнижника. Страж Скверны — выносливый демон ближнего боя, который врывается в гущу битвы и стойко держится. Призыв нового демона отпускает текущего. Одновременно у вас может быть только один демон."
+      },
+      "summon_infernal": {
+        "name": "Призыв инфернала",
+        "description": "Подчиняет вашей воле Инфернала — громадного исполина с сокрушительным ближним боем и самым большим запасом здоровья и брони среди всех демонов. Долгое время восстановления сдерживает его необузданную мощь. Призыв нового демона отпускает текущего. Одновременно у вас может быть только один демон."
+      },
+      "summon_doomguard": {
+        "name": "Призыв стража Рока",
+        "description": "Подчиняет вашей воле Стража Рока — элитного демона, который издалека обрушивает тяжёлый урон от Тьмы. Долгое время восстановления сдерживает его разрушительную мощь. Призыв нового демона отпускает текущего. Одновременно у вас может быть только один демон."
       },
       "bear_charge": {
         "name": "Натиск медведя",
@@ -50325,6 +54942,51 @@ export const ru_RU: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "Треснувшая чешуя вирма"
       },
+      "conjured_bread": {
+        "name": "Сотворённый хлеб"
+      },
+      "conjured_bread2": {
+        "name": "Сотворённый ржаной хлеб"
+      },
+      "conjured_bread3": {
+        "name": "Сотворённая сладкая булочка"
+      },
+      "roadwardens_helm": {
+        "name": "Шлем стража дорог"
+      },
+      "wayfarers_hood": {
+        "name": "Капюшон странника"
+      },
+      "acolytes_circlet": {
+        "name": "Венец послушника"
+      },
+      "reinforced_pauldrons": {
+        "name": "Укреплённые наплечники"
+      },
+      "embroidered_mantle": {
+        "name": "Расшитая мантия"
+      },
+      "sturdy_belt": {
+        "name": "Прочный пояс путника"
+      },
+      "silk_sash": {
+        "name": "Тканый шёлковый кушак"
+      },
+      "roughspun_gloves": {
+        "name": "Грубые перчатки"
+      },
+      "bristlehide_spaulders": {
+        "name": "Наплечники из щетинистой шкуры"
+      },
+      "sableweb_cord": {
+        "name": "Шнур Чёрной паутины"
+      },
+      "gorraks_cleaver": {
+        "name": "Тесак Горрака"
+      },
+      "mossy_handwraps": {
+        "name": "Замшелые обмотки"
+      },
       "bristleback_maul": {
         "name": "Кувалда Щетиноспина"
       },
@@ -50471,6 +55133,96 @@ export const ru_RU: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "Ступни Тени вирма"
+      },
+      "glimmerfin_koi": {
+        "name": "Карп кои с мерцающими плавниками"
+      },
+      "raw_bog_eel": {
+        "name": "Сырой болотный угорь"
+      },
+      "raw_frostgill_trout": {
+        "name": "Сырая морозожаберная форель"
+      },
+      "raw_marsh_pike": {
+        "name": "Сырая болотная щука"
+      },
+      "raw_river_perch": {
+        "name": "Сырой речной окунь"
+      },
+      "raw_stonescale_carp": {
+        "name": "Сырой каменночешуйчатый карп"
+      },
+      "soggy_boot": {
+        "name": "Промокший сапог"
+      },
+      "elixir_of_the_bear": {
+        "name": "Эликсир медведя"
+      },
+      "lesser_healing_potion": {
+        "name": "Слабое лечебное зелье"
+      },
+      "lesser_mana_potion": {
+        "name": "Слабое зелье маны"
+      },
+      "healing_potion": {
+        "name": "Лечебное зелье"
+      },
+      "mana_potion": {
+        "name": "Зелье маны"
+      },
+      "tunnelkings_spade": {
+        "name": "Лопата Короля тоннелей"
+      },
+      "brutoks_maul": {
+        "name": "Молот Бруток"
+      },
+      "cracked_ogre_tusk": {
+        "name": "Треснувший клык огра"
+      },
+      "crag_warden_cudgel": {
+        "name": "Дубина стража утёса"
+      },
+      "cragmaw_prowlboots": {
+        "name": "Крадущиеся сапоги Крэгмо"
+      },
+      "drowned_tide_scepter": {
+        "name": "Скипетр утопшего прилива"
+      },
+      "emberfang_warblade": {
+        "name": "Боевой клинок Жароклыка"
+      },
+      "emberwing_cinderscale": {
+        "name": "Пепельная чешуя Жарокрыла"
+      },
+      "emberwing_legguards": {
+        "name": "Поножи Жарокрыла"
+      },
+      "gravewardens_shiv": {
+        "name": "Заточка стража могил"
+      },
+      "hollow_vigil_staff": {
+        "name": "Посох пустого бдения"
+      },
+      "maldrecs_soulbinder": {
+        "name": "Пленитель душ Малдрека"
+      },
+      "oathbound_greaves": {
+        "name": "Поножи клятвы"
+      },
+      "skullsmasher_warbelt": {
+        "name": "Боевой пояс Сокрушителя черепов"
+      },
+      "skullsplitter_dirk": {
+        "name": "Кинжал черепокола"
+      },
+      "sloomtooth_tidefang": {
+        "name": "Приливный клык Слумтуса"
+      },
+      "tidereaver_gaff": {
+        "name": "Багор Приливореза"
+      },
+      "verlans_oathblade": {
+        "name": "Клинок клятвы Верлана"
       },
       "briny_idol": {
         "name": "Просоленный идол"
@@ -50812,6 +55564,42 @@ export const ru_RU: EnTranslations = {
       },
       "voidwalker": {
         "name": "Страж Бездны"
+      },
+      "succubus": {
+        "name": "Суккуб"
+      },
+      "grix_the_tunnelking": {
+        "name": "Grix the Tunnelking"
+      },
+      "brutok_skullsmasher": {
+        "name": "Бруток Сокрушитель черепов"
+      },
+      "captain_verlan": {
+        "name": "Капитан Верлан"
+      },
+      "old_cragmaw": {
+        "name": "Старый Крэгмо"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "Слумтус Утопший"
+      },
+      "voskar_emberwing": {
+        "name": "Воскар Жарокрыл"
+      },
+      "wraithbinder_maldrec": {
+        "name": "Малдрек Пленитель призраков"
+      },
+      "felhunter": {
+        "name": "Охотник Скверны"
+      },
+      "felguard": {
+        "name": "Страж Скверны"
+      },
+      "infernal": {
+        "name": "Инфернал"
+      },
+      "doomguard": {
+        "name": "Страж Рока"
       },
       "choirmother_selthe": {
         "name": "Матерь хора Селте"
@@ -51911,19 +56699,655 @@ export const translations = {
 };
 
 export const pending: Record<string, readonly string[]> = {
-  "es": [],
-  "es_ES": [],
-  "fr_FR": [],
-  "fr_CA": [],
+  "es": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "es_ES": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "fr_FR": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "fr_CA": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
   "en_CA": [],
-  "it_IT": [],
-  "de_DE": [],
-  "zh_CN": [],
-  "zh_TW": [],
-  "ko_KR": [],
-  "ja_JP": [],
-  "pt_BR": [],
-  "ru_RU": []
+  "it_IT": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "de_DE": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "zh_CN": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "zh_TW": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "ko_KR": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "ja_JP": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "pt_BR": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ],
+  "ru_RU": [
+    "entities.abilities.aspect_of_the_monkey.description",
+    "entities.abilities.aspect_of_the_monkey.name",
+    "entities.abilities.commanding_shout.description",
+    "entities.abilities.commanding_shout.name",
+    "entities.abilities.conjure_food.description",
+    "entities.abilities.conjure_food.name",
+    "entities.abilities.demoralizing_shout.description",
+    "entities.abilities.demoralizing_shout.name",
+    "entities.abilities.flametongue_weapon.description",
+    "entities.abilities.flametongue_weapon.name",
+    "entities.abilities.frostbrand_weapon.description",
+    "entities.abilities.frostbrand_weapon.name",
+    "entities.abilities.pyroblast.description",
+    "entities.abilities.pyroblast.name",
+    "entities.abilities.retribution_aura.description",
+    "entities.abilities.retribution_aura.name",
+    "entities.mobs.grix_the_tunnelking.name",
+    "game.hud.lowEnergy",
+    "game.hud.lowMana",
+    "game.settings.weather",
+    "game.talents.readout.breakdownClass",
+    "game.talents.readout.breakdownSpec",
+    "game.talents.readout.locked",
+    "game.talents.readout.noSpec",
+    "game.talents.readout.noTree",
+    "game.talents.readout.summary",
+    "game.talents.readout.unspent",
+    "game.xp.rested",
+    "hud.core.xpFloatRested",
+    "hud.core.xpGainRested",
+    "hud.options.buttonSize",
+    "hud.options.chatFontScale",
+    "hud.options.chatOpacity",
+    "hud.options.compactChat",
+    "hud.options.fctScale",
+    "hud.options.fieldOfView",
+    "hud.options.fpsReadout",
+    "hud.options.frostedPanels",
+    "hud.options.highContrastText",
+    "hud.options.hudOpacity",
+    "hud.options.interface",
+    "hud.options.interfaceNote",
+    "hud.options.invertLook",
+    "hud.options.invertLookY",
+    "hud.options.joystickDeadzone",
+    "hud.options.joystickSize",
+    "hud.options.reduceMotion",
+    "hud.options.showFps",
+    "hud.options.tooltipScale",
+    "itemUi.kind.elixir",
+    "itemUi.tooltip.currentlyEquipped",
+    "itemUi.tooltip.ifYouEquip"
+  ]
 };
 
 export const en_XA: EnTranslations = {
@@ -51942,7 +57366,8 @@ export const en_XA: EnTranslations = {
       "maxLevel": "[ⱮÁẊ ĻÉƲÉĻ]",
       "totalXp": "[ţóţáļ ẊÞ]",
       "lv": "[Ļʋ]",
-      "toNext": "[ţó ñéẋţ]"
+      "toNext": "[ţó ñéẋţ]",
+      "rested": "[Ŕéšţéð]"
     },
     "progression": {
       "heading": "[Þŕóĝŕéššíóñ]",
@@ -51989,7 +57414,12 @@ export const en_XA: EnTranslations = {
       "needXp": "[ɱóŕé ļíƒéţíɱé ẊÞ ţó þŕéšţíĝé]"
     },
     "settings": {
-      "showOverflowXp": "[Šĥóŵ Óʋéŕƒļóŵ ẊÞ]"
+      "showOverflowXp": "[Šĥóŵ Óʋéŕƒļóŵ ẊÞ]",
+      "weather": "[Ŵéáţĥéŕ Éƒƒéçţš]"
+    },
+    "hud": {
+      "lowMana": "[Ļóŵ Ɱáñá]",
+      "lowEnergy": "[Ļóŵ Éñéŕĝý]"
     },
     "talents": {
       "title": "[Ţáļéñţš]",
@@ -52048,7 +57478,16 @@ export const en_XA: EnTranslations = {
       "noBuilds": "[Ñó šáʋéð ƀúíļðš]",
       "save": "[Šáʋé]",
       "comingSoonTitle": "[Ţáļéñţš çóɱíñĝ šóóñ]",
-      "comingSoonBody": "[Ţĥíš çļášš ðóéš ñóţ ĥáʋé ţáļéñţ ţŕééš ýéţ. Ýóú çáñ ķééþ þļáýíñĝ ñóŕɱáļļý; ƒúļļ ţŕééš ŵíļļ áŕŕíʋé íñ á ƒúţúŕé úþðáţé.]"
+      "comingSoonBody": "[Ţĥíš çļášš ðóéš ñóţ ĥáʋé ţáļéñţ ţŕééš ýéţ. Ýóú çáñ ķééþ þļáýíñĝ ñóŕɱáļļý; ƒúļļ ţŕééš ŵíļļ áŕŕíʋé íñ á ƒúţúŕé úþðáţé.]",
+      "readout": {
+        "noTree": "[Ýóúŕ çļášš ĥáš ñó ţáļéñţ ţŕéé ýéţ.]",
+        "locked": "[Ýóú ĥáʋé ñóţ úñļóçķéð ţáļéñţš ýéţ — ţĥéý ƀéĝíñ áţ ļéʋéļ {level}.]",
+        "noSpec": "[ñó šþéçíáļížáţíóñ]",
+        "summary": "[Ţáļéñţš: {head} — {spent}/{total} þóíñţš šþéñţ ({breakdown}).]",
+        "breakdownClass": "[Çļášš {classPts}]",
+        "breakdownSpec": "[Çļášš {classPts}, {spec} {specPts}]",
+        "unspent": "[ {count} úñšþéñţ.]"
+      }
     }
   },
   "nav": {
@@ -52408,6 +57847,8 @@ export const en_XA: EnTranslations = {
       "levelLog": "[Ýóú ĥáʋé ŕéáçĥéð ļéʋéļ {level}!]",
       "xpGain": "[Ýóú ĝáíñ {amount} éẋþéŕíéñçé.]",
       "xpFloat": "[+{amount} ẊÞ]",
+      "xpFloatRested": "[+{amount} ŕéšţéð]",
+      "xpGainRested": "[Ýóú ĝáíñ {amount} éẋþéŕíéñçé ({rested} ƀóñúš ƒŕóɱ ŕéšţíñĝ).]",
       "deathTitle": "[Ýóú ĥáʋé ðíéð.]",
       "releaseSpirit": "[Ŕéļéášé Šþíŕíţ]",
       "chatTab": "[Çĥáţ]",
@@ -52416,7 +57857,7 @@ export const en_XA: EnTranslations = {
       "communityLinks": "[Çóɱɱúñíţý ļíñķš]",
       "mobileControls": "[Ɱóƀíļé çóñţŕóļš]",
       "mobileMove": "[Ɱóʋé]",
-      "mobileCamera": "[Çáɱéŕá]",
+      "mobileCamera": "[Çáɱéŕá — ðóúƀļé-ţáþ ţó ŕéçéñţéŕ]",
       "mobileAttack": "[Áţţáçķ]",
       "mobileTarget": "[Ţáŕĝéţ]",
       "mobileChat": "[Çĥáţ]",
@@ -52437,6 +57878,7 @@ export const en_XA: EnTranslations = {
       "keyBindings": "[Ķéý Ɓíñðíñĝš]",
       "graphics": "[Ĝŕáþĥíçš]",
       "audio": "[Áúðíó]",
+      "interface": "[Íñţéŕƒáçé]",
       "logout": "[Ļóĝóúţ]",
       "returnToGame": "[Ŕéţúŕñ ţó Ĝáɱé]",
       "resetToDefaults": "[Ŕéšéţ ţó Ðéƒáúļţš]",
@@ -52460,15 +57902,33 @@ export const en_XA: EnTranslations = {
       "terrainLow": "[Ļóŵ]",
       "terrainHigh": "[Ĥíĝĥ]",
       "touchOpacity": "[Ţóúçĥ Çóñţŕóļš Óþáçíţý]",
+      "invertLook": "[Íñʋéŕţ Ļóóķ (Ţóúçĥ)]",
       "graphicsReloadNote": "[Ĝŕáþĥíçš Ɋúáļíţý áñð Ţéŕŕáíñ Ðéţáíļ áþþļý áƒţéŕ á ŕéļóáð.]",
       "reloadNow": "[Ŕéļóáð Ñóŵ]",
       "fullscreen": "[Ƒúļļšçŕééñ]",
       "touchLookSpeed": "[Ţóúçĥ Ļóóķ Šþééð]",
+      "joystickSize": "[Ĵóýšţíçķ Šížé]",
+      "buttonSize": "[Ɓúţţóñ Šížé]",
+      "joystickDeadzone": "[Ĵóýšţíçķ Ðéáðžóñé]",
       "leftHandedTouch": "[Ļéƒţ-ĥáñðéð Ţóúçĥ]",
       "filterProfanity": "[Ƒíļţéŕ Þŕóƒáñíţý]",
       "clickMoveButton": "[Çļíçķ Ɱóʋé Ɓúţţóñ]",
       "clickToMove": "[Çļíçķ ţó Ɱóʋé]",
       "graphicsNote": "[Ļóŵéŕ Çáɱéŕá Šþééð ƒóŕ á çáļɱéŕ ɱóúšéļóóķ. Ŕéñðéŕ Ɋúáļíţý ƀéļóŵ 100% ƀóóšţš ƑÞŠ óñ ŵéáķéŕ ɱáçĥíñéš.]",
+      "fieldOfView": "[Ƒíéļð óƒ Ʋíéŵ]",
+      "hudOpacity": "[ĤÚÐ Óþáçíţý]",
+      "tooltipScale": "[Ţóóļţíþ Ţéẋţ Šížé]",
+      "fctScale": "[Çóɱƀáţ Ţéẋţ Šížé]",
+      "chatFontScale": "[Çĥáţ Ţéẋţ Šížé]",
+      "chatOpacity": "[Çĥáţ Ɓáçķĝŕóúñð Óþáçíţý]",
+      "compactChat": "[Çóɱþáçţ Çĥáţ]",
+      "frostedPanels": "[Ƒŕóšţéð Þáñéļš]",
+      "highContrastText": "[Ĥíĝĥ-Çóñţŕášţ Ţéẋţ]",
+      "reduceMotion": "[Ŕéðúçé Ɱóţíóñ]",
+      "showFps": "[Šĥóŵ ƑÞŠ]",
+      "invertLookY": "[Íñʋéŕţ Ļóóķ (Ý)]",
+      "fpsReadout": "[{fps} ƑÞŠ]",
+      "interfaceNote": "[Ţĥéšé óþţíóñš çĥáñĝé óñļý ýóúŕ óŵñ ʋíéŵ áñð áŕé šáʋéð óñ ţĥíš ðéʋíçé.]",
       "soundEffects": "[Šóúñð Éƒƒéçţš]",
       "musicVolume": "[Ɱúšíç Ʋóļúɱé]",
       "music": "[Ɱúšíç]",
@@ -53026,7 +58486,8 @@ export const en_XA: EnTranslations = {
       "food": "[Ƒóóð]",
       "drink": "[Ðŕíñķ]",
       "tool": "[Ţóóļ]",
-      "potion": "[Þóţíóñ]"
+      "potion": "[Þóţíóñ]",
+      "elixir": "[Éļíẋíŕ]"
     },
     "stats": {
       "armor": "[Áŕɱóŕ]",
@@ -53042,6 +58503,8 @@ export const en_XA: EnTranslations = {
     },
     "tooltip": {
       "qualityKind": "[{quality} {kind}]",
+      "currentlyEquipped": "[Çúŕŕéñţļý éɋúíþþéð]",
+      "ifYouEquip": "[Íƒ ýóú éɋúíþ ţĥíš]",
       "damageSpeed": "[{min} - {max} Ðáɱáĝé Šþééð {speed}]",
       "dps": "[({dps} ðáɱáĝé þéŕ šéçóñð)]",
       "dagger": "[Ðáĝĝéŕ]",
@@ -53165,6 +58628,14 @@ export const en_XA: EnTranslations = {
         "name": "[Ɓáţţļé Šĥóúţ]",
         "description": "[Íñçŕéášéš ýóúŕ áţţáçķ þóŵéŕ ƀý 20 ƒóŕ 2 ɱíñ.]"
       },
+      "commanding_shout": {
+        "name": "[Çóɱɱáñðíñĝ Šĥóúţ]",
+        "description": "[Íñçŕéášéš ýóúŕ Šţáɱíñá ƀý 6 ƒóŕ 2 ɱíñ.]"
+      },
+      "demoralizing_shout": {
+        "name": "[Ðéɱóŕáļížíñĝ Šĥóúţ]",
+        "description": "[Ļéţš óúţ á ƒéáŕšóɱé šĥóúţ, ŕéðúçíñĝ ţĥé áţţáçķ þóŵéŕ óƒ áļļ ñéáŕƀý éñéɱíéš ƀý 30 ƒóŕ 30 šéç.]"
+      },
       "charge": {
         "name": "[Çĥáŕĝé]",
         "description": "[Çĥáŕĝéš áñ éñéɱý, ĝéñéŕáţíñĝ 9 ŕáĝé áñð šţúññíñĝ íţ ƒóŕ 1 šéç. 8-25 ýð ŕáñĝé.]"
@@ -53233,6 +58704,10 @@ export const en_XA: EnTranslations = {
         "name": "[Çóñĵúŕé Ŵáţéŕ]",
         "description": "[Çóñĵúŕéš 2 ƀóţţļéš óƒ ŵáţéŕ, ŕéšţóŕíñĝ ɱáñá ŵĥéñ ðŕúñķ. Ĥíĝĥéŕ ŕáñķš çóñĵúŕé þúŕéŕ ŵáţéŕ.]"
       },
+      "conjure_food": {
+        "name": "[Çóñĵúŕé Ƒóóð]",
+        "description": "[Çóñĵúŕéš 2 šéŕʋíñĝš óƒ ƀŕéáð, ŕéšţóŕíñĝ ĥéáļţĥ ŵĥéñ éáţéñ. Ĥíĝĥéŕ ŕáñķš çóñĵúŕé ĥéáŕţíéŕ ƒáŕé.]"
+      },
       "fire_blast": {
         "name": "[Ƒíŕé Ɓļášţ]",
         "description": "[Ɓļášţš ţĥé éñéɱý ƒóŕ {damage} Ƒíŕé ðáɱáĝé. Íñšţáñţ.]"
@@ -53256,6 +58731,10 @@ export const en_XA: EnTranslations = {
       "scorch": {
         "name": "[Šçóŕçĥ]",
         "description": "[Šçóŕçĥéš ţĥé éñéɱý ƒóŕ {damage} Ƒíŕé ðáɱáĝé. Ɋúíçķ ţó çášţ.]"
+      },
+      "pyroblast": {
+        "name": "[Þýŕóƀļášţ]",
+        "description": "[Ĥúŕļš áñ íɱɱéñšé ƒíéŕý ƀóúļðéŕ ţĥáţ çáúšéš {damage} Ƒíŕé ðáɱáĝé þļúš áððíţíóñáļ ðáɱáĝé óʋéŕ ţíɱé.]"
       },
       "ice_barrier": {
         "name": "[Íçé Ɓáŕŕíéŕ]",
@@ -53305,6 +58784,46 @@ export const en_XA: EnTranslations = {
         "name": "[Áðŕéñáļíñé Ŕúšĥ]",
         "description": "[Ýóúŕ ƀļóóð ŕúñš ĥóţ, íñšţáñţļý ŕéšţóŕíñĝ 60 éñéŕĝý.]"
       },
+      "garrote": {
+        "name": "[Ĝáŕŕóţé]",
+        "description": "[Ĝáŕŕóţé ţĥé éñéɱý, çáúšíñĝ ðáɱáĝé ñóŵ áñð ƀļééðíñĝ íţ ƒóŕ {damage} óʋéŕ 18 šéç. Ɱúšţ ƀé šţéáļţĥéð. Áŵáŕðš 1 çóɱƀó þóíñţ.]"
+      },
+      "cheap_shot": {
+        "name": "[Çĥéáþ Šĥóţ]",
+        "description": "[Šţŕíķé ţĥé ţáŕĝéţ, šţúññíñĝ íţ ƒóŕ 4 šéç. Ɱúšţ ƀé šţéáļţĥéð. Áŵáŕðš 2 çóɱƀó þóíñţš.]"
+      },
+      "sap": {
+        "name": "[Šáþ]",
+        "description": "[Íñçáþáçíţáţéš ţĥé ţáŕĝéţ ƒóŕ 8 šéç. Ɱúšţ ƀé šţéáļţĥéð áñð óúţ óƒ çóɱƀáţ. Áñý ðáɱáĝé ƀŕéáķš ţĥé éƒƒéçţ.]"
+      },
+      "crippling_poison": {
+        "name": "[Çŕíþþļíñĝ Þóíšóñ]",
+        "description": "[Šţŕíķéš ţĥé ţáŕĝéţ ŵíţĥ á çŕíþþļíñĝ þóíšóñ, ðéáļíñĝ {damage} Ñáţúŕé ðáɱáĝé áñð šļóŵíñĝ íţš ɱóʋéɱéñţ šþééð ƀý 50% ƒóŕ 12 šéç.]"
+      },
+      "expose_armor": {
+        "name": "[Éẋþóšé Áŕɱóŕ]",
+        "description": "[Ƒíñíšĥíñĝ ɱóʋé ţĥáţ éẋþóšéš ţĥé ţáŕĝéţ, ŕéðúçíñĝ íţš áŕɱóŕ. Ɱóŕé çóɱƀó þóíñţš šþéñţ ƀúíļð íñţó á ðééþéŕ çúţ.]"
+      },
+      "rupture": {
+        "name": "[Ŕúþţúŕé]",
+        "description": "[Ƒíñíšĥíñĝ ɱóʋé ţĥáţ ŵóúñðš ţĥé ţáŕĝéţ, çáúšíñĝ íţ ţó ƀļééð ƒóŕ {damage} óʋéŕ 16 šéç.]"
+      },
+      "vanish": {
+        "name": "[Ʋáñíšĥ]",
+        "description": "[Ʋáñíšĥ ƒŕóɱ šíĝĥţ, éñţéŕíñĝ Šţéáļţĥ éʋéñ íñ çóɱƀáţ. Ýóú ɱóʋé 30% šļóŵéŕ ŵĥíļé ĥíððéñ. Ļášţš úþ ţó 10 šéç.]"
+      },
+      "instant_poison": {
+        "name": "[Íñšţáñţ Þóíšóñ]",
+        "description": "[Çóáţš ýóúŕ ŵéáþóñ ƒóŕ 30 ɱíñ, çáúšíñĝ éáçĥ óƒ ýóúŕ ɱéļéé šŵíñĝš ţó ðéáļ 8 áððíţíóñáļ Ñáţúŕé ðáɱáĝé.]"
+      },
+      "deadly_poison": {
+        "name": "[Ðéáðļý Þóíšóñ]",
+        "description": "[Çóáţš ýóúŕ ŵéáþóñ ƒóŕ 30 ɱíñ, çáúšíñĝ éáçĥ óƒ ýóúŕ ɱéļéé šŵíñĝš ţó ðéáļ 14 áððíţíóñáļ Ñáţúŕé ðáɱáĝé.]"
+      },
+      "blind": {
+        "name": "[Ɓļíñð]",
+        "description": "[Ɓļíñðš ţĥé ţáŕĝéţ, çáúšíñĝ íţ ţó ŵáñðéŕ ðíšóŕíéñţéð ƒóŕ 8 šéç. Áñý ðáɱáĝé ƀŕéáķš ţĥé éƒƒéçţ.]"
+      },
       "seal_of_righteousness": {
         "name": "[Šéáļ óƒ Ŕíĝĥţéóúšñéšš]",
         "description": "[Ƒíļļš ýóú ŵíţĥ Ĥóļý þóŵéŕ ƒóŕ 30 šéç, çáúšíñĝ éáçĥ óƒ ýóúŕ ɱéļéé šŵíñĝš ţó ðéáļ 4 áððíţíóñáļ Ĥóļý ðáɱáĝé. Úñļéášĥ ŵíţĥ Ĵúðĝéɱéñţ.]"
@@ -53353,6 +58872,10 @@ export const en_XA: EnTranslations = {
         "name": "[Ŕíĝĥţéóúš Ƒúŕý]",
         "description": "[Íñçŕéášéš ţĥé ţĥŕéáţ ĝéñéŕáţéð ƀý ýóúŕ Ĥóļý ðáɱáĝé ƀý 60% ƒóŕ 30 ɱíñ. Ţĥé ţáñķíñĝ þáļáðíñ'š çóŕñéŕšţóñé.]"
       },
+      "retribution_aura": {
+        "name": "[Ŕéţŕíƀúţíóñ Áúŕá]",
+        "description": "[Šúŕŕóúñðš ýóú ŵíţĥ ĥóļý éñéŕĝý ƒóŕ 30 ɱíñ, ðéáļíñĝ 5 Ĥóļý ðáɱáĝé ţó áñý éñéɱý ţĥáţ šţŕíķéš ýóú íñ ɱéļéé.]"
+      },
       "tame_beast": {
         "name": "[Ţáɱé Ɓéášţ]",
         "description": "[Ɓéĝíñš ţáɱíñĝ á ƀéášţ ţó ƀé ýóúŕ çóɱþáñíóñ. Íţ ɱúšţ ƀé ýóúŕ ļéʋéļ óŕ ļóŵéŕ áñð ñóţ áñ éļíţé. Ýóúŕ þéţ ƒóļļóŵš ýóú, áţţáçķš ýóúŕ éñéɱíéš, áñð ĥóļðš ţĥŕéáţ óƒ íţš óŵñ. Ýóú ɱáý ĥáʋé óñé þéţ áţ á ţíɱé.]"
@@ -53388,6 +58911,10 @@ export const en_XA: EnTranslations = {
       "wing_clip": {
         "name": "[Ŵíñĝ Çļíþ]",
         "description": "[Íñƒļíçţš á ŵóúñð ţĥáţ šļóŵš ţĥé éñéɱý ƀý 40% ƒóŕ 10 šéç.]"
+      },
+      "aspect_of_the_monkey": {
+        "name": "[Ášþéçţ óƒ ţĥé Ɱóñķéý]",
+        "description": "[Ţáķé óñ ţĥé ášþéçţ óƒ ţĥé ɱóñķéý, íñçŕéášíñĝ ýóúŕ ðóðĝé çĥáñçé ƀý 8% ƒóŕ 30 ɱíñ.]"
       },
       "aspect_of_the_cheetah": {
         "name": "[Ášþéçţ óƒ ţĥé Çĥééţáĥ]",
@@ -53465,9 +58992,17 @@ export const en_XA: EnTranslations = {
         "name": "[Ƒļáɱé Šĥóçķ]",
         "description": "[Šéáŕš ţĥé ţáŕĝéţ ŵíţĥ ƒíŕé ƒóŕ 25 ðáɱáĝé þļúš {damage} óʋéŕ 12 šéç.]"
       },
+      "flametongue_weapon": {
+        "name": "[Ƒļáɱéţóñĝúé Ŵéáþóñ]",
+        "description": "[Íɱƀúéš ýóúŕ ŵéáþóñ ŵíţĥ éļéɱéñţáļ ƒíŕé: éáçĥ šŵíñĝ ðéáļš 8 áððíţíóñáļ Ƒíŕé ðáɱáĝé ƒóŕ 5 ɱíñ.]"
+      },
       "frost_shock": {
         "name": "[Ƒŕóšţ Šĥóçķ]",
         "description": "[Íñšţáñţļý šĥóçķš ţĥé ţáŕĝéţ ŵíţĥ ƒŕóšţ ƒóŕ {damage} Ƒŕóšţ ðáɱáĝé áñð šļóŵš íţš ɱóʋéɱéñţ ƀý 50% ƒóŕ 8 šéç.]"
+      },
+      "frostbrand_weapon": {
+        "name": "[Ƒŕóšţƀŕáñð Ŵéáþóñ]",
+        "description": "[Íɱƀúéš ýóúŕ ŵéáþóñ ŵíţĥ ƀíţíñĝ ƒŕóšţ: éáçĥ šŵíñĝ ðéáļš 8 áððíţíóñáļ ðáɱáĝé ƒóŕ 5 ɱíñ.]"
       },
       "ghost_wolf": {
         "name": "[Ĝĥóšţ Ŵóļƒ]",
@@ -53585,6 +59120,46 @@ export const en_XA: EnTranslations = {
         "name": "[Šţáŕƒíŕé]",
         "description": "[Çáļļš ðóŵñ á ƀóļţ óƒ šţéļļáŕ ƒíŕé, çáúšíñĝ {damage} Áŕçáñé ðáɱáĝé.]"
       },
+      "travel_form": {
+        "name": "[Ţŕáʋéļ Ƒóŕɱ]",
+        "description": "[Ţáķé óñ á šŵíƒţ ţŕáʋéļ ƒóŕɱ, íñçŕéášíñĝ ɱóʋéɱéñţ šþééð ƀý 40%. Çáññóţ ƀé úšéð íñ çóɱƀáţ.]"
+      },
+      "enrage": {
+        "name": "[Éñŕáĝé]",
+        "description": "[Ĝéñéŕáţéš 20 ŕáĝé íñšţáñţļý. Ɓéáŕ Ƒóŕɱ óñļý.]"
+      },
+      "bash": {
+        "name": "[Ɓášĥ]",
+        "description": "[Šţúñš ţĥé ţáŕĝéţ ƒóŕ 2 šéç. Ɓéáŕ Ƒóŕɱ óñļý.]"
+      },
+      "faerie_fire": {
+        "name": "[Ƒáéŕíé Ƒíŕé]",
+        "description": "[Ðéçŕéášéš ţĥé ţáŕĝéţ'š áŕɱóŕ ƀý 35 ƒóŕ 40 šéç.]"
+      },
+      "hibernate": {
+        "name": "[Ĥíƀéŕñáţé]",
+        "description": "[Ƒóŕçéš ţĥé ţáŕĝéţ íñţó á ðééþ šļééþ ƒóŕ úþ ţó 8 šéç. Áñý ðáɱáĝé ŵíļļ áŵáķéñ íţ.]"
+      },
+      "dash": {
+        "name": "[Ðášĥ]",
+        "description": "[Šþŕíñţ ƒóŕŵáŕð, íñçŕéášíñĝ ɱóʋéɱéñţ šþééð ƀý 50% ƒóŕ 15 šéç. Ŵóļƒ Ƒóŕɱ óñļý.]"
+      },
+      "pounce": {
+        "name": "[Þóúñçé]",
+        "description": "[Á šţéáļţĥ óþéñéŕ ţĥáţ šţúñš ţĥé ţáŕĝéţ ƒóŕ 2 šéç. Áŵáŕðš 1 çóɱƀó þóíñţ. Ŵóļƒ Ƒóŕɱ óñļý.]"
+      },
+      "insect_swarm": {
+        "name": "[Íñšéçţ Šŵáŕɱ]",
+        "description": "[Ţĥé éñéɱý íš šŵáŕɱéð ƀý íñšéçţš, ţáķíñĝ {damage} Ñáţúŕé ðáɱáĝé óʋéŕ 12 šéç.]"
+      },
+      "tigers_fury": {
+        "name": "[Ţíĝéŕ'š Ƒúŕý]",
+        "description": "[Íñçŕéášéš áţţáçķ þóŵéŕ ƀý 40 ƒóŕ 6 šéç. Ŵóļƒ Ƒóŕɱ óñļý.]"
+      },
+      "rip": {
+        "name": "[Ŕíþ]",
+        "description": "[Ƒíñíšĥíñĝ ɱóʋé ţĥáţ çáúšéš Ɓļééð ðáɱáĝé óʋéŕ 12 šéç. Çóñšúɱéš çóɱƀó þóíñţš. Ŵóļƒ Ƒóŕɱ óñļý.]"
+      },
       "mortal_strike": {
         "name": "[Ɱóŕţáļ Šţŕíķé]",
         "description": "[Á ʋíçíóúš šţŕíķé ðéáļíñĝ ŵéáþóñ ðáɱáĝé þļúš {damage}. (Áŕɱš šíĝñáţúŕé)]"
@@ -53612,6 +59187,26 @@ export const en_XA: EnTranslations = {
       "summon_voidwalker": {
         "name": "[Šúɱɱóñ Ʋóíðŵáļķéŕ]",
         "description": "[Šúɱɱóñš á Ʋóíðŵáļķéŕ úñðéŕ ţĥé çóɱɱáñð óƒ ţĥé Ŵáŕļóçķ. Ţĥé Ʋóíðŵáļķéŕ íš á šţúŕðý ðéɱóñ ţĥáţ ţáúñţš ýóúŕ éñéɱíéš áñð šóáķš úþ þúñíšĥɱéñţ. Šúɱɱóñíñĝ á ñéŵ ðéɱóñ ðíšɱíššéš ýóúŕ çúŕŕéñţ óñé. Ýóú ɱáý ĥáʋé óñé ðéɱóñ áţ á ţíɱé.]"
+      },
+      "summon_succubus": {
+        "name": "[Šúɱɱóñ Šúççúƀúš]",
+        "description": "[Šúɱɱóñš á Šúççúƀúš úñðéŕ ţĥé çóɱɱáñð óƒ ţĥé Ŵáŕļóçķ. Ţĥé Šúççúƀúš íš á ƒŕáĝíļé ðéɱóñ ţĥáţ šţŕíķéš ɋúíçķļý áñð ĥíţš ĥáŕð íñ ɱéļéé. Šúɱɱóñíñĝ á ñéŵ ðéɱóñ ðíšɱíššéš ýóúŕ çúŕŕéñţ óñé. Ýóú ɱáý ĥáʋé óñé ðéɱóñ áţ á ţíɱé.]"
+      },
+      "summon_felhunter": {
+        "name": "[Šúɱɱóñ Ƒéļĥúñţéŕ]",
+        "description": "[Šúɱɱóñš á Ƒéļĥúñţéŕ úñðéŕ ţĥé çóɱɱáñð óƒ ţĥé Ŵáŕļóçķ. Ţĥé Ƒéļĥúñţéŕ ĥáŕŕíéš éñéɱíéš ƒŕóɱ ŕáñĝé ŵíţĥ Šĥáðóŵ Ɓíţé áñð éẋçéļš áţ ĥúñţíñĝ šþéļļçášţéŕš. Šúɱɱóñíñĝ á ñéŵ ðéɱóñ ðíšɱíššéš ýóúŕ çúŕŕéñţ óñé. Ýóú ɱáý ĥáʋé óñé ðéɱóñ áţ á ţíɱé.]"
+      },
+      "summon_felguard": {
+        "name": "[Šúɱɱóñ Ƒéļĝúáŕð]",
+        "description": "[Šúɱɱóñš á Ƒéļĝúáŕð úñðéŕ ţĥé çóɱɱáñð óƒ ţĥé Ŵáŕļóçķ. Ţĥé Ƒéļĝúáŕð íš á ðúŕáƀļé ɱéļéé ðéɱóñ ţĥáţ ŵáðéš íñţó ƀáţţļé áñð ĥóļðš íţš óŵñ. Šúɱɱóñíñĝ á ñéŵ ðéɱóñ ðíšɱíššéš ýóúŕ çúŕŕéñţ óñé. Ýóú ɱáý ĥáʋé óñé ðéɱóñ áţ á ţíɱé.]"
+      },
+      "summon_infernal": {
+        "name": "[Šúɱɱóñ Íñƒéŕñáļ]",
+        "description": "[Ɓíñðš áñ Íñƒéŕñáļ ţó ýóúŕ ŵíļļ — á ĥúļķíñĝ ĵúĝĝéŕñáúţ ŵíţĥ çŕúšĥíñĝ ɱéļéé áñð ţĥé ðééþéšţ ĥéáļţĥ áñð áŕɱóŕ óƒ áñý ðéɱóñ. Á ļóñĝ çóóļðóŵñ ĝáţéš íţš ŕáŵ þóŵéŕ. Šúɱɱóñíñĝ á ñéŵ ðéɱóñ ðíšɱíššéš ýóúŕ çúŕŕéñţ óñé. Ýóú ɱáý ĥáʋé óñé ðéɱóñ áţ á ţíɱé.]"
+      },
+      "summon_doomguard": {
+        "name": "[Šúɱɱóñ Ðóóɱĝúáŕð]",
+        "description": "[Ɓíñðš á Ðóóɱĝúáŕð ţó ýóúŕ ŵíļļ — áñ éļíţé ðéɱóñ ţĥáţ ŕáíñš ĥéáʋý Šĥáðóŵ ðáɱáĝé ƒŕóɱ áƒáŕ. Á ļóñĝ çóóļðóŵñ ĝáţéš íţš ðéʋášţáţíñĝ þóŵéŕ. Šúɱɱóñíñĝ á ñéŵ ðéɱóñ ðíšɱíššéš ýóúŕ çúŕŕéñţ óñé. Ýóú ɱáý ĥáʋé óñé ðéɱóñ áţ á ţíɱé.]"
       },
       "bear_charge": {
         "name": "[Ɓéáŕ Çĥáŕĝé]",
@@ -54064,6 +59659,51 @@ export const en_XA: EnTranslations = {
       "cracked_wyrm_scale": {
         "name": "[Çŕáçķéð Ŵýŕɱ Šçáļé]"
       },
+      "conjured_bread": {
+        "name": "[Çóñĵúŕéð Ɓŕéáð]"
+      },
+      "conjured_bread2": {
+        "name": "[Çóñĵúŕéð Þúɱþéŕñíçķéļ]"
+      },
+      "conjured_bread3": {
+        "name": "[Çóñĵúŕéð Šŵééţ Ŕóļļ]"
+      },
+      "roadwardens_helm": {
+        "name": "[Ŕóáðŵáŕðéñ'š Ĥéļɱ]"
+      },
+      "wayfarers_hood": {
+        "name": "[Ŵáýƒáŕéŕ'š Ĥóóð]"
+      },
+      "acolytes_circlet": {
+        "name": "[Áçóļýţé'š Çíŕçļéţ]"
+      },
+      "reinforced_pauldrons": {
+        "name": "[Ŕéíñƒóŕçéð Þáúļðŕóñš]"
+      },
+      "embroidered_mantle": {
+        "name": "[Éɱƀŕóíðéŕéð Ɱáñţļé]"
+      },
+      "sturdy_belt": {
+        "name": "[Šţúŕðý Ţŕáʋéļéŕ'š Ɓéļţ]"
+      },
+      "silk_sash": {
+        "name": "[Ŵóʋéñ Šíļķ Šášĥ]"
+      },
+      "roughspun_gloves": {
+        "name": "[Ŕóúĝĥšþúñ Ĝļóʋéš]"
+      },
+      "bristlehide_spaulders": {
+        "name": "[Ɓŕíšţļéĥíðé Šþáúļðéŕš]"
+      },
+      "sableweb_cord": {
+        "name": "[Šáƀļéŵéƀ Çóŕð]"
+      },
+      "gorraks_cleaver": {
+        "name": "[Ĝóŕŕáķ'š Çļéáʋéŕ]"
+      },
+      "mossy_handwraps": {
+        "name": "[Ɱóššĝŕóŵñ Ĥáñðŵŕáþš]"
+      },
       "bristleback_maul": {
         "name": "[Ɓŕíšţļéƀáçķ Ɱáúļ]"
       },
@@ -54210,6 +59850,96 @@ export const en_XA: EnTranslations = {
       },
       "wyrmshadow_treads": {
         "name": "[Ŵýŕɱšĥáðóŵ Ţŕéáðš]"
+      },
+      "glimmerfin_koi": {
+        "name": "[Ĝļíɱɱéŕƒíñ Ķóí]"
+      },
+      "raw_bog_eel": {
+        "name": "[Ŕáŵ Ɓóĝ Ééļ]"
+      },
+      "raw_frostgill_trout": {
+        "name": "[Ŕáŵ Ƒŕóšţĝíļļ Ţŕóúţ]"
+      },
+      "raw_marsh_pike": {
+        "name": "[Ŕáŵ Ɱáŕšĥ Þíķé]"
+      },
+      "raw_river_perch": {
+        "name": "[Ŕáŵ Ŕíʋéŕ Þéŕçĥ]"
+      },
+      "raw_stonescale_carp": {
+        "name": "[Ŕáŵ Šţóñéšçáļé Çáŕþ]"
+      },
+      "soggy_boot": {
+        "name": "[Šóĝĝý Ɓóóţ]"
+      },
+      "elixir_of_the_bear": {
+        "name": "[Éļíẋíŕ óƒ ţĥé Ɓéáŕ]"
+      },
+      "lesser_healing_potion": {
+        "name": "[Ļéššéŕ Ĥéáļíñĝ Þóţíóñ]"
+      },
+      "lesser_mana_potion": {
+        "name": "[Ļéššéŕ Ɱáñá Þóţíóñ]"
+      },
+      "healing_potion": {
+        "name": "[Ĥéáļíñĝ Þóţíóñ]"
+      },
+      "mana_potion": {
+        "name": "[Ɱáñá Þóţíóñ]"
+      },
+      "tunnelkings_spade": {
+        "name": "[Ţúññéļķíñĝ'š Šþáðé]"
+      },
+      "brutoks_maul": {
+        "name": "[Ɓŕúţóķ'š Ɱáúļ]"
+      },
+      "cracked_ogre_tusk": {
+        "name": "[Çŕáçķéð Óĝŕé Ţúšķ]"
+      },
+      "crag_warden_cudgel": {
+        "name": "[Çŕáĝ Ŵáŕðéñ Çúðĝéļ]"
+      },
+      "cragmaw_prowlboots": {
+        "name": "[Çŕáĝɱáŵ Þŕóŵļƀóóţš]"
+      },
+      "drowned_tide_scepter": {
+        "name": "[Ðŕóŵñéð Ţíðé Šçéþţéŕ]"
+      },
+      "emberfang_warblade": {
+        "name": "[Éɱƀéŕƒáñĝ Ŵáŕƀļáðé]"
+      },
+      "emberwing_cinderscale": {
+        "name": "[Éɱƀéŕŵíñĝ Çíñðéŕšçáļé]"
+      },
+      "emberwing_legguards": {
+        "name": "[Éɱƀéŕŵíñĝ Ļéĝĝúáŕðš]"
+      },
+      "gravewardens_shiv": {
+        "name": "[Ĝŕáʋéŵáŕðéñ'š Šĥíʋ]"
+      },
+      "hollow_vigil_staff": {
+        "name": "[Šţáƒƒ óƒ ţĥé Ĥóļļóŵ Ʋíĝíļ]"
+      },
+      "maldrecs_soulbinder": {
+        "name": "[Ɱáļðŕéç'š Šóúļƀíñðéŕ]"
+      },
+      "oathbound_greaves": {
+        "name": "[Óáţĥƀóúñð Ĝŕéáʋéš]"
+      },
+      "skullsmasher_warbelt": {
+        "name": "[Šķúļļšɱášĥéŕ'š Ŵáŕƀéļţ]"
+      },
+      "skullsplitter_dirk": {
+        "name": "[Šķúļļšþļíţţéŕ Ðíŕķ]"
+      },
+      "sloomtooth_tidefang": {
+        "name": "[Šļóóɱţóóţĥ'š Ţíðéƒáñĝ]"
+      },
+      "tidereaver_gaff": {
+        "name": "[Ţíðéŕéáʋéŕ Ĝáƒƒ]"
+      },
+      "verlans_oathblade": {
+        "name": "[Ʋéŕļáñ'š Óáţĥƀļáðé]"
       },
       "briny_idol": {
         "name": "[Ɓŕíñý Íðóļ]"
@@ -54551,6 +60281,42 @@ export const en_XA: EnTranslations = {
       },
       "voidwalker": {
         "name": "[Ʋóíðŵáļķéŕ]"
+      },
+      "succubus": {
+        "name": "[Šúççúƀúš]"
+      },
+      "grix_the_tunnelking": {
+        "name": "[Ĝŕíẋ ţĥé Ţúññéļķíñĝ]"
+      },
+      "brutok_skullsmasher": {
+        "name": "[Ɓŕúţóķ Šķúļļšɱášĥéŕ]"
+      },
+      "captain_verlan": {
+        "name": "[Çáþţáíñ Ʋéŕļáñ]"
+      },
+      "old_cragmaw": {
+        "name": "[Óļð Çŕáĝɱáŵ]"
+      },
+      "sloomtooth_the_drowned": {
+        "name": "[Šļóóɱţóóţĥ ţĥé Ðŕóŵñéð]"
+      },
+      "voskar_emberwing": {
+        "name": "[Ʋóšķáŕ ţĥé Éɱƀéŕŵíñĝ]"
+      },
+      "wraithbinder_maldrec": {
+        "name": "[Ŵŕáíţĥƀíñðéŕ Ɱáļðŕéç]"
+      },
+      "felhunter": {
+        "name": "[Ƒéļĥúñţéŕ]"
+      },
+      "felguard": {
+        "name": "[Ƒéļĝúáŕð]"
+      },
+      "infernal": {
+        "name": "[Íñƒéŕñáļ]"
+      },
+      "doomguard": {
+        "name": "[Ðóóɱĝúáŕð]"
       },
       "choirmother_selthe": {
         "name": "[Çĥóíŕɱóţĥéŕ Šéļţĥé]"

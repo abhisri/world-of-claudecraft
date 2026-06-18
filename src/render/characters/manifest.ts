@@ -471,6 +471,7 @@ export const VISUALS: Record<string, VisualDef> = {
 const MOB_KEYS: Record<string, string> = {
   imp: 'mob_demon',
   voidwalker: 'mob_demon',
+  succubus: 'mob_demon',
   warlock_imp: 'mob_demon_flying',
   warlock_voidwalker: 'mob_demonalt',
   wild_boar: 'mob_boar',
