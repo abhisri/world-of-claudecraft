@@ -1992,4 +1992,10 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   "auth.noAccountPrompt": "初來乍到？",
   "auth.haveAccountPrompt": "已有帳號？",
 
+  "entities.items.elixir_of_the_bear.name": "巨熊藥劑",
+  "entities.items.healing_potion.name": "治療藥水",
+  "entities.items.lesser_healing_potion.name": "次級治療藥水",
+  "entities.items.mana_potion.name": "法力藥水",
+  "entities.items.lesser_mana_potion.name": "次級法力藥水",
+  "entities.items.tunnelkings_spade.name": "隧道王之鏟",
 };

@@ -82,4 +82,10 @@ export const es_ES: Partial<Record<TranslationKey, string>> = {
   "mobilePreflight.androidInstallDetail": "Para pantalla completa en Android, instala esta página o añádela a la pantalla de inicio primero.",
   "mobilePreflight.androidInstallStep": "En Chrome, toca el menú y luego Instalar app o Añadir a pantalla de inicio.",
   "mobilePreflight.otherInstallDetail": "Instala o añade esta página a la pantalla de inicio para la mejor experiencia móvil a pantalla completa.",
+  "entities.items.elixir_of_the_bear.name": "Elixir del Oso",
+  "entities.items.healing_potion.name": "Poción de curación",
+  "entities.items.lesser_healing_potion.name": "Poción de curación menor",
+  "entities.items.mana_potion.name": "Poción de maná",
+  "entities.items.lesser_mana_potion.name": "Poción de maná menor",
+  "entities.items.tunnelkings_spade.name": "Pala del Rey Túnel",
 };

@@ -1992,4 +1992,10 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   "auth.noAccountPrompt": "Neu im Reich?",
   "auth.haveAccountPrompt": "Schon ein Konto?",
 
+  "entities.items.elixir_of_the_bear.name": "Elixier des Bären",
+  "entities.items.healing_potion.name": "Heiltrank",
+  "entities.items.lesser_healing_potion.name": "Geringer Heiltrank",
+  "entities.items.mana_potion.name": "Manatrank",
+  "entities.items.lesser_mana_potion.name": "Geringer Manatrank",
+  "entities.items.tunnelkings_spade.name": "Spaten des Tunnelkönigs",
 };

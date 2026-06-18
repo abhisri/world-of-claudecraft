@@ -1992,4 +1992,10 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   "auth.noAccountPrompt": "Впервые в мире?",
   "auth.haveAccountPrompt": "Уже есть аккаунт?",
 
+  "entities.items.elixir_of_the_bear.name": "Эликсир медведя",
+  "entities.items.healing_potion.name": "Лечебное зелье",
+  "entities.items.lesser_healing_potion.name": "Слабое лечебное зелье",
+  "entities.items.mana_potion.name": "Зелье маны",
+  "entities.items.lesser_mana_potion.name": "Слабое зелье маны",
+  "entities.items.tunnelkings_spade.name": "Лопата Короля тоннелей",
 };

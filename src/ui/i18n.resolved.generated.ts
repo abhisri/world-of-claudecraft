@@ -5899,22 +5899,22 @@ export const es: EnTranslations = {
         "name": "Botines Sombravermis"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Elixir del Oso"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Poción de curación menor"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Poción de maná menor"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Poción de curación"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Poción de maná"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Pala del Rey Túnel"
       },
       "briny_idol": {
         "name": "Ídolo salobre"
@@ -9506,22 +9506,22 @@ export const es_ES: EnTranslations = {
         "name": "Botines Sombravermis"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Elixir del Oso"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Poción de curación menor"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Poción de maná menor"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Poción de curación"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Poción de maná"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Pala del Rey Túnel"
       },
       "briny_idol": {
         "name": "Ídolo salobre"
@@ -13113,22 +13113,22 @@ export const fr_FR: EnTranslations = {
         "name": "Bottines Ombrewyrm"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Élixir de l'Ours"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Potion de soins inférieure"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Potion de mana inférieure"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Potion de soins"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Potion de mana"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Bêche du Roi des Tunnels"
       },
       "briny_idol": {
         "name": "Idole saumâtre"
@@ -16720,22 +16720,22 @@ export const fr_CA: EnTranslations = {
         "name": "Bottines Ombrewyrm"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Élixir de l'Ours"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Potion de soins inférieure"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Potion de mana inférieure"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Potion de soins"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Potion de mana"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Bêche du Roi des Tunnels"
       },
       "briny_idol": {
         "name": "Idole saumâtre"
@@ -23934,22 +23934,22 @@ export const it_IT: EnTranslations = {
         "name": "Calzari Ombrawyrm"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Elisir dell'Orso"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Pozione di cura inferiore"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Pozione di mana inferiore"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Pozione di cura"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Pozione di mana"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Vanga del Re dei Tunnel"
       },
       "briny_idol": {
         "name": "Idolo Salmastro"
@@ -27541,22 +27541,22 @@ export const de_DE: EnTranslations = {
         "name": "Wyrmschattentreter"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Elixier des Bären"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Geringer Heiltrank"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Geringer Manatrank"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Heiltrank"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Manatrank"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Spaten des Tunnelkönigs"
       },
       "briny_idol": {
         "name": "Salzlaken-Götze"
@@ -31148,22 +31148,22 @@ export const zh_CN: EnTranslations = {
         "name": "龙影足垫"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "巨熊药剂"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "次级治疗药水"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "次级法力药水"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "治疗药水"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "法力药水"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "隧道王之铲"
       },
       "briny_idol": {
         "name": "咸海神像"
@@ -34755,22 +34755,22 @@ export const zh_TW: EnTranslations = {
         "name": "龍影足墊"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "巨熊藥劑"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "次級治療藥水"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "次級法力藥水"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "治療藥水"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "法力藥水"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "隧道王之鏟"
       },
       "briny_idol": {
         "name": "鹹海神像"
@@ -38362,22 +38362,22 @@ export const ko_KR: EnTranslations = {
         "name": "고룡그림자 발보호구"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "곰의 비약"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "하급 치유 물약"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "하급 마나 물약"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "치유 물약"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "마나 물약"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "굴왕의 삽"
       },
       "briny_idol": {
         "name": "소금기 어린 우상"
@@ -41969,22 +41969,22 @@ export const ja_JP: EnTranslations = {
         "name": "ワーム影の足具"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "熊のエリクサー"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "下級回復のポーション"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "下級マナのポーション"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "回復のポーション"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "マナのポーション"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "トンネルキングのスペード"
       },
       "briny_idol": {
         "name": "潮辛の偶像"
@@ -45576,22 +45576,22 @@ export const pt_BR: EnTranslations = {
         "name": "Pisantes Sombra de Wyrm"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Elixir do Urso"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Poção de cura menor"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Poção de mana menor"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Poção de cura"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Poção de mana"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Pá do Rei dos Túneis"
       },
       "briny_idol": {
         "name": "Ídolo Salobro"
@@ -49183,22 +49183,22 @@ export const ru_RU: EnTranslations = {
         "name": "Ступни Тени вирма"
       },
       "elixir_of_the_bear": {
-        "name": "Elixir of the Bear"
+        "name": "Эликсир медведя"
       },
       "lesser_healing_potion": {
-        "name": "Lesser Healing Potion"
+        "name": "Слабое лечебное зелье"
       },
       "lesser_mana_potion": {
-        "name": "Lesser Mana Potion"
+        "name": "Слабое зелье маны"
       },
       "healing_potion": {
-        "name": "Healing Potion"
+        "name": "Лечебное зелье"
       },
       "mana_potion": {
-        "name": "Mana Potion"
+        "name": "Зелье маны"
       },
       "tunnelkings_spade": {
-        "name": "Tunnelking's Spade"
+        "name": "Лопата Короля тоннелей"
       },
       "briny_idol": {
         "name": "Просоленный идол"
@@ -50526,12 +50526,6 @@ export const translations = {
 
 export const pending: Record<string, readonly string[]> = {
   "es": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50540,12 +50534,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "es_ES": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50554,12 +50542,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "fr_FR": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50568,12 +50550,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "fr_CA": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50583,12 +50559,6 @@ export const pending: Record<string, readonly string[]> = {
   ],
   "en_CA": [],
   "it_IT": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50597,12 +50567,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "de_DE": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50611,12 +50575,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "zh_CN": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50625,12 +50583,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "zh_TW": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50639,12 +50591,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "ko_KR": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50653,12 +50599,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "ja_JP": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50667,12 +50607,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "pt_BR": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",
@@ -50681,12 +50615,6 @@ export const pending: Record<string, readonly string[]> = {
     "itemUi.slots.waist"
   ],
   "ru_RU": [
-    "entities.items.elixir_of_the_bear.name",
-    "entities.items.healing_potion.name",
-    "entities.items.lesser_healing_potion.name",
-    "entities.items.lesser_mana_potion.name",
-    "entities.items.mana_potion.name",
-    "entities.items.tunnelkings_spade.name",
     "entities.mobs.grix_the_tunnelking.name",
     "itemUi.kind.elixir",
     "itemUi.slots.gloves",

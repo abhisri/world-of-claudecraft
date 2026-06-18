@@ -1992,4 +1992,10 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   "auth.noAccountPrompt": "처음이신가요?",
   "auth.haveAccountPrompt": "이미 계정이 있으신가요?",
 
+  "entities.items.elixir_of_the_bear.name": "곰의 비약",
+  "entities.items.healing_potion.name": "치유 물약",
+  "entities.items.lesser_healing_potion.name": "하급 치유 물약",
+  "entities.items.mana_potion.name": "마나 물약",
+  "entities.items.lesser_mana_potion.name": "하급 마나 물약",
+  "entities.items.tunnelkings_spade.name": "굴왕의 삽",
 };

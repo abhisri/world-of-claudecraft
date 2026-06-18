@@ -48,4 +48,10 @@ export const fr_CA: Partial<Record<TranslationKey, string>> = {
   "mobilePreflight.androidInstallStep": "Dans Chrome, touchez le menu, puis Installer l'application ou Ajouter à l'écran d'accueil.",
   "serverUnavailable.body": "Nous redémarrons le service de jeu et Claudemoon devrait revenir sous peu. Cette page continuera de vérifier automatiquement.",
   "serverUnavailable.status": "De retour bientôt",
+  "entities.items.elixir_of_the_bear.name": "Élixir de l'Ours",
+  "entities.items.healing_potion.name": "Potion de soins",
+  "entities.items.lesser_healing_potion.name": "Potion de soins inférieure",
+  "entities.items.mana_potion.name": "Potion de mana",
+  "entities.items.lesser_mana_potion.name": "Potion de mana inférieure",
+  "entities.items.tunnelkings_spade.name": "Bêche du Roi des Tunnels",
 };

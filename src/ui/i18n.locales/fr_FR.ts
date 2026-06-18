@@ -1992,4 +1992,10 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   "auth.noAccountPrompt": "Nouveau dans le royaume ?",
   "auth.haveAccountPrompt": "Vous avez déjà un compte ?",
 
+  "entities.items.elixir_of_the_bear.name": "Élixir de l'Ours",
+  "entities.items.healing_potion.name": "Potion de soins",
+  "entities.items.lesser_healing_potion.name": "Potion de soins inférieure",
+  "entities.items.mana_potion.name": "Potion de mana",
+  "entities.items.lesser_mana_potion.name": "Potion de mana inférieure",
+  "entities.items.tunnelkings_spade.name": "Bêche du Roi des Tunnels",
 };
