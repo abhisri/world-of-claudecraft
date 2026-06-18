@@ -46,7 +46,10 @@ export type PlayerEquipment = Partial<Record<EquipSlot, string>>;
 // Vanilla rules: first 20 stamina gives 1 hp each, the rest 10 hp each.
 // First 20 intellect gives 1 mana each, the rest 15 mana each.
 function hpFromStamina(sta: number): number {
-  return Math.min(sta, 20) + Math.max(0, sta - 20) * 10;
+  // Floor at 0 so a Stamina-draining debuff (negative buff_sta) can never push
+  // the HP pool below its level-based base into negative territory.
+  const s = Math.max(0, sta);
+  return Math.min(s, 20) + Math.max(0, s - 20) * 10;
 }
 function manaFromIntellect(int: number): number {
   // Floor at 0 so an Intellect-draining debuff (negative buff_int) can never push

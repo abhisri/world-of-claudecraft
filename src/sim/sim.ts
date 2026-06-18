@@ -4249,6 +4249,24 @@ export class Sim {
         school: enfeeble.school ?? 'shadow',
       });
     }
+    // Vitality drain: a landed hit can siphon the victim's Stamina, shrinking
+    // their maximum-HP pool. Hits every class (all players have Stamina), unlike
+    // the mana-only enfeeble. Hostile mobs only, so a friendly pet (mobSwing's
+    // other caller) never drains the party. Rides buff_sta with a negative value,
+    // so recalcPlayerStats folds it through to maxHp with no new HP math.
+    const enervate = MOBS[mob.templateId]?.enervate;
+    if (enervate && mob.hostile && target.kind === 'player' && !target.dead && this.rng.chance(enervate.chance)) {
+      this.applyAura(target, {
+        id: `enervate_${mob.templateId}`,
+        name: enervate.name,
+        kind: 'buff_sta',
+        remaining: enervate.duration,
+        duration: enervate.duration,
+        value: -Math.abs(enervate.sta),
+        sourceId: mob.id,
+        school: enervate.school ?? 'shadow',
+      });
+    }
     // On-hit chill: frost-touched mobs numb the victim, slowing their movement.
     const chill = MOBS[mob.templateId]?.chillOnHit;
     if (chill && !mob.dead && !target.dead && this.rng.chance(chill.chance)) {
