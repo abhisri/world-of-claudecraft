@@ -1258,6 +1258,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     perf.time('events', () => hud.handleEvents(net.drainEvents()));
     if (net.consumeProfanityChanged()) hud.setProfanityWords(net.profanityWords);
     if (net.consumeInventoryChanged()) hud.onInventoryChanged();
+    if (net.consumeCosmeticsChanged()) hud.onCosmeticsChanged();
     const alpha = net.lastSnapAt > 0
       ? Math.min(1.25, (performance.now() - net.lastSnapAt) / Math.max(20, net.snapInterval))
       : 1;

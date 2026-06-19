@@ -32,6 +32,33 @@ export const EVENT_SKIN_TIERS: readonly SkinTier[] = [
   { rank: 'epic', skin: 3 },
 ] as const;
 
+export interface MechChroma {
+  /** stable id, unique across all tiers; also the i18n name-key leaf */
+  id: string;
+  rank: SkinRank;
+}
+
+// Order defines the skin index into SKINS.player_mech / SKIN_EMISSIVE.player_mech
+// (0-based: the 8 uncommon, then 3 rare, then 4 epic). Keep in lockstep with
+// src/render/characters/manifest.ts.
+export const MECH_CHROMAS: readonly MechChroma[] = [
+  { id: 'amber_crimson', rank: 'uncommon' },
+  { id: 'crimson_amber', rank: 'uncommon' },
+  { id: 'cyan_magenta', rank: 'uncommon' },
+  { id: 'magenta_cyan', rank: 'uncommon' },
+  { id: 'orange_steel', rank: 'uncommon' },
+  { id: 'steel_orange', rank: 'uncommon' },
+  { id: 'forest_pink', rank: 'uncommon' },
+  { id: 'pink_forest', rank: 'uncommon' },
+  { id: 'amethyst_silver', rank: 'rare' },
+  { id: 'ivory_copper', rank: 'rare' },
+  { id: 'onyx_gold', rank: 'rare' },
+  { id: 'imperial_crimson', rank: 'epic' },
+  { id: 'imperial_gold', rank: 'epic' },
+  { id: 'vanguard_azure', rank: 'epic' },
+  { id: 'vanguard_chrome', rank: 'epic' },
+] as const;
+
 /** Ordinal of a rank (0 = lowest). Higher unlocks everything at or below it. */
 export function skinRankOrder(rank: SkinRank): number {
   return SKIN_RANKS.indexOf(rank);
@@ -49,6 +76,15 @@ export function rankAllowsSkin(granted: SkinRank, skin: number): boolean {
   const tier = skinTierFor(skin);
   if (!tier) return false;
   return skinRankOrder(tier.rank) <= skinRankOrder(granted);
+}
+
+export function mechChromaForSkin(skin: number): MechChroma | null {
+  return Number.isInteger(skin) ? MECH_CHROMAS[skin] ?? null : null;
+}
+
+export function rankAllowsMechChroma(granted: SkinRank, skin: number): boolean {
+  const chroma = mechChromaForSkin(skin);
+  return !!chroma && skinRankOrder(chroma.rank) <= skinRankOrder(granted);
 }
 
 // Per-class count of available skins INCLUDING the default (index 0), mirroring

@@ -1,8 +1,9 @@
 // Visual manifest: maps every sim identity (player class, mob template/family,
 // NPC id, druid/polymorph form) onto a rigged glTF asset + clip names + kit.
 // Pure data + dispatch — no three.js imports, no loading.
-import type { Entity, SkinRank } from '../../sim/types';
+import type { Entity } from '../../sim/types';
 import { MOBS } from '../../sim/data';
+import { MECH_CHROMAS, type MechChroma } from '../../sim/content/skins';
 import type { OverheadEmoteId } from '../../world_api';
 
 export interface EmoteClipSpec {
@@ -185,32 +186,6 @@ const SKINS_DIR = 'textures/skins';
 // preloadMechAssets() so it never bloats every client's boot.
 // ---------------------------------------------------------------------------
 const MECH_DIR = `${PLAYERS}/Mech/textures`;
-
-export interface MechChroma {
-  /** stable id, unique across all tiers; also the i18n name-key leaf */
-  id: string;
-  rank: SkinRank;
-}
-
-// Order defines the skin index into SKINS.player_mech / SKIN_EMISSIVE.player_mech
-// (0-based: the 8 uncommon, then 3 rare, then 4 epic). Keep them in lockstep.
-export const MECH_CHROMAS: readonly MechChroma[] = [
-  { id: 'amber_crimson', rank: 'uncommon' },
-  { id: 'crimson_amber', rank: 'uncommon' },
-  { id: 'cyan_magenta', rank: 'uncommon' },
-  { id: 'magenta_cyan', rank: 'uncommon' },
-  { id: 'orange_steel', rank: 'uncommon' },
-  { id: 'steel_orange', rank: 'uncommon' },
-  { id: 'forest_pink', rank: 'uncommon' },
-  { id: 'pink_forest', rank: 'uncommon' },
-  { id: 'amethyst_silver', rank: 'rare' },
-  { id: 'ivory_copper', rank: 'rare' },
-  { id: 'onyx_gold', rank: 'rare' },
-  { id: 'imperial_crimson', rank: 'epic' },
-  { id: 'imperial_gold', rank: 'epic' },
-  { id: 'vanguard_azure', rank: 'epic' },
-  { id: 'vanguard_chrome', rank: 'epic' },
-] as const;
 
 function mechChromaUrl(c: MechChroma): string {
   if (c.rank === 'uncommon') return `${MECH_DIR}/uncommon/combatmech_${c.id}.png`;
@@ -606,6 +581,7 @@ const NPC_KEYS: Record<string, string> = {
 
 export function visualKeyFor(e: Entity): string {
   if (e.kind === 'player') {
+    if (e.skinCatalog === 'mech') return 'player_mech';
     return VISUALS[`player_${e.templateId}`] ? `player_${e.templateId}` : 'player_warrior';
   }
   if (e.kind === 'mob') {

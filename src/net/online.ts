@@ -11,7 +11,12 @@ import {
   emptyMoveInput,
 } from '../sim/types';
 import { normalizeMoveFacing, sanitizeMoveInput } from '../sim/move_input';
-import { isOverheadEmoteId, type ArenaInfo, type CharacterSearchResult, type DuelInfo, type FriendInfo, type IWorld, type LeaderboardEntry, type MarketInfo, type OverheadEmoteId, type PartyInfo, type PresenceStatus, type SocialInfo, type TradeInfo } from '../world_api';
+import {
+  isOverheadEmoteId,
+  type AccountCosmetics, type ArenaInfo, type CharacterSearchResult, type DuelInfo, type FriendInfo,
+  type IWorld, type LeaderboardEntry, type MarketInfo, type OverheadEmoteId, type PartyInfo,
+  type PresenceStatus, type SocialInfo, type TradeInfo,
+} from '../world_api';
 
 // ---------------------------------------------------------------------------
 // REST
@@ -25,6 +30,18 @@ export interface CharacterSummary {
   skin: number;
   online: boolean;
   forceRename: boolean;
+}
+
+function stringList(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+}
+
+function normalizeAccountCosmetics(value: unknown): AccountCosmetics {
+  const src = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+  return {
+    completedQuestIds: stringList(src.completedQuestIds),
+    mechChromaIds: stringList(src.mechChromaIds),
+  };
 }
 
 export function buildWebSocketUrl(protocol: string, host: string): string {
@@ -246,7 +263,7 @@ function blankEntity(id: number): Entity {
     spawnPos: { x: 0, y: 0, z: 0 }, leashAnchor: null, evadeStall: 0, fleeTimer: 0, hasFled: false, wanderTarget: null, wanderTimer: 0,
     aggroTargetId: null, respawnTimer: 0, corpseTimer: 0, lootable: false, loot: null,
     xpValue: 0, questIds: [], vendorItems: [], objectItemId: null, dungeonId: null,
-    dead: false, scale: 1, color: 0xffffff, skin: 0,
+    dead: false, scale: 1, color: 0xffffff, skinCatalog: 'class', skin: 0,
   };
 }
 
@@ -258,6 +275,7 @@ export class ClientWorld implements IWorld {
   inventory: InvSlot[] = [];
   vendorBuyback: InvSlot[] = [];
   equipment: Partial<Record<EquipSlot, string>> = {};
+  accountCosmetics: AccountCosmetics = { completedQuestIds: [], mechChromaIds: [] };
   copper = 0;
   xp = 0;
   // Post-cap progression (Max-Level XP Overflow), mirrored from snapshot self.
@@ -301,6 +319,7 @@ export class ClientWorld implements IWorld {
   // inventory deltas arrive in snapshots, separate from the event frames the
   // HUD redraws on — the frame loop polls this so open panels re-render
   private invChanged = false;
+  private cosmeticsChanged = false;
   // Soft (cosmetic) profanity terms the server sends in `hello` and pushes via
   // `censor` frames when an admin edits the list. The HUD drains these to mask
   // chat locally when the player's filter is on. Hard words never arrive here.
@@ -549,6 +568,7 @@ export class ClientWorld implements IWorld {
         e.name = w.nm;
         e.level = w.lv;
         e.skin = w.sk ?? 0;
+        e.skinCatalog = w.cat === 'mech' ? 'mech' : 'class';
         e.scale = w.sc ?? 1;
         e.color = w.c ?? 0xffffff;
         e.dungeonId = w.dgn ?? null;
@@ -691,6 +711,10 @@ export class ClientWorld implements IWorld {
       if (s.inv !== undefined) { this.inventory = s.inv; this.invChanged = true; }
       if (s.buyback !== undefined) { this.vendorBuyback = s.buyback; this.invChanged = true; }
       if (s.equip !== undefined) this.equipment = s.equip;
+      if (s.cosmetics !== undefined) {
+        this.accountCosmetics = normalizeAccountCosmetics(s.cosmetics);
+        this.cosmeticsChanged = true;
+      }
       if (s.qlog !== undefined) this.questLog = new Map((s.qlog as QuestProgress[]).map((q) => [q.questId, q]));
       if (s.qdone !== undefined) this.questsDone = new Set(s.qdone);
       if (s.qlog !== undefined || s.qdone !== undefined) this.pendingQuestCommands?.clear();
@@ -742,6 +766,12 @@ export class ClientWorld implements IWorld {
   consumeInventoryChanged(): boolean {
     const v = this.invChanged;
     this.invChanged = false;
+    return v;
+  }
+
+  consumeCosmeticsChanged(): boolean {
+    const v = this.cosmeticsChanged;
+    this.cosmeticsChanged = false;
     return v;
   }
 
@@ -818,18 +848,19 @@ export class ClientWorld implements IWorld {
   buyBackItem(itemId: string): void {
     this.cmd({ cmd: 'buyback', item: itemId });
   }
-  changeSkin(skin: number): void {
-    const idx = Math.max(0, Math.min(7, Math.floor(skin)));
+  changeSkin(skin: number, catalog: 'class' | 'mech' = 'class'): void {
+    const idx = catalog === 'mech'
+      ? Math.max(0, Math.floor(skin))
+      : Math.max(0, Math.min(7, Math.floor(skin)));
     const p = this.entities.get(this.playerId);
-    if (p) p.skin = idx;
-    this.cmd({ cmd: 'change_skin', skin: idx });
+    if (p) {
+      p.skin = idx;
+      p.skinCatalog = catalog;
+    }
+    this.cmd({ cmd: 'change_skin', skin: idx, catalog });
   }
   claimEventSkin(skin: number): void {
-    const idx = Math.max(0, Math.min(7, Math.floor(skin)));
-    // Optimistic local nudge (mirrors changeSkin); the server re-validates the
-    // choice against the rolled rank and the snapshot confirms it.
-    const p = this.entities.get(this.playerId);
-    if (p) p.skin = idx;
+    const idx = Math.max(0, Math.floor(skin));
     this.cmd({ cmd: 'claim_event_skin', skin: idx });
   }
   releaseSpirit(): void {

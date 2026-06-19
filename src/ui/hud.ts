@@ -4,7 +4,7 @@ import { Renderer } from '../render/renderer';
 import { CharacterPreview } from '../render/characters';
 import { portraitChipHtml, hydratePortraits } from './portrait_chip';
 import { playerPortraitDataUrl, visualPortraitDataUrl, onPortraitsReady } from '../render/characters/portrait';
-import { skinCount, MECH_CHROMAS } from '../render/characters/manifest';
+import { skinCount } from '../render/characters/manifest';
 import { preloadMechAssets } from '../render/characters/assets';
 import { emoteIconUrl } from './emote_icons';
 import {
@@ -14,7 +14,7 @@ import {
 } from '../sim/data';
 import type { ZoneDef } from '../sim/data';
 import type { AbilityDef, EquipSlot, InvSlot, PetMode, PlayerClass, ResourceType, SkinRank, Stats } from '../sim/types';
-import { EVENT_SKIN_TIERS, SKIN_RANKS, skinRankOrder, type SkinTier } from '../sim/content/skins';
+import { EVENT_SKIN_TIERS, MECH_CHROMAS, SKIN_RANKS, skinRankOrder, type SkinTier } from '../sim/content/skins';
 import {
   AbilityEffect, CONSUME_DURATION, Entity, FISHING_CAST_ID, GCD, ItemDef, SimEvent,
   dist2d, xpForLevel, MAX_LEVEL, MELEE_RANGE, MILESTONES, virtualLevel, canPrestige, xpUntilNextPrestige,
@@ -30,6 +30,7 @@ import { clampMinimapZoom, nextMinimapZoom, isMinMinimapZoom, isMaxMinimapZoom, 
 import { restView } from './rest_indicator';
 import { nearestSubzone } from './subzone';
 import { lowResourceView } from './low_resource';
+import { characterAppearanceOptions } from './character_appearance';
 import { terrainHeight, WATER_LEVEL, roadDistance, generateDecorations } from '../sim/world';
 import type { Decoration } from '../sim/world';
 import { Meters } from './meters';
@@ -394,8 +395,7 @@ export class Hud {
   // was opened with mock data, so Lock In applies via the free changeSkin path
   // instead of claimEventSkin (which needs a server-rolled rank + token).
   private skinEventDev = false;
-  // 'class' = the per-class event skins (real claim flow); 'mech' = the Combat
-  // Mech cosmetic catalog previewed via the dev button (preview-only Lock In).
+  // 'class' = per-class event skins; 'mech' = the Combat Mech chroma catalog.
   private skinEventMode: 'class' | 'mech' = 'class';
   // Pending lazy-load of the mech GLB + chromas; the reveal waits on it.
   private mechAssetsPromise: Promise<void> | null = null;
@@ -3117,7 +3117,7 @@ export class Hud {
           if (this.openVendorNpcId !== null) this.renderVendor();
           break;
         }
-        case 'skinEvent': this.openSkinEvent(ev.rank); break;
+        case 'skinEvent': this.openSkinEvent(ev.rank, ev.catalog === 'mech' ? { mech: true } : undefined); break;
         case 'error': this.showError(this.localizeErrorText(ev.text)); break;
         case 'questAccepted':
           audio.questAccept();
@@ -4298,6 +4298,10 @@ export class Hud {
     this.renderCharIfOpen();
   }
 
+  onCosmeticsChanged(): void {
+    this.renderCharIfOpen();
+  }
+
   private renderCharIfOpen(): void {
     if ($('#char-window').style.display === 'block') this.renderChar();
   }
@@ -4515,7 +4519,7 @@ export class Hud {
       <div class="equip-col" id="equip-col-left"></div>
       <div class="char-model-panel">
         <div id="char-model-preview" class="char-model-preview"></div>
-        <div id="char-skin-row" class="skin-row char-skin-row" role="list" aria-label="Chroma"></div>
+        <div id="char-skin-row" class="skin-row char-skin-row" role="list" aria-label="${esc(t('auth.appearance'))}"></div>
       </div>
       <div class="equip-col equip-col-right" id="equip-col-right"></div>
     </div>`;
@@ -4595,24 +4599,45 @@ export class Hud {
     const row = $('#char-skin-row') as HTMLElement | null;
     if (!row) return;
     const cls = this.sim.cfg.playerClass;
-    const count = skinCount(`player_${cls}`);
+    const options = characterAppearanceOptions(cls, this.sim.accountCosmetics.mechChromaIds);
     row.innerHTML = '';
     row.style.setProperty('--class-color', classCss(cls));
-    if (count <= 1) return;
-    const current = Math.max(0, Math.min(count - 1, this.sim.player.skin ?? 0));
-    for (let i = 0; i < count; i++) {
+    if (options.length <= 1) return;
+    if (options.some((option) => option.kind === 'mech') && !this.mechAssetsPromise) {
+      this.mechAssetsPromise = preloadMechAssets();
+    }
+    const current = Math.max(0, this.sim.player.skin ?? 0);
+    const currentCatalog = this.sim.player.skinCatalog ?? 'class';
+    for (const option of options) {
+      const labelNumber = formatNumber(option.label, { maximumFractionDigits: 0 });
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'skin-swatch' + (i === current ? ' sel' : '');
-      b.textContent = String(i + 1);
+      b.className = 'skin-swatch' + (option.kind === currentCatalog && option.skin === current ? ' sel' : '');
+      b.textContent = labelNumber;
       b.setAttribute('role', 'listitem');
-      b.setAttribute('aria-label', `Chroma ${i + 1}`);
+      b.setAttribute('aria-label', option.kind === 'class'
+        ? t('auth.chromaOption', { n: labelNumber })
+        : this.mechChromaName(option.chromaId));
       b.addEventListener('click', () => {
         row.querySelectorAll('.skin-swatch').forEach((x) => x.classList.remove('sel'));
         b.classList.add('sel');
-        this.sim.changeSkin(i);
-        this.charPreview?.setSkin(i);
+        if (option.kind === 'class') {
+          this.sim.changeSkin(option.skin, 'class');
+          this.mountCharPreview($('#char-model-preview'), this.sim.cfg.playerClass, option.skin);
+          return;
+        }
+        this.sim.changeSkin(option.skin, 'mech');
+        const mechAssets = this.mechAssetsPromise ?? (this.mechAssetsPromise = preloadMechAssets());
+        void mechAssets.then(() => {
+          if (($('#char-window') as HTMLElement).style.display === 'block' && b.classList.contains('sel')) {
+            this.mountCharPreview($('#char-model-preview'), this.sim.cfg.playerClass, option.skin, 'player_mech');
+          }
+        }).catch((err) => console.error('failed to load mech cosmetic preview:', err));
+        audio.click();
       });
+      if (option.kind === 'mech') {
+        this.attachTooltip(b, () => `<div class="tt-name">${esc(this.mechChromaName(option.chromaId))}</div><div class="tt-sub">${esc(t('skinEvent.unlocked'))}</div>`);
+      }
       row.appendChild(b);
     }
   }
@@ -4701,7 +4726,7 @@ export class Hud {
   /** Open the skin-select overlay for a server-rolled rank, defaulting the
    *  selection to the best skin the rank unlocks.
    *  `opts.dev` opens it with mock data (no token/roll) for quick previewing.
-   *  `opts.mech` previews the real Combat Mech cosmetic catalog (preview-only). */
+   *  `opts.mech` opens the real Combat Mech cosmetic catalog. */
   openSkinEvent(rank: SkinRank, opts?: { dev?: boolean; mech?: boolean }): void {
     for (let i = 0; i < 20 && this.closeAll(); i++) { /* close stacked HUD overlays before the roll reveal */ }
     this.skinEventRank = rank;
@@ -4751,6 +4776,7 @@ export class Hud {
     this.skinEventRank = null;
     this.skinEventTiers = EVENT_SKIN_TIERS;
     this.skinEventMode = 'class';
+    this.skinEventDev = false;
     this.skinEventSelectedKey = '';
     this.skinEventWheelAngle = 0;
     audio.bagClose();
@@ -4950,12 +4976,14 @@ export class Hud {
     lockInBtn.addEventListener('click', () => {
       if (this.skinEventSelected < 0 || lockInBtn.disabled) return;
       if (mech) {
-        // The mech cosmetic isn't wired into the live world yet (applying it to
-        // your in-world character is the follow-up step) — Lock In just confirms
-        // the preview here.
-        this.showBanner(t('skinEvent.previewOnly'));
+        if (this.skinEventDev) this.showBanner(t('skinEvent.previewOnly'));
+        else {
+          this.sim.claimEventSkin(this.skinEventSelected);
+          this.showBanner(t('skinEvent.unlocked'));
+        }
         audio.levelUp();
         this.closeSkinEvent();
+        if ($('#bags').style.display !== 'none') this.renderBags();
         return;
       }
       // Dev preview has no server-rolled rank/token, so apply via the free skin

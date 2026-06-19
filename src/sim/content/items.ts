@@ -177,7 +177,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   // the skin-select overlay. See src/sim/content/skins.ts. Dev-grant for now.
   event_skin_token: {
     id: 'event_skin_token', name: 'Mysterious Cosmetic Cache', kind: 'tool', quality: 'epic',
-    use: { type: 'skinSelect' }, sellValue: 0,
+    use: { type: 'skinSelect', catalog: 'class' }, sellValue: 0,
   },
   raw_mirror_trout: {
     id: 'raw_mirror_trout', name: 'Raw Mirror Trout', kind: 'food', quality: 'common',

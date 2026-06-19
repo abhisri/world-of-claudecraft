@@ -230,6 +230,14 @@ export function preloadMechAssets(): Promise<void> {
   return mechAssetsPromise;
 }
 
+export function mechAssetsReady(): boolean {
+  const def = VISUALS.player_mech;
+  if (!def || !gltfByUrl.has(assetUrl(def.url))) return false;
+  if (!GFX.standardMaterials) return true;
+  return (SKINS.player_mech ?? []).every((url) => !url || skinTexByUrl.has(url))
+    && (SKIN_EMISSIVE.player_mech ?? []).every((url) => !url || skinEmisTexByUrl.has(url));
+}
+
 function resolvedGltf(url: string): GLTF {
   const resolvedUrl = assetUrl(url);
   const g = gltfByUrl.get(resolvedUrl);

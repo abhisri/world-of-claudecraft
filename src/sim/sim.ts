@@ -31,9 +31,11 @@ import {
   angleTo, armorReduction, dist2d, emptyMoveInput, isConsuming, meleeMissChance, mobXpValue, normAngle,
   rageFromDealing, rageFromTaking, spellHitChance, xpForLevel,
   MILESTONES, virtualLevel, xpToReachLevel, canPrestige,
-  ArenaFormat, ArenaStanding, ArenaCombatant, SkinRank,
+  ArenaFormat, ArenaStanding, ArenaCombatant, SkinCatalog, SkinRank,
 } from './types';
-import { EVENT_SKIN_TOKEN_ID, SKIN_RANKS, classHasSkin, rankAllowsSkin } from './content/skins';
+import {
+  EVENT_SKIN_TOKEN_ID, MECH_CHROMAS, SKIN_RANKS, classHasSkin, rankAllowsMechChroma, rankAllowsSkin,
+} from './content/skins';
 
 const LEASH_DISTANCE = 45;
 const DUNGEON_LEASH_DISTANCE = 70;
@@ -320,6 +322,12 @@ export interface SentChat {
   target?: string;
 }
 
+export interface SkinClaimResult {
+  catalog: SkinCatalog;
+  skin: number;
+  chromaId?: string;
+}
+
 // Opt-in global chat channels a player can /join and /leave. `general` is
 // always-on (everyone hears /general), so it is intentionally not joinable here.
 export const JOINABLE_CHANNELS = ['world', 'lfg'] as const;
@@ -332,10 +340,13 @@ export interface PlayerMeta {
   cls: PlayerClass;
   name: string;
   skin: number; // appearance index into the render SKINS[player_<cls>]; persisted, synced
+  skinCatalog: SkinCatalog;
   // Cosmetic skin-select event: the rank rolled when the event token was used,
   // pending a lock-in. Set on use, cleared on claim. Persisted so the reward
   // survives reconnect; re-using the token re-shows the same rank (no reroll).
   pendingSkinRank: SkinRank | null;
+  pendingSkinCatalog: SkinCatalog | null;
+  pendingSkinItemId: string | null;
   moveInput: MoveInput;
   inventory: InvSlot[];
   vendorBuyback: InvSlot[];
@@ -466,8 +477,11 @@ export interface CharacterState {
   activeLoadout?: number;
   pet?: PetState | null;
   skin?: number; // appearance index (JSONB; optional so pre-skin saves load as 0)
+  skinCatalog?: SkinCatalog;
   // Pending skin-select event rank (JSONB; optional so older saves load as null).
   pendingSkinRank?: SkinRank | null;
+  pendingSkinCatalog?: SkinCatalog | null;
+  pendingSkinItemId?: string | null;
 }
 
 export interface PetState {
@@ -571,6 +585,7 @@ export class Sim {
   private delayedEvents: { at: number; event: SimEvent }[] = [];
   // social systems
   parties = new Map<number, Party>();
+  accountCosmetics = { completedQuestIds: [], mechChromaIds: [] };
   partyByPid = new Map<number, number>(); // pid -> party id
   partyInvites = new Map<number, { fromPid: number; expires: number }>(); // invitee pid -> invite
   nextPartyId = 1;
@@ -748,7 +763,10 @@ export class Sim {
       cls,
       name,
       skin: opts?.state?.skin ?? 0,
+      skinCatalog: opts?.state?.skinCatalog === 'mech' ? 'mech' : 'class',
       pendingSkinRank: opts?.state?.pendingSkinRank ?? null,
+      pendingSkinCatalog: opts?.state?.pendingSkinCatalog ?? null,
+      pendingSkinItemId: opts?.state?.pendingSkinItemId ?? null,
       moveInput: emptyMoveInput(),
       inventory: [],
       vendorBuyback: [],
@@ -778,6 +796,7 @@ export class Sim {
       away: null,
     };
     this.players.set(player.id, meta);
+    player.skinCatalog = meta.skinCatalog;
     player.skin = meta.skin; // mirror onto the entity so the renderer + wire can read it
     if (this.primaryId === -1) this.primaryId = player.id;
 
@@ -909,56 +928,88 @@ export class Sim {
       activeLoadout: meta.activeLoadout,
       pet: this.serializePet(pid),
       skin: meta.skin,
+      skinCatalog: meta.skinCatalog,
       pendingSkinRank: meta.pendingSkinRank,
+      pendingSkinCatalog: meta.pendingSkinCatalog,
+      pendingSkinItemId: meta.pendingSkinItemId,
     };
   }
 
   /** Set a player's appearance skin (meta + entity). Bounded; the renderer
    *  falls back to the default for an unknown index. Used by creation, the
    *  in-game changer, and the server's changeSkin command. */
-  setPlayerSkin(pid: number, skin: number): boolean {
+  setPlayerSkin(pid: number, skin: number, catalog: SkinCatalog = 'class'): boolean {
     const meta = this.players.get(pid);
     const e = this.entities.get(pid);
     if (!meta || !e) return false;
-    const idx = Math.max(0, Math.min(7, Math.floor(skin)));
+    const maxSkin = catalog === 'mech' ? MECH_CHROMAS.length - 1 : 7;
+    const idx = Math.max(0, Math.min(maxSkin, Math.floor(skin)));
     meta.skin = idx;
+    meta.skinCatalog = catalog;
     e.skin = idx;
+    e.skinCatalog = catalog;
     return true;
   }
 
-  changeSkin(skin: number): void {
-    this.setPlayerSkin(this.primaryId, skin);
+  changeSkin(skin: number, catalog: SkinCatalog = 'class'): void {
+    this.setPlayerSkin(this.primaryId, skin, catalog);
   }
 
   /** Cosmetic skin-select event: rolls a rarity rank (once) and emits the
    *  personal `skinEvent` cue that opens the client overlay. Re-using the token
    *  re-shows the already-rolled rank — no reroll — so a player can't spam-roll.
    *  The token is consumed on claim (claimEventSkin), not here. */
-  private openSkinSelect(meta: PlayerMeta): void {
+  private openSkinSelect(meta: PlayerMeta, catalog: SkinCatalog, itemId: string): void {
     if (meta.pendingSkinRank === null) {
       // Equal-weight roll through the deterministic Rng (vanilla determinism:
       // never Math.random). int() is inclusive on both ends.
       meta.pendingSkinRank = SKIN_RANKS[this.rng.int(0, SKIN_RANKS.length - 1)];
+      meta.pendingSkinCatalog = catalog;
+      meta.pendingSkinItemId = itemId;
+    } else {
+      meta.pendingSkinCatalog = meta.pendingSkinCatalog ?? catalog;
+      meta.pendingSkinItemId = meta.pendingSkinItemId ?? itemId;
     }
-    this.emit({ type: 'skinEvent', rank: meta.pendingSkinRank, pid: meta.entityId });
+    const eventCatalog = meta.pendingSkinCatalog ?? 'class';
+    this.emit({
+      type: 'skinEvent',
+      rank: meta.pendingSkinRank,
+      catalog: eventCatalog === 'mech' ? 'mech' : undefined,
+      pid: meta.entityId,
+    });
   }
 
   /** Lock in a chosen skin from the skin-select event. Server-authoritative:
    *  rejects (no-op) unless there's a pending rank, the skin's tier is within
    *  that rank, and the player still holds the token. Consumes one token and
    *  clears the pending rank on success. Satisfies IWorld.claimEventSkin. */
-  claimEventSkin(skin: number, pid?: number): void {
+  claimEventSkin(skin: number, pid?: number): SkinClaimResult | null {
     const r = this.resolve(pid);
-    if (!r) return;
+    if (!r) return null;
     const { meta } = r;
     const granted = meta.pendingSkinRank;
-    if (granted === null) return; // no active event
-    if (!rankAllowsSkin(granted, skin)) return; // tier above the rolled rank
-    if (!classHasSkin(meta.cls, skin)) return; // skin doesn't exist for this class
-    if (this.countItem(EVENT_SKIN_TOKEN_ID, meta.entityId) <= 0) return; // token gone
-    this.removeItem(EVENT_SKIN_TOKEN_ID, 1, meta.entityId);
+    if (granted === null) return null; // no active event
+    const catalog = meta.pendingSkinCatalog ?? 'class';
+    const tokenItemId = meta.pendingSkinItemId ?? EVENT_SKIN_TOKEN_ID;
+    if (this.countItem(tokenItemId, meta.entityId) <= 0) return null; // token gone
+    if (catalog === 'mech') {
+      if (!rankAllowsMechChroma(granted, skin)) return null; // chroma tier above rolled rank
+      const chroma = MECH_CHROMAS[skin];
+      if (!chroma) return null;
+      this.removeItem(tokenItemId, 1, meta.entityId);
+      meta.pendingSkinRank = null;
+      meta.pendingSkinCatalog = null;
+      meta.pendingSkinItemId = null;
+      return { catalog: 'mech', skin, chromaId: chroma.id };
+    }
+    if (!rankAllowsSkin(granted, skin)) return null; // tier above the rolled rank
+    if (!classHasSkin(meta.cls, skin)) return null; // skin doesn't exist for this class
+    this.removeItem(tokenItemId, 1, meta.entityId);
     this.setPlayerSkin(meta.entityId, skin);
     meta.pendingSkinRank = null;
+    meta.pendingSkinCatalog = null;
+    meta.pendingSkinItemId = null;
+    return { catalog: 'class', skin };
   }
 
   // -------------------------------------------------------------------------
@@ -6006,6 +6057,7 @@ export class Sim {
     const def = ITEMS[itemId];
     const available = this.countItem(itemId, meta.entityId);
     if (!def || available <= 0) { this.error(meta.entityId, "You don't have that item."); return; }
+    if (def.noDiscard) return;
     const discardCount = Number.isFinite(count) ? Math.min(Math.floor(count), available) : 0;
     if (discardCount <= 0) return;
     this.removeItem(itemId, discardCount, meta.entityId);
@@ -6108,7 +6160,7 @@ export class Sim {
       return;
     }
     if (def.use?.type === 'skinSelect') {
-      this.openSkinSelect(meta);
+      this.openSkinSelect(meta, def.use.catalog ?? 'class', itemId);
       return;
     }
     if (p.castingAbility === FISHING_CAST_ID) { this.error(meta.entityId, 'You are busy.'); return; }
@@ -6215,6 +6267,7 @@ export class Sim {
     const sellCount = Number.isFinite(count) ? Math.min(Math.floor(count), available) : 0;
     if (sellCount <= 0) return;
     if (!this.vendorInRange(p)) { this.error(meta.entityId, 'There is no merchant nearby.'); return; }
+    if (def.noVendorSell) { this.error(meta.entityId, 'That item is not for sale.'); return; }
     if (def.kind === 'quest') { this.error(meta.entityId, 'You cannot sell quest items.'); return; }
     this.removeItem(itemId, sellCount, meta.entityId);
     this.recordVendorBuyback(meta, itemId, sellCount);

@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { GROUND_OBJECTS, ITEMS, NPCS, QUESTS, questRewardItemId } from '../src/sim/data';
 import { Sim } from '../src/sim/sim';
+import type { Entity, SimEvent } from '../src/sim/types';
 
 const QUEST_ID = 'q_aldrics_fallen_star';
 const METEOR_ITEM_ID = 'unknown_alien_weaponry';
 const REWARD_ITEM_ID = 'alien_armor_plate';
+
+type SkinEvent = Extract<SimEvent, { type: 'skinEvent' }>;
+
+function drainSkinEvent(sim: Sim): SkinEvent | undefined {
+  return sim.tick().find((e): e is SkinEvent => e.type === 'skinEvent');
+}
 
 function teleportTo(sim: Sim, x: number, z: number): void {
   const pos = sim.groundPos(x, z);
@@ -12,8 +19,14 @@ function teleportTo(sim: Sim, x: number, z: number): void {
   sim.player.prevPos = { ...pos };
 }
 
+function standAtMerchant(sim: Sim): void {
+  const merchant = [...sim.entities.values()].find((e): e is Entity => e.kind === 'npc' && e.templateId === 'the_merchant');
+  if (!merchant) throw new Error('merchant not found');
+  teleportTo(sim, merchant.pos.x, merchant.pos.z);
+}
+
 describe('Brother Aldric fallen star quest', () => {
-  it('is offered by Mirefen Aldric and resolves through the meteor pickup', () => {
+  it('is offered by Mirefen Aldric and rewards the account cosmetic cache through the meteor pickup', () => {
     const quest = QUESTS[QUEST_ID];
     expect(quest).toBeTruthy();
     expect(quest.giverNpcId).toBe('brother_aldric_fen');
@@ -23,9 +36,11 @@ describe('Brother Aldric fallen star quest', () => {
     ]);
     expect(NPCS.brother_aldric_fen.questIds).toContain(QUEST_ID);
     expect(ITEMS[METEOR_ITEM_ID]?.questId).toBe(QUEST_ID);
-    expect(ITEMS[REWARD_ITEM_ID]?.kind).toBe('armor');
-    expect(ITEMS[REWARD_ITEM_ID]?.slot).toBe('chest');
-    expect(ITEMS[REWARD_ITEM_ID]?.quality).toBe('rare');
+    expect(ITEMS[REWARD_ITEM_ID]?.kind).toBe('tool');
+    expect(ITEMS[REWARD_ITEM_ID]?.quality).toBe('epic');
+    expect(ITEMS[REWARD_ITEM_ID]?.use).toEqual({ type: 'skinSelect', catalog: 'mech' });
+    expect(ITEMS[REWARD_ITEM_ID]?.noVendorSell).toBe(true);
+    expect(ITEMS[REWARD_ITEM_ID]?.noDiscard).toBe(true);
     expect(questRewardItemId(quest, 'warrior')).toBe(REWARD_ITEM_ID);
 
     const meteorObjectDef = GROUND_OBJECTS.find((obj) => obj.itemId === METEOR_ITEM_ID);
@@ -59,6 +74,37 @@ describe('Brother Aldric fallen star quest', () => {
     expect(sim.countItem(REWARD_ITEM_ID)).toBe(1);
 
     sim.useItem(REWARD_ITEM_ID);
-    expect(sim.equipment.chest).toBe(REWARD_ITEM_ID);
+    expect(drainSkinEvent(sim)?.catalog).toBe('mech');
+    expect(sim.equipment.chest).not.toBe(REWARD_ITEM_ID);
+  });
+
+  it('keeps the cosmetic cache out of vendor sell and destroy flows while allowing market and trade', () => {
+    const sim = new Sim({ seed: 20061, playerClass: 'warrior', playerName: 'Seller' });
+    sim.addItem(REWARD_ITEM_ID, 1);
+
+    standAtMerchant(sim);
+    sim.sellItem(REWARD_ITEM_ID);
+    expect(sim.countItem(REWARD_ITEM_ID)).toBe(1);
+    expect(sim.vendorBuyback.some((s) => s.itemId === REWARD_ITEM_ID)).toBe(false);
+
+    sim.discardItem(REWARD_ITEM_ID);
+    expect(sim.countItem(REWARD_ITEM_ID)).toBe(1);
+
+    sim.marketList(REWARD_ITEM_ID, 1, 100);
+    expect(sim.countItem(REWARD_ITEM_ID)).toBe(0);
+    const listing = sim.marketListings.find((l) => l.itemId === REWARD_ITEM_ID && l.sellerKey === 'Seller');
+    expect(listing).toBeTruthy();
+    sim.marketCancel(listing!.id);
+    expect(sim.countItem(REWARD_ITEM_ID)).toBe(1);
+
+    const buyer = sim.addPlayer('mage', 'Buyer');
+    teleportTo(sim, sim.player.pos.x + 1, sim.player.pos.z);
+    const buyerPos = sim.groundPos(sim.player.pos.x + 2, sim.player.pos.z);
+    sim.entities.get(buyer)!.pos = { ...buyerPos };
+    sim.entities.get(buyer)!.prevPos = { ...buyerPos };
+    sim.tradeRequest(buyer);
+    sim.tradeAccept(buyer);
+    sim.tradeSetOffer([{ itemId: REWARD_ITEM_ID, count: 1 }], 0);
+    expect(sim.tradeFor(sim.playerId)?.offerA.items).toEqual([{ itemId: REWARD_ITEM_ID, count: 1 }]);
   });
 });

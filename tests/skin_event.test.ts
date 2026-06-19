@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Sim } from '../src/sim/sim';
 import {
-  EVENT_SKIN_TIERS, EVENT_SKIN_TOKEN_ID, SKIN_COUNTS, SKIN_RANKS, rankAllowsSkin,
+  EVENT_SKIN_TIERS, EVENT_SKIN_TOKEN_ID, MECH_CHROMAS, SKIN_COUNTS, SKIN_RANKS, rankAllowsSkin,
 } from '../src/sim/content/skins';
 import { SKINS } from '../src/render/characters/manifest';
 import type { PlayerClass, SimEvent, SkinRank } from '../src/sim/types';
@@ -62,6 +62,33 @@ describe('cosmetic skin-select event', () => {
     expect(sim.player.skin).toBe(skin);
     expect(sim.inventory.find((s) => s.itemId === EVENT_SKIN_TOKEN_ID)).toBeUndefined();
     expect(sim.serializeCharacter(sim.playerId)?.pendingSkinRank ?? null).toBeNull();
+  });
+
+  it('locks in a mech chroma from a mech token without equipping it as class armor', () => {
+    const sim = new Sim({ seed: 1, playerClass: 'mage', playerName: 'Mech' });
+    sim.addItem('alien_armor_plate', 1);
+    sim.useItem('alien_armor_plate');
+    const ev = drainSkinEvent(sim);
+    expect(ev?.catalog).toBe('mech');
+    const choice = MECH_CHROMAS.findIndex((chroma) => chroma.rank === 'uncommon');
+    expect(choice).toBeGreaterThanOrEqual(0);
+
+    const claim = sim.claimEventSkin(choice);
+
+    expect(claim).toEqual({ catalog: 'mech', skin: choice, chromaId: MECH_CHROMAS[choice].id });
+    expect(sim.player.skin).toBe(0);
+    expect(sim.countItem('alien_armor_plate')).toBe(0);
+    expect(sim.serializeCharacter(sim.playerId)?.pendingSkinRank ?? null).toBeNull();
+  });
+
+  it('can equip a mech cosmetic as the active live appearance catalog', () => {
+    const sim = new Sim({ seed: 1, playerClass: 'shaman', playerName: 'Mechwearer' });
+
+    expect(sim.setPlayerSkin(sim.playerId, 0, 'mech')).toBe(true);
+
+    expect(sim.player.skin).toBe(0);
+    expect(sim.player.skinCatalog).toBe('mech');
+    expect(sim.serializeCharacter(sim.playerId)?.skinCatalog).toBe('mech');
   });
 
   it('rejects a skin above the rolled rank (server authority): no change, token kept', () => {
