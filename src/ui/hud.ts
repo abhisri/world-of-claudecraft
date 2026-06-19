@@ -3936,6 +3936,8 @@ export class Hud {
 
     let match = /^You must be in (Bear|Wolf) Form\.$/.exec(text);
     if (match) return t('hud.errors.requiresForm', { form: t(match[1] === 'Bear' ? 'hud.errors.bear' : 'hud.errors.cat') });
+    match = /^You can't do that in (Bear|Wolf|Travel) Form\.$/.exec(text);
+    if (match) return t('hud.errors.cantInForm', { form: t(match[1] === 'Bear' ? 'hud.errors.bear' : match[1] === 'Travel' ? 'hud.errors.travel' : 'hud.errors.cat') });
     match = /^That ability requires the target below (\d+)% health\.$/.exec(text);
     if (match) return t('hud.errors.targetHealthBelow', { percent: match[1] });
     match = /^Not enough (.+)!$/.exec(text);

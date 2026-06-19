@@ -1255,8 +1255,10 @@ export const en_CA: EnTranslations = {
       "targetMustDodge": "Your target must dodge first.",
       "requiresCombo": "That ability requires combo points.",
       "requiresForm": "You must be in {form} Form.",
+      "cantInForm": "You can't do that in {form} Form.",
       "bear": "Bear",
       "cat": "Wolf",
+      "travel": "Travel",
       "shapeshifted": "You cannot do that while shapeshifted.",
       "stealthed": "You must be stealthed.",
       "inCombat": "You cannot do that while in combat.",
@@ -2296,7 +2298,7 @@ export const en_CA: EnTranslations = {
       },
       "travel_form": {
         "name": "Travel Form",
-        "description": "Take on a swift travel form, increasing movement speed by 40%. Cannot be used in combat."
+        "description": "Instantly shift into a swift travel form, increasing movement speed by 40%. You cannot use other abilities while shifted, but can shift in or out of combat — ideal for escaping."
       },
       "enrage": {
         "name": "Enrage",

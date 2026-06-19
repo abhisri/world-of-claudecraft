@@ -693,7 +693,7 @@ const classAbilityNamesEn = {
       ["regrowth", "Regrowth", "Heals a friendly target for {damage} and an additional amount over 21 sec."],
       ["barkskin", "Barkskin", "Your skin hardens like bark, increasing armor by 150 for 15 sec."],
       ["starfire", "Starfire", "Calls down a bolt of stellar fire, causing {damage} Arcane damage."],
-      ["travel_form", "Travel Form", "Take on a swift travel form, increasing movement speed by 40%. Cannot be used in combat."],
+      ["travel_form", "Travel Form", "Instantly shift into a swift travel form, increasing movement speed by 40%. You cannot use other abilities while shifted, but can shift in or out of combat — ideal for escaping."],
       ["enrage", "Enrage", "Generates 20 rage instantly. Bear Form only."],
       ["bash", "Bash", "Stuns the target for 2 sec. Bear Form only."],
       ["faerie_fire", "Faerie Fire", "Decreases the target's armor by 35 for 40 sec."],

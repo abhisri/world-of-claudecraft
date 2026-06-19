@@ -764,6 +764,8 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   "hud.errors.requiresForm": "你必须处于{form}形态。",
   "hud.errors.bear": "熊",
   "hud.errors.cat": "狼",
+  "hud.errors.travel": "旅行",
+  "hud.errors.cantInForm": "{form}形态下无法这样做。",
   "hud.errors.shapeshifted": "变形状态下不能这样做。",
   "hud.errors.stealthed": "你必须处于潜行状态。",
   "hud.errors.inCombat": "战斗中不能这样做。",

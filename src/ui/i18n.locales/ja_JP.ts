@@ -764,6 +764,8 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   "hud.errors.requiresForm": "{form}フォームである必要があります。",
   "hud.errors.bear": "熊",
   "hud.errors.cat": "狼",
+  "hud.errors.travel": "トラベル",
+  "hud.errors.cantInForm": "{form}フォーム中は実行できません。",
   "hud.errors.shapeshifted": "変身中は実行できません。",
   "hud.errors.stealthed": "ステルス状態である必要があります。",
   "hud.errors.inCombat": "戦闘中は実行できません。",

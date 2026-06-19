@@ -1877,8 +1877,11 @@ export const mergeStrings = {
   },
 };
 
-mergeStrings.es_ES = mergeStrings.es;
-mergeStrings.fr_CA = mergeStrings.fr_FR;
+// Legacy inline dialect copies — cast so new English keys (e.g. hud.errors
+// cantInForm/travel) don't make these one key short of typeof mergeStringsEn.
+// Real es_ES/fr_CA come from i18n.locales overlays at runtime; see i18n CLAUDE.md.
+mergeStrings.es_ES = mergeStrings.es as typeof mergeStringsEn;
+mergeStrings.fr_CA = mergeStrings.fr_FR as typeof mergeStringsEn;
 
 
 const mergeEntitiesEn = {

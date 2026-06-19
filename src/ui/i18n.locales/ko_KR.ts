@@ -764,6 +764,8 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   "hud.errors.requiresForm": "{form} 변신 상태여야 합니다.",
   "hud.errors.bear": "곰",
   "hud.errors.cat": "늑대",
+  "hud.errors.travel": "여행",
+  "hud.errors.cantInForm": "{form} 변신 상태에서는 할 수 없습니다.",
   "hud.errors.shapeshifted": "변신 중에는 할 수 없습니다.",
   "hud.errors.stealthed": "은신 상태여야 합니다.",
   "hud.errors.inCombat": "전투 중에는 할 수 없습니다.",

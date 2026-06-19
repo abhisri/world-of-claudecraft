@@ -764,6 +764,8 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   "hud.errors.requiresForm": "Vous devez être en forme de {form}.",
   "hud.errors.bear": "ours",
   "hud.errors.cat": "loup",
+  "hud.errors.travel": "voyage",
+  "hud.errors.cantInForm": "Vous ne pouvez pas faire cela en forme de {form}.",
   "hud.errors.shapeshifted": "Vous ne pouvez pas faire cela en forme changeante.",
   "hud.errors.stealthed": "Vous devez être camouflé.",
   "hud.errors.inCombat": "Vous ne pouvez pas faire cela en combat.",

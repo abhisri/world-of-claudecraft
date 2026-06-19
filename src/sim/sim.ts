@@ -633,7 +633,8 @@ function freshCounters(): RewardCounters {
 
 // Shapeshifts stay castable while shapeshifted (that's how you shift out).
 function isFormToggle(ability: AbilityDef): boolean {
-  return ability.effects.some((e) => e.type === 'selfBuff' && (e.kind === 'form_bear' || e.kind === 'form_cat'));
+  return ability.effects.some((e) => e.type === 'selfBuff'
+    && (e.kind === 'form_bear' || e.kind === 'form_cat' || e.kind === 'form_travel'));
 }
 
 // Forms, stances and stealth are toggles: re-casting cancels the aura, and
@@ -641,7 +642,7 @@ function isFormToggle(ability: AbilityDef): boolean {
 function isToggleBuff(ability: AbilityDef): boolean {
   if (ability.id === 'ghost_wolf') return true;
   return ability.effects.some((e) => e.type === 'selfBuff'
-    && (e.kind === 'form_bear' || e.kind === 'form_cat' || e.kind === 'defensive_stance' || e.kind === 'stealth'));
+    && (e.kind === 'form_bear' || e.kind === 'form_cat' || e.kind === 'form_travel' || e.kind === 'defensive_stance' || e.kind === 'stealth'));
 }
 
 function isStealthToggle(ability: AbilityDef): boolean {
@@ -1746,7 +1747,8 @@ export class Sim {
     let slow = 1, speed = 1;
     for (const a of e.auras) {
       if (a.kind === 'slow' || a.kind === 'stealth') slow = Math.min(slow, a.value);
-      if (a.kind === 'buff_speed') speed = Math.max(speed, a.value);
+      // buff_speed and form_travel both carry a 1+fraction multiplier (1.4 = +40%).
+      if (a.kind === 'buff_speed' || a.kind === 'form_travel') speed = Math.max(speed, a.value);
     }
     // Fiesta move-speed augments (only ever non-zero inside a Fiesta bout).
     if (e.kind === 'player') {
@@ -2342,7 +2344,7 @@ export class Sim {
     }
     // druid forms gate their kit both ways: form abilities need the form, and
     // everything else (the caster kit) is locked while shapeshifted
-    const form = p.auras.find((a) => a.kind === 'form_bear' || a.kind === 'form_cat');
+    const form = p.auras.find((a) => a.kind === 'form_bear' || a.kind === 'form_cat' || a.kind === 'form_travel');
     if (ability.requiresForm) {
       const need = ability.requiresForm === 'bear' ? 'form_bear' : 'form_cat';
       if (!form || form.kind !== need) {
@@ -2468,7 +2470,7 @@ export class Sim {
   private formShiftKind(p: Entity, ability: AbilityDef): 'off' | 'cross' | null {
     if (!isFormToggle(ability)) return null;
     if (p.auras.some((a) => a.id === ability.id)) return 'off';
-    if (p.auras.some((a) => a.kind === 'form_bear' || a.kind === 'form_cat')) return 'cross';
+    if (p.auras.some((a) => a.kind === 'form_bear' || a.kind === 'form_cat' || a.kind === 'form_travel')) return 'cross';
     return null;
   }
 
@@ -2948,7 +2950,8 @@ export class Sim {
         }
         case 'selfBuff': {
           // forms, stances and stealth are toggles: casting again cancels
-          const isToggle = eff.kind === 'form_bear' || eff.kind === 'form_cat'
+          const isFormKind = eff.kind === 'form_bear' || eff.kind === 'form_cat' || eff.kind === 'form_travel';
+          const isToggle = isFormKind
             || eff.kind === 'defensive_stance' || eff.kind === 'stealth'
             || ability.id === 'ghost_wolf';
           if (isToggle) {
@@ -2960,11 +2963,11 @@ export class Sim {
               break;
             }
           }
-          // shapeshifting out of one form into the other
-          if (eff.kind === 'form_bear' || eff.kind === 'form_cat') {
+          // shapeshifting out of one form into another (bear/cat/travel are exclusive)
+          if (isFormKind) {
             for (let i = p.auras.length - 1; i >= 0; i--) {
               const a = p.auras[i];
-              if ((a.kind === 'form_bear' || a.kind === 'form_cat') && a.kind !== eff.kind) {
+              if ((a.kind === 'form_bear' || a.kind === 'form_cat' || a.kind === 'form_travel') && a.kind !== eff.kind) {
                 p.auras.splice(i, 1);
                 this.emit({ type: 'aura', targetId: p.id, name: a.name, gained: false });
               }
@@ -10055,7 +10058,7 @@ export class Sim {
   // only one is ever active, so the first match is the answer.
   private formReadout(e: Entity): string {
     const form = e.auras.find((a) =>
-      a.kind === 'form_bear' || a.kind === 'form_cat'
+      a.kind === 'form_bear' || a.kind === 'form_cat' || a.kind === 'form_travel'
       || a.kind === 'defensive_stance' || a.kind === 'stealth');
     if (!form) return 'You are not in any form or stance.';
     if (form.kind === 'stealth') return 'You are stealthed.';

@@ -764,6 +764,8 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   "hud.errors.requiresForm": "Вы должны быть в облике {form}.",
   "hud.errors.bear": "медведя",
   "hud.errors.cat": "волка",
+  "hud.errors.travel": "путешествия",
+  "hud.errors.cantInForm": "В облике {form} это невозможно.",
   "hud.errors.shapeshifted": "В измененном облике это невозможно.",
   "hud.errors.stealthed": "Вы должны быть в незаметности.",
   "hud.errors.inCombat": "В бою это невозможно.",
