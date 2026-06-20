@@ -15,6 +15,7 @@ import {
   listFilterWords, removeFilterWord, resetChatStrikes, updateFilterConfig, type WordTier,
 } from './chat_filter_db';
 import type { GameServer } from './game';
+import { providerUsageSnapshot } from './provider_usage';
 
 // Admin API: everything under /admin/api/*. Auth is a bearer token whose
 // account has is_admin = TRUE — the admin.* hostname is routing, not security.
@@ -216,7 +217,7 @@ export async function handleAdminApi(
 
     if (path === '/admin/api/overview') {
       const counts = await overviewCounts();
-      return ok(res, { ...counts, server: game.adminStats() });
+      return ok(res, { ...counts, server: game.adminStats(), usage: providerUsageSnapshot() });
     }
     if (path === '/admin/api/online') {
       return ok(res, { players: game.liveSessions() });

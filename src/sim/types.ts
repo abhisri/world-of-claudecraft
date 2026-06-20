@@ -56,7 +56,7 @@ export type AuraKind =
   | 'dot' | 'slow' | 'stun' | 'root' | 'incapacitate' | 'polymorph'
   | 'attackspeed' | 'debuff_ap' | 'buff_ap' | 'buff_armor' | 'buff_int' | 'buff_agi' | 'buff_dodge' | 'buff_speed' | 'buff_haste'
   | 'hot' | 'absorb' | 'imbue' | 'buff_sta' | 'buff_allstats' | 'thorns' | 'form_bear'
-  | 'form_cat' | 'stealth' | 'defensive_stance' | 'righteous_fury' | 'sunder' | 'mortal_wound' | 'silence' | 'blind' | 'disarm' | 'expose' | 'spellvuln' | 'lockout'
+  | 'form_cat' | 'form_travel' | 'stealth' | 'defensive_stance' | 'righteous_fury' | 'sunder' | 'mortal_wound' | 'silence' | 'blind' | 'disarm' | 'expose' | 'spellvuln' | 'lockout'
   | 'vulnerability' | 'hex' | 'tongues' | 'cost_tax' | 'heal_absorb' | 'critvuln' | 'buff_spi'
   // 2v2 Fiesta power-up buffs: `buff_scale` value = body-size multiplier (also
   // boosts max-hp when >1); `buff_jump` value = jump-height multiplier.
@@ -908,6 +908,13 @@ export interface Entity {
   color: number;
   skinCatalog: SkinCatalog; // player appearance catalog: class texture set or cosmetic body.
   skin: number; // player appearance: index into SKINS[visualKey]; 0 = default. synced in identity fields.
+  // $WOC holder-tier flair (cosmetic): 0/undefined = none, 1-10 = Ember…Sovereign.
+  // Set server-side from the player's connected-wallet balance and synced in
+  // identity fields like skin. The sim never reads it (no gameplay effect).
+  holderTier?: number;
+  // Exact $WOC balance backing the tier, for the inspect-profile readout. Rides
+  // alongside holderTier in identity fields; like it, the sim never reads it.
+  holderBalance?: number;
 }
 
 // `pid` (when present) marks a personal event that should only be delivered to

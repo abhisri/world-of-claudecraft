@@ -534,6 +534,25 @@ export function prepareVisual(key: string): PreparedVisual {
       bounds.expandByPoint(v);
     }
   });
+  // Non-skinned models (procedural form GLBs animated by node transforms, with no
+  // skeleton — e.g. the chicken-cow Travel Form) contribute no skinned meshes, so
+  // the pass above leaves bounds empty; rawHeight then collapses to 1e-3 and
+  // normScale explodes (~1500x), rendering the form off-screen/invisible. Fall back
+  // to the plain posed mesh geometry. Only triggers when there are zero skinned
+  // meshes, so skinned creatures/players are unaffected.
+  if (bounds.isEmpty()) {
+    temp.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh || (mesh as unknown as THREE.SkinnedMesh).isSkinnedMesh || !meshChainVisible(mesh, temp)) return;
+      const pos = mesh.geometry.getAttribute('position') as THREE.BufferAttribute | undefined;
+      if (!pos) return;
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i);
+        v.applyMatrix4(mesh.matrixWorld);
+        bounds.expandByPoint(v);
+      }
+    });
+  }
   const rawHeight = Math.max(1e-3, bounds.max.y - bounds.min.y);
   const normScale = def.height / rawHeight;
   const yOffset = (def.hover ?? 0) - bounds.min.y * normScale;

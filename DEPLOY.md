@@ -124,16 +124,26 @@ For off-box safety, sync the directory to S3 occasionally:
   guild names remain globally unique across realms.
 - **Bot gate (Cloudflare Turnstile)**: login and registration can be gated by
   Turnstile so headless clients (the aiohttp/websockets bot wave) can't create or
-  sign into accounts. It is **off until configured** — both halves must be set or
+  sign into accounts. It is **off until configured**: both halves must be set or
   the gate silently does nothing:
-  - `TURNSTILE_SECRET` (server runtime, secret) — enables server-side verification.
-  - `VITE_TURNSTILE_SITEKEY` (public) — renders the widget. This is read by the
+  - `TURNSTILE_SECRET` (server runtime, secret): enables server-side verification.
+  - `VITE_TURNSTILE_SITEKEY` (public): renders the widget. This is read by the
     **client and inlined at `npm run build` time**, so it must be present when the
     image/bundle is built, not just at runtime. Use a separate Turnstile widget per
     environment (dev vs prod). If the origin's nginx (in the `ansible-scripts` repo)
     sets a Content-Security-Policy, it must allow `script-src`/`frame-src
     https://challenges.cloudflare.com` or the widget won't load.
-- **Never** set `ALLOW_DEV_COMMANDS=1` in production — it enables the
+- **Wallet linking (Reown/AppKit)**: the wallet UI is gated by the public
+  `VITE_REOWN_PROJECT_ID` at client build time. Set it in `.env` before
+  `docker compose up -d --build`; compose passes it to Docker as a build arg.
+  If omitted, the wallet UI is hidden/disabled instead of showing a dead connect
+  button. $WOC balance reads are server-side only: set `SOLANA_RPC_URL` to a
+  production Solana RPC endpoint and leave it unprefixed so API keys are not
+  bundled into the client. `WOC_MINT` defaults to the canonical token mint and
+  should only be overridden if that mint changes. Set `PUBLIC_ORIGIN` in
+  single-realm production so shared player-card pages emit stable absolute
+  Open Graph URLs.
+- **Never** set `ALLOW_DEV_COMMANDS=1` in production: it enables the
   level/teleport cheats used by the test bots.
 - Health check: `curl -s localhost:8787/api/status` on the box returns
   `{"ok":true,"players_online":N,...}`.

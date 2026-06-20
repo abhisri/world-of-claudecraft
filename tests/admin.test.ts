@@ -138,7 +138,14 @@ describe('admin api auth', () => {
     expect(res.body).toEqual({
       success: true,
       error: null,
-      data: expect.objectContaining({ accounts: 10, server: expect.objectContaining({ online: 2 }) }),
+      data: expect.objectContaining({
+        accounts: 10,
+        server: expect.objectContaining({ online: 2 }),
+        usage: expect.objectContaining({
+          metrics: expect.arrayContaining([expect.objectContaining({ key: 'woc.balance.rpc' })]),
+          caches: expect.arrayContaining([expect.objectContaining({ key: 'woc.balance' })]),
+        }),
+      }),
     });
   });
 

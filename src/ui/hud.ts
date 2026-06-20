@@ -42,6 +42,13 @@ import { iconDataUrl, QUALITY_COLOR, raidMarkerDataUrl, RAID_MARKER_NAMES } from
 import { UnitPortraitPainter } from './unit_portrait_painter';
 import { crestIdForEntity } from './unit_portrait';
 import { svgIcon } from './ui_icons';
+import { walletUiEnabled, wocBalance, wocBalanceVerified, verifiedWocBalance, onWalletUiChange } from './wallet_balance';
+import {
+  renderPlayerCardCanvas, cardCanvasToBlob, CARD_POSES,
+  type PlayerCardData, type PlayerCardStat,
+} from './player_card';
+import { cardHostingAvailable, publishCard, fetchReferralInfo, fetchStanding, type PublishedCard, type CharacterStanding } from './player_card_share';
+import { holderTierForBalance, holderTierByIndex, holderTierBadgeDataUrl, holderTierDisplayName } from './holder_tier';
 import { Keybinds, BIND_ACTIONS, BIND_CATEGORIES, isReservedCode, keyLabel } from '../game/keybinds';
 import { Settings, GameSettings, BoolSettingKey, NumericSettingKey, SETTING_RANGES, normalizeClickMoveButton } from '../game/settings';
 import { isPhoneTouchDevice } from '../game/mobile_controls';
@@ -516,6 +523,8 @@ export class Hud {
   private skinEventMode: 'class' | 'mech' = 'class';
   // Pending lazy-load of the mech GLB + chromas; the reveal waits on it.
   private mechAssetsPromise: Promise<void> | null = null;
+  private cardModalEl: HTMLElement | null = null;
+  private cardModalReturnFocus: HTMLElement | null = null;
   // current typeahead state: which input, its results, and the keyboard-
   // highlighted row (-1 = none), so Enter/Arrow keys can pick a suggestion
   private socialSuggest: { field: string; items: { name: string; cls: string; level: number }[]; index: number } = { field: '', items: [], index: -1 };
@@ -539,6 +548,8 @@ export class Hud {
     this.refreshKeybindLabels();
     this.buildXpTicks();
     document.addEventListener('woc:languagechange', () => this.refreshLocalizedDynamicUi());
+    // re-render the bag footer when the connected wallet's $WOC balance changes
+    onWalletUiChange(() => { if ($('#bags').style.display === 'block') this.renderBags(); });
     $('#pf-name').textContent = sim.player.name;
     this.drawPlayerFramePortrait();
     // Character GLBs preload after the HUD mounts; once the real 3D portraits are
@@ -1352,6 +1363,21 @@ export class Hud {
     if (parts.silver > 0 || parts.gold > 0) html += coin(parts.silver, 's', 'itemUi.money.silver');
     html += coin(parts.copper, 'c', 'itemUi.money.copper');
     return `<span class="money-inline" aria-label="${esc(formatLocalizedMoney(copper, 'long'))}">${html}</span>`;
+  }
+
+  // The connected wallet's $WOC balance, shown left of the coins in the bag.
+  // Unlinked balances are a local preview; verified balances belong to the
+  // account-linked wallet and may drive public holder claims elsewhere.
+  private wocBalanceHtml(): string {
+    if (!walletUiEnabled()) return '';
+    const bal = wocBalance();
+    if (bal === null) return '';
+    const amount = formatNumber(bal, { maximumFractionDigits: 2 });
+    const balance = t('wallet.balanceAmount', { amount });
+    const verified = wocBalanceVerified();
+    const title = verified ? t('wallet.balanceTitle') : t('wallet.balancePreviewTitle');
+    const aria = verified ? t('wallet.balanceAria', { balance }) : t('wallet.balancePreviewAria', { balance });
+    return `<span class="woc-balance ${verified ? 'is-verified' : 'is-preview'}" title="${esc(title)}" aria-label="${esc(aria)}"><span class="woc-coin" aria-hidden="true"></span>${esc(balance)}</span>`;
   }
 
   attachTooltip(el: HTMLElement, html: () => string): void {
@@ -4013,6 +4039,8 @@ export class Hud {
 
     let match = /^You must be in (Bear|Wolf) Form\.$/.exec(text);
     if (match) return t('hud.errors.requiresForm', { form: t(match[1] === 'Bear' ? 'hud.errors.bear' : 'hud.errors.cat') });
+    match = /^You can't do that in (Bear|Wolf|Travel) Form\.$/.exec(text);
+    if (match) return t('hud.errors.cantInForm', { form: t(match[1] === 'Bear' ? 'hud.errors.bear' : match[1] === 'Travel' ? 'hud.errors.travel' : 'hud.errors.cat') });
     match = /^That ability requires the target below (\d+)% health\.$/.exec(text);
     if (match) return t('hud.errors.targetHealthBelow', { percent: match[1] });
     match = /^Not enough (.+)!$/.exec(text);
@@ -5398,7 +5426,7 @@ export class Hud {
     el.appendChild(grid);
     const money = document.createElement('div');
     money.className = 'money';
-    money.innerHTML = this.moneyHtml(sim.copper);
+    money.innerHTML = `${this.wocBalanceHtml()}${this.moneyHtml(sim.copper)}`;
     el.appendChild(money);
     el.querySelector('[data-close]')?.addEventListener('click', () => {
       if (this.vendorOpen && document.body.classList.contains('mobile-touch')) {
@@ -5545,9 +5573,12 @@ export class Hud {
     </div>`;
     html += this.talentSummaryHtml();
     html += this.progressionHtml(p.level);
+    const shareGlyph = `<svg class="pc-share-ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M18 16.1a3 3 0 0 0-2.3 1.1l-6.7-3.9a3 3 0 0 0 0-2.6l6.7-3.9A3 3 0 1 0 15 4l-6.7 3.9a3 3 0 1 0 0 8.2L15 20a3 3 0 1 0 3-3.9z"/></svg>`;
+    html += `<div class="pc-share-row"><button type="button" class="btn pc-share-btn" data-act="share-card">${shareGlyph}<span>${esc(t('playerCard.shareButton'))}</span></button></div>`;
     el.innerHTML = html;
     hydratePortraits(el);
     el.querySelector('[data-act="prestige"]')?.addEventListener('click', () => this.openPrestigeDialog());
+    el.querySelector('[data-act="share-card"]')?.addEventListener('click', () => { audio.click(); void this.openPlayerCard(); });
     const leftCol = el.querySelector('#equip-col-left')!;
     const rightCol = el.querySelector('#equip-col-right')!;
     // Two columns flanking the model, like the classic WoW character sheet:
@@ -6022,6 +6053,357 @@ export class Hud {
     if (selChoice) nameEl.textContent = choiceName(selChoice);
     syncSelection();
     (swatches.find((b) => b.dataset.choice === this.skinEventSelectedKey) ?? swatches[0])?.focus();
+  }
+
+  // -------------------------------------------------------------------------
+  // Shareable player card. Captures a crisp close-up of the character from the
+  // character-window preview, composites it with the player's stats, gear, and
+  // $WOC holder badge, and offers share/download/publish actions. Hosting a
+  // public card link is online-only (requires the injected uploader); offline
+  // play still gets download + native share.
+  // -------------------------------------------------------------------------
+
+  private async openPlayerCard(): Promise<void> {
+    // The button lives in the character window, so the preview already exists;
+    // create it defensively in case that ever changes.
+    if (!this.charPreview) this.renderCharPreview();
+    const preview = this.charPreview;
+    if (!preview) return;
+
+    this.closePlayerCardModal(false);
+    this.cardModalReturnFocus = this.currentFocusableElement();
+    const back = document.createElement('div');
+    back.className = 'modal-backdrop';
+    back.id = 'player-card-modal';
+    const poseBtns = CARD_POSES.map((p, i) =>
+      `<button type="button" class="btn pc-pose${i === 0 ? ' sel' : ''}" data-pose="${i}">${esc(t(p.labelKey))}</button>`).join('');
+    back.innerHTML = `<div class="panel pc-modal" role="dialog" aria-modal="true" aria-labelledby="player-card-modal-title">`
+      + `<div class="panel-title"><span id="player-card-modal-title">${esc(t('playerCard.title'))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('playerCard.close'))}">${svgIcon('close')}</button></div>`
+      + `<div class="pc-preview pc-loading">${esc(t('playerCard.loading'))}</div>`
+      + `<div class="pc-poses" role="group" aria-label="${esc(t('playerCard.poseGroup'))}">${poseBtns}</div>`
+      + `<div class="pc-actions"></div>`
+      + `<div class="pc-link" hidden><span class="pc-link-label">${esc(t('playerCard.referralLinkLabel'))}</span>`
+      + `<input class="pc-link-input" type="text" readonly aria-label="${esc(t('playerCard.referralLinkAria'))}"></div>`
+      + `<div class="pc-status" aria-live="polite"></div>`
+      + `</div>`;
+    document.body.appendChild(back);
+    this.cardModalEl = back;
+    const close = () => this.closePlayerCardModal();
+    back.addEventListener('click', (e) => { if (e.target === back) close(); });
+    back.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    });
+    back.querySelector('[data-close]')?.addEventListener('click', () => { audio.click(); close(); });
+    this.focusFirstInteractive(back, '[data-close]');
+
+    const previewBox = back.querySelector('.pc-preview') as HTMLElement;
+    const status = back.querySelector('.pc-status') as HTMLElement;
+    const linkRow = back.querySelector('.pc-link') as HTMLElement;
+    const setStatus = (msg: string) => { status.textContent = msg; };
+
+    // Current card state, shared with the action handlers by reference so a pose
+    // change (which re-captures + re-composites) also invalidates any publish.
+    const state: { canvas: HTMLCanvasElement | null; data: PlayerCardData | null; published: PublishedCard | null } =
+      { canvas: null, data: null, published: null };
+
+    const poseButtons = Array.from(back.querySelectorAll<HTMLButtonElement>('.pc-pose'));
+    let requestedPoseIndex = 0;
+    let metadataReady = false;
+    let referral: Awaited<ReturnType<typeof fetchReferralInfo>> = null;
+    let standing: CharacterStanding | null = null;
+    const selectPose = (poseIndex: number): void => {
+      requestedPoseIndex = poseIndex;
+      poseButtons.forEach((b, i) => b.classList.toggle('sel', i === poseIndex));
+    };
+    // Generation guard: rapid pose clicks fire concurrent async renders; only the
+    // most recent one may apply its result, or a slow earlier render could
+    // overwrite a newer pose and desync state.canvas from what's shown.
+    let composeSeq = 0;
+    const compose = async (poseIndex: number): Promise<void> => {
+      const seq = ++composeSeq;
+      const pose = CARD_POSES[poseIndex];
+      selectPose(poseIndex);
+      try {
+        const characterImage = preview.captureCloseup({ poseClips: pose.clips, poseFraction: pose.fraction });
+        const data = this.buildPlayerCardData(characterImage, referral, standing);
+        const canvas = await renderPlayerCardCanvas(data);
+        if (this.cardModalEl !== back || seq !== composeSeq) return; // closed or superseded
+        canvas.classList.add('pc-card-canvas');
+        previewBox.classList.remove('pc-loading');
+        previewBox.innerHTML = '';
+        previewBox.appendChild(canvas);
+        // A new pose is a different image, so any prior publish is stale.
+        state.canvas = canvas;
+        state.data = data;
+        state.published = null;
+        linkRow.hidden = true;
+        setStatus('');
+      } catch {
+        // A failed capture/composite must not leave the modal stuck on "Forging…".
+        if (this.cardModalEl !== back || seq !== composeSeq) return;
+        previewBox.classList.remove('pc-loading');
+        previewBox.textContent = t('playerCard.renderFailed');
+        setStatus(t('playerCard.renderFailedStatus'));
+      }
+    };
+
+    poseButtons.forEach((b, i) => b.addEventListener('click', () => {
+      if (requestedPoseIndex === i) return;
+      audio.click();
+      if (!metadataReady) {
+        selectPose(i);
+        return;
+      }
+      void compose(i);
+    }));
+
+    // Referral info + realm standing are online-only (null offline). Fetch once
+    // and reuse across pose re-renders. Pose clicks before this resolves update
+    // requestedPoseIndex, so the latest visible choice renders when ready.
+    [referral, standing] = await Promise.all([fetchReferralInfo(), fetchStanding()]);
+    metadataReady = true;
+    if (this.cardModalEl !== back) return; // modal closed while awaiting
+
+    await compose(requestedPoseIndex);
+    if (this.cardModalEl !== back) return;
+    this.wireCardActions(back, state, setStatus);
+  }
+
+  private closePlayerCardModal(restoreFocus = true): void {
+    const back = this.cardModalEl;
+    if (!back) return;
+    back.remove();
+    if (this.cardModalEl === back) this.cardModalEl = null;
+    const target = this.cardModalReturnFocus;
+    this.cardModalReturnFocus = null;
+    if (restoreFocus) this.restoreFocus(target);
+  }
+
+  private wireCardActions(
+    back: HTMLElement,
+    state: { canvas: HTMLCanvasElement | null; data: PlayerCardData | null; published: PublishedCard | null },
+    setStatus: (msg: string) => void,
+  ): void {
+    const actions = back.querySelector('.pc-actions') as HTMLElement;
+    const linkRow = back.querySelector('.pc-link') as HTMLElement;
+    const linkInput = back.querySelector('.pc-link-input') as HTMLInputElement;
+    const fileName = () => `${(state.data?.referralHandle || t('playerCard.fileNameFallback')).replace(/[^a-z0-9-]/g, '')}-woc-card.png`;
+    const mkBtn = (label: string, cls = ''): HTMLButtonElement => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn' + (cls ? ` ${cls}` : '');
+      b.textContent = label;
+      actions.appendChild(b);
+      return b;
+    };
+    const errMsg = () => t('playerCard.statusGenericError');
+
+    // Publish-once per pose: hosting a public card is needed for X / copy-link.
+    // The result is cached on `state` and cleared whenever the pose changes, so
+    // switching pose after publishing re-uploads the new image on next share.
+    const publishOnce = async (): Promise<PublishedCard> => {
+      if (state.published) return state.published;
+      if (!state.canvas) throw new Error(t('playerCard.statusStillRendering'));
+      setStatus(t('playerCard.statusPublishing'));
+      const pub = await publishCard(await cardCanvasToBlob(state.canvas));
+      state.published = pub;
+      linkInput.value = pub.url;
+      linkRow.hidden = false;
+      setStatus(t('playerCard.statusPublished'));
+      return pub;
+    };
+
+    if (cardHostingAvailable()) {
+      const xb = mkBtn(t('playerCard.actionShareX'), 'cd-ok');
+      xb.addEventListener('click', async () => {
+        audio.click();
+        xb.disabled = true;
+        try {
+          // X's intent URL can only carry text + a link; it cannot attach media.
+          // So copy the card PNG to the clipboard first (inside the click gesture,
+          // passing the blob promise to ClipboardItem so the write stays valid
+          // while the PNG encodes) for the user to paste (⌘V) into the post. The
+          // link still rides along and unfurls the card image on a public domain.
+          let copied = false;
+          if (state.canvas && typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
+            try {
+              await navigator.clipboard.write([new ClipboardItem({ 'image/png': cardCanvasToBlob(state.canvas) })]);
+              copied = true;
+            } catch { copied = false; /* clipboard blocked → fall back to link-only */ }
+          }
+          const pub = await publishOnce();
+          const text = state.data ? this.cardShareText(state.data) : t('playerCard.nativeShareTitle');
+          const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pub.url)}`;
+          window.open(intent, '_blank', 'noopener,noreferrer');
+          setStatus(copied
+            ? t('playerCard.statusOpenedXWithImage')
+            : t('playerCard.statusOpenedXWithLink'));
+        } catch {
+          setStatus(errMsg());
+        } finally {
+          xb.disabled = false;
+        }
+      });
+
+      const cb = mkBtn(t('playerCard.actionCopyReferral'));
+      cb.addEventListener('click', async () => {
+        audio.click();
+        cb.disabled = true;
+        try {
+          const pub = await publishOnce();
+          await navigator.clipboard.writeText(pub.url);
+          linkInput.select();
+          setStatus(t('playerCard.statusReferralCopied'));
+        } catch {
+          setStatus(errMsg());
+        } finally {
+          cb.disabled = false;
+        }
+      });
+    }
+
+    const dl = mkBtn(t('playerCard.actionDownload'));
+    dl.addEventListener('click', async () => {
+      audio.click();
+      if (!state.canvas) return;
+      const blob = await cardCanvasToBlob(state.canvas);
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = fileName();
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(href), 4000);
+      setStatus(t('playerCard.statusDownloaded'));
+    });
+
+    // Native share (mobile): share the PNG file, plus the hosted link when one
+    // is available. navigator.canShare with files is the capability gate.
+    const nav = navigator as Navigator & { canShare?: (d?: ShareData) => boolean };
+    if (typeof nav.canShare === 'function') {
+      const sb = mkBtn(t('playerCard.actionShareNative'));
+      sb.addEventListener('click', async () => {
+        audio.click();
+        if (!state.canvas) return;
+        sb.disabled = true;
+        try {
+          const file = new File([await cardCanvasToBlob(state.canvas)], fileName(), { type: 'image/png' });
+          const payload: ShareData = {
+            files: [file],
+            title: t('playerCard.nativeShareTitle'),
+            text: state.data ? this.cardShareText(state.data) : t('playerCard.nativeShareTitle'),
+          };
+          // Attach the hosted link when hosting is available; if publishing
+          // fails, fall back to sharing just the image file.
+          if (cardHostingAvailable()) {
+            try { payload.url = (await publishOnce()).url; } catch { /* share file-only */ }
+          }
+          if (nav.canShare!(payload)) await nav.share!(payload);
+          else if (nav.canShare!({ files: [file] })) await nav.share!({ files: [file] });
+          else setStatus(t('playerCard.statusShareUnsupported'));
+        } catch (err) {
+          if (!(err instanceof Error && err.name === 'AbortError')) setStatus(errMsg());
+        } finally {
+          sb.disabled = false;
+        }
+      });
+    }
+  }
+
+  private cardShareText(data: PlayerCardData): string {
+    const tier = holderTierForBalance(data.balance);
+    const tierBit = tier ? t('playerCard.shareTierBit', { tier: holderTierDisplayName(tier) }) : '';
+    // The URL X appends to this text is the player's card page; it unfurls the
+    // card image and credits the referral when a recruit joins through it.
+    return t('playerCard.shareText', {
+      level: formatNumber(data.level, { maximumFractionDigits: 0 }),
+      className: data.className,
+      tierBit,
+    });
+  }
+
+  private buildPlayerCardData(
+    characterImage: string,
+    referral: { count: number; slug: string | null } | null,
+    standing: CharacterStanding | null,
+  ): PlayerCardData {
+    const sim = this.sim;
+    const p = sim.player;
+    const cls = sim.cfg.playerClass;
+    const classColor = '#' + (p.color & 0xffffff).toString(16).padStart(6, '0');
+    const num = (n: number) => formatNumber(n, { maximumFractionDigits: 0 });
+    const pct = (n: number) => `${formatNumber(n * 100, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
+
+    // Realm standing by lifetime XP: the same metric the in-game leaderboard
+    // ranks on (server: lifetimeXpStanding). Surfaced as a "TOP N%" flex when the
+    // realm has enough players to be meaningful and the character is in the top
+    // half, since no one wants to broadcast "Top 90%".
+    let topPercent: number | null = null;
+    if (standing && standing.total >= 5 && standing.rank >= 1) {
+      const p100 = (standing.rank / standing.total) * 100;
+      if (p100 <= 50) topPercent = p100;
+    }
+
+    const wpn = sim.equipment.mainhand ? ITEMS[sim.equipment.mainhand] : null;
+    const dps = wpn?.weapon
+      ? ((wpn.weapon.min + wpn.weapon.max) / 2 + (p.attackPower / 14) * wpn.weapon.speed) / wpn.weapon.speed
+      : 0;
+
+    const primaryStats: PlayerCardStat[] = [
+      { label: t('itemUi.stats.str'), value: num(p.stats.str) },
+      { label: t('itemUi.stats.agi'), value: num(p.stats.agi) },
+      { label: t('itemUi.stats.sta'), value: num(p.stats.sta) },
+      { label: t('itemUi.stats.int'), value: num(p.stats.int) },
+      { label: t('itemUi.stats.spi'), value: num(p.stats.spi) },
+      { label: t('itemUi.stats.armor'), value: num(p.stats.armor) },
+    ];
+    const combatStats: PlayerCardStat[] = [
+      { label: t('itemUi.stats.attackPower'), value: num(p.attackPower) },
+      { label: t('itemUi.stats.dps'), value: formatNumber(dps, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) },
+      { label: t('itemUi.stats.critChance'), value: pct(p.critChance) },
+      { label: t('itemUi.stats.dodge'), value: pct(p.dodgeChance) },
+    ];
+    const rating = sim.arenaInfo?.rating ?? null;
+    if (rating !== null) combatStats.push({ label: t('playerCard.arenaStat'), value: num(rating) });
+    if (sim.prestigeRank > 0) combatStats.push({ label: t('game.prestige.rank'), value: num(sim.prestigeRank) });
+
+    const slots: EquipSlot[] = ['mainhand', 'chest', 'legs', 'feet'];
+    const gear = slots.map((slot) => {
+      const id = sim.equipment[slot];
+      const item = id ? ITEMS[id] : null;
+      return {
+        slot: itemSlotName(slot),
+        name: item ? itemDisplayName(item) : t('itemUi.equipment.empty'),
+        color: item ? (QUALITY_COLOR[item.quality ?? 'common'] ?? '#cfc3a0') : '#7c7058',
+      };
+    });
+
+    return {
+      name: p.name,
+      className: classDisplayName(cls),
+      classColor,
+      level: p.level,
+      realm: sim.realm,
+      characterImage,
+      primaryStats,
+      combatStats,
+      gear,
+      topPercent,
+      balance: verifiedWocBalance(),
+      referralHandle: referral?.slug ?? this.cardSlug(p.name),
+      referralCount: referral?.count ?? null,
+      siteUrl: 'worldofclaudecraft.com',
+    };
+  }
+
+  // Client-side mirror of the server's slugify (server/player_card.ts), used
+  // only for the footer handle preview before the card is published.
+  private cardSlug(name: string): string {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
   }
 
   // -------------------------------------------------------------------------
@@ -6973,6 +7355,19 @@ export class Hud {
     const className = classDisplayName(cls);
     const el = $('#inspect-window');
     this.closeOtherWindows('#inspect-window');
+    // $WOC holder-tier flair: cosmetic badge for a connected/holder wallet,
+    // broadcast per-entity via the `ht`/`hb` identity fields (server-set). Shown
+    // only when the inspected player has a tier (> 0); the exact balance rides
+    // along in `hb` and reads out beneath the rung name when present.
+    const tierDef = holderTierByIndex(e.holderTier ?? 0);
+    const holderHtml = tierDef
+      ? `<div class="inspect-holder">` +
+        `<img class="inspect-holder-badge" src="${holderTierBadgeDataUrl(tierDef)}" alt="" draggable="false">` +
+        `<div class="inspect-holder-text">` +
+        `<div class="inspect-holder-name">${esc(holderTierDisplayName(tierDef))}</div>` +
+        `<div class="inspect-holder-sub">${e.holderBalance ? esc(t('wallet.balanceAmount', { amount: formatNumber(e.holderBalance, { maximumFractionDigits: 0 }) })) : esc(t('wallet.holder'))}</div>` +
+        `</div></div>`
+      : '';
     el.innerHTML =
       `<div class="panel-title"><span>${esc(t('character.profile'))}</span>` +
       `<button type="button" class="x-btn" data-close aria-label="${esc(t('character.closeProfile'))}">${svgIcon('close')}</button></div>` +
@@ -6980,6 +7375,7 @@ export class Hud {
       portraitChipHtml({ cls, skin: e.skin ?? 0, name: e.name, variant: 'lg' }) +
       `<div class="inspect-name">${esc(e.name)}</div>` +
       `<div class="inspect-meta">${esc(t('itemUi.equipment.levelClass', { level: formatNumber(e.level, { maximumFractionDigits: 0 }), className }))}</div>` +
+      holderHtml +
       `</div>`;
     hydratePortraits(el);
     el.querySelector('[data-close]')?.addEventListener('click', () => { el.style.display = 'none'; });
@@ -7710,7 +8106,7 @@ export class Hud {
 
   // True while a menu that should pause character movement is up.
   isModalOpen(): boolean {
-    return this.optionsOpen || this.emoteWheelOpen || $('#emote-editor').style.display === 'block';
+    return this.optionsOpen || this.emoteWheelOpen || $('#emote-editor').style.display === 'block' || this.cardModalEl !== null;
   }
 
   toggleOptionsMenu(): void {
@@ -8345,6 +8741,7 @@ export class Hud {
 
   // Closes the topmost UI. Returns true if something was closed.
   closeAll(): boolean {
+    if (this.cardModalEl) { this.closePlayerCardModal(); return true; }
     const ctx = $('#ctx-menu');
     if (ctx.style.display !== 'none' && ctx.style.display !== '') { this.closeContextMenu(); return true; }
     if (this.emoteWheelOpen) { this.hideEmoteWheel(); return true; }

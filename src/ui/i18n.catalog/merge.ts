@@ -1877,9 +1877,9 @@ export const mergeStrings = {
   },
 };
 
-// Legacy inline locales (unused at runtime; non-English resolves from
-// src/ui/i18n.locales/<lang>.ts). New English-only keys aren't back-filled here,
-// so assert the dialect copies to the English shape. See abilities.ts.
+// Legacy inline dialect copies — cast so new English keys (e.g. hud.errors
+// cantInForm/travel) don't make these one key short of typeof mergeStringsEn.
+// Real es_ES/fr_CA come from i18n.locales overlays at runtime; see i18n CLAUDE.md.
 mergeStrings.es_ES = mergeStrings.es as typeof mergeStringsEn;
 mergeStrings.fr_CA = mergeStrings.fr_FR as typeof mergeStringsEn;
 

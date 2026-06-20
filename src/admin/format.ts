@@ -1,5 +1,5 @@
 // Small display formatters shared across the admin dashboard.
-import { t, adminLanguageTag } from './i18n';
+import { adminLanguageTag, t } from './i18n';
 
 export function escapeHtml(value: unknown): string {
   return String(value ?? '')
@@ -75,4 +75,12 @@ export function fmtBytes(bytes: number): string {
   if (bytes >= 1024 * 1024 * 1024) return t('bytes.gigabytes', { n: num(bytes / (1024 * 1024 * 1024), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) });
   if (bytes >= 1024 * 1024) return t('bytes.megabytes', { n: num(Math.round(bytes / (1024 * 1024)), { maximumFractionDigits: 0 }) });
   return t('bytes.kilobytes', { n: num(Math.round(bytes / 1024), { maximumFractionDigits: 0 }) });
+}
+
+export function fmtNumber(value: number): string {
+  return new Intl.NumberFormat(adminLanguageTag()).format(Math.round(value));
+}
+
+export function fmtPercent(value: number): string {
+  return new Intl.NumberFormat(adminLanguageTag(), { style: 'percent', maximumFractionDigits: 1 }).format(value);
 }

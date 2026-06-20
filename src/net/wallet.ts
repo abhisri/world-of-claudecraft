@@ -1,0 +1,110 @@
+// Non-custodial Solana wallet connection via Reown AppKit (formerly
+// WalletConnect). This module owns the AppKit instance and the browser-side
+// connection; the account↔wallet *link* is performed by the server after the
+// wallet signs a challenge (see src/net/online.ts + server/wallet.ts).
+//
+// Lives in src/net/ and is never imported by src/sim/: the deterministic core
+// stays free of network/wallet dependencies.
+import './wallet-polyfill';
+import { createAppKit } from '@reown/appkit';
+import { solana, solanaDevnet } from '@reown/appkit/networks';
+import { SolanaAdapter } from '@reown/appkit-adapter-solana';
+import bs58 from 'bs58';
+
+export interface WalletState {
+  address: string | null;
+  isConnected: boolean;
+}
+
+// The Solana provider AppKit hands back exposes raw message signing.
+interface SolanaSignProvider {
+  signMessage(message: Uint8Array): Promise<Uint8Array>;
+}
+
+const PROJECT_ID = String(import.meta.env.VITE_REOWN_PROJECT_ID ?? '').trim();
+
+type AppKitInstance = ReturnType<typeof createAppKit>;
+let appkit: AppKitInstance | null = null;
+const listeners = new Set<(state: WalletState) => void>();
+
+export function initWallet(): AppKitInstance {
+  if (appkit) return appkit;
+  if (!PROJECT_ID) {
+    console.warn('[wallet] VITE_REOWN_PROJECT_ID is not set: add it to .env.local to enable wallet connect.');
+  }
+  appkit = createAppKit({
+    adapters: [new SolanaAdapter()],
+    networks: [solana, solanaDevnet],
+    projectId: PROJECT_ID || 'MISSING_VITE_REOWN_PROJECT_ID',
+    metadata: {
+      name: 'World of ClaudeCraft',
+      description: 'Link your Solana wallet to your World of ClaudeCraft account.',
+      url: window.location.origin,
+      icons: [`${window.location.origin}/worldofclaudecraft-logo.png`],
+    },
+    features: { analytics: false, email: false, socials: false },
+  });
+  appkit.subscribeAccount((acct) => {
+    const address = acct.address ?? null;
+    for (const cb of listeners) cb({ address, isConnected: address !== null });
+  }, 'solana');
+  return appkit;
+}
+
+/** Subscribe to connection changes. Fires on connect/disconnect/account switch. */
+export function onWalletChange(cb: (state: WalletState) => void): () => void {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
+
+/** Subscribe to AppKit modal open/close state. */
+export function onWalletModalChange(cb: (open: boolean) => void): () => void {
+  return initWallet().subscribeState((state) => cb(state.open));
+}
+
+export function isWalletModalOpen(): boolean {
+  return appkit?.isOpen() ?? false;
+}
+
+export function currentWallet(): WalletState {
+  if (!appkit) return { address: null, isConnected: false };
+  const address = appkit.getAddress('solana') ?? null;
+  return { address, isConnected: address !== null };
+}
+
+/** Open the Reown modal (connect, or the account view when already connected). */
+export async function openWalletModal(): Promise<void> {
+  await initWallet().open();
+}
+
+export async function disconnectWallet(): Promise<void> {
+  if (appkit) await appkit.disconnect('solana');
+}
+
+/**
+ * Ask the connected wallet to sign `message` and return the signature
+ * base58-encoded (the encoding the server's verifier expects).
+ */
+export async function signMessageBase58(message: string): Promise<string> {
+  const provider = initWallet().getProvider<SolanaSignProvider>('solana');
+  if (!provider) throw new Error('connect a wallet first');
+  const signature = await provider.signMessage(new TextEncoder().encode(message));
+  return bs58.encode(signature);
+}
+
+// ── $WOC balance ────────────────────────────────────────────────────────────
+// Read through the server proxy (GET /api/woc/balance). The Solana RPC endpoint
+// and any API key embedded in it live ONLY on the server (see
+// server/woc_balance.ts), so nothing secret is inlined into this bundle. The
+// request is same-origin: the server that served this page holds the key.
+export async function fetchWocBalance(owner: string): Promise<number | null> {
+  try {
+    const res = await fetch(`/api/woc/balance?owner=${encodeURIComponent(owner)}`);
+    if (!res.ok) return null;
+    const data = (await res.json()) as { balance?: number | null };
+    return typeof data.balance === 'number' ? data.balance : null;
+  } catch (err) {
+    console.error('[wallet] $WOC balance read failed', err);
+    return null;
+  }
+}

@@ -1,8 +1,9 @@
-import { escapeHtml, fmtCopper, fmtDate, fmtDuration, fmtRelative } from './format';
+import { escapeHtml, fmtCopper, fmtDate, fmtDuration, fmtNumber, fmtPercent, fmtRelative } from './format';
 import { classLabel, zoneLabel, t } from './i18n';
 import type {
   AccountDetail, AccountRow, CharacterRow, ChatFilterData, ChatModeratedAccount,
   ChatModerationDetail, FilterWord, LivePlayer, ModerationAccountDetail, ModerationQueueRow,
+  ProviderUsageCache, ProviderUsageSnapshot,
 } from './types';
 
 // Pure HTML-string renderers for the dashboard tables. All dynamic values go
@@ -30,6 +31,77 @@ export function renderOnlineTable(players: LivePlayer[]): string {
     </tr></thead>
     <tbody>${rows.join('')}</tbody>
   </table>`;
+}
+
+function renderMetricCount(value: number): string {
+  return escapeHtml(fmtNumber(value));
+}
+
+function renderCacheEntries(cache: ProviderUsageCache): string {
+  if (cache.maxEntries === null) return escapeHtml(fmtNumber(cache.entries));
+  return escapeHtml(t('usage.cacheEntriesOfMax', {
+    entries: fmtNumber(cache.entries),
+    max: fmtNumber(cache.maxEntries),
+  }));
+}
+
+function renderCacheHitRate(cache: ProviderUsageCache): string {
+  const totalReads = cache.hits + cache.misses;
+  if (totalReads <= 0) return escapeHtml(t('usage.notAvailable'));
+  return escapeHtml(fmtPercent(cache.hits / totalReads));
+}
+
+export function renderProviderUsage(usage: ProviderUsageSnapshot): string {
+  const metricRows = usage.metrics.map((metric) => `
+    <tr>
+      <td>${escapeHtml(t(metric.labelKey))}</td>
+      ${usage.windows.map((window) => `<td class="num">${renderMetricCount(metric.counts[window.key] ?? 0)}</td>`).join('')}
+    </tr>`).join('');
+  const cacheRows = usage.caches.map((cache) => `
+    <tr>
+      <td>${escapeHtml(t(cache.labelKey))}</td>
+      <td class="num">${renderCacheEntries(cache)}</td>
+      <td class="num">${renderCacheHitRate(cache)}</td>
+      <td class="num">${renderMetricCount(cache.hits)}</td>
+      <td class="num">${renderMetricCount(cache.misses)}</td>
+      <td class="num">${renderMetricCount(cache.staleRefreshes)}</td>
+      <td class="num">${renderMetricCount(cache.stores)}</td>
+      <td class="num">${renderMetricCount(cache.failures)}</td>
+      <td class="num">${renderMetricCount(cache.evictions)}</td>
+    </tr>`).join('');
+
+  return `
+    <div class="usage-section">
+      <h4>${t('usage.requestsTitle')}</h4>
+      <div class="table-scroll">
+        <table class="usage-table">
+          <thead><tr>
+            <th>${t('usage.colMetric')}</th>
+            ${usage.windows.map((window) => `<th class="num">${escapeHtml(t(window.labelKey))}</th>`).join('')}
+          </tr></thead>
+          <tbody>${metricRows}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="usage-section">
+      <h4>${t('usage.cacheTitle')}</h4>
+      <div class="table-scroll">
+        <table class="usage-table">
+          <thead><tr>
+            <th>${t('usage.cacheColCache')}</th>
+            <th class="num">${t('usage.cacheColEntries')}</th>
+            <th class="num">${t('usage.cacheColHitRate')}</th>
+            <th class="num">${t('usage.cacheColHits')}</th>
+            <th class="num">${t('usage.cacheColMisses')}</th>
+            <th class="num">${t('usage.cacheColStale')}</th>
+            <th class="num">${t('usage.cacheColStores')}</th>
+            <th class="num">${t('usage.cacheColFailures')}</th>
+            <th class="num">${t('usage.cacheColEvictions')}</th>
+          </tr></thead>
+          <tbody>${cacheRows}</tbody>
+        </table>
+      </div>
+    </div>`;
 }
 
 export function renderAccountsTable(rows: AccountRow[]): string {

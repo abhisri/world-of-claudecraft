@@ -12,6 +12,11 @@ import { sfx } from './game/sfx';
 import { activePvpOpponentIds, handlePickedEntity, hoverCursorKind, isAttackableEntity } from './game/interactions';
 import { clickMoveShouldCancel, clickMoveShouldWalk, clickMoveStep, distance2d, latencyAdjustedStopDistance, stepAngleToward } from './game/click_move';
 import { Api, ClientWorld, CharacterSummary, type ReleaseEntry } from './net/online';
+import { setWocBalance, setWalletUiEnabled } from './ui/wallet_balance';
+import { absolutePublishedCardUrl, setCardUploader, setReferralProvider, setStandingProvider } from './ui/player_card_share';
+// The wallet module (Reown AppKit + @solana/web3.js, ~1MB) is loaded lazily via
+// dynamic import() in the wallet controller below, so it stays out of the main
+// entry chunk and only loads when the feature is enabled + used.
 import type { IWorld, LeaderboardEntry } from './world_api';
 import { findPlayerPath, resolvePlayerDestination } from './sim/pathfind';
 import { pathCrossesFence } from './sim/colliders';
@@ -1410,6 +1415,15 @@ async function startOffline(playerClass: PlayerClass, name: string, skin = 0): P
 
 const api = new Api();
 
+// Referral capture: a visitor who arrives from a shared player card link
+// (?ref=<slug>) carries the referrer's slug into registration. Read it once at
+// load and sanitise it to the server's slug shape so a junk param is dropped.
+const REFERRAL_SLUG = (() => {
+  const raw = new URLSearchParams(location.search).get('ref') ?? '';
+  const slug = raw.trim().toLowerCase();
+  return /^[a-z0-9][a-z0-9-]{0,63}$/.test(slug) ? slug : '';
+})();
+
 let activeTransitionTimeout: number | null = null;
 let activeTransitionCleanup: (() => void) | null = null;
 let characterPreview: CharacterPreview | null = null;
@@ -2084,6 +2098,19 @@ async function enterWorld(c: CharacterSummary, button?: HTMLButtonElement): Prom
     }
   }
   const world = new ClientWorld(api.token!, c.id, c.class, api.base);
+  // Wire shareable player cards for this online session: publishing uploads the
+  // composited PNG to this realm and returns an absolute public page URL, and
+  // the referral provider feeds the card footer. Both are cleared on disconnect.
+  setCardUploader(async (png) => {
+    const r = await api.uploadCard(c.id, png, getLanguage());
+    return { url: absolutePublishedCardUrl(r.url, api.base, location.origin) };
+  });
+  setReferralProvider(() => api.referralStats());
+  setStandingProvider(() => api.characterStanding(c.id));
+  // One place to drop the session's card wiring, so the entry-timeout and the
+  // disconnect paths can't drift (a lingering provider would hold a stale
+  // character closure after we leave the world).
+  const clearCardProviders = () => { setCardUploader(null); setReferralProvider(null); setStandingProvider(null); };
   // wait for hello + first snapshot so the world starts populated
   const waitStart = Date.now();
   const poll = setInterval(() => {
@@ -2093,6 +2120,7 @@ async function enterWorld(c: CharacterSummary, button?: HTMLButtonElement): Prom
     } else if (Date.now() - waitStart > 10000) {
       clearInterval(poll);
       world.close();
+      clearCardProviders();
       fatalOverlay(t('loading.enterTimeout'));
     }
   }, 50);
@@ -2100,6 +2128,7 @@ async function enterWorld(c: CharacterSummary, button?: HTMLButtonElement): Prom
   // mask the real reason (e.g. "character already in world")
   world.onDisconnect = (reason) => {
     clearInterval(poll);
+    clearCardProviders();
     fatalOverlay(userFacingApiError(reason));
   };
 }
@@ -2508,6 +2537,7 @@ function translatePage(): void {
 }
 
 function refreshLocalizedDynamicShell(): void {
+  updateWalletButton();
   const activePanel = document.body.dataset.startPanel;
   if (activePanel === 'realm-panel') {
     showRealmList();
@@ -2836,6 +2866,428 @@ function wireHomepageMusicToggle(): void {
   });
 }
 
+// ── Non-custodial Solana wallet linking (Reown) ─────────────────────────────
+// The header button connects a wallet (AppKit) and, once the player is logged
+// in, binds it to their account by signing a server-issued challenge. Wallet
+// connection persists in the browser (AppKit/localStorage); the account↔wallet
+// link is the durable, server-verified artifact.
+let linkedWalletPubkey: string | null = null;
+let linkedWocBalance: number | null = null;
+let connectedWocBalance: number | null = null;
+let walletVerifyPending = false;
+let walletVerifyInProgress = false;
+let walletVerifyTimeout: number | null = null;
+let walletVerifyModalUnsubscribe: (() => void) | null = null;
+let walletFlowStatus: 'connect' | 'sign' | 'verify' | null = null;
+
+// Feature flag: the wallet UI is shown only when a Reown project id is set.
+// Read straight from env here (no module load) so an unconfigured deploy never
+// shows a dead button and never downloads the wallet chunk.
+const WALLET_ENABLED = String(import.meta.env.VITE_REOWN_PROJECT_ID ?? '').trim().length > 0;
+
+// Lazily load the heavy wallet module the first time it's needed, then cache it.
+let walletMod: typeof import('./net/wallet') | null = null;
+function loadWallet(): Promise<typeof import('./net/wallet')> {
+  return walletMod ? Promise.resolve(walletMod) : import('./net/wallet').then((m) => (walletMod = m));
+}
+
+const shortenAddress = (a: string): string => `${a.slice(0, 4)}…${a.slice(-4)}`;
+const formatWoc = (n: number): string => formatNumber(n, { maximumFractionDigits: 2 });
+const walletBalanceText = (n: number): string => t('wallet.balanceAmount', { amount: formatWoc(n) });
+
+function walletAddressLabel(address: string, linked: boolean, balance: number | null): string {
+  const short = shortenAddress(address);
+  if (balance !== null) {
+    const balanceText = walletBalanceText(balance);
+    return linked
+      ? t('wallet.connectedLinkedWithBalance', { balance: balanceText, address: short })
+      : t('wallet.connectedWithBalance', { balance: balanceText, address: short });
+  }
+  return linked
+    ? t('wallet.connectedLinked', { address: short })
+    : t('wallet.connected', { address: short });
+}
+
+function walletHelpText(address: string, linked: boolean, balance: number | null): string {
+  const short = shortenAddress(address);
+  if (linked) {
+    return balance !== null
+      ? t('wallet.helpLinkedWithBalance', { balance: walletBalanceText(balance), address: short })
+      : t('wallet.helpLinked', { address: short });
+  }
+  if (!api.token) {
+    return balance !== null
+      ? t('wallet.helpLoginToLinkWithBalance', { balance: walletBalanceText(balance), address: short })
+      : t('wallet.helpLoginToLink', { address: short });
+  }
+  return balance !== null
+    ? t('wallet.helpReadyToLinkWithBalance', { balance: walletBalanceText(balance), address: short })
+    : t('wallet.helpReadyToLink', { address: short });
+}
+
+function walletLinkedDisconnectedHelpText(address: string, balance: number | null): string {
+  const short = shortenAddress(address);
+  return balance !== null
+    ? t('wallet.helpLinkedDisconnectedWithBalance', { balance: walletBalanceText(balance), address: short })
+    : t('wallet.helpLinkedDisconnected', { address: short });
+}
+
+function setWalletStatus(text: string | null): void {
+  const status = document.getElementById('wallet-status');
+  if (!status) return;
+  if (!text) {
+    status.hidden = true;
+    status.textContent = '';
+    status.removeAttribute('title');
+    status.removeAttribute('aria-label');
+    return;
+  }
+  status.hidden = false;
+  status.textContent = text;
+  status.title = text;
+  status.setAttribute('aria-label', text);
+}
+
+function walletFlowHelpText(): string {
+  switch (walletFlowStatus) {
+    case 'connect':
+      return t('wallet.flowConnect');
+    case 'sign':
+      return t('wallet.flowSign');
+    case 'verify':
+      return t('wallet.flowVerify');
+    default:
+      return t('wallet.helpDisconnected');
+  }
+}
+
+function setWalletHelp(text: string, state: 'default' | 'attention' | 'verified'): void {
+  const help = document.getElementById('wallet-help');
+  if (!help) return;
+  help.textContent = text;
+  help.classList.toggle('is-attention', state === 'attention');
+  help.classList.toggle('is-verified', state === 'verified');
+}
+
+function setWalletFlowStatus(status: typeof walletFlowStatus): void {
+  walletFlowStatus = status;
+  updateWalletButton();
+}
+
+function updateWalletButton(): void {
+  // currentWallet is sync; before the module loads, treat as disconnected.
+  const { address, isConnected } = walletMod ? walletMod.currentWallet() : { address: null, isConnected: false };
+  const connected = isConnected && !!address;
+  const linked = connected && linkedWalletPubkey === address;
+  const verifiedBalance = linkedWalletPubkey
+    ? (linkedWocBalance ?? (linked ? connectedWocBalance : null))
+    : null;
+  const previewBalance = connected && !linkedWalletPubkey ? connectedWocBalance : null;
+  // Mirror the balance into the HUD store so the bag footer stays in sync. Only
+  // a balance for the linked wallet may drive verified holder claims.
+  setWocBalance(verifiedBalance ?? previewBalance, verifiedBalance !== null);
+  const btn = document.getElementById('btn-wallet');
+  const label = document.getElementById('wallet-label');
+  if (!btn || !label) return;
+  // Switch / Unlink are account-link actions; Disconnect is only meaningful for
+  // the browser wallet-app session.
+  const switchBtn = document.getElementById('btn-wallet-switch');
+  const unlinkBtn = document.getElementById('btn-wallet-unlink');
+  const signoutBtn = document.getElementById('btn-wallet-signout');
+  if (switchBtn) switchBtn.hidden = !(api.token && linkedWalletPubkey);
+  if (unlinkBtn) unlinkBtn.hidden = !(api.token && linkedWalletPubkey);
+  if (signoutBtn) signoutBtn.hidden = !connected;
+  btn.classList.remove('is-connected', 'is-linked', 'needs-link', 'connect-app');
+  btn.classList.toggle('busy', walletFlowStatus !== null);
+  if (walletFlowStatus) {
+    label.textContent = t('wallet.verifying');
+    btn.title = t('wallet.verifyingTitle');
+    btn.setAttribute('aria-label', t('wallet.verifyingTitle'));
+    setWalletStatus(null);
+    setWalletHelp(walletFlowHelpText(), 'attention');
+    return;
+  }
+  if (!connected) {
+    if (api.token && linkedWalletPubkey) {
+      btn.classList.add('connect-app');
+      label.textContent = t('wallet.connectApp');
+      btn.title = t('wallet.connectAppTitle');
+      btn.setAttribute('aria-label', t('wallet.connectAppAria'));
+      setWalletStatus(walletAddressLabel(linkedWalletPubkey, true, linkedWocBalance));
+      setWalletHelp(walletLinkedDisconnectedHelpText(linkedWalletPubkey, linkedWocBalance), 'verified');
+      return;
+    }
+    btn.classList.add('needs-link');
+    label.textContent = t('wallet.verify');
+    btn.title = t('wallet.verifyTitle');
+    btn.setAttribute('aria-label', t('wallet.verifyAria'));
+    setWalletStatus(null);
+    setWalletHelp(t('wallet.helpDisconnected'), 'default');
+    return;
+  }
+  // $WOC balance sits to the left of the address once it has loaded.
+  if (linked) {
+    btn.classList.add('is-linked');
+    label.textContent = t('wallet.appConnected');
+    btn.title = t('wallet.linkedTitle');
+    btn.setAttribute('aria-label', t('wallet.linkedTitle'));
+    setWalletStatus(walletAddressLabel(address, true, verifiedBalance));
+    setWalletHelp(walletHelpText(address, true, verifiedBalance), 'verified');
+  } else if (api.token) {
+    btn.classList.add('needs-link');
+    label.textContent = linkedWalletPubkey ? t('wallet.verifyNew') : t('wallet.verify');
+    btn.title = t('wallet.verifyTitle');
+    btn.setAttribute('aria-label', t('wallet.verifyAddressAria', { address: shortenAddress(address) }));
+    setWalletStatus(null);
+    setWalletHelp(walletHelpText(address, false, connectedWocBalance), 'attention');
+  } else {
+    btn.classList.add('is-connected');
+    label.textContent = walletAddressLabel(address, false, connectedWocBalance);
+    btn.title = t('wallet.connectedTitle');
+    btn.setAttribute('aria-label', t('wallet.connectedTitle'));
+    setWalletStatus(null);
+    setWalletHelp(walletHelpText(address, false, connectedWocBalance), 'default');
+  }
+}
+
+function clearWalletVerifyTimeout(): void {
+  if (walletVerifyTimeout !== null) {
+    window.clearTimeout(walletVerifyTimeout);
+    walletVerifyTimeout = null;
+  }
+}
+
+function clearWalletVerifyModalWatcher(): void {
+  if (!walletVerifyModalUnsubscribe) return;
+  walletVerifyModalUnsubscribe();
+  walletVerifyModalUnsubscribe = null;
+}
+
+function cancelWalletVerifyPending(): void {
+  walletVerifyPending = false;
+  clearWalletVerifyTimeout();
+  clearWalletVerifyModalWatcher();
+  setWalletFlowStatus(null);
+}
+
+async function disconnectUnverifiedWallet(): Promise<void> {
+  if (!walletMod) return;
+  const { address } = walletMod.currentWallet();
+  if (!address || address === linkedWalletPubkey) return;
+  try {
+    await walletMod.disconnectWallet();
+  } catch (err) {
+    console.error('[wallet] disconnect unverified wallet failed', err);
+  } finally {
+    connectedWocBalance = null;
+    updateWalletButton();
+  }
+}
+
+async function disconnectUnverifiedWalletIfIdle(): Promise<void> {
+  if (walletVerifyPending || walletVerifyInProgress) return;
+  await disconnectUnverifiedWallet();
+}
+
+// Read the connected wallet's $WOC balance and re-render. Ignores a stale
+// response if the connected wallet changed while the RPC call was in flight.
+async function refreshWocBalance(address: string): Promise<void> {
+  connectedWocBalance = null;
+  updateWalletButton();
+  const wallet = await loadWallet();
+  const balance = await wallet.fetchWocBalance(address);
+  if (wallet.currentWallet().address === address) {
+    connectedWocBalance = balance;
+    if (linkedWalletPubkey === address) linkedWocBalance = balance;
+    updateWalletButton();
+  }
+}
+
+function flashWalletError(message: string): void {
+  const btn = document.getElementById('btn-wallet');
+  const label = document.getElementById('wallet-label');
+  if (!btn || !label) return;
+  const previous = label.textContent;
+  label.textContent = message;
+  btn.title = message;
+  btn.setAttribute('aria-label', message);
+  window.setTimeout(() => {
+    if (label.textContent === message) label.textContent = previous;
+    updateWalletButton();
+  }, 4000);
+}
+
+// Refreshed after login: ask the server which wallet (if any) this account has
+// linked, so the button can show the verified ✓ state.
+async function refreshWalletLinkStatus(): Promise<void> {
+  if (!api.token) {
+    linkedWalletPubkey = null;
+    linkedWocBalance = null;
+    updateWalletButton();
+    return;
+  }
+  try {
+    const wallet = await api.linkedWallet();
+    linkedWalletPubkey = wallet?.pubkey ?? null;
+    linkedWocBalance = null;
+  } catch (err) {
+    console.error('[wallet] could not load link status', err);
+    linkedWalletPubkey = null;
+    linkedWocBalance = null;
+  }
+  updateWalletButton();
+  const pubkey = linkedWalletPubkey;
+  if (pubkey && WALLET_ENABLED) {
+    try {
+      const wallet = await loadWallet();
+      const balance = await wallet.fetchWocBalance(pubkey);
+      if (linkedWalletPubkey === pubkey) {
+        linkedWocBalance = balance;
+        updateWalletButton();
+      }
+    } catch (err) {
+      console.error('[wallet] could not load linked balance', err);
+    }
+  }
+  await disconnectUnverifiedWalletIfIdle();
+}
+
+// challenge → sign → link, with a verified mirror written server-side.
+async function completeWalletVerifyFlow(address: string): Promise<void> {
+  if (!api.token || walletVerifyInProgress) return;
+  clearWalletVerifyTimeout();
+  clearWalletVerifyModalWatcher();
+  walletVerifyPending = false;
+  walletVerifyInProgress = true;
+  let verificationFailed = false;
+  try {
+    const wallet = await loadWallet();
+    setWalletFlowStatus('sign');
+    const { message, nonce } = await api.walletLinkChallenge(address);
+    const signature = await wallet.signMessageBase58(message);
+    setWalletFlowStatus('verify');
+    const result = await api.linkWallet(address, signature, nonce);
+    linkedWalletPubkey = result.pubkey;
+    linkedWocBalance = connectedWocBalance;
+    if (linkedWocBalance === null) linkedWocBalance = await wallet.fetchWocBalance(address);
+    updateWalletButton();
+  } catch (err: unknown) {
+    console.error('[wallet] verification failed', err);
+    verificationFailed = true;
+    await disconnectUnverifiedWallet();
+  } finally {
+    walletVerifyPending = false;
+    walletVerifyInProgress = false;
+    setWalletFlowStatus(null);
+    if (verificationFailed) flashWalletError(t('wallet.verifyFailed'));
+  }
+}
+
+async function startWalletVerifyFlow(forcePicker = false): Promise<void> {
+  if (!api.token || walletVerifyPending || walletVerifyInProgress) return;
+  const wallet = await loadWallet();
+  if (forcePicker) {
+    await wallet.disconnectWallet();
+    connectedWocBalance = null;
+  }
+  const current = wallet.currentWallet();
+  if (current.address) {
+    await completeWalletVerifyFlow(current.address);
+    return;
+  }
+  walletVerifyPending = true;
+  setWalletFlowStatus('connect');
+  clearWalletVerifyTimeout();
+  clearWalletVerifyModalWatcher();
+  walletVerifyModalUnsubscribe = wallet.onWalletModalChange((open) => {
+    if (!walletVerifyPending || open) return;
+    window.setTimeout(() => {
+      if (!walletVerifyPending || wallet.isWalletModalOpen() || wallet.currentWallet().address) return;
+      cancelWalletVerifyPending();
+    }, 250);
+  });
+  walletVerifyTimeout = window.setTimeout(() => {
+    if (!walletVerifyPending) return;
+    cancelWalletVerifyPending();
+  }, 120_000);
+  try {
+    await wallet.openWalletModal();
+  } catch (err) {
+    console.error('[wallet] open modal failed', err);
+    cancelWalletVerifyPending();
+    flashWalletError(t('wallet.verifyFailed'));
+  }
+}
+
+async function onWalletButtonClick(): Promise<void> {
+  const wallet = await loadWallet();
+  const { address, isConnected } = wallet.currentWallet();
+  if (linkedWalletPubkey && (!isConnected || linkedWalletPubkey === address)) {
+    await wallet.openWalletModal(); // linked wallet → manage / reconnect
+    return;
+  }
+  await startWalletVerifyFlow(false);
+}
+
+// Disconnect the browser wallet-app session. The account↔wallet link persists
+// server-side, so reconnecting the same wallet re-shows the verified state.
+async function signOutWallet(): Promise<void> {
+  const wallet = await loadWallet();
+  await wallet.disconnectWallet();
+}
+
+async function unlinkVerifiedWallet(): Promise<void> {
+  if (!api.token || !linkedWalletPubkey) return;
+  try {
+    await api.unlinkWallet();
+    linkedWalletPubkey = null;
+    linkedWocBalance = null;
+    await disconnectUnverifiedWallet();
+    updateWalletButton();
+  } catch (err) {
+    console.error('[wallet] unlink failed', err);
+    flashWalletError(t('wallet.unlinkFailed'));
+  }
+}
+
+// Switch: disconnect, then reopen the picker to connect a different wallet.
+async function switchWallet(): Promise<void> {
+  await startWalletVerifyFlow(true);
+}
+
+function wireWallet(): void {
+  setWalletUiEnabled(WALLET_ENABLED);
+  const btn = document.getElementById('btn-wallet');
+  if (!btn) return;
+  // Feature-gate: with no project id configured, remove the wallet row entirely
+  // (no dead button) and never download the wallet chunk.
+  if (!WALLET_ENABLED) {
+    document.querySelector('.cs-wallet')?.remove();
+    return;
+  }
+  // These async actions are fire-and-forget from the click, so attach a .catch:
+  // an AppKit open/disconnect rejection must surface, not vanish silently.
+  const onErr = (what: string) => (e: unknown) => console.error(`[wallet] ${what} failed`, e);
+  btn.addEventListener('click', () => { onWalletButtonClick().catch(onErr('action')); });
+  document.getElementById('btn-wallet-switch')?.addEventListener('click', () => { switchWallet().catch(onErr('switch')); });
+  document.getElementById('btn-wallet-unlink')?.addEventListener('click', () => { unlinkVerifiedWallet().catch(onErr('unlink')); });
+  document.getElementById('btn-wallet-signout')?.addEventListener('click', () => { signOutWallet().catch(onErr('disconnect')); });
+  // Load the wallet chunk (separate async bundle), then subscribe to changes and
+  // init so a persisted connection is reflected on the character screen.
+  loadWallet().then((wallet) => {
+    wallet.onWalletChange((state) => {
+      if (state.address) void refreshWocBalance(state.address);
+      else connectedWocBalance = null;
+      if (state.address && walletVerifyPending) void completeWalletVerifyFlow(state.address);
+      else if (state.address) void disconnectUnverifiedWalletIfIdle();
+      updateWalletButton();
+    });
+    wallet.initWallet();
+    updateWalletButton();
+  }).catch((e) => console.error('[wallet] load failed', e));
+  updateWalletButton();
+}
+
 function wireStartScreens(): void {
   // Initial page translation and stats load. Lazy locale flip: a stored non-en locale is now
   // a real chunk fetch, and the homepage IS the first paint (there is no loading screen to sit
@@ -2864,6 +3316,7 @@ function wireStartScreens(): void {
   void loadProjectStats();
   wireContractAddressCopy();
   wireHomepageMusicToggle();
+  wireWallet();
 
   // mode select
   const onlineBtn = $('#btn-online');
@@ -3174,7 +3627,7 @@ function wireStartScreens(): void {
     }
     try {
       if (mode === 'login') await api.login(username, password, token);
-      else await api.register(username, password, token);
+      else await api.register(username, password, token, REFERRAL_SLUG);
     } catch (err) {
       // Auth itself failed (bad credentials, taken username, Turnstile reject…).
       // The token is single-use, so refresh the widget for the next attempt.
@@ -3186,6 +3639,9 @@ function wireStartScreens(): void {
     // so don't reset the widget or let the user re-submit the (now duplicate) auth.
     try {
       $('#charselect-user').textContent = api.username ?? '';
+      // bind-on-login: surface the account's linked wallet (and flip a
+      // connected-but-unlinked button into a "Link" call-to-action).
+      void refreshWalletLinkStatus();
       await enterRealmFlow();
     } catch (err) {
       loginError(userFacingApiError(err));

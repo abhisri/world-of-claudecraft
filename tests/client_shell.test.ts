@@ -64,6 +64,24 @@ describe('client HTML shell', () => {
     expect(hudTs).not.toContain('Skin Select (dev)');
   });
 
+  it('wires player card pose clicks before loading card metadata', () => {
+    const methodStart = hudTs.indexOf('private async openPlayerCard');
+    const listener = hudTs.indexOf("poseButtons.forEach((b, i) => b.addEventListener('click'", methodStart);
+    const metadataAwait = hudTs.indexOf('[referral, standing] = await Promise.all([fetchReferralInfo(), fetchStanding()]);', methodStart);
+    const actionWiring = hudTs.indexOf('this.wireCardActions(back, state, setStatus);', methodStart);
+
+    expect(methodStart).toBeGreaterThanOrEqual(0);
+    expect(listener).toBeGreaterThan(methodStart);
+    expect(metadataAwait).toBeGreaterThan(listener);
+    expect(actionWiring).toBeGreaterThan(metadataAwait);
+
+    const listenerBlock = hudTs.slice(listener, metadataAwait);
+    expect(listenerBlock).toContain('if (!metadataReady) {');
+    expect(listenerBlock).toContain('selectPose(i);');
+    expect(listenerBlock).toContain('return;');
+    expect(hudTs.slice(metadataAwait, actionWiring)).toContain('await compose(requestedPoseIndex);');
+  });
+
   it('only displays mobile touch controls after the game is active', () => {
     expect(html).toContain('body.mobile-touch.game-active #mobile-controls');
     expect(html).not.toContain('body.mobile-touch #mobile-controls { position: absolute; inset: 0; display: block;');
