@@ -31,8 +31,9 @@ import { restView } from './rest_indicator';
 import { nearestSubzone } from './subzone';
 import { lowResourceView } from './low_resource';
 import { activeCharacterAppearancePreview, characterAppearanceOptions } from './character_appearance';
-import { terrainHeight, WATER_LEVEL, roadDistance, generateDecorations } from '../sim/world';
+import { generateDecorations } from '../sim/world';
 import type { Decoration } from '../sim/world';
+import { paintTerrainRows, mapCanvasHeight, type MapRegion } from './map_terrain';
 import { Meters } from './meters';
 import { audio } from '../game/audio';
 import { sfx } from '../game/sfx';
@@ -431,7 +432,24 @@ export class Hud {
   // presets (see minimap_zoom.ts), persisted to localStorage. 1 = shipped look.
   private minimapZoom = MINIMAP_ZOOM_DEFAULT;
   private minimapZoomLabel: HTMLElement | null = null;
-  private mapBg: HTMLCanvasElement | null = null;
+  // World-map terrain backgrounds, cached per zone. A background depends only on
+  // (seed, zone bounds) — both fixed for the session — so it is immutable and
+  // cached forever; rendering one is ~200ms (230k terrainHeight/roadDistance
+  // samples), which is why it must never run on the open path (see mapPrewarm).
+  private mapBgCache = new Map<string, HTMLCanvasElement>();
+  // In-flight idle prewarm of one zone's background, painted a few rows per
+  // idle slice so it never blocks a frame. Committed to mapBgCache when done.
+  private mapPrewarm: {
+    zoneId: string;
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    img: ImageData;
+    W: number;
+    H: number;
+    row: number;
+    region: MapRegion;
+  } | null = null;
+  private mapPrewarmHandle = 0;
   private openLootMobId: number | null = null;
   private openVendorNpcId: number | null = null;
   private openGossipNpcId: number | null = null;
@@ -485,7 +503,6 @@ export class Hud {
   private castLoopIds = new Set<number>();
   private lastResting = false;
   private lastZoneId = '';
-  private mapZoneId = ''; // zone the cached map-window canvas was rendered for
   private mapZoom = 1; // world-map zoom: 1 = whole zone, up to MAP_MAX_ZOOM
   private mapCenter: { x: number; z: number } | null = null; // pan target; null = follow player
   private mapDrag: { px: number; py: number; cx: number; cz: number } | null = null;
@@ -696,6 +713,7 @@ export class Hud {
     const startZone = zoneAt(sim.player.pos.z);
     const startZoneName = zoneDisplayName(startZone.id);
     this.lastZoneId = startZone.id;
+    this.prewarmMapBg(startZone.id); // render the spawn-zone map bg during idle, not on first open
     this.showBanner(startZoneName);
     this.log(t('hud.core.welcomeZone', { zone: startZoneName }), '#ffd100');
     this.logZoneWelcome(startZone);
@@ -2432,6 +2450,7 @@ export class Hud {
             this.logZoneWelcome(currentZone);
           }
           this.lastZoneId = currentZone.id;
+          this.prewarmMapBg(currentZone.id); // get the new zone's map bg ready before the player opens it
         }
       }
 
@@ -2595,54 +2614,96 @@ export class Hud {
 
   // Render a region of the heightfield to a canvas; width W px, height
   // derived from the region's aspect so a yard is square on screen.
-  private renderTerrainCanvas(W: number, region: { minX: number; maxX: number; minZ: number; maxZ: number }): HTMLCanvasElement {
-    const spanX = region.maxX - region.minX;
-    const spanZ = region.maxZ - region.minZ;
-    const H = Math.round(W * spanZ / spanX);
+  private renderTerrainCanvas(W: number, region: MapRegion): HTMLCanvasElement {
+    const H = mapCanvasHeight(W, region);
     const c = document.createElement('canvas');
     c.width = W;
     c.height = H;
     const ctx = c.getContext('2d')!;
     const img = ctx.createImageData(W, H);
-    const seed = this.sim.cfg.seed;
-    let prevH = 0; // height of the left-neighbour pixel, for free hillshade
-    for (let iy = 0; iy < H; iy++) {
-      for (let ix = 0; ix < W; ix++) {
-        // +Z up, +X LEFT: facing 0 is +Z ("north") and turning right
-        // decreases facing, so the world's east is -X — drawing +X to the
-        // right mirrored the whole map east-west
-        const x = region.maxX - (ix / W) * spanX;
-        const z = region.maxZ - (iy / H) * spanZ;
-        const h = terrainHeight(x, z, seed);
-        const biome = zoneAt(z).biome;
-        let r = 58, g = 105, b = 48;
-        if (biome === 'marsh') { r = 64; g = 86; b = 48; }
-        else if (biome === 'peaks') { r = 92; g = 100; b = 82; }
-        if (h < WATER_LEVEL) { r = 38; g = 84; b = 138; }
-        else if (h > 26) { r = 168; g = 172; b = 178; } // ridge / peak rock+snow
-        else if (h > 11) { r = 112; g = 110; b = 102; }
-        else if (h > 6) { r = 88; g = 102; b = 62; }
-        let nearHub = false;
-        for (const zn of ZONES) {
-          if (Math.hypot(x - zn.hub.x, z - zn.hub.z) < 14) { nearHub = true; break; }
-        }
-        if (nearHub) { r = 125; g = 100; b = 66; }
-        else if (h >= WATER_LEVEL && roadDistance(x, z) < 2.4) { r = 138; g = 111; b = 71; }
-        // hillshade: relief from the west→east slope, reusing the already-computed
-        // left-neighbour height so it costs no extra terrainHeight() calls
-        const left = ix === 0 ? h : prevH;
-        prevH = h;
-        if (h >= WATER_LEVEL) {
-          const shade = Math.max(0.74, Math.min(1.28, 1 + (h - left) * 0.16));
-          r = Math.min(255, r * shade); g = Math.min(255, g * shade); b = Math.min(255, b * shade);
-        }
-        const k = (iy * W + ix) * 4;
-        img.data[k] = r; img.data[k + 1] = g; img.data[k + 2] = b; img.data[k + 3] = 255;
-      }
-    }
+    paintTerrainRows(img.data, W, H, region, this.sim.cfg.seed, 0, H);
     ctx.putImageData(img, 0, 0);
     return c;
   }
+
+  // The full-zone band used by the world map (and prewarm), keyed only on z.
+  private mapZoneRegion(zone: ZoneDef): MapRegion {
+    return { minX: WORLD_MIN_X, maxX: WORLD_MAX_X, minZ: zone.zMin, maxZ: zone.zMax };
+  }
+
+  // The cached terrain background for a zone, rendering it synchronously only if
+  // a prewarm hasn't already produced it. The synchronous path is the fallback
+  // for "opened the map the instant we entered a zone"; normally the idle
+  // prewarm has it ready and this is a Map hit.
+  private mapZoneBg(zone: ZoneDef): HTMLCanvasElement {
+    const cached = this.mapBgCache.get(zone.id);
+    if (cached) return cached;
+    const bg = this.renderTerrainCanvas(MAP_BG_RES, this.mapZoneRegion(zone));
+    this.mapBgCache.set(zone.id, bg);
+    // a redundant in-flight prewarm for this same zone can be dropped now
+    if (this.mapPrewarm?.zoneId === zone.id) this.cancelMapPrewarm();
+    return bg;
+  }
+
+  // Kick off (or no-op) an idle, time-sliced render of a zone's map background
+  // so opening the map never pays the ~200ms terrain cost on the click. Called
+  // when the committed zone changes and once at startup for the spawn zone.
+  private prewarmMapBg(zoneId: string): void {
+    if (this.mapBgCache.has(zoneId)) return;
+    if (this.mapPrewarm?.zoneId === zoneId) return; // already prewarming it
+    const zone = ZONES.find((z) => z.id === zoneId);
+    if (!zone) return;
+    this.cancelMapPrewarm(); // drop any prewarm for a now-stale zone
+    const region = this.mapZoneRegion(zone);
+    const W = MAP_BG_RES;
+    const H = mapCanvasHeight(W, region);
+    const c = document.createElement('canvas');
+    c.width = W;
+    c.height = H;
+    const ctx = c.getContext('2d')!;
+    this.mapPrewarm = { zoneId, canvas: c, ctx, img: ctx.createImageData(W, H), W, H, row: 0, region };
+    this.scheduleMapPrewarm();
+  }
+
+  private cancelMapPrewarm(): void {
+    if (this.mapPrewarmHandle) {
+      const cancel = (window as typeof window & { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
+      if (cancel) cancel(this.mapPrewarmHandle); else clearTimeout(this.mapPrewarmHandle);
+      this.mapPrewarmHandle = 0;
+    }
+    this.mapPrewarm = null;
+  }
+
+  private scheduleMapPrewarm(): void {
+    const w = window as typeof window & {
+      requestIdleCallback?: (cb: (d: { timeRemaining(): number }) => void, opts?: { timeout: number }) => number;
+    };
+    if (w.requestIdleCallback) this.mapPrewarmHandle = w.requestIdleCallback(this.pumpMapPrewarm, { timeout: 2000 });
+    else this.mapPrewarmHandle = window.setTimeout(() => this.pumpMapPrewarm(), 16);
+  }
+
+  // Paint a budgeted slice of the in-flight prewarm, then reschedule until the
+  // zone is fully rendered. Whole rows per slice keeps it byte-identical to a
+  // one-shot render (the only per-row state — hillshade — resets each row).
+  private pumpMapPrewarm = (deadline?: { timeRemaining(): number }): void => {
+    const job = this.mapPrewarm;
+    if (!job) return;
+    const seed = this.sim.cfg.seed;
+    const ROWS_PER_SLICE = 16; // ~6ms at MAP_BG_RES; one frame fits several
+    do {
+      const end = Math.min(job.H, job.row + ROWS_PER_SLICE);
+      paintTerrainRows(job.img.data, job.W, job.H, job.region, seed, job.row, end);
+      job.row = end;
+    } while (job.row < job.H && (!deadline || deadline.timeRemaining() > 3));
+    if (job.row >= job.H) {
+      job.ctx.putImageData(job.img, 0, 0);
+      this.mapBgCache.set(job.zoneId, job.canvas);
+      this.mapPrewarm = null;
+      this.mapPrewarmHandle = 0;
+      return;
+    }
+    this.scheduleMapPrewarm();
+  };
 
   // Refresh the minimap clock to the current real local time. Cheap to call
   // every frame: the formatted string only changes once a minute, and we skip
@@ -3122,11 +3183,8 @@ export class Hud {
     const zone: ZoneDef = dungeon
       ? zoneAt(dungeon.doorPos.z)
       : ZONES.find((z) => z.id === this.lastZoneId) ?? zoneAt(p.pos.z);
-    const full = { minX: WORLD_MIN_X, maxX: WORLD_MAX_X, minZ: zone.zMin, maxZ: zone.zMax };
-    if (!this.mapBg || this.mapZoneId !== zone.id) {
-      this.mapBg = this.renderTerrainCanvas(MAP_BG_RES, full); // whole zone, cached & detailed
-      this.mapZoneId = zone.id;
-    }
+    const full = this.mapZoneRegion(zone);
+    const mapBg = this.mapZoneBg(zone); // cached per zone; prewarmed during idle
     // zoomed view: a sub-rectangle of the zone, centred on the player and
     // clamped to the zone bounds (zoom 1 = the whole zone).
     const fullSpanX = full.maxX - full.minX;
@@ -3142,7 +3200,7 @@ export class Hud {
     this.mapView = { spanX, spanZ, minX: full.minX, maxX: full.maxX, minZ: full.minZ, maxZ: full.maxZ };
     if (!this.mapDrag) canvas.style.cursor = this.mapZoom > 1 ? 'grab' : 'default';
     // blit the matching sub-rect of the cached terrain (note: +X is map-left)
-    const bg = this.mapBg;
+    const bg = mapBg;
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(
       bg,
