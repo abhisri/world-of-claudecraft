@@ -70,7 +70,8 @@ See `README.md` for the full host/develop/play guide and the classic-fidelity ch
 - **i18n: every player-visible string is a `t()` key.** (Translated in every locale
   *by release*: see the contributor/maintainer split below; English-only PRs are
   legal.) Each
-  locale in `src/ui/i18n.ts` is `: typeof en`, so `tsc` fails on a missing/renamed
+  generated locale slice in `src/ui/i18n.resolved.generated/` is typed `: typeof en`,
+  so `tsc` fails on a missing/renamed
   key — but it **cannot** see a hard-coded literal that never became a key, nor a
   new English string emitted by `src/sim/`/`server/` and never registered in the
   client matcher. Both compile green and ship English to a translated player.
