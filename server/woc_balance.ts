@@ -24,9 +24,12 @@ import {
 
 const WOC_MINT = (process.env.WOC_MINT ?? process.env.VITE_WOC_MINT ?? '3WjLscH2JsXLEFJZRA9z8ti8yRGxWGKbqymPd7UicRth').trim();
 const SOLANA_RPC_URL = (process.env.SOLANA_RPC_URL ?? process.env.VITE_SOLANA_RPC_URL ?? 'https://api.mainnet-beta.solana.com').trim();
-// Balances move slowly relative to a play session; one RPC per wallet per this
-// window is plenty and keeps us well under public-RPC rate limits.
-const CACHE_TTL_MS = 5 * 60 * 1000;
+// How long a per-wallet balance is reused before the next RPC. This is the
+// freshness floor for the in-world holder-tier badge (the broadcast path reads
+// through this cache); the player's own card/bag bypass it with `fresh=1` on
+// open. 2 min keeps token changes visible within a couple minutes while staying
+// well under public-RPC rate limits (≈ online-players / 2 min in RPC reads).
+const CACHE_TTL_MS = 2 * 60 * 1000;
 export const WOC_BALANCE_CACHE_MAX_ENTRIES = 1024;
 
 interface CacheEntry { balance: number; at: number; }
