@@ -1447,7 +1447,7 @@ export const ABILITIES: Record<string, AbilityDef> = {
     id: 'travel_form', name: 'Travel Form', class: 'druid', learnLevel: 16,
     cost: 30, castTime: 0, cooldown: 0, range: 0, school: 'nature',
     requiresTarget: false, requiresOutOfCombat: true,
-    effects: [{ type: 'selfBuff', kind: 'buff_speed', value: 0.4, duration: 3600 }],
+    effects: [{ type: 'selfBuff', kind: 'buff_speed', value: 1.4, duration: 3600 }],
     description: 'Take on a swift travel form, increasing movement speed by 40%. Cannot be used in combat.',
   },
   enrage: {
@@ -1482,7 +1482,7 @@ export const ABILITIES: Record<string, AbilityDef> = {
     id: 'dash', name: 'Dash', class: 'druid', learnLevel: 18,
     cost: 0, castTime: 0, cooldown: 60, range: 0, school: 'physical',
     requiresTarget: false, offGcd: true, requiresForm: 'cat',
-    effects: [{ type: 'selfBuff', kind: 'buff_speed', value: 0.5, duration: 15 }],
+    effects: [{ type: 'selfBuff', kind: 'buff_speed', value: 1.5, duration: 15 }],
     description: 'Sprint forward, increasing movement speed by 50% for 15 sec. Wolf Form only.',
   },
   pounce: {

@@ -95,5 +95,24 @@ describe('druid spell pack — casting applies effects', () => {
     sim.tick();
     const buff = e.auras.find((au) => au.kind === 'buff_speed');
     expect(buff, 'travel_form should apply a buff_speed aura').toBeTruthy();
+    // The aura must actually speed the druid up: buff_speed is a multiplier,
+    // so a +40% form has to resolve to an effective mult > 1.
+    expect((sim as any).moveSpeedMult(e)).toBeGreaterThan(1);
+  });
+
+  it('Dash actually increases movement speed in cat form', () => {
+    const sim = makeWorld();
+    const a = sim.addPlayer('druid', 'Runner');
+    const e = sim.entities.get(a)!;
+    sim.setPlayerLevel(20, a);
+    giveForm(sim, a, 'form_cat', 'Wolf Form');
+    const base = (sim as any).moveSpeedMult(e);
+    sim.castAbility('dash', a);
+    sim.tick();
+    const buff = e.auras.find((au) => au.kind === 'buff_speed');
+    expect(buff, 'dash should apply a buff_speed aura').toBeTruthy();
+    // The whole point of Dash: the effective move-speed multiplier must rise.
+    expect((sim as any).moveSpeedMult(e)).toBeGreaterThan(base);
+    expect((sim as any).moveSpeedMult(e)).toBeGreaterThan(1);
   });
 });
