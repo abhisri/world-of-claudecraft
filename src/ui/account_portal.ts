@@ -11,8 +11,7 @@ export interface AccountPortalState {
   email: string;
   /** ISO timestamp of account creation, or '' when unknown. */
   createdAt: string;
-  /** Verified/preview $WOC balance, or null when none is known. */
-  wocBalance: number | null;
+  /** Account-wide character count (every realm). */
   characterCount: number;
 }
 
@@ -23,9 +22,8 @@ export interface AccountPortalModel {
     username: string;
     /** Empty string when createdAt is unknown/unparseable. */
     memberSinceIso: string;
-    /** True when a $WOC balance should be shown in the header. */
-    showBalance: boolean;
-    wocBalance: number | null;
+    /** Account-wide character count, surfaced in the Characters card. */
+    characterCount: number;
   };
   /** Which portal sections are available, in display order. */
   sections: AccountPortalSection[];
@@ -36,8 +34,10 @@ export type AccountPortalSection = 'settings' | 'wallet' | 'characters' | 'logou
 
 const SECTION_ORDER: AccountPortalSection[] = ['settings', 'wallet', 'characters', 'logout'];
 
-/** Minimum password length — mirrors the server's validPassword (>= 6 chars). */
+// Password length bounds — mirror the server's validPassword (6..128 chars) so
+// the client gate matches what the server will accept byte-for-byte.
 export const MIN_PASSWORD_LENGTH = 6;
+export const MAX_PASSWORD_LENGTH = 128;
 
 export function accountPortalModel(state: AccountPortalState): AccountPortalModel {
   return {
@@ -45,8 +45,7 @@ export function accountPortalModel(state: AccountPortalState): AccountPortalMode
     header: {
       username: state.username,
       memberSinceIso: normalizeIso(state.createdAt),
-      showBalance: state.wocBalance !== null,
-      wocBalance: state.wocBalance,
+      characterCount: state.characterCount,
     },
     sections: state.loggedIn ? [...SECTION_ORDER] : [],
     email: state.email,
@@ -59,16 +58,19 @@ function normalizeIso(value: string): string {
   return Number.isNaN(t) ? '' : new Date(t).toISOString();
 }
 
-export type PasswordError = 'empty-current' | 'too-short' | 'unchanged';
+export type PasswordError = 'empty-current' | 'too-short' | 'too-long' | 'unchanged';
 
 /**
  * Validate a password-change form. Returns null when the input is acceptable to
  * send to the server (the server re-verifies the current password and re-checks
- * length — this is only the optimistic client gate).
+ * length — this is only the optimistic client gate). The length bounds match the
+ * server exactly so a too-long password is caught here with a clear message
+ * rather than bouncing off the server's misleading "at least 6 chars".
  */
 export function validateNewPassword(current: string, next: string): PasswordError | null {
   if (!current) return 'empty-current';
   if (next.length < MIN_PASSWORD_LENGTH) return 'too-short';
+  if (next.length > MAX_PASSWORD_LENGTH) return 'too-long';
   if (next === current) return 'unchanged';
   return null;
 }

@@ -24,6 +24,9 @@ import { json, readBody, isUniqueViolation } from './http_util';
 import { requestIp, rateLimited, authThrottled, recordAuthFailure, clearAuthFailures, cardUploadRateLimited } from './ratelimit';
 import { verifyTurnstile } from './turnstile';
 import { handleWalletChallenge, handleWalletLink, handleWalletGet, handleWalletUnlink } from './wallet';
+import {
+  handleAccountWhoami, handleAccountChangePassword, handleAccountSetEmail, handleAccountDeactivate,
+} from './account';
 import { handleWocBalance } from './woc_balance';
 import { handleCardUpload, handleCardRoutes, captureReferral, cardUploadContentLengthTooLarge } from './player_card';
 import { handleAdminApi } from './admin';
@@ -595,73 +598,36 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
       const entries = await getReleases();
       return json(res, 200, { repo: GITHUB_REPO, releases: entries.slice(0, limit) });
     }
-    // Account self-service portal — all bearer-auth, account-scoped.
-    // whoami: re-validates a stored token on reload + feeds the portal header.
+    // Account self-service portal — all bearer-auth, account-scoped. Each route
+    // delegates to an exported, testable handler in server/account.ts (mirroring
+    // server/wallet.ts); main.ts only resolves the bearer account first.
     if (req.method === 'GET' && url === '/api/account') {
       const accountId = await bearerActiveAccount(req, res);
       if (accountId === null) return;
-      const acct = await accountById(accountId);
-      if (!acct) return json(res, 404, { error: 'account not found' });
-      const characterCount = await characterCountForAccount(accountId);
-      return json(res, 200, {
-        username: acct.username,
-        email: acct.email ?? '',
-        createdAt: acct.created_at,
-        characterCount,
-      });
+      return handleAccountWhoami(res, accountId);
     }
-    // Change password: re-verify current, then revoke every OTHER token so a
-    // password change signs out other devices while keeping this one alive.
     if (req.method === 'POST' && url === '/api/account/password') {
       const accountId = await bearerActiveAccount(req, res);
       if (accountId === null) return;
-      // Resolve the caller's own token once so the revoke below can never
-      // accidentally fall back to null (which would nuke this session too).
+      // Resolve the caller's own token once so the revoke inside the handler can
+      // never accidentally fall back to null (which would nuke this session too).
       const callerToken = bearerToken(req);
       if (!callerToken) return json(res, 401, { error: 'not authenticated' });
-      const body = await readBody(req);
-      const acct = await accountById(accountId);
-      if (!acct) return json(res, 404, { error: 'account not found' });
-      if (!(await verifyPassword(String(body.current ?? ''), acct.password_hash))) {
-        return json(res, 401, { error: 'current password is incorrect' });
-      }
-      if (!validPassword(body.next)) return json(res, 400, { error: 'password must be at least 6 chars' });
-      await updatePasswordHash(accountId, await hashPassword(body.next));
-      await revokeTokensExcept(accountId, callerToken);
-      return json(res, 200, { ok: true });
+      return handleAccountChangePassword(req, res, accountId, callerToken);
     }
-    // Optional account email — settings-only, lenient, no sending. Empty clears.
     if (req.method === 'POST' && url === '/api/account/email') {
       const accountId = await bearerActiveAccount(req, res);
       if (accountId === null) return;
-      const body = await readBody(req);
-      const raw = typeof body.email === 'string' ? body.email.trim() : '';
-      if (raw.length > 254 || (raw !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw))) {
-        return json(res, 400, { error: 'enter a valid email address' });
-      }
-      await setAccountEmail(accountId, raw === '' ? null : raw);
-      return json(res, 200, { email: raw });
+      return handleAccountSetEmail(req, res, accountId);
     }
-    // Soft-deactivate: re-confirm password + username, require all characters
-    // offline, then lock the account and revoke ALL tokens. Reversible by an admin.
     if (req.method === 'POST' && url === '/api/account/deactivate') {
       const accountId = await bearerActiveAccount(req, res);
       if (accountId === null) return;
-      const body = await readBody(req);
-      const acct = await accountById(accountId);
-      if (!acct) return json(res, 404, { error: 'account not found' });
-      if (String(body.username ?? '') !== acct.username) {
-        return json(res, 400, { error: 'username does not match' });
-      }
-      if (!(await verifyPassword(String(body.password ?? ''), acct.password_hash))) {
-        return json(res, 401, { error: 'password is incorrect' });
-      }
-      const chars = await listCharacters(accountId);
-      const anyOnline = chars.some((c) => [...game.clients.values()].some((s) => s.characterId === c.id));
-      if (anyOnline) return json(res, 409, { error: 'log out all characters before deactivating' });
-      await setAccountDeactivated(accountId, true);
-      await revokeTokensExcept(accountId, null);
-      return json(res, 200, { ok: true });
+      return handleAccountDeactivate(req, res, accountId, {
+        anyCharacterOnline: (characterIds) =>
+          [...game.clients.values()].some((s) => s.characterId != null && characterIds.includes(s.characterId)),
+        disconnectAccount: (id, reason) => game.disconnectAccount(id, reason),
+      });
     }
     // Non-custodial Solana wallet linking — all account-scoped.
     if (req.method === 'POST' && url === '/api/wallet/link/challenge') {

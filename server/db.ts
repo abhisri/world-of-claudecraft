@@ -473,10 +473,13 @@ export async function accountById(accountId: number): Promise<AccountInfoRow | n
   return res.rows[0] ?? null;
 }
 
+// Account-wide character count across every realm. The account portal is an
+// account-wide self-service surface, so it counts all of the account's
+// characters (unlike realm-scoped listCharacters).
 export async function characterCountForAccount(accountId: number): Promise<number> {
   const res = await pool.query(
-    `SELECT COUNT(*)::int AS count FROM characters WHERE account_id = $1 AND realm = $2`,
-    [accountId, REALM],
+    `SELECT COUNT(*)::int AS count FROM characters WHERE account_id = $1`,
+    [accountId],
   );
   return res.rows[0]?.count ?? 0;
 }

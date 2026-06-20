@@ -2464,14 +2464,6 @@
   }
   #account-username { font-size: 1.4rem; font-weight: 700; }
   .account-meta { font-size: 0.85rem; opacity: 0.85; color: #cbbf9e; }
-  .account-balance {
-    align-self: center;
-    padding: 4px 14px;
-    border: 1px solid var(--color-gold, #d4af37);
-    border-radius: 999px;
-    color: var(--color-gold, #d4af37);
-    font-weight: 600;
-  }
   .account-logged-out { text-align: center; opacity: 0.8; }
   .account-sections {
     display: grid;
@@ -2499,7 +2491,7 @@
   .account-form { display: flex; flex-direction: column; gap: var(--spacing-sm); }
   .account-summary, .account-hint { opacity: 0.78; font-size: 0.88rem; margin: 0; }
   .account-form .btn { align-self: flex-start; }
-  .auth-field-msg { font-size: 0.85rem; min-height: 1.1em; aria-live: polite; }
+  .auth-field-msg { font-size: 0.85rem; min-height: 1.1em; }
   .auth-field-msg.is-error { color: #e88; }
   .auth-field-msg.is-ok { color: #8d8; }
 
@@ -8007,7 +7999,6 @@
               <span id="account-username" class="gold"></span>
               <span id="account-member-since" class="account-meta"></span>
             </div>
-            <div id="account-balance" class="account-balance" hidden></div>
           </header>
 
           <p id="account-logged-out" class="account-logged-out" hidden data-i18n="hudChrome.account.loggedOutPrompt">Log in to manage your account.</p>
@@ -8052,6 +8043,7 @@
             <section class="account-card">
               <h3 class="account-card-title" data-i18n="hudChrome.account.sectionCharacters">Characters</h3>
               <p class="account-summary" data-i18n="hudChrome.account.charactersSummary">Manage your characters and enter the world.</p>
+              <p id="account-char-count" class="account-meta" aria-live="polite"></p>
               <button type="button" class="btn btn-primary" id="account-go-characters" data-i18n="hudChrome.account.goToCharacters">View Characters</button>
             </section>
 

@@ -11,6 +11,7 @@
 export const pending: Record<string, readonly string[]> = {
   "es": [
     "hudChrome.account.changePassword",
+    "hudChrome.account.charactersCount",
     "hudChrome.account.charactersSummary",
     "hudChrome.account.confirmPassword",
     "hudChrome.account.confirmUsername",
@@ -28,6 +29,7 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.errCurrentRequired",
     "hudChrome.account.errEmailInvalid",
     "hudChrome.account.errPasswordIncorrect",
+    "hudChrome.account.errPasswordLong",
     "hudChrome.account.errPasswordShort",
     "hudChrome.account.errPasswordUnchanged",
     "hudChrome.account.errUsernameMatch",
@@ -46,12 +48,12 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.sectionSettings",
     "hudChrome.account.sectionWallet",
     "hudChrome.account.title",
-    "hudChrome.account.walletBalance",
     "hudChrome.account.walletSummary",
     "nav.account"
   ],
   "es_ES": [
     "hudChrome.account.changePassword",
+    "hudChrome.account.charactersCount",
     "hudChrome.account.charactersSummary",
     "hudChrome.account.confirmPassword",
     "hudChrome.account.confirmUsername",
@@ -69,6 +71,7 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.errCurrentRequired",
     "hudChrome.account.errEmailInvalid",
     "hudChrome.account.errPasswordIncorrect",
+    "hudChrome.account.errPasswordLong",
     "hudChrome.account.errPasswordShort",
     "hudChrome.account.errPasswordUnchanged",
     "hudChrome.account.errUsernameMatch",
@@ -87,12 +90,12 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.sectionSettings",
     "hudChrome.account.sectionWallet",
     "hudChrome.account.title",
-    "hudChrome.account.walletBalance",
     "hudChrome.account.walletSummary",
     "nav.account"
   ],
   "fr_FR": [
     "hudChrome.account.changePassword",
+    "hudChrome.account.charactersCount",
     "hudChrome.account.charactersSummary",
     "hudChrome.account.confirmPassword",
     "hudChrome.account.confirmUsername",
@@ -110,6 +113,7 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.errCurrentRequired",
     "hudChrome.account.errEmailInvalid",
     "hudChrome.account.errPasswordIncorrect",
+    "hudChrome.account.errPasswordLong",
     "hudChrome.account.errPasswordShort",
     "hudChrome.account.errPasswordUnchanged",
     "hudChrome.account.errUsernameMatch",
@@ -128,12 +132,12 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.sectionSettings",
     "hudChrome.account.sectionWallet",
     "hudChrome.account.title",
-    "hudChrome.account.walletBalance",
     "hudChrome.account.walletSummary",
     "nav.account"
   ],
   "fr_CA": [
     "hudChrome.account.changePassword",
+    "hudChrome.account.charactersCount",
     "hudChrome.account.charactersSummary",
     "hudChrome.account.confirmPassword",
     "hudChrome.account.confirmUsername",
@@ -151,6 +155,7 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.errCurrentRequired",
     "hudChrome.account.errEmailInvalid",
     "hudChrome.account.errPasswordIncorrect",
+    "hudChrome.account.errPasswordLong",
     "hudChrome.account.errPasswordShort",
     "hudChrome.account.errPasswordUnchanged",
     "hudChrome.account.errUsernameMatch",
@@ -169,13 +174,13 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.sectionSettings",
     "hudChrome.account.sectionWallet",
     "hudChrome.account.title",
-    "hudChrome.account.walletBalance",
     "hudChrome.account.walletSummary",
     "nav.account"
   ],
   "en_CA": [],
   "it_IT": [
     "hudChrome.account.changePassword",
+    "hudChrome.account.charactersCount",
     "hudChrome.account.charactersSummary",
     "hudChrome.account.confirmPassword",
     "hudChrome.account.confirmUsername",
@@ -193,6 +198,7 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.errCurrentRequired",
     "hudChrome.account.errEmailInvalid",
     "hudChrome.account.errPasswordIncorrect",
+    "hudChrome.account.errPasswordLong",
     "hudChrome.account.errPasswordShort",
     "hudChrome.account.errPasswordUnchanged",
     "hudChrome.account.errUsernameMatch",
@@ -211,12 +217,12 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.sectionSettings",
     "hudChrome.account.sectionWallet",
     "hudChrome.account.title",
-    "hudChrome.account.walletBalance",
     "hudChrome.account.walletSummary",
     "nav.account"
   ],
   "de_DE": [
     "hudChrome.account.changePassword",
+    "hudChrome.account.charactersCount",
     "hudChrome.account.charactersSummary",
     "hudChrome.account.confirmPassword",
     "hudChrome.account.confirmUsername",
@@ -234,6 +240,7 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.errCurrentRequired",
     "hudChrome.account.errEmailInvalid",
     "hudChrome.account.errPasswordIncorrect",
+    "hudChrome.account.errPasswordLong",
     "hudChrome.account.errPasswordShort",
     "hudChrome.account.errPasswordUnchanged",
     "hudChrome.account.errUsernameMatch",
@@ -252,7 +259,6 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.sectionSettings",
     "hudChrome.account.sectionWallet",
     "hudChrome.account.title",
-    "hudChrome.account.walletBalance",
     "hudChrome.account.walletSummary",
     "nav.account"
   ],
@@ -262,6 +268,7 @@ export const pending: Record<string, readonly string[]> = {
   "ja_JP": [],
   "pt_BR": [
     "hudChrome.account.changePassword",
+    "hudChrome.account.charactersCount",
     "hudChrome.account.charactersSummary",
     "hudChrome.account.confirmPassword",
     "hudChrome.account.confirmUsername",
@@ -279,6 +286,7 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.errCurrentRequired",
     "hudChrome.account.errEmailInvalid",
     "hudChrome.account.errPasswordIncorrect",
+    "hudChrome.account.errPasswordLong",
     "hudChrome.account.errPasswordShort",
     "hudChrome.account.errPasswordUnchanged",
     "hudChrome.account.errUsernameMatch",
@@ -297,7 +305,6 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.account.sectionSettings",
     "hudChrome.account.sectionWallet",
     "hudChrome.account.title",
-    "hudChrome.account.walletBalance",
     "hudChrome.account.walletSummary",
     "nav.account"
   ],

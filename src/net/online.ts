@@ -87,6 +87,21 @@ export interface AccountInfo {
   characterCount: number;
 }
 
+// Carries the HTTP status alongside the server's error text so callers can
+// distinguish an auth failure (401/403 → clear the stored session) from a
+// transient 5xx/network blip (keep the token; the session may still be valid).
+export class ApiError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+/** True for an auth-class failure where a stored token should be discarded. */
+export function isAuthError(err: unknown): boolean {
+  return err instanceof ApiError && (err.status === 401 || err.status === 403);
+}
+
 export class Api {
   private static readonly SESSION_KEY = 'woc_session';
   token: string | null = null;
@@ -135,7 +150,7 @@ export class Api {
       body: JSON.stringify(body),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error ?? `request failed (${res.status})`);
+    if (!res.ok) throw new ApiError(data.error ?? `request failed (${res.status})`, res.status);
     return data;
   }
 
@@ -144,7 +159,7 @@ export class Api {
       headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error ?? `request failed (${res.status})`);
+    if (!res.ok) throw new ApiError(data.error ?? `request failed (${res.status})`, res.status);
     return data;
   }
 
@@ -158,7 +173,7 @@ export class Api {
       body: JSON.stringify(body),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error ?? `request failed (${res.status})`);
+    if (!res.ok) throw new ApiError(data.error ?? `request failed (${res.status})`, res.status);
     return data;
   }
 

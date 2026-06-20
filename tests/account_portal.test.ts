@@ -5,6 +5,7 @@ import {
   validateEmailShape,
   deactivateConfirmReady,
   MIN_PASSWORD_LENGTH,
+  MAX_PASSWORD_LENGTH,
   type AccountPortalState,
 } from '../src/ui/account_portal';
 
@@ -13,7 +14,6 @@ const base: AccountPortalState = {
   username: 'Aelwyn',
   email: '',
   createdAt: '2026-01-15T10:00:00.000Z',
-  wocBalance: 1250,
   characterCount: 3,
 };
 
@@ -30,9 +30,9 @@ describe('accountPortalModel', () => {
     expect(m.sections).toEqual([]);
   });
 
-  it('shows the balance only when one is known', () => {
-    expect(accountPortalModel(base).header.showBalance).toBe(true);
-    expect(accountPortalModel({ ...base, wocBalance: null }).header.showBalance).toBe(false);
+  it('surfaces the account-wide character count', () => {
+    expect(accountPortalModel(base).header.characterCount).toBe(3);
+    expect(accountPortalModel({ ...base, characterCount: 0 }).header.characterCount).toBe(0);
   });
 
   it('normalizes createdAt and tolerates junk', () => {
@@ -48,6 +48,14 @@ describe('validateNewPassword', () => {
   });
   it('rejects a too-short new password', () => {
     expect(validateNewPassword('oldpass', 'a'.repeat(MIN_PASSWORD_LENGTH - 1))).toBe('too-short');
+  });
+  it('rejects a too-long new password (matches the server upper bound)', () => {
+    expect(validateNewPassword('oldpass', 'a'.repeat(MAX_PASSWORD_LENGTH + 1))).toBe('too-long');
+    // Exactly at the bound is accepted.
+    expect(validateNewPassword('oldpass', 'a'.repeat(MAX_PASSWORD_LENGTH))).toBeNull();
+  });
+  it('reports too-short before unchanged when both apply', () => {
+    expect(validateNewPassword('ab', 'ab')).toBe('too-short');
   });
   it('rejects an unchanged password', () => {
     expect(validateNewPassword('samesame', 'samesame')).toBe('unchanged');
@@ -72,6 +80,11 @@ describe('validateEmailShape', () => {
   });
   it('rejects an over-long address', () => {
     expect(validateEmailShape(`${'a'.repeat(250)}@example.com`)).toBe(false);
+  });
+  it('enforces the 254-char boundary exactly', () => {
+    const local = (n: number) => `${'a'.repeat(n)}@example.com`; // tail is 12 chars
+    expect(validateEmailShape(local(254 - 12))).toBe(true); // length 254 → ok
+    expect(validateEmailShape(local(255 - 12))).toBe(false); // length 255 → too long
   });
 });
 

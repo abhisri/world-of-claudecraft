@@ -15,8 +15,8 @@ import { voice } from './game/voice';
 import { sfx } from './game/sfx';
 import { activePvpOpponentIds, handlePickedEntity, hoverCursorKind, isAttackableEntity } from './game/interactions';
 import { clickMoveShouldCancel, clickMoveShouldWalk, clickMoveStep, distance2d, latencyAdjustedStopDistance, stepAngleToward } from './game/click_move';
-import { Api, ClientWorld, CharacterSummary, type ReleaseEntry } from './net/online';
-import { setWalletDisplayAvailable, setWocBalance, setWalletUiEnabled, wocBalance } from './ui/wallet_balance';
+import { Api, isAuthError, ClientWorld, CharacterSummary, type ReleaseEntry } from './net/online';
+import { setWalletDisplayAvailable, setWocBalance, setWalletUiEnabled } from './ui/wallet_balance';
 import {
   accountPortalModel, validateNewPassword, validateEmailShape, deactivateConfirmReady,
 } from './ui/account_portal';
@@ -172,6 +172,10 @@ function userFacingApiError(err: unknown): string {
   if (normalized === 'password is incorrect') return t('hudChrome.account.errPasswordIncorrect');
   if (normalized === 'log out all characters before deactivating') return t('hudChrome.account.errCharactersOnline');
   if (normalized === 'this account has been deactivated.') return t('hudChrome.account.deactivatedLocked');
+  if (normalized === 'password must be at most 128 chars') return t('hudChrome.account.errPasswordLong');
+  // The account row vanished mid-session (404 from /api/account/*); treat as a
+  // dropped session rather than rendering raw English in the form.
+  if (normalized === 'account not found') return t('errors.api.notAuthenticated');
   // Cloudflare Turnstile rejection on login/register (server/main.ts passesTurnstile).
   if (normalized === 'verification failed, please try again') return t('errors.api.verificationFailed');
   // WebSocket disconnect reasons surfaced through the fatal overlay (net/online.ts).
@@ -1915,17 +1919,13 @@ function paintAccountPortal(model: ReturnType<typeof accountPortalModel>): void 
   since.textContent = model.header.memberSinceIso
     ? t('hudChrome.account.memberSince', { date: formatDateTime(new Date(model.header.memberSinceIso), { dateStyle: 'medium' }) })
     : '';
-  const bal = $('#account-balance') as HTMLElement;
-  if (model.header.showBalance && model.header.wocBalance !== null) {
-    bal.hidden = false;
-    bal.textContent = t('hudChrome.account.walletBalance', { amount: formatNumber(model.header.wocBalance, { maximumFractionDigits: 2 }) });
-  } else {
-    bal.hidden = true;
-  }
+  $('#account-char-count').textContent = t('hudChrome.account.charactersCount', {
+    count: formatNumber(model.header.characterCount),
+  });
   ($('#account-email') as HTMLInputElement).value = model.email;
 }
 
-const loggedOutModel = () => accountPortalModel({ loggedIn: false, username: '', email: '', createdAt: '', wocBalance: null, characterCount: 0 });
+const loggedOutModel = () => accountPortalModel({ loggedIn: false, username: '', email: '', createdAt: '', characterCount: 0 });
 
 function handleAccountSessionExpired(): void {
   api.clearSession();
@@ -1933,37 +1933,55 @@ function handleAccountSessionExpired(): void {
   paintAccountPortal(loggedOutModel());
 }
 
-// Re-validate a restored token against the server; clear it if it's stale.
-async function revalidateAccountSession(): Promise<void> {
-  if (!api.token) return;
-  try {
-    const acct = await api.getAccount();
-    enterLoggedInChrome();
-    paintAccountPortal(accountPortalModel({
-      loggedIn: true, username: acct.username, email: acct.email,
-      createdAt: acct.createdAt, wocBalance: wocBalance(), characterCount: acct.characterCount,
-    }));
-  } catch {
-    handleAccountSessionExpired();
-  }
-}
-
-async function renderAccountPortal(): Promise<void> {
+// Load the account portal from a (possibly restored) token. A 401/403 means the
+// token is genuinely stale → clear the session. Any other failure (5xx from a
+// restarting server, a captive-portal blip, being briefly offline) is transient:
+// keep the token and stay optimistically logged in, since only the local copy
+// would be lost. `setChrome` flips the nav into the logged-in state (boot path).
+async function loadAccountPortal(setChrome: boolean): Promise<void> {
   if (!api.token) { paintAccountPortal(loggedOutModel()); return; }
   try {
     const acct = await api.getAccount();
+    if (setChrome) enterLoggedInChrome();
     paintAccountPortal(accountPortalModel({
       loggedIn: true, username: acct.username, email: acct.email,
-      createdAt: acct.createdAt, wocBalance: wocBalance(), characterCount: acct.characterCount,
+      createdAt: acct.createdAt, characterCount: acct.characterCount,
     }));
-  } catch {
-    handleAccountSessionExpired();
+  } catch (err) {
+    if (isAuthError(err)) { handleAccountSessionExpired(); return; }
+    console.warn('account session check deferred (transient):', err);
+    if (setChrome) enterLoggedInChrome();
+    paintAccountPortal(accountPortalModel({
+      loggedIn: true, username: api.username ?? '', email: '', createdAt: '', characterCount: 0,
+    }));
   }
 }
 
-function accountGoToCharacters(): void {
+// Boot path: a restored token re-validates and sets the logged-in nav chrome.
+const revalidateAccountSession = (): Promise<void> => loadAccountPortal(true);
+// Navigating to the Account view: refresh the portal without touching the chrome.
+const renderAccountPortal = (): Promise<void> => loadAccountPortal(false);
+
+// `focusWallet` differentiates the Wallet card's CTA from "View Characters":
+// both land on the realm/character picker, but Manage Wallet then scrolls to and
+// focuses the wallet control once it renders.
+let pendingWalletFocus = false;
+function accountGoToCharacters(focusWallet = false): void {
+  pendingWalletFocus = focusWallet;
   switchMainView('#hero-view');
-  void enterRealmFlow();
+  void enterRealmFlow().then(() => { if (pendingWalletFocus) tryFocusWalletButton(); });
+}
+
+function tryFocusWalletButton(attempt = 0): void {
+  const btn = document.getElementById('btn-wallet');
+  if (btn && btn.offsetParent !== null) {
+    pendingWalletFocus = false;
+    btn.scrollIntoView({ block: 'center' });
+    btn.focus();
+    return;
+  }
+  if (attempt < 20) window.setTimeout(() => tryFocusWalletButton(attempt + 1), 100);
+  else pendingWalletFocus = false;
 }
 
 let accountPortalWired = false;
@@ -1977,7 +1995,10 @@ function setupAccountPortal(): void {
     const next = ($('#account-new-pass') as HTMLInputElement).value;
     const err = validateNewPassword(current, next);
     if (err) {
-      const key = err === 'empty-current' ? 'errCurrentRequired' : err === 'too-short' ? 'errPasswordShort' : 'errPasswordUnchanged';
+      const key = err === 'empty-current' ? 'errCurrentRequired'
+        : err === 'too-short' ? 'errPasswordShort'
+        : err === 'too-long' ? 'errPasswordLong'
+        : 'errPasswordUnchanged';
       setAccountFieldMsg('#account-password-msg', t(`hudChrome.account.${key}` as TranslationKey), false);
       return;
     }
@@ -2025,8 +2046,8 @@ function setupAccountPortal(): void {
     }
   });
 
-  ($('#account-manage-wallet') as HTMLElement).addEventListener('click', accountGoToCharacters);
-  ($('#account-go-characters') as HTMLElement).addEventListener('click', accountGoToCharacters);
+  ($('#account-manage-wallet') as HTMLElement).addEventListener('click', () => accountGoToCharacters(true));
+  ($('#account-go-characters') as HTMLElement).addEventListener('click', () => accountGoToCharacters(false));
   ($('#account-logout') as HTMLElement).addEventListener('click', () => { api.clearSession(); location.reload(); });
 }
 

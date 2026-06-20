@@ -235,7 +235,6 @@ export const hudChromeStrings = {
     title: "Account",
     loggedOutPrompt: "Log in to manage your account.",
     memberSince: "Member since {date}",
-    walletBalance: "{amount} $WOC",
     sectionSettings: "Account Settings",
     sectionWallet: "$WOC Wallet",
     sectionCharacters: "Characters",
@@ -248,6 +247,7 @@ export const hudChromeStrings = {
     passwordChanged: "Password updated. Other devices have been signed out.",
     errCurrentRequired: "Enter your current password.",
     errPasswordShort: "New password must be at least 6 characters.",
+    errPasswordLong: "New password must be at most 128 characters.",
     errPasswordUnchanged: "New password must be different from the current one.",
     // Email
     emailLabel: "Email (optional)",
@@ -263,6 +263,7 @@ export const hudChromeStrings = {
     deactivatedLocked: "This account has been deactivated. Contact an admin to restore it.",
     // Characters
     charactersSummary: "Manage your characters and enter the world.",
+    charactersCount: "Characters: {count}",
     goToCharacters: "View Characters",
     // Wallet
     walletSummary: "Verify a Solana wallet to show holder flair on your player card.",
