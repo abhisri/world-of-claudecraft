@@ -13,18 +13,17 @@
 //   npm run dev                       # Vite client on :5173 (serves the ESM modules)
 //   node scripts/player_card_capture_check.mjs
 //
-// Exits non-zero on any clipped or empty capture.
+// Exits non-zero on any clipped, empty, OR under-framed (too-small) capture —
+// the latter being the real downside of pulling the capture camera back too far,
+// since drawCharacter() fits the whole capture, not the figure's bounding box.
 import puppeteer from '../node_modules/puppeteer-core/lib/puppeteer/puppeteer-core.js';
 import { BROWSER_PATH } from './browser_path.mjs';
 
 const BASE = process.env.WOC_DEV_BASE ?? 'http://localhost:5173';
 const CLASSES = ['warrior', 'paladin', 'hunter', 'mage', 'rogue', 'priest'];
-// Mirror of CARD_POSES in src/ui/player_card.ts (id -> clips + freeze fraction).
-const POSES = {
-  hero: { clips: ['Spellcast_Raise', 'Spellcasting', 'Idle'], fraction: 0.5 },
-  battle: { clips: ['2H_Melee_Attack_Chop', '1H_Melee_Attack_Chop', '1H_Melee_Attack_Slice_Diagonal', 'Dualwield_Melee_Attack_Chop', '2H_Ranged_Shoot', 'Spellcast_Shoot', 'Idle'], fraction: 0.4 },
-  victory: { clips: ['Cheer', 'Jump_Idle', 'Idle'], fraction: 0.5 },
-};
+// The figure must occupy at least this fraction of the capture height/width, or
+// the camera is pulled back too far (figure renders tiny + lost on the card).
+const MIN_FILL_H = 0.5, MIN_FILL_W = 0.28;
 
 const browser = await puppeteer.launch({
   executablePath: BROWSER_PATH, headless: true,
@@ -36,10 +35,12 @@ const pageErrors = [];
 page.on('pageerror', (e) => pageErrors.push(String(e)));
 await page.goto(BASE + '/', { waitUntil: 'networkidle2', timeout: 45000 });
 
-const results = await page.evaluate(async (CLASSES, POSES) => {
+const results = await page.evaluate(async (CLASSES) => {
   const preload = await import('/src/render/assets/preload.ts');
   if (preload.assetsReady) await preload.assetsReady();
   const { CharacterPreview } = await import('/src/render/characters/index.ts');
+  // Use the REAL card poses so the check can't drift from what the card renders.
+  const { CARD_POSES } = await import('/src/ui/player_card.ts');
 
   const container = document.createElement('div');
   container.style.cssText = 'width:540px;height:720px;position:fixed;left:-9999px;top:0';
@@ -57,11 +58,14 @@ const results = await page.evaluate(async (CLASSES, POSES) => {
       const ctx = c.getContext('2d');
       ctx.drawImage(img, 0, 0, W, H);
       const d = ctx.getImageData(0, 0, W, H).data;
-      let top = -1, bottom = -1, count = 0;
+      let top = -1, bottom = -1, left = W, right = -1, count = 0;
       for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-        if (d[(y * W + x) * 4 + 3] > 16) { if (top < 0) top = y; bottom = y; count++; }
+        if (d[(y * W + x) * 4 + 3] > 16) {
+          if (top < 0) top = y; bottom = y;
+          if (x < left) left = x; if (x > right) right = x; count++;
+        }
       }
-      resolve({ top, bottom, count, H });
+      resolve({ top, bottom, left, right, count, W, H });
     };
     img.src = dataUrl;
   });
@@ -70,13 +74,13 @@ const results = await page.evaluate(async (CLASSES, POSES) => {
   for (const cls of CLASSES) {
     preview.setClass(cls);
     await raf(); await raf(); await raf();
-    for (const [pose, def] of Object.entries(POSES)) {
-      const url = preview.captureCloseup({ poseClips: def.clips, poseFraction: def.fraction });
-      out.push({ cls, pose, ...(await measure(url)) });
+    for (const pose of CARD_POSES) {
+      const url = preview.captureCloseup({ poseClips: pose.clips, poseFraction: pose.fraction });
+      out.push({ cls, pose: pose.id, ...(await measure(url)) });
     }
   }
   return out;
-}, CLASSES, POSES).catch((err) => { pageErrors.push(String(err)); return []; });
+}, CLASSES).catch((err) => { pageErrors.push(String(err)); return []; });
 
 await browser.close();
 
@@ -86,11 +90,18 @@ for (const m of results) {
   const empty = m.count < 500;
   const clipTop = m.top <= 0;
   const clipBottom = m.bottom >= m.H - 1;
-  const ok = !empty && !clipTop && !clipBottom;
+  const fillH = empty ? 0 : (m.bottom - m.top + 1) / m.H;
+  const fillW = empty ? 0 : (m.right - m.left + 1) / m.W;
+  const tooSmall = !empty && (fillH < MIN_FILL_H || fillW < MIN_FILL_W);
+  const ok = !empty && !clipTop && !clipBottom && !tooSmall;
   if (!ok) failed = true;
-  const note = empty ? 'EMPTY capture' : clipTop ? 'CLIPPED at top' : clipBottom ? 'CLIPPED at bottom' : `topMargin=${m.top} botMargin=${m.H - 1 - m.bottom}`;
+  const note = empty ? 'EMPTY capture'
+    : clipTop ? 'CLIPPED at top'
+    : clipBottom ? 'CLIPPED at bottom'
+    : tooSmall ? `TOO SMALL (fillH=${(fillH * 100) | 0}% fillW=${(fillW * 100) | 0}%)`
+    : `topMargin=${m.top} botMargin=${m.H - 1 - m.bottom} fillH=${(fillH * 100) | 0}%`;
   console.log(`${ok ? '✅' : '❌'} ${m.cls}/${m.pose}: ${note}`);
 }
 if (!results.length && !pageErrors.length) { console.log('❌ no captures produced'); failed = true; }
-console.log(failed ? '\nFAIL: a capture was clipped or empty.' : '\nPASS: every pose frames the full figure.');
+console.log(failed ? '\nFAIL: a capture was clipped, empty, or under-framed.' : '\nPASS: every pose frames the full figure well.');
 process.exit(failed ? 1 : 0);

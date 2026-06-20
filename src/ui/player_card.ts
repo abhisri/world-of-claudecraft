@@ -11,7 +11,7 @@ import {
   holderTierForBalance, holderTierBadgeDataUrl, holderTierDisplayName,
   holderTierFlavorText, type HolderTier,
 } from './holder_tier';
-import { percentileTierForPercent, percentileTierBadgeDataUrl } from './percentile_tier';
+import { percentileTierForPercent, percentileTierBadgeDataUrl, type PercentileTier } from './percentile_tier';
 import { formatNumber, getLanguage, languageTag, t, type TranslationKey } from './i18n';
 
 export interface PlayerCardStat {
@@ -176,7 +176,7 @@ export async function renderPlayerCardCanvas(data: PlayerCardData): Promise<HTML
 
   drawBackdrop(ctx, data.classColor);
   drawCharacter(ctx, charImg);
-  drawHeader(ctx, data, pctBadgeImg);
+  drawHeader(ctx, data, pctBadgeImg, pctTier);
   if (tier && badgeImg) drawBadge(ctx, tier, badgeImg, data.balance);
   drawStats(ctx, data);
   drawGear(ctx, data);
@@ -223,7 +223,7 @@ function drawCharacter(ctx: CanvasRenderingContext2D, img: HTMLImageElement): vo
   ctx.drawImage(img, x, y, w, h);
 }
 
-function drawHeader(ctx: CanvasRenderingContext2D, data: PlayerCardData, pctBadge: HTMLImageElement | null): void {
+function drawHeader(ctx: CanvasRenderingContext2D, data: PlayerCardData, pctBadge: HTMLImageElement | null, pctTier: PercentileTier | null): void {
   const x = 478;
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,0.6)';
@@ -252,7 +252,6 @@ function drawHeader(ctx: CanvasRenderingContext2D, data: PlayerCardData, pctBadg
     const padX = 12;
     const chipY = 109;
     const chipH = 26;
-    const pctTier = percentileTierForPercent(data.topPercent);
     let cursorX = x + subW + 16;
     // The tier medal sits just left of the tile, against the dark card so its
     // ring→glow + laurel read clearly.

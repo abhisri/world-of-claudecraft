@@ -3304,11 +3304,21 @@ async function refreshWocBalance(address: string, fresh = false): Promise<void> 
 // Re-fetch the connected/linked wallet's balance on demand (server cache
 // bypassed) so surfaces that display it — the bag footer and the player card —
 // reflect on-chain changes. No-op when the wallet feature is off or nothing is
-// connected/linked. Safe to call repeatedly; the IP rate-limit bounds RPC load.
+// connected/linked. Prefers the account-LINKED wallet (whose balance the badge
+// shows) over a merely-connected one, and a short throttle coalesces rapid
+// bag/card toggles so they don't burn the per-IP fresh-read budget.
+let lastOnDemandRefreshAddress: string | null = null;
+let lastOnDemandRefreshAt = 0;
+const ON_DEMAND_REFRESH_THROTTLE_MS = 5000;
 function refreshWocBalanceOnDemand(): void {
   if (!WALLET_ENABLED) return;
-  const address = walletMod?.currentWallet().address ?? linkedWalletPubkey;
-  if (address) void refreshWocBalance(address, true);
+  const address = linkedWalletPubkey ?? walletMod?.currentWallet().address ?? null;
+  if (!address) return;
+  const now = Date.now();
+  if (address === lastOnDemandRefreshAddress && now - lastOnDemandRefreshAt < ON_DEMAND_REFRESH_THROTTLE_MS) return;
+  lastOnDemandRefreshAddress = address;
+  lastOnDemandRefreshAt = now;
+  void refreshWocBalance(address, true);
 }
 
 function flashWalletError(message: string): void {
