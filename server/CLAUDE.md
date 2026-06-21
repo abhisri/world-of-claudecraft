@@ -18,7 +18,7 @@ persists to Postgres, and serves the built client. esbuild-bundled for Node via
 | `social.ts`/`social_db.ts` | friends/guilds/blocks/presence — logic / SQL |
 | `admin.ts`/`admin_db.ts`, `moderation_db.ts` | admin API + dashboard reads / moderation writes |
 | `chat_filter.ts`/`chat_filter_db.ts` | host-agnostic profanity/slur filter (soft cosmetic + hard server-enforced tiers) / admin word-list SQL |
-| `antibot.ts`/`antibot_db.ts` | behavioral bot-scoring evidence + escalation / automated-report SQL |
+| `bot_detector/contract.ts` / `stub.ts` | `BotDetector` seam (`#bot-detector`): the contract interface / the no-op stub used when the private clone is absent |
 | `turnstile.ts`, `web_login_guard.ts` | Cloudflare Turnstile siteverify / auth-endpoint Origin guard (anti-bot) |
 | `realm.ts` | `REALM`, `REALM_DIRECTORY`, `REALM_ORIGINS` from `REALM_NAME`/`REALMS` env |
 | `ratelimit.ts` | per-IP sliding-window limiter + `X-Forwarded-For` resolution |

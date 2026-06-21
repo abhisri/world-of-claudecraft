@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 // Untyped zero-dep build helper (same convention as the other scripts/*.mjs tools).
@@ -8,6 +8,13 @@ import path from 'node:path';
 import { templateModulepreload } from './scripts/i18n_modulepreload.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
+
+// `#bot-detector` → the private detector if its clone is present, else the no-op
+// stub. Mirrors scripts/build_server.mjs (bundle) and tsconfig.json `paths` (tsc).
+const privateBotDetector = fileURLToPath(new URL('private/bot_detector/src/index.ts', import.meta.url));
+const botDetectorImpl = existsSync(privateBotDetector)
+  ? privateBotDetector
+  : fileURLToPath(new URL('server/bot_detector/stub.ts', import.meta.url));
 const pkg = JSON.parse(readFileSync(new URL('package.json', import.meta.url), 'utf8')) as { version?: string };
 
 function env(names: string[]): string | undefined {
@@ -90,6 +97,7 @@ function i18nModulepreloadPlugin() {
 export default defineConfig({
   base: '/',
   plugins: [linksAliasPlugin(), i18nModulepreloadPlugin()],
+  resolve: { alias: { '#bot-detector': botDetectorImpl } },
   define: {
     __APP_VERSION__: JSON.stringify(appVersion),
     __APP_BUILD_ID__: JSON.stringify(appBuildId.slice(0, 12)),

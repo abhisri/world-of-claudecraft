@@ -18,7 +18,6 @@ PRDs say so explicitly) and note the deviation.
 | `hud-ux-and-accessibility/` | Phased UX/accessibility program (brainstorm → phases → QA). |
 | `ui-architecture-hud-modularization/` | Phased HUD modularization refactor program. |
 | `release-notes/` | Per-version release notes. |
-| `security/` | Security design notes (e.g. behavioral bot detection). |
 | `screenshots/` | JPG/PNG assets embedded by docs and the repo-root `README.md` (table below). |
 | `*.md` (top level) | One-off reports — `hud-program-roadmap.md`, `hud-program-validation-report.md`, `performance-feel-audit.md`. |
 
