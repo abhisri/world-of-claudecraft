@@ -3735,9 +3735,6 @@ export const en: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "Risen Royal Guard"
       },
-      "brother_aldric_raid": {
-        "name": "Brother Aldric"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Scourge of Thornpeak"
       },
@@ -3992,6 +3989,11 @@ export const en: EnTranslations = {
         "name": "Ranger Elwyn",
         "title": "Glade Warden",
         "greeting": "Quiet, {className} - the glade is calm today, and I mean to keep it that way."
+      },
+      "brother_aldric_raid": {
+        "name": "Brother Aldric",
+        "title": "Priest of the Vale",
+        "greeting": "From a chapel yard in the Vale to the roof of the world... the trail we have followed ends here. I can feel the mountain listening."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",

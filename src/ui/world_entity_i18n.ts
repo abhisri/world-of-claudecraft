@@ -29,7 +29,7 @@ const MOB_IDS = [
   'grand_necromancer_velkhar', 'korzul_the_gravewyrm', 'bog_bloat',
   'fallen_captain_aldren', 'corrupted_priest_malric', 'deathstalker_voss',
   'vision_aldren_warrior', 'vision_malric_mage', 'vision_deathstalker_voss',
-  'bound_guardian', 'nythraxis_skeleton_warrior', 'brother_aldric_raid',
+  'bound_guardian', 'nythraxis_skeleton_warrior',
   'nythraxis_scourge_of_thornpeak',
   // Brightwood Glade wildlife pack
   'brightwood_hare', 'glade_fox', 'spotted_fawn', 'meadow_crane', 'thornpelt_badger',
@@ -43,6 +43,7 @@ const NPC_IDS = [
   'provisioner_hale', 'herbalist_yara', 'scout_maren', 'captain_thessaly',
   'brother_aldric_highwatch', 'scout_maren_highwatch', 'quartermaster_bree', 'armorer_hode',
   'loremaster_caddis', 'ranger_elwyn',
+  'brother_aldric_raid', // dynamically-spawned raid turn-in NPC (Crypt of Nythraxis)
 ] as const;
 
 const QUEST_IDS = [

@@ -3735,9 +3735,6 @@ export const ja_JP: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "蘇った王家の衛兵"
       },
-      "brother_aldric_raid": {
-        "name": "アルドリック修士"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "ナイスラクシス、ソーンピークの災厄"
       },
@@ -3992,6 +3989,11 @@ export const ja_JP: EnTranslations = {
         "name": "レンジャー・エルウィン",
         "title": "林間の守り手",
         "greeting": "静かに、{className}。今日の林間は穏やかだ。私はこのまま保つつもりでね。"
+      },
+      "brother_aldric_raid": {
+        "name": "アルドリック修道士",
+        "title": "谷の司祭",
+        "greeting": "礼拝堂の墓地から世界の屋根まで... 足跡はここで終わります。山が耳を澄ませているのを感じます。"
       },
       "tidewatcher_ondrel": {
         "name": "オンドレル・ヴェイン",

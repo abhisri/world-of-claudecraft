@@ -3735,9 +3735,6 @@ export const es_ES: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "Guardia real alzado"
       },
-      "brother_aldric_raid": {
-        "name": "Hermano Aldric"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Azote de Thornpeak"
       },
@@ -3992,6 +3989,11 @@ export const es_ES: EnTranslations = {
         "name": "Montaraz Elwyn",
         "title": "Guardiana del claro",
         "greeting": "Silencio, {className}. El claro está tranquilo hoy, y pretendo que siga así."
+      },
+      "brother_aldric_raid": {
+        "name": "Hermano Aldric",
+        "title": "Sacerdote del Valle",
+        "greeting": "De un patio de capilla al techo del mundo... el rastro termina aquí. Siento que la montaña escucha."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",

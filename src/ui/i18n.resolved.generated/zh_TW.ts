@@ -3735,9 +3735,6 @@ export const zh_TW: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "復甦王室衛兵"
       },
-      "brother_aldric_raid": {
-        "name": "奧德里克修士"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "尼瑟拉克斯，荊峰之災"
       },
@@ -3992,6 +3989,11 @@ export const zh_TW: EnTranslations = {
         "name": "巡林員艾爾溫",
         "title": "林地守護",
         "greeting": "安靜點，{className}，今天林地很平靜，我打算讓它一直這樣。"
+      },
+      "brother_aldric_raid": {
+        "name": "奧德里克修士",
+        "title": "山谷牧師",
+        "greeting": "從禮拜堂墓地到世界屋脊... 線索到這裡結束。我感覺山正在聆聽。"
       },
       "tidewatcher_ondrel": {
         "name": "翁德瑞爾·韋恩",

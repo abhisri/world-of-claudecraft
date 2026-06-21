@@ -3735,9 +3735,6 @@ export const en_XA: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "[Ŕíšéñ Ŕóýáļ Ĝúáŕð]"
       },
-      "brother_aldric_raid": {
-        "name": "[Ɓŕóţĥéŕ Áļðŕíç]"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "[Ñýţĥŕáẋíš, Šçóúŕĝé óƒ Ţĥóŕñþéáķ]"
       },
@@ -3992,6 +3989,11 @@ export const en_XA: EnTranslations = {
         "name": "[Ŕáñĝéŕ Éļŵýñ]",
         "title": "[Ĝļáðé Ŵáŕðéñ]",
         "greeting": "[Ɋúíéţ, {className} - ţĥé ĝļáðé íš çáļɱ ţóðáý, áñð Í ɱéáñ ţó ķééþ íţ ţĥáţ ŵáý.]"
+      },
+      "brother_aldric_raid": {
+        "name": "[Ɓŕóţĥéŕ Áļðŕíç]",
+        "title": "[Þŕíéšţ óƒ ţĥé Ʋáļé]",
+        "greeting": "[Ƒŕóɱ á çĥáþéļ ýáŕð íñ ţĥé Ʋáļé ţó ţĥé ŕóóƒ óƒ ţĥé ŵóŕļð... ţĥé ţŕáíļ ŵé ĥáʋé ƒóļļóŵéð éñðš ĥéŕé. Í çáñ ƒééļ ţĥé ɱóúñţáíñ ļíšţéñíñĝ.]"
       },
       "tidewatcher_ondrel": {
         "name": "[Óñðŕéļ Ʋáñé]",

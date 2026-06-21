@@ -3735,9 +3735,6 @@ export const ru_RU: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "Восставший королевский страж"
       },
-      "brother_aldric_raid": {
-        "name": "Брат Олдрик"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "Нитраксис, Бич Торнпика"
       },
@@ -3992,6 +3989,11 @@ export const ru_RU: EnTranslations = {
         "name": "Следопыт Элвин",
         "title": "Хранитель поляны",
         "greeting": "Тише, {className} - поляна сегодня спокойна, и я намерен такой её сохранить."
+      },
+      "brother_aldric_raid": {
+        "name": "Брат Алдрик",
+        "title": "Жрец долины",
+        "greeting": "От кладбища часовни до крыши мира... след заканчивается здесь. Я чувствую, как гора слушает."
       },
       "tidewatcher_ondrel": {
         "name": "Ондрел Вейн",

@@ -3735,9 +3735,6 @@ export const fr_CA: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "Garde royal relevé"
       },
-      "brother_aldric_raid": {
-        "name": "Frère Aldric"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Fléau de Thornpeak"
       },
@@ -3992,6 +3989,11 @@ export const fr_CA: EnTranslations = {
         "name": "Rôdeuse Elwyn",
         "title": "Garde de la clairière",
         "greeting": "Silence, {className} - la clairière est calme aujourd'hui, et j'entends bien qu'elle le reste."
+      },
+      "brother_aldric_raid": {
+        "name": "Frère Aldric",
+        "title": "Prêtre du Val",
+        "greeting": "D'un cimetière de chapelle au toit du monde... la piste s'achève ici. Je sens la montagne écouter."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",

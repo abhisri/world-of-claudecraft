@@ -3735,9 +3735,6 @@ export const de_DE: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "Auferstandene Koenigswache"
       },
-      "brother_aldric_raid": {
-        "name": "Bruder Aldric"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Geissel von Thornpeak"
       },
@@ -3992,6 +3989,11 @@ export const de_DE: EnTranslations = {
         "name": "Waldläufer Elwyn",
         "title": "Hüter der Lichtung",
         "greeting": "Ruhig, {className} - die Lichtung ist heute friedlich, und das gedenke ich so zu erhalten."
+      },
+      "brother_aldric_raid": {
+        "name": "Bruder Aldric",
+        "title": "Priester des Tals",
+        "greeting": "Vom Kapellenhof im Tal bis zum Dach der Welt... die Spur endet hier. Ich spüre, wie der Berg lauscht."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",

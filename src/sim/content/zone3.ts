@@ -410,6 +410,19 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
     ],
     greeting: 'From a chapel yard in the Vale to the roof of the world... the trail we have followed ends here. I can feel the mountain listening.',
   },
+  // Spawned dynamically inside the Crypt of Nythraxis encounter (see
+  // spawnNythraxisAldric in sim.ts); `dynamic` keeps the world loader from
+  // surface-placing him while still letting the client mirror him as a quest
+  // turn-in NPC. pos/facing are unused — the encounter sets his position.
+  brother_aldric_raid: {
+    id: 'brother_aldric_raid', name: 'Brother Aldric', title: 'Priest of the Vale',
+    pos: { x: 0, z: 0 }, facing: 0, color: 0xd7d0b4,
+    questIds: ['q_nythraxis_scourges_end'],
+    dynamic: true,
+    // Shares the Highwatch Aldric's name/title/greeting so all three entity
+    // strings reuse his existing 13-locale translations (no new untranslated copy).
+    greeting: 'From a chapel yard in the Vale to the roof of the world... the trail we have followed ends here. I can feel the mountain listening.',
+  },
   scout_maren_highwatch: {
     id: 'scout_maren_highwatch', name: 'Scout Maren', title: "Marshal's Scout",
     pos: { x: 7, z: 670 }, facing: -2.4, color: 0x6e8b3d,

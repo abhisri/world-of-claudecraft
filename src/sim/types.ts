@@ -642,6 +642,11 @@ export interface NpcDef {
   // (auction house) instead of a fixed vendor stock.
   market?: boolean;
   greeting: string;
+  // Registered but not surface-placed at world init. The owning system spawns
+  // the entity on demand (e.g. the Nythraxis encounter walks Brother Aldric in
+  // mid-fight). Keeping the def in NPCS lets the online client reconstruct its
+  // questIds and treat it as a turn-in NPC.
+  dynamic?: boolean;
 }
 
 export interface CampDef {

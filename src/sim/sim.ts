@@ -808,6 +808,7 @@ export class Sim {
 
     // NPCs — nudged out of buildings and deep water if their data position is bad
     for (const npcDef of Object.values(NPCS)) {
+      if (npcDef.dynamic) continue; // spawned on demand by its owning system, not surface-placed
       const safe = this.findSafePos(npcDef.pos.x, npcDef.pos.z, WATER_LEVEL + 0.6);
       const npc = createNpc(this.nextId++, npcDef, this.groundPos(safe.x, safe.z));
       this.addEntity(npc);
@@ -4981,14 +4982,6 @@ export class Sim {
     // non-hostile mob is therefore a leak — exactly the "immortal, invalid
     // target" wolves players hit. Restore hostility so no mob can ever be left
     // permanently untargetable, whatever path corrupted it.
-    if (mob.templateId === NYTHRAXIS_ALDRIC_ID) {
-      mob.hostile = false;
-      mob.aiState = 'idle';
-      mob.inCombat = false;
-      mob.aggroTargetId = null;
-      clearThreat(mob);
-      return;
-    }
     if (mob.templateId === NYTHRAXIS_ADD_ID && mob.despawnTimer !== undefined) {
       mob.hostile = false;
       mob.aiState = 'idle';
@@ -6757,7 +6750,7 @@ export class Sim {
 
   private findNythraxisAldric(boss: Entity): Entity | null {
     for (const e of this.entities.values()) {
-      if (e.kind === 'mob' && e.templateId === NYTHRAXIS_ALDRIC_ID && dist2d(e.spawnPos, boss.spawnPos) < NYTHRAXIS_ROOM_RADIUS) return e;
+      if (e.templateId === NYTHRAXIS_ALDRIC_ID && !e.dead && dist2d(e.spawnPos, boss.spawnPos) < NYTHRAXIS_ROOM_RADIUS) return e;
     }
     return null;
   }
@@ -6895,15 +6888,18 @@ export class Sim {
 
   private spawnNythraxisAldric(boss: Entity): void {
     if (this.findNythraxisAldric(boss)) return;
-    const template = MOBS[NYTHRAXIS_ALDRIC_ID];
-    if (!template) return;
-    const aldric = createMob(this.nextId++, template, template.maxLevel,
+    // Brother Aldric is a friendly quest NPC, not a mob: modeling him as an NPC
+    // lets the online client mirror his questIds and open the turn-in dialog
+    // (createMob produced a friendly mob the client could never interact with).
+    const def = NPCS[NYTHRAXIS_ALDRIC_ID];
+    if (!def) return;
+    const aldric = createNpc(this.nextId++, def,
       this.groundPos(boss.spawnPos.x, boss.spawnPos.z - NYTHRAXIS_ALDRIC_SPAWN_DIST));
+    aldric.level = boss.level; // createNpc defaults to 10; match the boss's level for the nameplate
     aldric.hostile = false;
     aldric.facing = 0;
     aldric.prevFacing = 0;
     aldric.spawnPos = { ...aldric.pos };
-    aldric.questIds = [NYTHRAXIS_FINAL_QUEST_ID];
     this.addEntity(aldric);
     const inst = this.instances.find((i) => i.partyKey !== null && i.mobIds.includes(boss.id));
     inst?.mobIds.push(aldric.id);

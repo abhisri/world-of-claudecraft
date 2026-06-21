@@ -3735,9 +3735,6 @@ export const ko_KR: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "되살아난 왕실 근위병"
       },
-      "brother_aldric_raid": {
-        "name": "수사 알드릭"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "나이트락시스, 손피크의 재앙"
       },
@@ -3992,6 +3989,11 @@ export const ko_KR: EnTranslations = {
         "name": "순찰병 엘윈",
         "title": "숲의 수호인",
         "greeting": "조용히 하게, {className} - 오늘 숲은 고요하고, 나는 그대로 지킬 생각이네."
+      },
+      "brother_aldric_raid": {
+        "name": "알드릭 수사",
+        "title": "계곡의 사제",
+        "greeting": "예배당 묘지에서 세상의 지붕까지... 흔적은 여기서 끝납니다. 산이 듣고 있음을 느낍니다."
       },
       "tidewatcher_ondrel": {
         "name": "온드렐 베인",

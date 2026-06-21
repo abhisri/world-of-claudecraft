@@ -3735,9 +3735,6 @@ export const it_IT: EnTranslations = {
       "nythraxis_skeleton_warrior": {
         "name": "Guardia reale risorta"
       },
-      "brother_aldric_raid": {
-        "name": "Fratello Aldric"
-      },
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Flagello di Thornpeak"
       },
@@ -3992,6 +3989,11 @@ export const it_IT: EnTranslations = {
         "name": "Ranger Elwyn",
         "title": "Guardiano della radura",
         "greeting": "Silenzio, {className}: la radura oggi è tranquilla, e intendo che resti così."
+      },
+      "brother_aldric_raid": {
+        "name": "Fratello Aldric",
+        "title": "Sacerdote della Valle",
+        "greeting": "Dal camposanto della cappella al tetto del mondo... la pista finisce qui. Sento la montagna ascoltare."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",

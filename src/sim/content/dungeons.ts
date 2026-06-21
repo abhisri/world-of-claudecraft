@@ -219,13 +219,8 @@ export const DUNGEON_MOBS: Record<string, MobTemplate> = {
     loot: [],
     scale: 1.25, color: 0xc7c0b2,
   },
-  brother_aldric_raid: {
-    id: 'brother_aldric_raid', name: 'Brother Aldric', minLevel: 20, maxLevel: 20, family: 'humanoid',
-    hpBase: 500, hpPerLevel: 50, dmgBase: 1, dmgPerLevel: 0, attackSpeed: 2.0,
-    armorPerLevel: 20, moveSpeed: 5.5, aggroRadius: 0,
-    loot: [],
-    scale: 1.05, color: 0xd7d0b4,
-  },
+  // Brother Aldric is now a dynamically-spawned NPC (see NPCS.brother_aldric_raid
+  // in zone3.ts and spawnNythraxisAldric in sim.ts), not a mob.
   nythraxis_scourge_of_thornpeak: {
     id: 'nythraxis_scourge_of_thornpeak', name: 'Nythraxis, Scourge of Thornpeak', minLevel: 20, maxLevel: 20, family: 'undead',
     elite: true, boss: true, ccImmune: true,

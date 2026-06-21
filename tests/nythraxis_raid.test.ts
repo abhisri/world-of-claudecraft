@@ -1401,7 +1401,11 @@ describe('Nythraxis raid encounter', () => {
     sim.tick();
     expect(boss.nythraxis?.phase).toBe('transition');
     expect(tank.auras.some((a) => a.id === 'nythraxis_transition_stun')).toBe(true);
-    expect(mob(sim, 'brother_aldric_raid')).toBeTruthy();
+    // Brother Aldric is a dynamically-spawned NPC (not a friendly mob) so the
+    // online client can open his turn-in dialog.
+    const aldric = [...sim.entities.values()].find((e) => e.templateId === 'brother_aldric_raid' && !e.dead);
+    expect(aldric).toBeTruthy();
+    expect(aldric!.kind).toBe('npc');
 
     tickSeconds(sim, 8);
     expect(deathlessChannelObjects(sim, boss.spawnPos).every((w) => w.auras.some((a) => a.id === 'nythraxis_wardstone_lit'))).toBe(true);
@@ -1412,7 +1416,7 @@ describe('Nythraxis raid encounter', () => {
     expect(boss.nythraxis?.deathlessTimer).toBeGreaterThan(19);
     expect(boss.nythraxis?.deathlessTimer).toBeLessThanOrEqual(20);
     expect(tank.auras.some((a) => a.id === 'nythraxis_transition_stun')).toBe(false);
-    expect(visualKeyFor(mob(sim, 'brother_aldric_raid'))).toBe('npc_aldric');
+    expect(visualKeyFor(aldric!)).toBe('npc_aldric');
   });
 
   it('stuns active Nythraxis adds for the full Aldric transition', () => {
