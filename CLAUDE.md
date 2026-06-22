@@ -21,6 +21,7 @@ Postgres (`pg`) · Vite + esbuild · Vitest. No UI framework; tiny dependency se
 | `src/ui/` | Classic HUD (frames, windows, tooltips, map, FCT), procedural icons, i18n. |
 | `src/net/` | Online client: REST auth + WebSocket world mirror (`ClientWorld`). |
 | `src/admin/` | Admin dashboard SPA (separate `admin.html` entry). |
+| `src/guide/` | Public guide/wiki SPA (separate `guide.html` entry, served at `/wiki`); spoiler-safe content generated from `src/sim/`. |
 | `src/world_api.ts` | `IWorld`, the seam render/ui depend on (see Architecture). |
 | `src/main.ts` | Client entry; fixes the world seed. |
 | `server/` | Authoritative game server: HTTP+WS, world loop, Postgres, auth, social, moderation. |
@@ -116,6 +117,9 @@ this repo already has, do not invent new ones:
 - New visual system: a new `src/render/<thing>.ts` the renderer calls, not a method bank on `renderer.ts`.
 - New game content (mob/quest/item/ability/zone): a declarative record in
   `src/sim/content/`, merged by `data.ts`, never a content table inline in `sim.ts`.
+  Player-facing content also feeds the `/wiki` guide: run `npm run wiki:content` (auto in
+  `pretest`/`build`, freshness-gated by `tests/guide.test.ts`) and add any new `guide.*`
+  prose keys (see `src/guide/CLAUDE.md`).
 - New multi-file subsystem: a directory with an `index.ts` barrel exposing only its
   public surface (templates: `src/render/characters/`, `src/ui/i18n.catalog/`), plus a local `CLAUDE.md`.
 

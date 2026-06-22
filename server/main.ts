@@ -44,6 +44,9 @@ import { recordUsageCacheEvent, recordUsageMetric, setUsageCacheSize } from './p
 
 const PORT = Number(process.env.PORT ?? 8787);
 const STATIC_DIR = path.join(__dirname, '..', 'dist');
+// DEPRECATED: the standalone community MediaWiki is being retired in favour of the
+// curated in-app guide, which now serves at /wiki. This constant and its (now removed)
+// /wiki -> MediaWiki redirect are dead and slated for deletion in a follow-up ticket.
 const WIKI_URL = process.env.WIKI_URL ?? 'http://localhost:8080/wiki/index.php/Main_Page';
 // Pretty URLs that serve standalone static HTML pages.
 const STATIC_PAGE_ALIASES = new Map([
@@ -65,6 +68,8 @@ const STATIC_PAGE_ALIASES = new Map([
   ['/data-deletion/', '/data-deletion.html'],
   ['/support', '/support.html'],
   ['/support/', '/support.html'],
+  ['/wiki', '/guide.html'],
+  ['/wiki/', '/guide.html'],
 ]);
 // How long chat logs are kept (0 = forever); pruned at boot and daily.
 const CHAT_LOG_RETENTION_DAYS = Number(process.env.CHAT_LOG_RETENTION_DAYS ?? 90);
@@ -279,13 +284,12 @@ function isAdminRequest(req: http.IncomingMessage): boolean {
 }
 
 function serveStatic(req: http.IncomingMessage, res: http.ServerResponse): void {
-  const shell = isAdminRequest(req) ? 'admin.html' : 'index.html';
   let urlPath = (req.url ?? '/').split('?')[0];
-  if (urlPath === '/wiki' || urlPath === '/wiki/' || urlPath.startsWith('/wiki/')) {
-    res.writeHead(302, { Location: WIKI_URL });
-    res.end();
-    return;
-  }
+  // The curated Guide is the site wiki: a client-routed SPA served at /wiki with its
+  // own shell, so deep paths (/wiki/classes/...) fall back to guide.html rather than the
+  // game's index.html. (It previously 302'd to a standalone MediaWiki; that is retired.)
+  const isGuide = urlPath === '/wiki' || urlPath.startsWith('/wiki/');
+  const shell = isGuide ? 'guide.html' : isAdminRequest(req) ? 'admin.html' : 'index.html';
   // Pretty-URL aliases for standalone static pages.
   urlPath = STATIC_PAGE_ALIASES.get(urlPath) ?? urlPath;
   if (urlPath === '/' || urlPath === '/admin' || urlPath === '/admin/') urlPath = `/${shell}`;

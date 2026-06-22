@@ -9,41 +9,17 @@
 // Reproducibility is checked by tests/i18n_resolved_equivalence.test.ts.
 
 export const pending: Record<string, readonly string[]> = {
-  "es": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "es_ES": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "fr_FR": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "fr_CA": [
-    "hudChrome.perf.labels.apm"
-  ],
+  "es": [],
+  "es_ES": [],
+  "fr_FR": [],
+  "fr_CA": [],
   "en_CA": [],
-  "it_IT": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "de_DE": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "zh_CN": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "zh_TW": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "ko_KR": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "ja_JP": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "pt_BR": [
-    "hudChrome.perf.labels.apm"
-  ],
-  "ru_RU": [
-    "hudChrome.perf.labels.apm"
-  ]
+  "it_IT": [],
+  "de_DE": [],
+  "zh_CN": [],
+  "zh_TW": [],
+  "ko_KR": [],
+  "ja_JP": [],
+  "pt_BR": [],
+  "ru_RU": []
 };
