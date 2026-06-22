@@ -186,6 +186,13 @@ export const zh_TW: EnTranslations = {
       "clock24h": "24 小時制",
       "note": "在每一行新的聊天訊息前加上收到的時間，例如 [14:32]。只會影響開啟此選項後收到的訊息。"
     },
+    "chatWindow": {
+      "move": "拖曳以移動聊天視窗",
+      "resize": "拖曳以調整聊天視窗大小",
+      "reset": "重設聊天視窗",
+      "resetAction": "重設",
+      "note": "拖曳聊天標籤列可移動視窗，拖曳右下角控點可調整大小。重設可回復到預設位置與大小。"
+    },
     "swing": {
       "ready": "揮砍",
       "seconds": "{seconds}秒"
@@ -233,6 +240,12 @@ export const zh_TW: EnTranslations = {
     "options": {
       "clickMoveLeft": "左鍵",
       "clickMoveRight": "右鍵",
+      "browserEffects": "瀏覽器特效",
+      "browserEffectsAuto": "自動",
+      "browserEffectsFull": "完整",
+      "browserEffectsReduced": "精簡",
+      "browserEffectsMinimal": "最低",
+      "browserEffectsNote": "自動模式會根據你的瀏覽器與裝置調低高負擔的 CSS 特效（模糊、光暈、背景動畫）。若介面感覺卡頓，可手動降低。",
       "footstepSounds": "腳步聲",
       "clickFeedback": "點擊標記",
       "showWalletOnCharacterScreen": "在角色畫面顯示錢包",
@@ -1052,7 +1065,9 @@ export const zh_TW: EnTranslations = {
       "webLoginOnly": "只能從遊戲客戶端登入。",
       "accountSuspended": "此帳號停權至 {date}。",
       "alreadyInWorld": "角色已在世界中。",
-      "renameBeforeEntering": "此角色必須先更名才能進入世界。"
+      "takenOver": "你的角色已被另一個工作階段接管。",
+      "renameBeforeEntering": "此角色必須先更名才能進入世界。",
+      "renameNotPermitted": "不允許為此角色更名。"
     }
   },
   "realm": {
@@ -1078,6 +1093,9 @@ export const zh_TW: EnTranslations = {
     "noneYet": "還沒有角色。請在下方建立一個。",
     "levelClass": "{level} 級 {className}",
     "inWorld": "在世界中",
+    "takeOver": "接管",
+    "inWorldHint": "已在世界中。請在別處登出，或接管工作階段。",
+    "takeOverConfirm": "這會使該角色從另一個工作階段中斷並切換到此處。是否繼續？",
     "renameRequired": "需要更名",
     "delete": "刪除",
     "rename": "更名",

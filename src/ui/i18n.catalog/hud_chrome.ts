@@ -49,6 +49,13 @@ export const hudChromeStrings = {
     clock24h: "24-hour",
     note: "Prefixes each new chat line with the time it arrived, e.g. [14:32]. Only affects messages received while the option is on.",
   },
+  chatWindow: {
+    move: "Drag to move the chat window",
+    resize: "Drag to resize the chat window",
+    reset: "Reset Chat Window",
+    resetAction: "Reset",
+    note: "Drag the chat tab strip to move the window, or the corner grip to resize it. Reset returns it to the default position and size.",
+  },
   swing: {
     ready: "Swing",
     seconds: "{seconds}s",
@@ -109,6 +116,14 @@ export const hudChromeStrings = {
   options: {
     clickMoveLeft: "Left Click",
     clickMoveRight: "Right Click",
+    // Adaptive browser-effects tier control (Graphics panel). Auto detects the
+    // browser engine/version + device; the rest pin the CSS-effects tier.
+    browserEffects: "Browser Effects",
+    browserEffectsAuto: "Auto",
+    browserEffectsFull: "Full",
+    browserEffectsReduced: "Reduced",
+    browserEffectsMinimal: "Minimal",
+    browserEffectsNote: "Auto tones down heavy CSS effects (blur, glow, background motion) based on your browser and device. Lower it manually if the interface feels sluggish.",
     // Audio panel toggle for the per-footfall step clips (off by default).
     footstepSounds: "Footstep Sounds",
     // Toggle for the OSRS-style click-feedback marker: entity targets and

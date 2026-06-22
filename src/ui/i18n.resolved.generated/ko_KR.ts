@@ -186,6 +186,13 @@ export const ko_KR: EnTranslations = {
       "clock24h": "24시간제",
       "note": "새 채팅 줄마다 수신된 시각을 앞에 붙입니다(예: [14:32]). 이 옵션이 켜져 있는 동안 받은 메시지에만 적용됩니다."
     },
+    "chatWindow": {
+      "move": "드래그하여 채팅 창 이동",
+      "resize": "드래그하여 채팅 창 크기 조절",
+      "reset": "채팅 창 초기화",
+      "resetAction": "초기화",
+      "note": "채팅 탭 줄을 드래그하면 창을 이동하고, 모서리 손잡이를 드래그하면 크기를 조절할 수 있습니다. 초기화하면 기본 위치와 크기로 돌아갑니다."
+    },
     "swing": {
       "ready": "공격",
       "seconds": "{seconds}초"
@@ -233,6 +240,12 @@ export const ko_KR: EnTranslations = {
     "options": {
       "clickMoveLeft": "왼쪽 클릭",
       "clickMoveRight": "오른쪽 클릭",
+      "browserEffects": "브라우저 효과",
+      "browserEffectsAuto": "자동",
+      "browserEffectsFull": "전체",
+      "browserEffectsReduced": "감소",
+      "browserEffectsMinimal": "최소",
+      "browserEffectsNote": "자동은 브라우저와 기기에 맞춰 무거운 CSS 효과(흐림, 글로우, 배경 모션)를 낮춥니다. 인터페이스가 느리게 느껴지면 수동으로 낮추세요.",
       "footstepSounds": "발소리",
       "clickFeedback": "클릭 표시",
       "showWalletOnCharacterScreen": "캐릭터 화면에 지갑 표시",
@@ -1052,7 +1065,9 @@ export const ko_KR: EnTranslations = {
       "webLoginOnly": "로그인은 게임 클라이언트에서만 허용됩니다.",
       "accountSuspended": "이 계정은 {date}까지 정지되었습니다.",
       "alreadyInWorld": "캐릭터가 이미 세계에 있습니다.",
-      "renameBeforeEntering": "이 캐릭터는 세계에 들어가기 전에 이름을 변경해야 합니다."
+      "takenOver": "다른 세션이 캐릭터를 넘겨받았습니다.",
+      "renameBeforeEntering": "이 캐릭터는 세계에 들어가기 전에 이름을 변경해야 합니다.",
+      "renameNotPermitted": "이 캐릭터의 이름을 변경할 수 없습니다."
     }
   },
   "realm": {
@@ -1078,6 +1093,9 @@ export const ko_KR: EnTranslations = {
     "noneYet": "아직 캐릭터가 없습니다. 아래에서 하나를 만드세요.",
     "levelClass": "{level}레벨 {className}",
     "inWorld": "세계에 있음",
+    "takeOver": "넘겨받기",
+    "inWorldHint": "이미 세계에 있습니다. 다른 곳에서 로그아웃하거나 넘겨받으세요.",
+    "takeOverConfirm": "이 캐릭터를 다른 세션에서 연결 해제하고 여기로 가져옵니다. 계속하시겠습니까?",
     "renameRequired": "이름 변경 필요",
     "delete": "삭제",
     "rename": "이름 변경",

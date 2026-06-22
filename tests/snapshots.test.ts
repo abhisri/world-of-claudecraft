@@ -7,6 +7,7 @@ vi.mock('../server/db', () => ({
   openPlaySession: vi.fn(async () => 1),
   closePlaySession: vi.fn(async () => {}),
   insertChatLogs: vi.fn(async () => {}),
+  walletForAccount: vi.fn(async () => null),
   markAccountQuestComplete: vi.fn(async () => ({ completedQuestIds: [], mechChromaIds: [] })),
   grantAccountMechChroma: vi.fn(async () => ({ completedQuestIds: [], mechChromaIds: [] })),
 }));
@@ -180,6 +181,29 @@ describe('delta snapshots', () => {
     const client = bareClient(session.pid);
     (client as any).applySnapshot(snap);
     expect(client.player.swingTimer).toBeCloseTo(1.7, 1);
+  });
+
+  it('includes live aura and movement diagnostics in admin online rows', () => {
+    const druidServer = new GameServer();
+    const fc = fakeWs();
+    const druid = joinServer(druidServer, fc, 10, 'Newkali', 'druid');
+    const player = druidServer.sim.entities.get(druid.pid)!;
+    druidServer.sim.setPlayerLevel(20, druid.pid);
+    player.resource = player.maxResource;
+
+    druidServer.sim.castAbility('travel_form', druid.pid);
+    druidServer.sim.tick();
+
+    const row = druidServer.liveSessions().find((p) => p.characterId === 10)!;
+    expect(row.moveSpeedMultiplier).toBeCloseTo(1.4);
+    expect(row.runSpeed).toBeCloseTo(9.8);
+    expect(row.swimming).toBe(false);
+    expect(row.auras).toContainEqual(expect.objectContaining({
+      id: 'travel_form',
+      name: 'Travel Form',
+      kind: 'form_travel',
+      value: 1.4,
+    }));
   });
 
   it('sell command forwards bounded stack quantities', () => {

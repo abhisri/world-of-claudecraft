@@ -71,6 +71,17 @@ export interface LivePlayer {
   zone: string;
   sessionSeconds: number;
   lastSaveSecondsAgo: number;
+  moveSpeedMultiplier: number;
+  runSpeed: number;
+  swimming: boolean;
+  auras: {
+    id: string;
+    name: string;
+    kind: string;
+    value: number;
+    remaining: number;
+    duration: number;
+  }[];
 }
 
 export interface Activity {

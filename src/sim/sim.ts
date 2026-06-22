@@ -24,6 +24,7 @@ import {
 import { Rng } from './rng';
 import { SpatialGrid } from './spatial';
 import { orderTabTargets } from './tab_target';
+import { questFallbackGrants } from './quest_fallback';
 import {
   HEAL_THREAT_FACTOR, MELEE_SWITCH_MULT, RANGED_SWITCH_MULT,
   TAUNT_FORCE_SECONDS, addThreat, clearThreat, stealthDetectionRadius, threatEntries, threatModifier, topThreatValue,
@@ -288,7 +289,11 @@ const FOLLOW_STOP_DIST = 3; // /follow trails this close behind the leader (yard
 const FOLLOW_MAX_RANGE = 60; // give up follow once the leader is this far away
 const PET_LEASH = 40; // yards from the owner before a pet gives up its target
 const PET_FOLLOW_DISTANCE = 3.5;
-const PET_TELEPORT_DISTANCE = 60; // owner this far away: pet warps to heel
+const PET_TELEPORT_DISTANCE = 60; // owner this far AND no route exists: pet warps to heel (last resort)
+const PET_PATH_RECALC = 0.5; // seconds between heel-path A* recomputes per pet (throttle)
+const PET_PATH_SPAN = 96; // A* search half-window in cells; covers the teleport distance + slack
+const PET_PATH_STALE_DISTANCE = 4; // path end this far from the (now-moved) owner: recompute the heel route
+const PET_WAYPOINT_REACHED = 1; // pet within this of the next waypoint: pop it and home on the next leg
 const PET_ASSIST_RANGE = 50; // how far the pet scans for enemies engaging the pair
 const PET_AGGRESSIVE_RANGE = 18; // aggressive pets look for idle enemies this close
 // A pet only keeps its OWNER flagged in combat while it is actively trading blows
@@ -6136,17 +6141,59 @@ export class Sim {
 
     // heel
     pet.swingTimer = Math.max(0, pet.swingTimer - DT);
+    this.petFollow(pet, owner);
+  }
+
+  // Heel locomotion: route the pet to its owner AROUND obstacles instead of
+  // letting greedy slide-steering wedge on a wall and then snapping the pet to
+  // the owner. Mirrors the warrior-charge path cache (`petPath`): A* is recomputed
+  // at most every PET_PATH_RECALC and otherwise the cached waypoints are followed.
+  // The 60yd teleport is kept only as a true last resort, for when no route to the
+  // owner exists at all (e.g. owner stranded across un-navigable terrain).
+  private petFollow(pet: Entity, owner: Entity): void {
+    pet.petPathCooldown = Math.max(0, pet.petPathCooldown - DT);
     const d = dist2d(pet.pos, owner.pos);
-    if (d > PET_TELEPORT_DISTANCE) {
-      pet.pos = { ...owner.pos };
-      pet.prevPos = { ...pet.pos };
-      // a warp is a teleport: keep the spatial grid exact this tick instead of
-      // waiting for the end-of-tick refresh, so same-tick aggro/AoE queries
-      // don't miss the pet at its old cell (matches every other teleport site)
-      this.rebucket(pet);
-    } else if (d > PET_FOLLOW_DISTANCE && !this.isRooted(pet)) {
-      this.moveToward(pet, owner.pos, Math.max(pet.moveSpeed, RUN_SPEED * 1.1) * this.moveSpeedMult(pet));
+    if (d <= PET_FOLLOW_DISTANCE) { pet.petPath = []; return; }
+    if (this.isRooted(pet)) return;
+
+    const swim = this.mobCanSwim(MOBS[pet.templateId]);
+    const recompute = (): void => {
+      pet.petPath = findPlayerPath(this.cfg.seed, pet.pos, owner.pos, PET_PATH_SPAN, false, swim)
+        .map((w) => ({ x: w.x, y: 0, z: w.z }));
+      pet.petPathCooldown = PET_PATH_RECALC;
+    };
+    // recompute when the throttle has elapsed and the cache is stale: empty, or
+    // its end no longer lands near the (now-moved) owner. findPlayerPath returns a
+    // single-waypoint straight line (length 1) when the goal is unreachable.
+    const end = pet.petPath[pet.petPath.length - 1];
+    const stale = !end || dist2d(end, owner.pos) > PET_PATH_STALE_DISTANCE;
+    if (pet.petPathCooldown <= 0 && stale) recompute();
+    // drop waypoints we've reached; the last leg homes on the live owner position.
+    while (pet.petPath.length > 1 && dist2d(pet.pos, pet.petPath[0]) < PET_WAYPOINT_REACHED) pet.petPath.shift();
+
+    // Last-resort teleport: only when the owner is far AND genuinely unreachable.
+    // We confirm with a FRESH path (ignoring the throttle) so a stale single-point
+    // cache from a moment ago can never trigger a spurious snap while a real route
+    // exists — e.g. right after a combat→heel transition.
+    if (pet.petPath.length <= 1 && d > PET_TELEPORT_DISTANCE
+      && !lineOfSightClear(this.cfg.seed, pet.pos, owner.pos, BODY_RADIUS)) {
+      recompute();
+      if (pet.petPath.length <= 1) {
+        pet.pos = { ...owner.pos };
+        pet.prevPos = { ...pet.pos };
+        pet.petPath = [];
+        // a warp is a teleport: keep the spatial grid exact this tick instead of
+        // waiting for the end-of-tick refresh, so same-tick aggro/AoE queries
+        // don't miss the pet at its old cell (matches every other teleport site)
+        this.rebucket(pet);
+        return;
+      }
     }
+
+    const routed = pet.petPath.length > 1;
+    const aim = routed ? pet.petPath[0] : owner.pos;
+    const speed = Math.max(pet.moveSpeed, RUN_SPEED * 1.1) * this.moveSpeedMult(pet);
+    this.moveToward(pet, aim, speed);
   }
 
   /** A ranged demon pet (imp) hurls a spell-school bolt: a telegraphed
@@ -7098,7 +7145,11 @@ export class Sim {
       && e.templateId === NYTHRAXIS_BOSS_ID
       && !e.dead
       && dist2d(e.spawnPos, ward.pos) < NYTHRAXIS_WARDSTONE_RANGE);
-    if (!boss?.nythraxis || boss.nythraxis.deathlessCastRemaining <= 0) return true;
+    // No Nythraxis boss in range: this is not a raid wardstone but the overworld
+    // "Sunken Bastion" quest ward stone (same item id). Fall through so the normal
+    // quest pickup runs, instead of swallowing the interaction.
+    if (!boss) return false;
+    if (!boss.nythraxis || boss.nythraxis.deathlessCastRemaining <= 0) return true;
     const channel = boss.nythraxis.wardChannels.find((c) => c.objectId === ward.id);
     if (!channel || channel.complete) return true;
     if (channel.playerId === player.id) return true;
@@ -7970,8 +8021,10 @@ export class Sim {
       return;
     }
     meta.questLog.set(questId, { questId, counts: quest.objectives.map(() => 0), state: 'active' });
-    if (questId === 'q_nythraxis_bound_guardian' && this.countItem('crypt_keystone', meta.entityId) <= 0) {
-      this.addItem('crypt_keystone', 1, meta.entityId);
+    // Re-grant any quest item this quest needs from earlier progression but the player
+    // no longer holds, so a missing item can never permanently block the quest.
+    for (const itemId of questFallbackGrants(quest, (id) => this.countItem(id, meta.entityId) > 0)) {
+      this.addItem(itemId, 1, meta.entityId);
     }
     this.emit({ type: 'questAccepted', questId, pid: meta.entityId });
     this.emit({ type: 'log', text: `Quest accepted: ${quest.name}`, color: '#ff0', pid: meta.entityId });

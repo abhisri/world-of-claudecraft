@@ -478,6 +478,7 @@ describe('client HTML shell', () => {
   });
 
   it('keeps the active druid form toggle on its form action bar', () => {
+    expect(hudTs).toContain("new Set(['bear_form', 'cat_form', 'travel_form'])");
     expect(hudTs).toContain("if (this.activeHotbarForm === 'bear') return 'bear_form';");
     expect(hudTs).toContain("if (this.activeHotbarForm === 'cat') return 'cat_form';");
     expect(hudTs).toContain('if (formToggle && knownAbilityIds.includes(formToggle)) autoPlaceAbilityIds.add(formToggle);');

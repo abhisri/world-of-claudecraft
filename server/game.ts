@@ -1,7 +1,7 @@
 import type { WebSocket } from 'ws';
 import { Sim } from '../src/sim/sim';
 import type { PlayerMeta } from '../src/sim/sim';
-import { DT, Entity, EQUIP_SLOTS, EquipSlot, SimEvent, dist2d, emptyMoveInput } from '../src/sim/types';
+import { DT, Entity, EQUIP_SLOTS, EquipSlot, RUN_SPEED, SimEvent, dist2d, emptyMoveInput } from '../src/sim/types';
 import { parseMoveInputFrame } from '../src/sim/move_input';
 import { stealthDetectionRadius, threatEntries } from '../src/sim/threat';
 import { zoneAt, DUNGEONS } from '../src/sim/data';
@@ -159,6 +159,15 @@ export interface AdminServerStats {
   heapUsedBytes: number;
 }
 
+export interface AdminLiveAura {
+  id: string;
+  name: string;
+  kind: string;
+  value: number;
+  remaining: number;
+  duration: number;
+}
+
 export interface AdminLivePlayer {
   pid: number;
   accountId: number;
@@ -173,6 +182,10 @@ export interface AdminLivePlayer {
   zone: string;
   sessionSeconds: number;
   lastSaveSecondsAgo: number;
+  moveSpeedMultiplier: number;
+  runSpeed: number;
+  swimming: boolean;
+  auras: AdminLiveAura[];
 }
 
 export interface RestartCountdownStatus {
@@ -935,6 +948,7 @@ export class GameServer {
       const zone = e.dungeonId
         ? (DUNGEONS[e.dungeonId]?.name ?? e.dungeonId)
         : zoneAt(e.pos.z).name;
+      const moveSpeedMultiplier = round2((this.sim as any).moveSpeedMult(e));
       players.push({
         pid: session.pid,
         accountId: session.accountId,
@@ -949,6 +963,17 @@ export class GameServer {
         zone,
         sessionSeconds: Math.round((now - session.joinedAt) / 1000),
         lastSaveSecondsAgo: Math.round((now - session.lastSave) / 1000),
+        moveSpeedMultiplier,
+        runSpeed: round2(RUN_SPEED * moveSpeedMultiplier),
+        swimming: this.sim.isSwimming(e),
+        auras: e.auras.map((a) => ({
+          id: a.id,
+          name: a.name,
+          kind: a.kind,
+          value: a.value,
+          remaining: round2(a.remaining),
+          duration: a.duration,
+        })),
       });
     }
     return players.sort((a, b) => b.sessionSeconds - a.sessionSeconds);
@@ -972,6 +997,23 @@ export class GameServer {
       try { session.ws.close(); } catch { /* connection already closing */ }
       void this.leave(session, 'moderation action');
     }
+  }
+
+  // Force-disconnect the live session (if any) for a character the requesting
+  // account owns, so a fresh login can take its place. Awaits leave() so the
+  // departing session's state is saved and the sessionsByCharacterId slot is
+  // freed before the caller re-enters — otherwise the new login would race the
+  // old save (clobbering progress) or be rejected with "character already in
+  // world". Idempotent: a no-op (returns 'not-online') when nobody is online.
+  async takeOverCharacter(accountId: number, characterId: number): Promise<'taken-over' | 'not-online'> {
+    const session = this.sessionByCharacterId(characterId);
+    // Ownership is also enforced at the REST layer; re-check here so this method
+    // can never disconnect a session that belongs to another account.
+    if (!session || session.accountId !== accountId) return 'not-online';
+    this.send(session, { t: 'error', error: 'character taken over' });
+    try { session.ws.close(); } catch { /* connection already closing */ }
+    await this.leave(session, 'character taken over');
+    return 'taken-over';
   }
 
   startRestartCountdown(): RestartCountdownStatus {

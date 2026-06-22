@@ -90,4 +90,13 @@ export const es_ES: Partial<Record<TranslationKey, string>> = {
   // "rastreador"); the count badge inherits es (identical "({count})").
   "hudChrome.questTracker.collapseHint": "Contraer el seguimiento de misiones",
   "hudChrome.questTracker.expandHint": "Expandir el seguimiento de misiones",
+  // v0.13.0 release i18n fill: bug report, chat window, character takeover, admin bug reports
+  "hudChrome.bugReport.failed": "No se pudo enviar el informe de error. Inténtalo de nuevo.",
+  "hudChrome.bugReport.menuButton": "Informar de un error",
+  "hudChrome.bugReport.rateLimited": "Has enviado varios informes hace poco. Espera un momento antes de enviar otro.",
+  "hudChrome.bugReport.screenshotAlt": "Captura de pantalla de la vista actual adjunta a este informe de error",
+  "hudChrome.bugReport.submit": "Enviar informe",
+  "hudChrome.bugReport.submitted": "Informe de error enviado. ¡Gracias!",
+  "hudChrome.bugReport.submittedNoShot": "Informe de error enviado, pero la captura de pantalla era demasiado grande para incluirla.",
+  "hudChrome.bugReport.tooLarge": "Ese informe es demasiado grande para enviarlo. Inténtalo de nuevo sin la captura de pantalla.",
 };

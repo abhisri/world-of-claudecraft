@@ -92,6 +92,7 @@ import { localizeSimText, localizeSimAuraName } from './sim_i18n';
 import { tTalent, localizeTalentTitle } from './talent_i18n';
 import { armorTypeForItem, weaponArchetypeForItem } from '../sim/equipment_rules';
 import { type ChatClock, clampChatClock, formatChatTimestamp } from './chat_timestamp';
+import { type ChatBoxGeometry, clampChatBox, serializeChatBox, parseChatBox } from './chat_window';
 import {
   talentsFor, computeTalentModifiers, validateAllocation, dormantNodes, pointsSpent,
   exportBuild, importBuild, cloneAllocation, talentPointsAtLevel, FIRST_TALENT_LEVEL,
@@ -293,6 +294,9 @@ const IGNORED_CHAT_NAMES_KEY = 'woc_ignored_chat_names';
 // implicit and never stored.
 const CHAT_TABS_KEY = 'woc_chat_tabs';
 const CHAT_ACTIVE_TAB_KEY = 'woc_chat_active_tab';
+// Persisted chat-window geometry (drag position + resize size). Desktop only —
+// the mobile layout owns its own placement and ignores this.
+const CHAT_GEOMETRY_KEY = 'woc_chat_geometry';
 const BIND_CATEGORY_LABEL_KEYS: Partial<Record<string, TranslationKey>> = {
   Movement: 'hud.keybinds.categories.movement',
   Targeting: 'hud.keybinds.categories.targeting',
@@ -416,7 +420,7 @@ function yellVoiceKey(text: string): string {
 export class Hud {
   private static readonly BAR_ABILITY_SLOTS = 11; // bar slots 1..11; slot 0 is the fixed Attack toggle
   private static ddSeq = 0; // monotonic id source for buildDropdown listbox/option ARIA wiring
-  private static readonly FORM_TOGGLE_IDS = new Set(['bear_form', 'cat_form']); // shift toggles, castable in any form
+  private static readonly FORM_TOGGLE_IDS = new Set(['bear_form', 'cat_form', 'travel_form']); // shift toggles, castable in any form
   private abilityButtons: { btn: HTMLButtonElement; label: HTMLSpanElement; countEl: HTMLSpanElement; keybindEl: HTMLSpanElement; cdOverlay: HTMLDivElement; cdText: HTMLDivElement; lastIcon: string }[] = [];
   private hotbarActions: HotbarAction[] = []; // index = barSlot-1
   private loadedSlotMapFromStorage = false;
@@ -597,6 +601,13 @@ export class Hud {
   private mapView: { spanX: number; spanZ: number; minX: number; maxX: number; minZ: number; maxZ: number } | null = null;
   private mapDecorations: Decoration[] | null = null; // cached trees/rocks (whole world)
   private windowDrag: { el: HTMLElement; pointerId: number; offsetX: number; offsetY: number } | null = null;
+  // Movable/resizable chat box: current geometry (null = stock CSS default) plus
+  // the in-progress pointer gesture, if any. See chat_window.ts for the math.
+  private chatBox: ChatBoxGeometry | null = null;
+  private chatBoxGesture:
+    | { kind: 'move'; pointerId: number; grabX: number; grabY: number }
+    | { kind: 'resize'; pointerId: number; startX: number; startY: number; startW: number; startH: number }
+    | null = null;
   private windowObserver: MutationObserver | null = null;
   private windowZ = 50;
   private ignoredChatNames = new Set<string>();
@@ -649,6 +660,7 @@ export class Hud {
     this.ignoredChatNames = this.loadIgnoredChatNames();
     this.meters = new Meters(sim);
     this.initChatTabs();
+    this.initChatBoxGeometry();
     this.initWindowManagement();
     this.emoteWheelSlots = this.loadEmoteWheelSlots();
     this.loadSlotMap();
@@ -1126,6 +1138,154 @@ export class Hud {
       localStorage.setItem(CHAT_TABS_KEY, serializeChatTabs(this.chatTabs));
       localStorage.setItem(CHAT_ACTIVE_TAB_KEY, this.activeChatTab);
     } catch { /* storage unavailable */ }
+  }
+
+  // -------------------------------------------------------------------------
+  // Movable / resizable chat window (desktop only). The pure geometry math
+  // (clamping, (de)serialization) lives in chat_window.ts; this section is just
+  // the DOM wiring: a drag handle on the tab strip, a corner resize grip, and
+  // localStorage persistence with a reset path back to the CSS default.
+  // -------------------------------------------------------------------------
+
+  private isMobileLayout(): boolean {
+    return document.body.classList.contains('mobile-touch');
+  }
+
+  private initChatBoxGeometry(): void {
+    const wrap = document.getElementById('chatlog-wrap');
+    const tabs = document.getElementById('chatlog-tabs');
+    const frame = document.getElementById('chatlog-frame');
+    if (!wrap || !tabs || !frame) return;
+
+    // Resize grip pinned to the frame's bottom-right corner.
+    const grip = document.createElement('div');
+    grip.className = 'chat-resize-grip';
+    grip.title = t('hudChrome.chatWindow.resize');
+    grip.setAttribute('aria-hidden', 'true');
+    frame.appendChild(grip);
+
+    tabs.style.touchAction = 'none';
+    tabs.setAttribute('aria-label', t('hudChrome.chatWindow.move'));
+    tabs.addEventListener('pointerdown', (ev) => this.onChatBoxMoveStart(ev, wrap, tabs));
+    grip.addEventListener('pointerdown', (ev) => this.onChatBoxResizeStart(ev, wrap, frame));
+    document.addEventListener('pointermove', (ev) => this.onChatBoxPointerMove(ev));
+    const end = (ev: PointerEvent) => this.onChatBoxPointerEnd(ev);
+    document.addEventListener('pointerup', end);
+    document.addEventListener('pointercancel', end);
+    // Re-clamp into view when the viewport changes (mirrors the .window.panel logic).
+    window.addEventListener('resize', () => { if (this.chatBox) this.applyChatBoxGeometry(); });
+
+    let saved: string | null = null;
+    try { saved = localStorage.getItem(CHAT_GEOMETRY_KEY); } catch { /* storage unavailable */ }
+    this.chatBox = parseChatBox(saved);
+    if (this.chatBox) this.applyChatBoxGeometry();
+  }
+
+  // Seed this.chatBox from the live layout the first time a gesture starts, so a
+  // box still on its CSS default converts cleanly to explicit px coordinates.
+  private ensureChatBoxGeometry(wrap: HTMLElement, tabs: HTMLElement): void {
+    if (this.chatBox) return;
+    const wrapRect = wrap.getBoundingClientRect();
+    const frameRect = document.getElementById('chatlog-frame')?.getBoundingClientRect();
+    const chromeH = tabs.getBoundingClientRect().height;
+    this.chatBox = {
+      left: wrapRect.left,
+      top: wrapRect.top,
+      width: wrapRect.width,
+      height: frameRect ? frameRect.height : Math.max(0, wrapRect.height - chromeH),
+    };
+  }
+
+  private onChatBoxMoveStart(ev: PointerEvent, wrap: HTMLElement, tabs: HTMLElement): void {
+    if (ev.button !== 0 || this.isMobileLayout()) return;
+    const target = ev.target as HTMLElement | null;
+    // Tab buttons (select / add / close) keep their own click behaviour; only the
+    // empty strip area initiates a move.
+    if (!target || target.closest('button')) return;
+    ev.preventDefault();
+    this.ensureChatBoxGeometry(wrap, tabs);
+    const rect = wrap.getBoundingClientRect();
+    this.chatBoxGesture = { kind: 'move', pointerId: ev.pointerId, grabX: ev.clientX - rect.left, grabY: ev.clientY - rect.top };
+    document.body.classList.add('chat-box-dragging');
+    try { tabs.setPointerCapture?.(ev.pointerId); } catch { /* synthetic pointer */ }
+  }
+
+  private onChatBoxResizeStart(ev: PointerEvent, wrap: HTMLElement, frame: HTMLElement): void {
+    if (ev.button !== 0 || this.isMobileLayout()) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    const tabs = document.getElementById('chatlog-tabs');
+    if (tabs) this.ensureChatBoxGeometry(wrap, tabs);
+    if (!this.chatBox) return;
+    this.chatBoxGesture = {
+      kind: 'resize', pointerId: ev.pointerId,
+      startX: ev.clientX, startY: ev.clientY,
+      startW: this.chatBox.width, startH: this.chatBox.height,
+    };
+    document.body.classList.add('chat-box-dragging');
+    try { frame.setPointerCapture?.(ev.pointerId); } catch { /* synthetic pointer */ }
+  }
+
+  private onChatBoxPointerMove(ev: PointerEvent): void {
+    const g = this.chatBoxGesture;
+    if (!g || g.pointerId !== ev.pointerId || !this.chatBox) return;
+    ev.preventDefault();
+    if (g.kind === 'move') {
+      this.chatBox = { ...this.chatBox, left: ev.clientX - g.grabX, top: ev.clientY - g.grabY };
+    } else {
+      this.chatBox = { ...this.chatBox, width: g.startW + (ev.clientX - g.startX), height: g.startH + (ev.clientY - g.startY) };
+    }
+    this.applyChatBoxGeometry();
+  }
+
+  private onChatBoxPointerEnd(ev: PointerEvent): void {
+    const g = this.chatBoxGesture;
+    if (!g || g.pointerId !== ev.pointerId) return;
+    this.chatBoxGesture = null;
+    document.body.classList.remove('chat-box-dragging');
+    this.persistChatBoxGeometry();
+  }
+
+  private applyChatBoxGeometry(): void {
+    if (!this.chatBox || this.isMobileLayout()) return;
+    const wrap = document.getElementById('chatlog-wrap');
+    const tabs = document.getElementById('chatlog-tabs');
+    const frame = document.getElementById('chatlog-frame');
+    if (!wrap || !tabs || !frame) return;
+    const chromeH = tabs.getBoundingClientRect().height || 22;
+    const clamped = clampChatBox(this.chatBox, { w: window.innerWidth, h: window.innerHeight }, chromeH);
+    this.chatBox = clamped;
+    wrap.style.left = `${clamped.left}px`;
+    wrap.style.top = `${clamped.top}px`;
+    wrap.style.right = 'auto';
+    wrap.style.bottom = 'auto';
+    wrap.style.width = `${clamped.width}px`;
+    frame.style.height = `${clamped.height}px`;
+    // Keep the (separately positioned) chat input bar aligned above the box.
+    const input = document.getElementById('chat-input');
+    if (input) {
+      input.style.left = `${clamped.left}px`;
+      input.style.width = `${clamped.width}px`;
+      input.style.bottom = `${Math.max(0, window.innerHeight - clamped.top + 4)}px`;
+    }
+  }
+
+  private persistChatBoxGeometry(): void {
+    if (!this.chatBox) return;
+    try { localStorage.setItem(CHAT_GEOMETRY_KEY, serializeChatBox(this.chatBox)); } catch { /* storage unavailable */ }
+  }
+
+  // Public: snap the chat window back to its stock CSS position/size and forget
+  // the saved geometry. Wired to the "Reset Chat Window" interface option.
+  resetChatWindow(): void {
+    this.chatBox = null;
+    try { localStorage.removeItem(CHAT_GEOMETRY_KEY); } catch { /* storage unavailable */ }
+    const ids = ['chatlog-wrap', 'chatlog-frame', 'chat-input'];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      for (const prop of ['left', 'top', 'right', 'bottom', 'width', 'height']) el.style.removeProperty(prop);
+    }
   }
 
   private renderChatTabs(): void {
@@ -9289,6 +9449,18 @@ export class Hud {
         { value: 1, label: t('hud.options.terrainHigh') },
       ]);
     }
+    // Adaptive CSS-effects tier (DOM layer, separate from the WebGL preset above).
+    // Auto detects the browser engine/version + device; manual values pin it.
+    this.settingChoice(body, t('hudChrome.options.browserEffects'), 'browserEffects', [
+      { value: 0, label: t('hudChrome.options.browserEffectsAuto') },
+      { value: 1, label: t('hudChrome.options.browserEffectsFull') },
+      { value: 2, label: t('hudChrome.options.browserEffectsReduced') },
+      { value: 3, label: t('hudChrome.options.browserEffectsMinimal') },
+    ]);
+    const fxNote = document.createElement('div');
+    fxNote.className = 'set-note';
+    fxNote.textContent = t('hudChrome.options.browserEffectsNote');
+    body.appendChild(fxNote);
     this.settingSlider(body, t('hud.options.cameraSpeed'), 'cameraSpeed');
     // Camera Speed only scales mouselook; on touch the camera joystick has its
     // own rate, so phones get a dedicated sensitivity slider here.
@@ -9491,10 +9663,28 @@ export class Hud {
     tsRow.append(tsName, tsToggle);
     body.append(tsRow, fmtRow);
 
+    // Reset the movable/resizable chat window back to its default placement.
+    const resetRow = document.createElement('div');
+    resetRow.className = 'set-row';
+    const resetName = document.createElement('span');
+    resetName.className = 'set-name';
+    resetName.textContent = t('hudChrome.chatWindow.reset');
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'btn set-toggle';
+    resetBtn.textContent = t('hudChrome.chatWindow.resetAction');
+    resetBtn.addEventListener('click', () => { audio.click(); this.resetChatWindow(); });
+    resetRow.append(resetName, resetBtn);
+    body.append(resetRow);
+
     const note = document.createElement('div');
     note.className = 'set-note';
     note.textContent = t('hudChrome.chatTimestamps.note');
     $('#options-menu').appendChild(note);
+
+    const chatWinNote = document.createElement('div');
+    chatWinNote.className = 'set-note';
+    chatWinNote.textContent = t('hudChrome.chatWindow.note');
+    $('#options-menu').appendChild(chatWinNote);
 
     const back = document.createElement('button');
     back.className = 'btn';

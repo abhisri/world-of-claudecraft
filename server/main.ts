@@ -58,6 +58,8 @@ const STATIC_PAGE_ALIASES = new Map([
   ['/privacy/', '/privacy.html'],
   ['/terms', '/terms.html'],
   ['/terms/', '/terms.html'],
+  ['/merch', '/merch.html'],
+  ['/merch/', '/merch.html'],
   ['/data-deletion', '/data-deletion.html'],
   ['/data-deletion/', '/data-deletion.html'],
   ['/support', '/support.html'],
@@ -466,6 +468,7 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
     }
     const delMatch = /^\/api\/characters\/(\d+)$/.exec(url);
     const renameMatch = /^\/api\/characters\/(\d+)\/rename$/.exec(url);
+    const takeoverMatch = /^\/api\/characters\/(\d+)\/takeover$/.exec(url);
     const standingMatch = /^\/api\/characters\/(\d+)\/standing$/.exec(url);
     if (req.method === 'GET' && standingMatch) {
       const accountId = await bearerActiveAccount(req, res);
@@ -482,6 +485,17 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
       if (name === null) return json(res, 400, { error: 'invalid character name (2-16 letters)' });
       if (offensiveName(name)) return json(res, 400, { error: 'character name is not allowed' });
       const characterId = Number(renameMatch[1]);
+      const character = await getCharacter(accountId, characterId);
+      if (!character) return json(res, 404, { error: 'character not found' });
+      // A rename is a moderator-sanctioned action: the character-select UI only
+      // shows the rename control when a moderator has set force_rename. The UI is
+      // not a security boundary, so gate here too: a normal owner hitting this
+      // route directly must not be able to rename an un-flagged character. (The
+      // UPDATE in renameCharacter re-checks the flag race-free; this returns a
+      // clear 403 instead of a misleading 404.)
+      if (!character.force_rename) {
+        return json(res, 403, { error: 'character rename is not permitted' });
+      }
       // A rename mutates the DB name and clears force_rename, but a live
       // ClientSession keeps its own copy of the name (used by reports, chat and
       // /api/status). Renaming an online character desyncs that copy and — worse
@@ -492,12 +506,35 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
       }
       try {
         const c = await renameCharacter(accountId, characterId, name);
-        if (!c) return json(res, 404, { error: 'character not found' });
+        if (!c) {
+          // The force_rename-gated UPDATE matched no row even though the pre-check
+          // passed: a concurrent rename cleared the flag, or the character was just
+          // deleted. Re-resolve so the status stays consistent with the pre-check
+          // (403 if it still exists but is no longer flagged, 404 if truly gone)
+          // instead of always answering a misleading 404.
+          const still = await getCharacter(accountId, characterId);
+          if (still && !still.force_rename) {
+            return json(res, 403, { error: 'character rename is not permitted' });
+          }
+          return json(res, 404, { error: 'character not found' });
+        }
         return json(res, 200, { id: c.id, name: c.name, class: c.class, level: c.level, forceRename: c.force_rename });
       } catch (err: any) {
         if (isUniqueViolation(err)) return json(res, 409, { error: 'that name is taken' });
         throw err;
       }
+    }
+    if (req.method === 'POST' && takeoverMatch) {
+      // Free a character's live session so this account can re-enter on it,
+      // e.g. after a crash/closed tab left a stale session, or to hand a
+      // character off from another device. Ownership-gated and idempotent.
+      const accountId = await bearerActiveAccount(req, res);
+      if (accountId === null) return;
+      const characterId = Number(takeoverMatch[1]);
+      const character = await getCharacter(accountId, characterId);
+      if (!character) return json(res, 404, { error: 'not found' });
+      const result = await game.takeOverCharacter(accountId, characterId);
+      return json(res, 200, { ok: true, takenOver: result === 'taken-over' });
     }
     if (req.method === 'DELETE' && delMatch) {
       const accountId = await bearerActiveAccount(req, res);

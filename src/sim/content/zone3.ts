@@ -748,7 +748,8 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     ],
     xpReward: 5200, copperReward: 3500,
     itemRewards: { warrior: 'kings_signet', mage: 'kings_signet', rogue: 'kings_signet' },
-    requiresQuest: 'q_nythraxis_sealed_crypt', minLevel: 20, suggestedPlayers: 5,
+    requiresQuest: 'q_nythraxis_sealed_crypt', requiredItems: ['crypt_keystone'],
+    minLevel: 20, suggestedPlayers: 5,
   },
   q_nythraxis_scourges_end: {
     id: 'q_nythraxis_scourges_end', name: 'Scourge\'s End',

@@ -193,7 +193,7 @@ export interface LootStrategies {
 
 export const DEFAULT_PARTY_LOOT_STRATEGIES: LootStrategies = {
   currency: 'fair-split',
-  commonItems: 'need-greed',
+  commonItems: 'looter-takes-all',
   premiumItems: 'need-greed',
 };
 
@@ -773,6 +773,8 @@ export interface QuestDef {
   copperReward: number;
   itemRewards: Partial<Record<PlayerClass, string>>;
   requiresQuest?: string; // prerequisite quest id (must be turned in)
+  requiredItems?: string[]; // quest items obtained earlier (e.g. a prerequisite reward) that this
+  // quest needs; re-granted on accept if the player no longer has them, to avoid a progression block
   minLevel?: number;
   retired?: boolean; // remains finishable if already accepted, but cannot be newly accepted
   suggestedPlayers?: number; // group quests ("Suggested players: 5")
@@ -894,6 +896,8 @@ export interface Entity {
   ownerId: number | null; // controlled pets: owning player's entity id (null = wild)
   petMode: PetMode; // hunter pet behavior stance
   petTauntTimer: number; // controlled pet Growl cooldown
+  petPath: Vec3[]; // controlled pet heel route around obstacles; consumed front-to-back (like chargePath)
+  petPathCooldown: number; // seconds until this pet may recompute its heel path again
   pulseTimer: number; // boss aoe pulse countdown
   stompTimer: number; // boss War Stomp stun-pulse countdown
   stoneskinTimer: number; // periodic self-absorb barrier countdown

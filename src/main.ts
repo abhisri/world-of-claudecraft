@@ -4,6 +4,8 @@ import { Input } from './game/input';
 import { Keybinds } from './game/keybinds';
 import { Settings, GameSettings, SETTING_RANGES, normalizeClickMoveButton } from './game/settings';
 import { MobileControls, PHONE_TOUCH_QUERY, isPhoneTouchDevice } from './game/mobile_controls';
+import { readBrowserEnv, cssEffectsTier, browserBodyClasses, BROWSER_BODY_CLASSES } from './game/browser_env';
+import { GFX } from './render/gfx';
 import { GamepadManager } from './game/gamepad';
 import { GamepadBindings } from './game/gamepad_bindings';
 import { shouldUseStaticBackdrop } from './game/landing_backdrop';
@@ -166,10 +168,12 @@ function userFacingApiError(err: unknown): string {
   if (normalized === 'that name is taken') return t('errors.api.nameTaken');
   if (normalized === 'character not found' || normalized === 'no such character' || normalized === 'not found') return t('errors.api.characterNotFound');
   if (normalized === 'character is currently online') return t('errors.api.characterOnline');
+  if (normalized === 'character rename is not permitted') return t('errors.api.renameNotPermitted');
   if (normalized === 'type the character name to confirm deletion') return t('errors.api.deleteConfirm');
   if (normalized === 'not authenticated' || normalized === 'authentication required') return t('errors.api.notAuthenticated');
   if (normalized === 'this account has been banned.') return t('errors.api.accountBanned');
   if (normalized === 'character already in world') return t('errors.api.alreadyInWorld');
+  if (normalized === 'character taken over') return t('errors.api.takenOver');
   if (normalized === 'this character must be renamed before entering the world.') return t('errors.api.renameBeforeEntering');
   if (normalized === 'logins are only allowed from the game client') return t('errors.api.webLoginOnly');
   // Account portal REST errors (server/main.ts /api/account/*). English-source,
@@ -846,6 +850,23 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     input.setAttackMoveEnabled(settings.get('attackMove'));
   }
 
+  // Engine/version/device are fixed for the session; the renderer's GPU tier is
+  // resolved by now (initGfxTier ran during renderer construction). Re-stamp all
+  // classes on every call so a manual Esc-menu override repaints cleanly.
+  const browserEnv = readBrowserEnv();
+  function applyBrowserEffects(override: number): void {
+    const tier = cssEffectsTier({
+      engine: browserEnv.engine,
+      version: browserEnv.engineVersion,
+      mobile: browserEnv.mobile,
+      renderTier: GFX.tier,
+      override,
+    });
+    const body = document.body.classList;
+    body.remove(...BROWSER_BODY_CLASSES);
+    body.add(...browserBodyClasses(browserEnv, tier));
+  }
+
   function applySetting(key: keyof GameSettings, value: number | boolean): void {
     if (key === 'mouseCamera') {
       const v = settings.set('mouseCamera', !!value);
@@ -887,6 +908,10 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     }
     if (key === 'compactChat') {
       document.body.classList.toggle('compact-chat', settings.set('compactChat', !!value));
+      return;
+    }
+    if (key === 'browserEffects') {
+      applyBrowserEffects(settings.set('browserEffects', value as number));
       return;
     }
     if (key === 'showFps') {
@@ -2417,15 +2442,22 @@ async function refreshCharacters(): Promise<void> {
       row.dataset.class = c.class;
       row.dataset.skin = String(c.skin ?? 0);
       const className = classDisplayName(c.class);
-      const statusText = c.online ? ` (${t('character.inWorld')})` : c.forceRename ? ` (${t('character.renameRequired')})` : '';
+      // Online characters explain themselves on their own hint line (below the
+      // class) instead of the terse "(in world)" suffix, so the reason for the
+      // Take Over button is unmissable.
+      const statusText = c.online ? '' : c.forceRename ? ` (${t('character.renameRequired')})` : '';
+      const inWorldHint = c.online ? `<span class="char-inworld-hint">${escapeHtml(t('character.inWorldHint'))}</span>` : '';
       row.innerHTML = `${portraitChipHtml({ cls: c.class, skin: c.skin ?? 0, name: c.name, variant: 'sm' })}
         <div class="char-id">
           <span class="char-name">${escapeHtml(c.name)}</span>
           <span class="char-sub">${escapeHtml(t('character.levelClass', { level: c.level, className }))}${escapeHtml(statusText)}</span>
+          ${inWorldHint}
         </div>
         ${c.forceRename
           ? `<input class="rename-input" placeholder="${escapeHtml(t('character.newNamePlaceholder'))}" maxlength="16" /><span class="char-actions"><button class="btn btn-danger delete-char-btn" ${c.online ? 'disabled' : ''}>${escapeHtml(t('character.delete'))}</button><button class="btn rename-btn">${escapeHtml(t('character.rename'))}</button></span>`
-          : `<span class="char-actions"><button class="btn btn-danger delete-char-btn" ${c.online ? 'disabled' : ''}>${escapeHtml(t('character.delete'))}</button><button class="btn enter-world-btn" ${c.online ? 'disabled' : ''}>${escapeHtml(t('auth.enterWorld'))}</button></span>`}`;
+          : c.online
+            ? `<span class="char-actions"><button class="btn btn-danger delete-char-btn" disabled title="${escapeHtml(t('character.inWorldHint'))}">${escapeHtml(t('character.delete'))}</button><button class="btn take-over-btn" title="${escapeHtml(t('character.takeOverConfirm'))}" aria-label="${escapeHtml(t('character.takeOverConfirm'))}">${escapeHtml(t('character.takeOver'))}</button></span>`
+            : `<span class="char-actions"><button class="btn btn-danger delete-char-btn">${escapeHtml(t('character.delete'))}</button><button class="btn enter-world-btn">${escapeHtml(t('auth.enterWorld'))}</button></span>`}`;
 
       row.querySelector('.delete-char-btn')!.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -2442,6 +2474,31 @@ async function refreshCharacters(): Promise<void> {
             await refreshCharacters();
           } catch (err) {
             $('#charselect-error').textContent = userFacingApiError(err);
+          }
+        });
+      } else if (c.online) {
+        row.querySelector('.take-over-btn')!.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const btn = e.currentTarget as HTMLButtonElement;
+          // Taking over disconnects the other live session with no undo, so guard a
+          // stray click (e.g. you are genuinely playing on another device) behind a
+          // confirm. The prompt text is the existing t() key, keeping it localized.
+          if (!window.confirm(t('character.takeOverConfirm'))) return;
+          $('#charselect-error').textContent = '';
+          btn.disabled = true;
+          try {
+            // Free the stale/other session, then enter on this character.
+            // takeOverCharacter awaits the old session's leave() server-side, so
+            // the slot is free by the time enterWorld connects. Pass btn so
+            // enterWorld owns its loading/disabled state and restores it if entry
+            // is aborted before it begins; surface any failure via the catch.
+            await api.takeoverCharacter(c.id);
+            await enterWorld({ ...c, online: false }, btn);
+          } catch (err) {
+            btn.disabled = false;
+            $('#charselect-error').textContent = userFacingApiError(err);
+            // Reflect any state change (e.g. a lost race) back into the list.
+            void refreshCharacters();
           }
         });
       } else {
@@ -4807,6 +4864,27 @@ function wireStartScreens(): void {
   };
   syncContrastToggle(landingSettings.get('landingHighContrast'));
   applyLandingBackdrop(landingSettings.get('landingHighContrast'));
+
+  // Stamp the engine/device + CSS-effects classes on the landing screen too, so
+  // the decorative #start-screen-backdrop work (portal rings' heavy blur, nebula,
+  // embers, trailer) is toned down from the first paint on costly engines (mobile
+  // WebKit above all). The renderer (and its GPU tier) does not exist yet, so we
+  // pass the conservative 'high' render tier here: only known-bad engine/device
+  // quirks tone the first paint down. startGame() re-stamps with the real GFX.tier
+  // once in-world. Honors a persisted manual browserEffects override.
+  {
+    const landingEnv = readBrowserEnv();
+    const landingTier = cssEffectsTier({
+      engine: landingEnv.engine,
+      version: landingEnv.engineVersion,
+      mobile: landingEnv.mobile,
+      renderTier: 'high',
+      override: landingSettings.get('browserEffects') as number,
+    });
+    const body = document.body.classList;
+    body.remove(...BROWSER_BODY_CLASSES);
+    body.add(...browserBodyClasses(landingEnv, landingTier));
+  }
   contrastToggle?.addEventListener('click', () => {
     const next = !landingSettings.get('landingHighContrast');
     landingSettings.set('landingHighContrast', next);

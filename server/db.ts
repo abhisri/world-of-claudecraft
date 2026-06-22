@@ -935,10 +935,15 @@ export async function searchCharacters(prefix: string, limit = 8): Promise<Chara
 }
 
 export async function renameCharacter(accountId: number, characterId: number, name: string): Promise<CharacterRow | null> {
+  // A rename is only ever sanctioned by a moderator's "Force name change", which
+  // sets force_rename. Gating the UPDATE on `force_rename = TRUE` makes the server
+  // authoritative (the UI hides the control, but the API must not trust that) and
+  // is race-free: a successful rename clears the flag, so it self-limits to exactly
+  // one rename per moderator action.
   const res = await pool.query(
     `UPDATE characters
      SET name = $3, force_rename = FALSE, updated_at = now()
-     WHERE id = $1 AND account_id = $2 AND realm = $4
+     WHERE id = $1 AND account_id = $2 AND realm = $4 AND force_rename = TRUE
      RETURNING id, account_id, name, class, level, state, is_gm, force_rename`,
     [characterId, accountId, name, REALM],
   );

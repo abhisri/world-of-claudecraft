@@ -186,6 +186,13 @@ export const ja_JP: EnTranslations = {
       "clock24h": "24時間表記",
       "note": "新しいチャット行の先頭に受信時刻を付けます（例：[14:32]）。この設定がオンの間に受信したメッセージにのみ適用されます。"
     },
+    "chatWindow": {
+      "move": "ドラッグでチャットウィンドウを移動",
+      "resize": "ドラッグでチャットウィンドウのサイズを変更",
+      "reset": "チャットウィンドウをリセット",
+      "resetAction": "リセット",
+      "note": "チャットのタブ列をドラッグするとウィンドウを移動でき、右下のグリップをドラッグするとサイズを変更できます。リセットすると既定の位置とサイズに戻ります。"
+    },
     "swing": {
       "ready": "攻撃",
       "seconds": "{seconds}秒"
@@ -233,6 +240,12 @@ export const ja_JP: EnTranslations = {
     "options": {
       "clickMoveLeft": "左クリック",
       "clickMoveRight": "右クリック",
+      "browserEffects": "ブラウザエフェクト",
+      "browserEffectsAuto": "自動",
+      "browserEffectsFull": "フル",
+      "browserEffectsReduced": "軽減",
+      "browserEffectsMinimal": "最小",
+      "browserEffectsNote": "自動はブラウザとデバイスに応じて、負荷の高い CSS エフェクト（ぼかし・グロー・背景アニメーション）を抑えます。動作が重い場合は手動で下げてください。",
       "footstepSounds": "足音",
       "clickFeedback": "クリックマーカー",
       "showWalletOnCharacterScreen": "キャラクター画面にウォレットを表示",
@@ -1052,7 +1065,9 @@ export const ja_JP: EnTranslations = {
       "webLoginOnly": "ログインはゲームクライアントからのみ可能です。",
       "accountSuspended": "このアカウントは {date} まで停止されています。",
       "alreadyInWorld": "キャラクターは既に世界にいます。",
-      "renameBeforeEntering": "このキャラクターは世界に入る前に名前変更が必要です。"
+      "takenOver": "あなたのキャラクターは別のセッションに引き継がれました。",
+      "renameBeforeEntering": "このキャラクターは世界に入る前に名前変更が必要です。",
+      "renameNotPermitted": "このキャラクターの名前変更は許可されていません。"
     }
   },
   "realm": {
@@ -1078,6 +1093,9 @@ export const ja_JP: EnTranslations = {
     "noneYet": "まだキャラクターがいません。下で作成してください。",
     "levelClass": "レベル{level} {className}",
     "inWorld": "世界にいます",
+    "takeOver": "引き継ぐ",
+    "inWorldHint": "すでに世界にいます。別の場所からログアウトするか、引き継いでください。",
+    "takeOverConfirm": "このキャラクターを別のセッションから切断し、こちらに移します。続けますか？",
     "renameRequired": "名前変更が必要",
     "delete": "削除",
     "rename": "名前変更",

@@ -63,7 +63,9 @@ export const shellStrings = {
         webLoginOnly: "Logins are only allowed from the game client.",
         accountSuspended: "This account is suspended until {date}.",
         alreadyInWorld: "Character is already in world.",
+        takenOver: "Your character was taken over by another session.",
         renameBeforeEntering: "This character must be renamed before entering the world.",
+        renameNotPermitted: "Renaming this character is not allowed.",
       },
     },
     realm: {
@@ -89,6 +91,9 @@ export const shellStrings = {
       noneYet: "No characters yet. Create one below.",
       levelClass: "Level {level} {className}",
       inWorld: "in world",
+      takeOver: "Take Over",
+      inWorldHint: "Already in world. Log out elsewhere, or take over.",
+      takeOverConfirm: "This will disconnect this character from another session and bring it here. Continue?",
       renameRequired: "rename required",
       delete: "Delete",
       rename: "Rename",
@@ -252,6 +257,7 @@ export const shellStrings = {
         accountSuspended: "Esta cuenta está suspendida hasta {date}.",
         alreadyInWorld: "El personaje ya está en el mundo.",
         renameBeforeEntering: "Este personaje debe cambiar de nombre antes de entrar al mundo.",
+        renameNotPermitted: "No se permite cambiar el nombre de este personaje.",
       },
     },
     realm: {
@@ -436,6 +442,7 @@ export const shellStrings = {
         accountSuspended: "Esta cuenta está suspendida hasta {date}.",
         alreadyInWorld: "El personaje ya está en el mundo.",
         renameBeforeEntering: "Este personaje debe cambiar de nombre antes de entrar en el mundo.",
+        renameNotPermitted: "No se permite cambiar el nombre de este personaje.",
       },
     },
     realm: {
@@ -620,6 +627,7 @@ export const shellStrings = {
         accountSuspended: "Ce compte est suspendu jusqu'au {date}.",
         alreadyInWorld: "Le personnage est déjà dans le monde.",
         renameBeforeEntering: "Ce personnage doit être renommé avant d'entrer dans le monde.",
+        renameNotPermitted: "Le changement de nom de ce personnage n'est pas autorisé.",
       },
     },
     realm: {
@@ -804,6 +812,7 @@ export const shellStrings = {
         accountSuspended: "Ce compte est suspendu jusqu'au {date}.",
         alreadyInWorld: "Le personnage est déjà dans le monde.",
         renameBeforeEntering: "Ce personnage doit être renommé avant d'entrer dans le monde.",
+        renameNotPermitted: "Le changement de nom de ce personnage n'est pas autorisé.",
       },
     },
     realm: {
@@ -989,6 +998,7 @@ export const shellStrings = {
         accountSuspended: "This account is suspended until {date}.",
         alreadyInWorld: "Character is already in world.",
         renameBeforeEntering: "This character must be renamed before entering the world.",
+        renameNotPermitted: "Renaming this character is not allowed.",
       },
     },
     realm: {
@@ -1177,6 +1187,7 @@ export const shellStrings = {
         accountSuspended: "Questo account è sospeso fino al {date}.",
         alreadyInWorld: "Il personaggio è già nel mondo.",
         renameBeforeEntering: "Questo personaggio deve essere rinominato prima di entrare nel mondo.",
+        renameNotPermitted: "Non è consentito rinominare questo personaggio.",
       },
     },
     realm: {
@@ -1361,6 +1372,7 @@ export const shellStrings = {
         accountSuspended: "Dieses Konto ist bis {date} suspendiert.",
         alreadyInWorld: "Der Charakter ist bereits in der Welt.",
         renameBeforeEntering: "Dieser Charakter muss vor dem Betreten der Welt umbenannt werden.",
+        renameNotPermitted: "Das Umbenennen dieses Charakters ist nicht erlaubt.",
       },
     },
     realm: {
@@ -1545,6 +1557,7 @@ export const shellStrings = {
         accountSuspended: "此账号被停用至 {date}。",
         alreadyInWorld: "角色已在世界中。",
         renameBeforeEntering: "此角色必须先改名才能进入世界。",
+        renameNotPermitted: "不允许为此角色改名。",
       },
     },
     realm: {
@@ -1729,6 +1742,7 @@ export const shellStrings = {
         accountSuspended: "此帳號停權至 {date}。",
         alreadyInWorld: "角色已在世界中。",
         renameBeforeEntering: "此角色必須先更名才能進入世界。",
+        renameNotPermitted: "不允許為此角色更名。",
       },
     },
     realm: {
@@ -1913,6 +1927,7 @@ export const shellStrings = {
         accountSuspended: "이 계정은 {date}까지 정지되었습니다.",
         alreadyInWorld: "캐릭터가 이미 세계에 있습니다.",
         renameBeforeEntering: "이 캐릭터는 세계에 들어가기 전에 이름을 변경해야 합니다.",
+        renameNotPermitted: "이 캐릭터의 이름을 변경할 수 없습니다.",
       },
     },
     realm: {
@@ -2097,6 +2112,7 @@ export const shellStrings = {
         accountSuspended: "このアカウントは {date} まで停止されています。",
         alreadyInWorld: "キャラクターは既に世界にいます。",
         renameBeforeEntering: "このキャラクターは世界に入る前に名前変更が必要です。",
+        renameNotPermitted: "このキャラクターの名前変更は許可されていません。",
       },
     },
     realm: {
@@ -2281,6 +2297,7 @@ export const shellStrings = {
         accountSuspended: "Esta conta está suspensa até {date}.",
         alreadyInWorld: "O personagem já está no mundo.",
         renameBeforeEntering: "Este personagem precisa ser renomeado antes de entrar no mundo.",
+        renameNotPermitted: "Não é permitido renomear este personagem.",
       },
     },
     realm: {
@@ -2465,6 +2482,7 @@ export const shellStrings = {
         accountSuspended: "Эта учетная запись заблокирована до {date}.",
         alreadyInWorld: "Персонаж уже находится в мире.",
         renameBeforeEntering: "Перед входом в мир этому персонажу нужно сменить имя.",
+        renameNotPermitted: "Переименование этого персонажа не разрешено.",
       },
     },
     realm: {

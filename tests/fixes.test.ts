@@ -572,7 +572,7 @@ describe('boss loot and encounter resets', () => {
     expect(mob.loot).toBeNull();
   });
 
-  it('poor and common corpse drops open need-greed rolls among nearby party members', () => {
+  it('poor and common corpse drops are looted directly by the looter without need-greed rolls', () => {
     const sim = makeSim();
     const a = sim.playerId;
     const b = sim.addPlayer('mage', 'Bert');
@@ -590,12 +590,12 @@ describe('boss loot and encounter resets', () => {
     sim.events.length = 0;
     sim.lootCorpse(mob.id, a);
 
-    expect(sim.countItem('wolf_fang', a) + sim.countItem('wolf_fang', b)).toBe(0);
-    expect(sim.countItem('raw_mirror_trout', a) + sim.countItem('raw_mirror_trout', b)).toBe(0);
+    expect(sim.countItem('wolf_fang', a)).toBe(1);
+    expect(sim.countItem('raw_mirror_trout', a)).toBe(1);
+    expect(sim.countItem('wolf_fang', b)).toBe(0);
+    expect(sim.countItem('raw_mirror_trout', b)).toBe(0);
     const prompts = sim.events.filter((e) => e.type === 'lootRoll');
-    expect(prompts).toHaveLength(4);
-    expect(prompts.filter((e) => e.itemId === 'wolf_fang')).toHaveLength(2);
-    expect(prompts.filter((e) => e.itemId === 'raw_mirror_trout')).toHaveLength(2);
+    expect(prompts).toHaveLength(0);
     expect(mob.loot).toBeNull();
   });
 
@@ -1310,20 +1310,23 @@ describe('pet heel warp', () => {
   it('keeps the spatial grid exact when a pet warps to its owner', () => {
     const sim = makeSim();
     const p = sim.player;
-    // park the owner in open space away from the spawn camp
-    teleportTo(sim, p.pos.x + 400, p.pos.z + 400);
+    // park the owner behind the spawn building, far enough that no heel route
+    // exists: the gap (87yd) exceeds the pet's A* search window and the building
+    // breaks line of sight, so the pet can only fall back to the last-resort warp.
+    teleportTo(sim, 0, 82);
 
-    // adopt a wild beast as a heeling pet and strand it far from the owner
+    // adopt a wild beast as a heeling pet and strand it on the far side of the wall
     const pet = [...sim.entities.values()].find((e) => e.kind === 'mob' && !e.dead)!;
     pet.ownerId = p.id;
     pet.hostile = false;
     pet.aggroTargetId = null;
     pet.inCombat = false;
-    pet.pos = { x: p.pos.x + 200, z: p.pos.z, y: p.pos.y };
+    pet.petMode = 'passive';
+    pet.pos = { x: 0, z: -5, y: p.pos.y };
     pet.prevPos = { ...pet.pos };
     (sim as any).grid.update(pet); // grid now buckets the pet at its far cell
 
-    // 200 yds away with nothing to fight: the pet warps back to heel
+    // unreachable owner with nothing to fight: the pet warps back to heel
     (sim as any).updatePet(pet);
     expect(dist2d(pet.pos, p.pos)).toBeLessThan(1);
 
@@ -1395,20 +1398,23 @@ describe('pet heel warp', () => {
   it('keeps the spatial grid exact when a pet warps to its owner', () => {
     const sim = makeSim();
     const p = sim.player;
-    // park the owner in open space away from the spawn camp
-    teleportTo(sim, p.pos.x + 400, p.pos.z + 400);
+    // park the owner behind the spawn building, far enough that no heel route
+    // exists: the gap (87yd) exceeds the pet's A* search window and the building
+    // breaks line of sight, so the pet can only fall back to the last-resort warp.
+    teleportTo(sim, 0, 82);
 
-    // adopt a wild beast as a heeling pet and strand it far from the owner
+    // adopt a wild beast as a heeling pet and strand it on the far side of the wall
     const pet = [...sim.entities.values()].find((e) => e.kind === 'mob' && !e.dead)!;
     pet.ownerId = p.id;
     pet.hostile = false;
     pet.aggroTargetId = null;
     pet.inCombat = false;
-    pet.pos = { x: p.pos.x + 200, z: p.pos.z, y: p.pos.y };
+    pet.petMode = 'passive';
+    pet.pos = { x: 0, z: -5, y: p.pos.y };
     pet.prevPos = { ...pet.pos };
     (sim as any).grid.update(pet); // grid now buckets the pet at its far cell
 
-    // 200 yds away with nothing to fight: the pet warps back to heel
+    // unreachable owner with nothing to fight: the pet warps back to heel
     (sim as any).updatePet(pet);
     expect(dist2d(pet.pos, p.pos)).toBeLessThan(1);
 

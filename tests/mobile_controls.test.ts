@@ -48,7 +48,7 @@ describe('mapJoystickVector', () => {
 });
 
 describe('isPhoneTouchDevice', () => {
-  it('uses the phone touch media query', () => {
+  it('uses touch capability without requiring phone viewport dimensions', () => {
     const queries: string[] = [];
     const win = {
       matchMedia: (q: string) => {
@@ -56,10 +56,20 @@ describe('isPhoneTouchDevice', () => {
         return { matches: true };
       },
     } as unknown as Window;
-    expect(isPhoneTouchDevice(win)).toBe(true);
+    const nav = { maxTouchPoints: 0 } as Navigator;
+    expect(isPhoneTouchDevice(win, nav)).toBe(true);
     expect(queries[0]).toContain('pointer: coarse');
-    expect(queries[0]).toContain('max-width: 940px');
-    expect(queries[0]).toContain('max-height: 760px');
+    expect(queries[0]).toContain('any-pointer: coarse');
+    expect(queries[0]).not.toContain('max-width');
+    expect(queries[0]).not.toContain('max-height');
+  });
+
+  it('treats devices with touch points as touch controls devices', () => {
+    const win = {
+      matchMedia: () => ({ matches: false }),
+    } as unknown as Window;
+    const nav = { maxTouchPoints: 5 } as Navigator;
+    expect(isPhoneTouchDevice(win, nav)).toBe(true);
   });
 });
 

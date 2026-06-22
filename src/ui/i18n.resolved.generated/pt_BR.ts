@@ -186,6 +186,13 @@ export const pt_BR: EnTranslations = {
       "clock24h": "24 horas",
       "note": "Adiciona a cada nova linha do chat o horário em que ela chegou, ex.: [14:32]. Afeta apenas as mensagens recebidas enquanto a opção estiver ativada."
     },
+    "chatWindow": {
+      "move": "Arraste para mover a janela de chat",
+      "resize": "Arraste para redimensionar a janela de chat",
+      "reset": "Redefinir janela de chat",
+      "resetAction": "Redefinir",
+      "note": "Arraste a faixa de abas do chat para mover a janela, ou a alça do canto para redimensioná-la. Redefinir devolve a janela à posição e ao tamanho padrão."
+    },
     "swing": {
       "ready": "Golpe",
       "seconds": "{seconds}s"
@@ -233,8 +240,14 @@ export const pt_BR: EnTranslations = {
     "options": {
       "clickMoveLeft": "Clique esquerdo",
       "clickMoveRight": "Clique direito",
+      "browserEffects": "Efeitos do navegador",
+      "browserEffectsAuto": "Auto",
+      "browserEffectsFull": "Completos",
+      "browserEffectsReduced": "Reduzidos",
+      "browserEffectsMinimal": "Mínimos",
+      "browserEffectsNote": "O modo automático suaviza os efeitos CSS pesados (desfoque, brilho, movimento de fundo) com base no seu navegador e dispositivo. Reduza-o manualmente se a interface parecer lenta.",
       "footstepSounds": "Sons de passos",
-      "clickFeedback": "Click Marker",
+      "clickFeedback": "Marcador de clique",
       "showWalletOnCharacterScreen": "Mostrar carteira na tela de personagens",
       "showWalletOnPlayerCard": "Mostrar carteira no cartão de jogador",
       "uiScale": "Escala da interface",
@@ -394,22 +407,22 @@ export const pt_BR: EnTranslations = {
       }
     },
     "bugReport": {
-      "menuButton": "Report a Bug",
-      "realm": "Realm",
-      "character": "Character",
-      "position": "Position",
-      "unknown": "Unknown",
-      "description": "What went wrong?",
-      "descriptionPlaceholder": "Describe the bug: what you did, what you expected, and what happened.",
-      "includeScreenshot": "Include Screenshot",
-      "screenshotAlt": "Screenshot of the current view attached to this bug report",
-      "submit": "Send Report",
-      "submitted": "Bug report sent. Thank you!",
-      "submittedNoShot": "Bug report sent, but the screenshot was too large to include.",
-      "describeFirst": "Please describe the bug before sending.",
-      "tooLarge": "That report is too large to send. Try again without the screenshot.",
-      "rateLimited": "You've sent several reports recently. Please wait a bit before sending another.",
-      "failed": "Could not send the bug report. Please try again."
+      "menuButton": "Relatar um erro",
+      "realm": "Reino",
+      "character": "Personagem",
+      "position": "Posição",
+      "unknown": "Desconhecido",
+      "description": "O que deu errado?",
+      "descriptionPlaceholder": "Descreva o erro: o que você fez, o que esperava e o que aconteceu.",
+      "includeScreenshot": "Incluir captura de tela",
+      "screenshotAlt": "Captura de tela da visão atual anexada a este relatório de erro",
+      "submit": "Enviar relatório",
+      "submitted": "Relatório de erro enviado. Obrigado!",
+      "submittedNoShot": "Relatório de erro enviado, mas a captura de tela era grande demais para incluir.",
+      "describeFirst": "Descreva o erro antes de enviar.",
+      "tooLarge": "Esse relatório é grande demais para enviar. Tente novamente sem a captura de tela.",
+      "rateLimited": "Você enviou vários relatórios recentemente. Aguarde um pouco antes de enviar outro.",
+      "failed": "Não foi possível enviar o relatório de erro. Tente novamente."
     },
     "paperdoll": {
       "unequipAria": "Desequipar {item}",
@@ -1052,7 +1065,9 @@ export const pt_BR: EnTranslations = {
       "webLoginOnly": "O login só é permitido pelo cliente do jogo.",
       "accountSuspended": "Esta conta está suspensa até {date}.",
       "alreadyInWorld": "O personagem já está no mundo.",
-      "renameBeforeEntering": "Este personagem precisa ser renomeado antes de entrar no mundo."
+      "takenOver": "Seu personagem foi assumido por outra sessão.",
+      "renameBeforeEntering": "Este personagem precisa ser renomeado antes de entrar no mundo.",
+      "renameNotPermitted": "Não é permitido renomear este personagem."
     }
   },
   "realm": {
@@ -1078,6 +1093,9 @@ export const pt_BR: EnTranslations = {
     "noneYet": "Nenhum personagem ainda. Crie um abaixo.",
     "levelClass": "Nível {level} {className}",
     "inWorld": "no mundo",
+    "takeOver": "Assumir controle",
+    "inWorldHint": "Já está no mundo. Saia em outro lugar ou assuma o controle.",
+    "takeOverConfirm": "Isto vai desconectar este personagem de outra sessão e trazê-lo para cá. Continuar?",
     "renameRequired": "renomeação necessária",
     "delete": "Excluir",
     "rename": "Renomear",

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { ALL_CLASSES, isQuestTurnInNpc, type Entity, type SimEvent } from '../sim/types';
 import { OVERHEAD_EMOTES, type IWorld } from '../world_api';
 import { groundHeight, WATER_LEVEL, zoneBiomeAt } from '../sim/world';
+import { drapeRingLocalY } from './selection_ring';
 import {
   CLASSES, MOBS, ABILITIES, DUNGEON_X_THRESHOLD, DUNGEON_LIST, QUESTS,
   instanceOrigin, INSTANCE_SLOT_COUNT, ARENA_SLOT_COUNT, arenaOrigin, isArenaPos, dungeonAt,
@@ -591,7 +592,14 @@ export class Renderer {
   webgl: THREE.WebGLRenderer;
   views = new Map<number, EntityView>();
   nameplateLayer: HTMLDivElement;
-  selectionRing: THREE.Mesh;
+  selectionRing: THREE.Group;
+  selectionRingMesh: THREE.Mesh;
+  selectionRingTicks: THREE.Group;
+  selectionRingMat: THREE.MeshBasicMaterial;
+  // center-relative XZ of every base-ring vertex (cached) + scratch draped Y,
+  // so sync() can re-drape the ring over the terrain without allocating.
+  selectionRingLocalXZ: Float32Array;
+  selectionRingDrapeY: Float32Array;
   // Pool of transient click-feedback markers (ring plus crossed "X"). Each slot is
   // a group reused round-robin, so rapid clicking never allocates. A slot with
   // `elapsed >= lifetime` is free. See click_marker.ts for the animation curves.
@@ -917,14 +925,31 @@ export class Renderer {
     this.propsView = props;
 
     // selection ring — a classic target reticle: a base ring plus four
-    // inward-pointing ticks. The ring is radially symmetric (so spin reads
-    // only off the ticks); it rotates slowly and pulses in sync() below.
+    // inward-pointing ticks. The base ring is draped over the terrain each
+    // frame (see drapeRingLocalY / sync) so it stays legible on slopes instead
+    // of sinking into the uphill ground; the ticks keep the classic spin on a
+    // separate pivot. The ring is radially symmetric, so only the ticks read spin.
     const ringGeo = new THREE.RingGeometry(0.9, 1.15, 48);
     ringGeo.rotateX(-Math.PI / 2);
     const ringMat = new THREE.MeshBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.9, depthWrite: false });
-    this.selectionRing = new THREE.Mesh(ringGeo, ringMat);
-    // four cardinal ticks, flat in the XZ plane, sharing the ring material so
-    // the per-frame hostile/friendly recolour carries over for free.
+    this.selectionRingMat = ringMat;
+    this.selectionRing = new THREE.Group();
+    this.selectionRingMesh = new THREE.Mesh(ringGeo, ringMat);
+    // the draped ring deforms every frame; skip frustum culling so the (now
+    // out-of-date) bounding sphere can't cull it on steep slopes.
+    this.selectionRingMesh.frustumCulled = false;
+    this.selectionRing.add(this.selectionRingMesh);
+    // cache the ring's center-relative XZ so sync() can re-drape it cheaply.
+    const ringPos = ringGeo.getAttribute('position') as THREE.BufferAttribute;
+    this.selectionRingLocalXZ = new Float32Array(ringPos.count * 2);
+    for (let i = 0; i < ringPos.count; i++) {
+      this.selectionRingLocalXZ[i * 2] = ringPos.getX(i);
+      this.selectionRingLocalXZ[i * 2 + 1] = ringPos.getZ(i);
+    }
+    this.selectionRingDrapeY = new Float32Array(ringPos.count);
+    // four cardinal ticks on a spinning pivot, sharing the ring material so the
+    // per-frame hostile/friendly recolour carries over for free.
+    this.selectionRingTicks = new THREE.Group();
     const tickGeo = new THREE.BufferGeometry();
     tickGeo.setAttribute('position', new THREE.Float32BufferAttribute([
       0.72, 0, 0,     // inner tip (points toward the unit)
@@ -934,8 +959,9 @@ export class Renderer {
     for (let i = 0; i < 4; i++) {
       const t = new THREE.Mesh(tickGeo, ringMat);
       t.rotation.y = (i * Math.PI) / 2;
-      this.selectionRing.add(t);
+      this.selectionRingTicks.add(t);
     }
+    this.selectionRing.add(this.selectionRingTicks);
     setRenderCategory(this.selectionRing, 'ui3d');
     this.selectionRing.visible = false;
     this.scene.add(this.selectionRing);
@@ -3104,11 +3130,25 @@ export class Renderer {
     if (target) {
       const tv = this.views.get(target.id);
       if (tv) {
-        this.selectionRing.position.copy(tv.group.position);
-        this.selectionRing.position.y += 0.08;
+        const cx = tv.group.position.x;
+        const cz = tv.group.position.z;
+        const seed = this.sim.cfg.seed;
+        // anchor the reticle to the ground under the unit (a classic decal: it
+        // stays grounded even if the target jumps) and drape it over the slope.
+        const gy = groundHeight(cx, cz, seed);
+        this.selectionRing.position.set(cx, gy, cz);
         this.selectionRing.scale.setScalar(target.scale);
-        this.selectionRing.rotation.y += dt * SELECTION_RING_SPIN; // slow reticle spin
-        const ringMat = this.selectionRing.material as THREE.MeshBasicMaterial;
+        const drape = drapeRingLocalY(
+          this.selectionRingLocalXZ, cx, cz, gy, target.scale, 0.08,
+          (sx, sz) => groundHeight(sx, sz, seed),
+          this.selectionRingDrapeY,
+        );
+        const ringPos = this.selectionRingMesh.geometry.getAttribute('position') as THREE.BufferAttribute;
+        for (let i = 0; i < drape.length; i++) ringPos.setY(i, drape[i]);
+        ringPos.needsUpdate = true;
+        this.selectionRingTicks.position.y = 0.08; // ticks float just above the footing
+        this.selectionRingTicks.rotation.y += dt * SELECTION_RING_SPIN; // slow reticle spin
+        const ringMat = this.selectionRingMat;
         ringMat.color.setHex(this.isHostileSelectionTarget(target) ? 0xcc2222 : 0xd4af37);
         if (!this.lowGfx) ringMat.color.multiplyScalar(SELECTION_RING_BOOST); // subtle bloom edge
         ringMat.opacity = 0.78 + 0.2 * Math.sin(this.time * 4.5); // gentle pulse

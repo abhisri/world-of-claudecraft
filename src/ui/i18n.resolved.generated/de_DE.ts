@@ -186,6 +186,13 @@ export const de_DE: EnTranslations = {
       "clock24h": "24-Stunden",
       "note": "Stellt jeder neuen Chatzeile die Uhrzeit ihres Eintreffens voran, z. B. [14:32]. Betrifft nur Nachrichten, die bei aktivierter Option empfangen werden."
     },
+    "chatWindow": {
+      "move": "Ziehen, um das Chatfenster zu verschieben",
+      "resize": "Ziehen, um die Größe des Chatfensters zu ändern",
+      "reset": "Chatfenster zurücksetzen",
+      "resetAction": "Zurücksetzen",
+      "note": "Ziehe die Chat-Reiterleiste, um das Fenster zu verschieben, oder den Eckgriff, um die Größe zu ändern. Zurücksetzen stellt die Standardposition und -größe wieder her."
+    },
     "swing": {
       "ready": "Schwung",
       "seconds": "{seconds}s"
@@ -233,8 +240,14 @@ export const de_DE: EnTranslations = {
     "options": {
       "clickMoveLeft": "Linksklick",
       "clickMoveRight": "Rechtsklick",
+      "browserEffects": "Browser-Effekte",
+      "browserEffectsAuto": "Auto",
+      "browserEffectsFull": "Voll",
+      "browserEffectsReduced": "Reduziert",
+      "browserEffectsMinimal": "Minimal",
+      "browserEffectsNote": "Der Automatikmodus reduziert aufwendige CSS-Effekte (Unschärfe, Leuchten, Hintergrundbewegung) je nach Browser und Gerät. Senke ihn manuell, wenn sich die Oberfläche träge anfühlt.",
       "footstepSounds": "Schrittgeräusche",
-      "clickFeedback": "Click Marker",
+      "clickFeedback": "Klickmarkierung",
       "showWalletOnCharacterScreen": "Wallet auf dem Charakterbildschirm anzeigen",
       "showWalletOnPlayerCard": "Wallet auf der Spielerkarte anzeigen",
       "uiScale": "UI-Skalierung",
@@ -394,22 +407,22 @@ export const de_DE: EnTranslations = {
       }
     },
     "bugReport": {
-      "menuButton": "Report a Bug",
+      "menuButton": "Fehler melden",
       "realm": "Realm",
-      "character": "Character",
+      "character": "Charakter",
       "position": "Position",
-      "unknown": "Unknown",
-      "description": "What went wrong?",
-      "descriptionPlaceholder": "Describe the bug: what you did, what you expected, and what happened.",
-      "includeScreenshot": "Include Screenshot",
-      "screenshotAlt": "Screenshot of the current view attached to this bug report",
-      "submit": "Send Report",
-      "submitted": "Bug report sent. Thank you!",
-      "submittedNoShot": "Bug report sent, but the screenshot was too large to include.",
-      "describeFirst": "Please describe the bug before sending.",
-      "tooLarge": "That report is too large to send. Try again without the screenshot.",
-      "rateLimited": "You've sent several reports recently. Please wait a bit before sending another.",
-      "failed": "Could not send the bug report. Please try again."
+      "unknown": "Unbekannt",
+      "description": "Was ist schiefgelaufen?",
+      "descriptionPlaceholder": "Beschreibe den Fehler: was du getan hast, was du erwartet hast und was passiert ist.",
+      "includeScreenshot": "Screenshot anhängen",
+      "screenshotAlt": "Screenshot der aktuellen Ansicht, der dieser Fehlermeldung beigefügt ist",
+      "submit": "Meldung senden",
+      "submitted": "Fehlermeldung gesendet. Danke!",
+      "submittedNoShot": "Fehlermeldung gesendet, aber der Screenshot war zu groß zum Anhängen.",
+      "describeFirst": "Bitte beschreibe den Fehler, bevor du ihn sendest.",
+      "tooLarge": "Diese Meldung ist zu groß zum Senden. Versuche es ohne den Screenshot erneut.",
+      "rateLimited": "Du hast kürzlich mehrere Meldungen gesendet. Bitte warte einen Moment, bevor du eine weitere sendest.",
+      "failed": "Die Fehlermeldung konnte nicht gesendet werden. Bitte versuche es erneut."
     },
     "paperdoll": {
       "unequipAria": "{item} ablegen",
@@ -1052,7 +1065,9 @@ export const de_DE: EnTranslations = {
       "webLoginOnly": "Anmeldungen sind nur über den Spiel-Client erlaubt.",
       "accountSuspended": "Dieses Konto ist bis {date} suspendiert.",
       "alreadyInWorld": "Der Charakter ist bereits in der Welt.",
-      "renameBeforeEntering": "Dieser Charakter muss vor dem Betreten der Welt umbenannt werden."
+      "takenOver": "Dein Charakter wurde von einer anderen Sitzung übernommen.",
+      "renameBeforeEntering": "Dieser Charakter muss vor dem Betreten der Welt umbenannt werden.",
+      "renameNotPermitted": "Das Umbenennen dieses Charakters ist nicht erlaubt."
     }
   },
   "realm": {
@@ -1078,6 +1093,9 @@ export const de_DE: EnTranslations = {
     "noneYet": "Noch keine Charaktere. Erstelle unten einen.",
     "levelClass": "Stufe {level} {className}",
     "inWorld": "in der Welt",
+    "takeOver": "Übernehmen",
+    "inWorldHint": "Bereits in der Welt. Melde dich anderswo ab oder übernimm den Charakter.",
+    "takeOverConfirm": "Dadurch wird dieser Charakter von einer anderen Sitzung getrennt und hierher geholt. Fortfahren?",
     "renameRequired": "Umbenennung erforderlich",
     "delete": "Löschen",
     "rename": "Umbenennen",

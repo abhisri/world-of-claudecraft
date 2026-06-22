@@ -1,7 +1,7 @@
 import type { Input, TouchMoveInput } from './input';
 import { t } from '../ui/i18n';
 
-export const PHONE_TOUCH_QUERY = '(pointer: coarse) and (max-width: 940px), (pointer: coarse) and (max-height: 760px)';
+export const PHONE_TOUCH_QUERY = '(pointer: coarse), (any-pointer: coarse)';
 const DEADZONE = 0.22;
 const CAMERA_SENSITIVITY = 0.8;
 const SWIPE_LOOK_DEADZONE_PX = 6;
@@ -105,8 +105,11 @@ export function isRecenterDoubleTap(
   return !moved && prevTapAt > 0 && now - prevTapAt <= threshold;
 }
 
-export function isPhoneTouchDevice(win: Pick<Window, 'matchMedia'> = window): boolean {
-  return win.matchMedia(PHONE_TOUCH_QUERY).matches;
+export function isPhoneTouchDevice(
+  win: Pick<Window, 'matchMedia'> = window,
+  nav: Pick<Navigator, 'maxTouchPoints'> = navigator,
+): boolean {
+  return nav.maxTouchPoints > 0 || win.matchMedia(PHONE_TOUCH_QUERY).matches;
 }
 
 function isNativeAppShell(): boolean {
@@ -190,8 +193,8 @@ export class MobileControls {
   start(): void {
     if (!this.root || !this.moveJoystick || !this.moveStick || !this.cameraJoystick || !this.cameraStick) return;
     this.mq = window.matchMedia(PHONE_TOUCH_QUERY);
-    this.setActive(this.mq.matches || isNativeAppShell());
-    this.mq.addEventListener?.('change', (e) => this.setActive(e.matches || isNativeAppShell()));
+    this.setActive(isPhoneTouchDevice() || isNativeAppShell());
+    this.mq.addEventListener?.('change', () => this.setActive(isPhoneTouchDevice() || isNativeAppShell()));
 
     // The move joystick floats: the pointer lifecycle lives on the lower-left
     // capture zone (so a thumb can land anywhere), while the joystick element is

@@ -228,4 +228,10 @@ export const es_ES: Record<string, string> = {
   "dungeon.hollow_crypt": "La Cripta Hueca",
   "dungeon.sunken_bastion": "El Bastión Sumergido",
   "dungeon.gravewyrm_sanctum": "Santuario del Gravewyrm",
+  // v0.13.0 release i18n fill: bug report, chat window, character takeover, admin bug reports
+  "bugReports.empty": "no hay informes de error",
+  "bugReports.loadFailed": "no se pudieron cargar los informes de error",
+  "bugReports.screenshotAlt": "Captura de pantalla del informe de error",
+  "bugReports.title": "Informes de error",
+  "nav.bugReports": "Informes de error",
 };
