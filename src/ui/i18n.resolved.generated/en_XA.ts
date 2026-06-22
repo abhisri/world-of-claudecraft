@@ -1805,6 +1805,10 @@ export const en_XA: EnTranslations = {
       "completedStatus": "[Çóɱþļéţéð]",
       "returnTo": "[Ŕéţúŕñ ţó {name}]",
       "abandon": "[Áƀáñðóñ Ɋúéšţ]",
+      "abandonConfirmTitle": "[Áƀáñðóñ Ɋúéšţ]",
+      "abandonConfirmBody": "[Áŕé ýóú šúŕé ýóú ŵáñţ ţó áƀáñðóñ {name}?]",
+      "abandonConfirm": "[Ýéš]",
+      "abandonCancel": "[Çáñçéļ]",
       "suggestedPlayers": "[Šúĝĝéšţéð þļáýéŕš: {count}]"
     },
     "dialog": {

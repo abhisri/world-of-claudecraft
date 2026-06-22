@@ -1083,6 +1083,9 @@ export class ClientWorld implements IWorld {
     this.cmd({ cmd: 'turnin', quest: questId });
   }
   abandonQuest(questId: string): void {
+    if (!this.canSendCommand()) return;
+    this.questLog.delete(questId);
+    this.pendingQuestCommands.delete(questId);
     this.cmd({ cmd: 'abandon', quest: questId });
   }
   equipItem(itemId: string): void {

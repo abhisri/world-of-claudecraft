@@ -1805,6 +1805,10 @@ export const es: EnTranslations = {
       "completedStatus": "Completada",
       "returnTo": "Regresa con {name}",
       "abandon": "Abandonar misión",
+      "abandonConfirmTitle": "Abandonar misión",
+      "abandonConfirmBody": "¿Seguro que quieres abandonar {name}?",
+      "abandonConfirm": "Sí",
+      "abandonCancel": "Cancelar",
       "suggestedPlayers": "Jugadores sugeridos: {count}"
     },
     "dialog": {

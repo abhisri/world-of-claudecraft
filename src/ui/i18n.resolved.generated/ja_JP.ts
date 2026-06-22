@@ -1805,6 +1805,10 @@ export const ja_JP: EnTranslations = {
       "completedStatus": "完了済み",
       "returnTo": "{name}に戻る",
       "abandon": "クエストを破棄",
+      "abandonConfirmTitle": "クエストを破棄",
+      "abandonConfirmBody": "{name}を本当に破棄しますか？",
+      "abandonConfirm": "はい",
+      "abandonCancel": "キャンセル",
       "suggestedPlayers": "推奨プレイヤー数: {count}"
     },
     "dialog": {

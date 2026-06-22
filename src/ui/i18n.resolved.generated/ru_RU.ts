@@ -1805,6 +1805,10 @@ export const ru_RU: EnTranslations = {
       "completedStatus": "Завершено",
       "returnTo": "Вернитесь к {name}",
       "abandon": "Отказаться от задания",
+      "abandonConfirmTitle": "Отказаться от задания",
+      "abandonConfirmBody": "Вы уверены, что хотите отказаться от {name}?",
+      "abandonConfirm": "Да",
+      "abandonCancel": "Отмена",
       "suggestedPlayers": "Рекомендуется игроков: {count}"
     },
     "dialog": {

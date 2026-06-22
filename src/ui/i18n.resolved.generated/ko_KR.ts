@@ -1805,6 +1805,10 @@ export const ko_KR: EnTranslations = {
       "completedStatus": "완료됨",
       "returnTo": "{name}에게 돌아가기",
       "abandon": "퀘스트 포기",
+      "abandonConfirmTitle": "퀘스트 포기",
+      "abandonConfirmBody": "{name} 퀘스트를 정말 포기할까요?",
+      "abandonConfirm": "예",
+      "abandonCancel": "취소",
       "suggestedPlayers": "권장 플레이어: {count}"
     },
     "dialog": {
