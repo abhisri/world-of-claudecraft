@@ -14,6 +14,11 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const ru_RU: Partial<Record<TranslationKey, string>> = {
+  "hudChrome.options.interfaceMode": "Режим интерфейса",
+  "hudChrome.options.interfaceModeAuto": "Авто",
+  "hudChrome.options.interfaceModeDesktop": "Компьютер",
+  "hudChrome.options.interfaceModeTouch": "Сенсорный",
+  "hudChrome.options.interfaceModeNote": "В режиме «Авто» управление для компьютера или сенсорное выбирается по вашему устройству. Выберите «Компьютер», чтобы включить клавиатуру и мышь (удобно на планшете с клавиатурой), или «Сенсорный» для экранного управления.",
   // Character-sheet stat tooltips (hudChrome.statInfo.*).
   "hudChrome.statInfo.fromYour": "От вашей характеристики ({value} {stat}):",
   "hudChrome.statInfo.desc.str": "Увеличивает силу атаки, благодаря чему удары вашим оружием бьют сильнее.",

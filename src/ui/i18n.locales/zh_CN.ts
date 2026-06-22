@@ -14,6 +14,11 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const zh_CN: Partial<Record<TranslationKey, string>> = {
+  "hudChrome.options.interfaceMode": "界面模式",
+  "hudChrome.options.interfaceModeAuto": "自动",
+  "hudChrome.options.interfaceModeDesktop": "桌面",
+  "hudChrome.options.interfaceModeTouch": "触控",
+  "hudChrome.options.interfaceModeNote": "自动会根据你的设备选择桌面或触控操作。选择桌面可强制使用键盘和鼠标（适合带键盘的平板），选择触控则使用屏幕上的操作控件。",
   // Character-sheet stat tooltips (hudChrome.statInfo.*).
   "hudChrome.statInfo.fromYour": "来自你的 {value} 点{stat}：",
   "hudChrome.statInfo.desc.str": "提高你的攻击强度，使你的武器攻击造成更高的伤害。",

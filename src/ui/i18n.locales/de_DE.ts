@@ -14,6 +14,11 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const de_DE: Partial<Record<TranslationKey, string>> = {
+  "hudChrome.options.interfaceMode": "Steuerungsmodus",
+  "hudChrome.options.interfaceModeAuto": "Auto",
+  "hudChrome.options.interfaceModeDesktop": "Desktop",
+  "hudChrome.options.interfaceModeTouch": "Touch",
+  "hudChrome.options.interfaceModeNote": "Auto wählt je nach Gerät die Desktop- oder Touch-Steuerung. Wähle Desktop, um Tastatur und Maus zu erzwingen (praktisch bei einem Tablet mit Tastatur), oder Touch für die Bildschirmsteuerung.",
   "hud.tutorial.title": "Neuer Abenteurer",
   "hud.tutorial.stepLabel": "Schritt {current} von {total}",
   "hud.tutorial.skip": "Tutorial überspringen",

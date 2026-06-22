@@ -14,6 +14,11 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const ko_KR: Partial<Record<TranslationKey, string>> = {
+  "hudChrome.options.interfaceMode": "인터페이스 모드",
+  "hudChrome.options.interfaceModeAuto": "자동",
+  "hudChrome.options.interfaceModeDesktop": "데스크톱",
+  "hudChrome.options.interfaceModeTouch": "터치",
+  "hudChrome.options.interfaceModeNote": "자동은 기기에 따라 데스크톱 또는 터치 조작을 선택합니다. 데스크톱을 선택하면 키보드와 마우스로 고정되며(키보드가 있는 태블릿 등에 유용), 터치를 선택하면 화면 조작이 됩니다.",
   // Character-sheet stat tooltips (hudChrome.statInfo.*).
   "hudChrome.statInfo.fromYour": "당신의 {value} {stat}에서:",
   "hudChrome.statInfo.desc.str": "전투력을 증가시켜 무기 공격이 더 강하게 적중하도록 합니다.",

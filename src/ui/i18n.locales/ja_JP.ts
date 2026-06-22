@@ -14,6 +14,11 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const ja_JP: Partial<Record<TranslationKey, string>> = {
+  "hudChrome.options.interfaceMode": "操作モード",
+  "hudChrome.options.interfaceModeAuto": "自動",
+  "hudChrome.options.interfaceModeDesktop": "デスクトップ",
+  "hudChrome.options.interfaceModeTouch": "タッチ",
+  "hudChrome.options.interfaceModeNote": "自動では、デバイスに応じてデスクトップ操作かタッチ操作を選びます。デスクトップを選ぶとキーボードとマウスに固定され（キーボード付きタブレットなどに便利）、タッチを選ぶと画面上の操作になります。",
   // Character-sheet stat tooltips (hudChrome.statInfo.*).
   "hudChrome.statInfo.fromYour": "あなたの{stat}{value}による効果:",
   "hudChrome.statInfo.desc.str": "攻撃力を上昇させ、武器による攻撃の威力を高めます。",

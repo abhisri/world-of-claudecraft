@@ -14,6 +14,11 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const it_IT: Partial<Record<TranslationKey, string>> = {
+  "hudChrome.options.interfaceMode": "Modalità interfaccia",
+  "hudChrome.options.interfaceModeAuto": "Auto",
+  "hudChrome.options.interfaceModeDesktop": "Desktop",
+  "hudChrome.options.interfaceModeTouch": "Touch",
+  "hudChrome.options.interfaceModeNote": "Auto sceglie i controlli Desktop o Touch in base al tuo dispositivo. Scegli Desktop per forzare tastiera e mouse (utile su un tablet con tastiera), oppure Touch per i controlli a schermo.",
   "hud.tutorial.title": "Nuovo avventuriero",
   "hud.tutorial.stepLabel": "Passo {current} di {total}",
   "hud.tutorial.skip": "Salta il tutorial",
