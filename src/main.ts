@@ -4,6 +4,8 @@ import { Input } from './game/input';
 import { Keybinds } from './game/keybinds';
 import { Settings, GameSettings, SETTING_RANGES, normalizeClickMoveButton } from './game/settings';
 import { MobileControls, PHONE_TOUCH_QUERY, isPhoneTouchDevice } from './game/mobile_controls';
+import { GamepadManager } from './game/gamepad';
+import { GamepadBindings } from './game/gamepad_bindings';
 import { shouldUseStaticBackdrop } from './game/landing_backdrop';
 import { navigatorSaveData } from './render/sky';
 import { Hud } from './ui/hud';
@@ -736,6 +738,42 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   // from a prior session, persisted in localStorage)
   document.getElementById('mobile-music')?.classList.toggle('mm-muted', !music.enabled);
 
+  // Gamepad: a separate remappable button profile drives the same dispatch the
+  // keyboard/touch paths use. Edge-button actions route through this dispatcher;
+  // movement/camera/jump are applied to Input directly by the manager.
+  const gamepadBindings = new GamepadBindings();
+  const canUseGameKeysNow = () => !hud.isModalOpen() && chatInput.style.display !== 'block';
+  function dispatchGamepadAction(id: string): void {
+    if (id === 'escape') { if (!hud.closeAll()) hud.toggleOptionsMenu(); return; }
+    if (!canUseGameKeysNow()) return; // suppress play actions while a modal/chat is up
+    if (id.startsWith('slot')) { hud.castSlot(Number(id.slice(4))); return; }
+    switch (id) {
+      case 'target': world.tabTarget(); break;
+      case 'targetFriendly': world.targetNearestFriendly(); break;
+      case 'targetFriendlyNext': world.friendlyTabTarget(); break;
+      case 'interact': interactKey(); break;
+      case 'bags': hud.toggleBags(); break;
+      case 'char': hud.toggleChar(); break;
+      case 'spellbook': hud.toggleSpellbook(); break;
+      case 'questlog': hud.toggleQuestLog(); break;
+      case 'map': hud.toggleMap(); break;
+      case 'nameplates': renderer.showNameplates = !renderer.showNameplates; break;
+      case 'talents': hud.toggleTalents(); break;
+      case 'meters': hud.toggleMeters(); break;
+      case 'social': hud.toggleSocial(); break;
+      case 'arena': hud.toggleArena(); break;
+      case 'leaderboard': hud.toggleLeaderboard(); break;
+      case 'chat': openChat(); break;
+    }
+  }
+  const gamepad = new GamepadManager(input, gamepadBindings, {
+    onAction: (id) => dispatchGamepadAction(id),
+    isPointerMode: () => hud.isWindowOpen(),
+    getPlayerHealth: () => (world.player.dead ? 0 : world.player.hp),
+  });
+  // The startup apply-all loop (below) calls applySetting('gamepadEnabled', ...)
+  // which starts/stops the manager and pushes the saved deadzone/speed/vibration.
+
   // Customizable performance overlay (master toggle: showFps, kept for back-compat
   // with the old FPS switch). The pure metrics + view core lives in
   // ui/perf_overlay_model; this owns the frame meter, the persisted appearance/
@@ -835,6 +873,16 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       input.setInvertLookY(settings.set('invertLookY', !!value));
       return;
     }
+    if (key === 'gamepadEnabled') {
+      const v = settings.set('gamepadEnabled', !!value);
+      if (v) gamepad.start();
+      else gamepad.stop();
+      return;
+    }
+    if (key === 'gamepadInvertY') {
+      gamepad.setInvertY(settings.set('gamepadInvertY', !!value));
+      return;
+    }
     if (key === 'voiceEnabled') {
       voice.setEnabled(settings.set('voiceEnabled', !!value));
       return;
@@ -870,6 +918,9 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
         break;
       case 'actionButtonScale': document.getElementById('mobile-controls')?.style.setProperty('--btn-scale', String(v)); break;
       case 'joystickDeadzone': mobileControls.setMoveDeadzone(v); break;
+      case 'gamepadStickDeadzone': gamepad.setDeadzone(v); break;
+      case 'gamepadCameraSpeed': gamepad.setCameraSpeed(v); break;
+      case 'gamepadVibration': gamepad.setVibration(v); break;
       // Interface & Comfort sliders: each drives one CSS custom property that
       // index.html consumes. Setting them on :root keeps the HUD authoritative.
       case 'tooltipScale': document.documentElement.style.setProperty('--tooltip-scale', String(v)); break;
@@ -901,6 +952,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       resetPosition: () => { perfConfig.resetPosition(); applyPerfOverlayConfig(); },
       setPlacement: (on) => perfOverlay.setPlacementMode(on),
     },
+    gamepad: gamepadBindings,
   });
   if (online) {
     hud.attachReporting({
@@ -1339,6 +1391,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     // character behind it (other windows stay non-modal, as before)
     input.suspendMovement = !gameInputReady || hud.isModalOpen();
     perf.trace('input.updateTouchLook', () => input.updateTouchLook(frameDt), { frameDtMs: frameDt * 1000 });
+    perf.trace('input.gamepad', () => gamepad.poll(frameDt), { frameDtMs: frameDt * 1000 });
     perf.trace('input.hoverCursor', () => updateHoverCursor(), { active: input.hoverActive });
     perf.markInputFrame(performance.now());
 
@@ -1480,7 +1533,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
         tokenProvider: () => api.token,
         characterIdProvider: () => online?.characterId ?? null,
       });
-      (window as any).__game = { sim: world, world, renderer, input, hud, online, controller, perf };
+      (window as any).__game = { sim: world, world, renderer, input, hud, online, controller, perf, gamepad };
     }, LOADING_FADE_MS);
   }));
   // Now in-game: fade the home-page theme out (it kept playing through loading).

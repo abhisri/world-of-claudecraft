@@ -234,6 +234,18 @@ export const de_DE: EnTranslations = {
       "uiScale": "UI-Skalierung",
       "highContrastBackground": "Hintergrund mit hohem Kontrast"
     },
+    "controller": {
+      "title": "Controller",
+      "enable": "Controller aktivieren",
+      "invertY": "Kamera invertieren (Y)",
+      "deadzone": "Stick-Totzone",
+      "cameraSpeed": "Kamerageschwindigkeit",
+      "vibration": "Vibration",
+      "buttons": "Tastenbelegung",
+      "resetButtons": "Tastenbelegung zurücksetzen",
+      "menuAction": "Spielmenü",
+      "help": "Linker Stick bewegt, rechter Stick steuert die Kamera. Öffne ein Fenster, um den Bildschirmzeiger zu verwenden."
+    },
     "perf": {
       "title": "Leistungsanzeige",
       "enable": "Leistungsanzeige anzeigen",

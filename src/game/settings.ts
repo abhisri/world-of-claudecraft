@@ -59,6 +59,15 @@ export const SETTING_RANGES = {
   // values make the stick more responsive. Default matches the old fixed 0.22.
   joystickDeadzone: { min: 0.1, max: 0.4, def: 0.22 },
 
+  // --- Gamepad / controller pack. Applied to the GamepadManager in main.ts. ---
+  // How far an analog stick must travel before it registers, killing resting
+  // drift. Separate from the touch joystick deadzone above.
+  gamepadStickDeadzone: { min: 0.05, max: 0.4, def: 0.18 },
+  // Right-stick camera turn/pitch rate, in radians/sec at full deflection.
+  gamepadCameraSpeed: { min: 0.5, max: 5, def: 2.4 },
+  // Rumble intensity (0 silences haptics without disabling the pad entirely).
+  gamepadVibration: { min: 0, max: 1, def: 1 },
+
   // --- Interface & Comfort pack: presentational HUD tuning, applied via CSS
   // custom properties in main.ts. All default to 1.0 (unchanged look) and are
   // purely client-side display choices — they never touch the sim. ---
@@ -84,6 +93,12 @@ export const SETTING_RANGES = {
 
 export const BOOL_SETTINGS = {
   mouseCamera: { def: false },
+  // on by default: poll a connected controller for input. Off ignores the pad
+  // entirely (keyboard/mouse/touch unaffected).
+  gamepadEnabled: { def: true },
+  // off by default: invert the vertical axis of the right-stick camera, the
+  // classic console/flight-sim preference. Independent of mouse/touch invert.
+  gamepadInvertY: { def: false },
   // off by default: mirrors the touch layout so the movement joystick sits on
   // the right and the camera joystick on the left, for left-thumb-dominant
   // players. CSS-only swap gated on body.mobile-left-handed; ignored on desktop.

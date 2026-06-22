@@ -60,6 +60,7 @@ import {
 import { cardHostingAvailable, publishCard, fetchReferralInfo, fetchStanding, type PublishedCard, type CharacterStanding } from './player_card_share';
 import { holderTierForBalance, holderTierByIndex, holderTierBadgeDataUrl, holderTierDisplayName } from './holder_tier';
 import { Keybinds, BIND_ACTIONS, BIND_CATEGORIES, isReservedCode, keyLabel } from '../game/keybinds';
+import { GAMEPAD_BUTTON_LABELS, GAMEPAD_NONE } from '../game/gamepad_map';
 import { Settings, GameSettings, BoolSettingKey, NumericSettingKey, SETTING_RANGES, normalizeClickMoveButton } from '../game/settings';
 import { PerfOverlaySettingsPanel, type PerfOverlayHooks, type PerfSettingsHost } from './perf_overlay_settings';
 import { isPhoneTouchDevice } from '../game/mobile_controls';
@@ -122,6 +123,17 @@ export interface OptionsHooks {
   // feature is off or no wallet is connected/linked.
   refreshWocBalance(): void;
   perfOverlay: PerfOverlayHooks;
+  // Gamepad button-layout seam (the concrete GamepadBindings satisfies it
+  // structurally), so the Controller options panel can read & rebind buttons
+  // without the HUD importing the manager.
+  gamepad: GamepadBindingsHooks;
+}
+
+// Read/rebind the gamepad's button→action layout from the options panel.
+export interface GamepadBindingsHooks {
+  entries(): { button: number; action: string }[];
+  bind(button: number, action: string): void;
+  reset(): void;
 }
 
 export interface ReportHooks {
@@ -402,7 +414,7 @@ export class Hud {
   // Soft swear terms from the server (online only), masked in chat when the
   // player's "Filter Profanity" setting is on. Fed by main.ts from ClientWorld.
   private profanityWords: string[] = [];
-  private optionsView: 'main' | 'keybinds' | 'graphics' | 'audio' | 'interface' | 'performance' = 'main';
+  private optionsView: 'main' | 'keybinds' | 'graphics' | 'audio' | 'interface' | 'performance' | 'controller' = 'main';
   // The Options > Performance panel, lazily built and reused (it caches the live
   // position-slider handles so a drag-to-move can update them in place).
   private perfSettings: PerfOverlaySettingsPanel | null = null;
@@ -8755,6 +8767,13 @@ export class Hud {
     return this.optionsOpen || this.emoteWheelOpen || $('#emote-editor').style.display === 'block' || this.cardModalEl !== null;
   }
 
+  // True when any interactive HUD surface is open: a modal OR a managed window
+  // (bags, vendor, character, etc.). Drives the gamepad's virtual-cursor mode so a
+  // controller can point at bag slots / vendor items, not just modal dialogs.
+  isWindowOpen(): boolean {
+    return this.isModalOpen() || this.topmostOpenWindow() !== null;
+  }
+
   toggleOptionsMenu(): void {
     if (this.optionsOpen) { this.closeOptions(); return; }
     this.closeOtherWindows('#options-menu');
@@ -8786,6 +8805,7 @@ export class Hud {
     if (this.optionsView === 'graphics') { this.renderGraphics(); return; }
     if (this.optionsView === 'audio') { this.renderAudio(); return; }
     if (this.optionsView === 'interface') { this.renderInterface(); return; }
+    if (this.optionsView === 'controller') { this.renderController(); return; }
     if (this.optionsView === 'performance') { this.renderPerformance(); return; }
     const el = $('#options-menu');
     el.innerHTML = `<div class="panel-title"><span>${esc(t('hud.options.gameMenu'))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('hud.options.returnToGame'))}">${svgIcon('close')}</button></div>`;
@@ -8798,8 +8818,9 @@ export class Hud {
       b.addEventListener('click', () => { audio.click(); onClick(); });
       list.appendChild(b);
     };
-    const goto = (view: 'keybinds' | 'graphics' | 'audio' | 'interface' | 'performance') => { this.optionsView = view; this.keybindNote = ''; this.renderOptions(); };
+    const goto = (view: 'keybinds' | 'graphics' | 'audio' | 'interface' | 'performance' | 'controller') => { this.optionsView = view; this.keybindNote = ''; this.renderOptions(); };
     add(t('hud.options.keyBindings'), () => goto('keybinds'));
+    add(t('hudChrome.controller.title'), () => goto('controller'));
     add(t('hud.options.graphics'), () => goto('graphics'));
     add(t('hud.options.interface'), () => goto('interface'));
     add(t('hud.options.audio'), () => goto('audio'));
@@ -9323,6 +9344,67 @@ export class Hud {
     });
     row.append(name, toggle);
     parent.appendChild(row);
+  }
+
+  // Action ids a gamepad button may be bound to: explicit unbind, the game menu,
+  // plus every one-shot (edge) keybind action and Jump. Movement-axis actions
+  // (forward/strafe/turn) are excluded, they live on the analog stick.
+  private gamepadActionOptions(): { value: string; label: string }[] {
+    const opts: { value: string; label: string }[] = [
+      { value: GAMEPAD_NONE, label: t('hud.options.unbound') },
+      { value: 'escape', label: t('hudChrome.controller.menuAction') },
+    ];
+    for (const a of BIND_ACTIONS) {
+      if (a.id === 'attackMove') continue; // mode-gated; not a useful pad default
+      if (a.kind !== 'edge' && a.id !== 'jump') continue;
+      opts.push({ value: a.id, label: this.actionDisplayName(a.id, a.label) });
+    }
+    return opts;
+  }
+
+  // Controller panel: enable/invert toggles, deadzone/camera/vibration sliders,
+  // and a remap row per bindable button (dropdown of actions). Mirrors the
+  // separate woc_gamepad profile; keyboard Key Bindings are untouched.
+  private renderController(): void {
+    const hooks = this.optionsHooks;
+    const body = this.settingsViewShell(t('hudChrome.controller.title'));
+    this.settingBoolToggle(body, t('hudChrome.controller.enable'), 'gamepadEnabled');
+    this.settingBoolToggle(body, t('hudChrome.controller.invertY'), 'gamepadInvertY');
+    this.settingSlider(body, t('hudChrome.controller.deadzone'), 'gamepadStickDeadzone');
+    this.settingSlider(body, t('hudChrome.controller.cameraSpeed'), 'gamepadCameraSpeed',
+      { fmt: (v) => formatNumber(v, { maximumFractionDigits: 1 }) });
+    this.settingSlider(body, t('hudChrome.controller.vibration'), 'gamepadVibration');
+
+    const note = document.createElement('div');
+    note.className = 'set-note';
+    note.textContent = t('hudChrome.controller.help');
+    body.appendChild(note);
+
+    const head = document.createElement('div');
+    head.className = 'kb-cat';
+    head.textContent = t('hudChrome.controller.buttons');
+    body.appendChild(head);
+
+    if (hooks) {
+      const opts = this.gamepadActionOptions();
+      for (const { button, action } of hooks.gamepad.entries()) {
+        const row = document.createElement('div');
+        row.className = 'set-row';
+        const name = document.createElement('span');
+        name.className = 'set-name';
+        name.textContent = GAMEPAD_BUTTON_LABELS[button] ?? `#${button}`;
+        const dd = this.buildDropdown(opts, action, (v) => hooks.gamepad.bind(button, v));
+        row.append(name, dd);
+        body.appendChild(row);
+      }
+      const reset = document.createElement('button');
+      reset.type = 'button';
+      reset.className = 'btn';
+      reset.textContent = t('hudChrome.controller.resetButtons');
+      reset.addEventListener('click', () => { audio.click(); hooks.gamepad.reset(); this.renderController(); });
+      body.appendChild(reset);
+    }
+    this.settingsViewFooter();
   }
 
   private renderKeybinds(): void {

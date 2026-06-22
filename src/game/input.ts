@@ -128,6 +128,9 @@ export class Input {
   // was BASE_LOOK_SENS — setCameraSpeed scales it from the settings menu
   private lookSensitivity = BASE_LOOK_SENS;
   private touchMove: TouchMoveInput = { forward: false, back: false, strafeLeft: false, strafeRight: false };
+  // Movement flags from the gamepad's left stick, OR'd into readMoveInput()
+  // alongside the touch joystick. The gamepad polls each frame (gamepad.ts).
+  private gamepadMove: TouchMoveInput = { forward: false, back: false, strafeLeft: false, strafeRight: false };
   private touchJumpUntil = 0;
   private touchLookActive = false;
   private touchLookVector = { x: 0, y: 0 };
@@ -346,6 +349,38 @@ export class Input {
     this.camYaw -= dx * this.lookSensitivity;
     this.camPitch = Math.min(1.35, Math.max(-0.4, this.camPitch + this.touchPitchSign * dy * this.lookSensitivity));
     if (dx !== 0 || dy !== 0) this.noteIntent('look');
+  }
+
+  // --- Gamepad (poll-based) -------------------------------------------------
+  // The gamepad shares the touch joystick's movement path: its left-stick flags
+  // are OR'd into readMoveInput(). Set/cleared each poll by GamepadManager.
+  setGamepadMove(move: TouchMoveInput): void {
+    const changed = move.forward !== this.gamepadMove.forward || move.back !== this.gamepadMove.back
+      || move.strafeLeft !== this.gamepadMove.strafeLeft || move.strafeRight !== this.gamepadMove.strafeRight;
+    this.gamepadMove = move;
+    if (move.forward || move.back) this.autorun = false;
+    if (changed) this.noteIntent('move');
+  }
+
+  clearGamepadMove(): void {
+    const changed = this.gamepadMove.forward || this.gamepadMove.back || this.gamepadMove.strafeLeft || this.gamepadMove.strafeRight;
+    this.gamepadMove = { forward: false, back: false, strafeLeft: false, strafeRight: false };
+    if (changed) this.noteIntent('move');
+  }
+
+  // Latch a gamepad jump-button tap the same way touch jumps latch, so reads
+  // between sim ticks don't swallow it before the grounded tick sees it.
+  triggerGamepadJump(): void {
+    this.touchJumpUntil = Math.max(this.touchJumpUntil, performance.now() + TOUCH_JUMP_LATCH_MS);
+  }
+
+  // Apply the right-stick camera deltas (already in radians, computed by the
+  // pure stickToLook core). Clamps pitch to the same range as touch/mouse look.
+  applyGamepadLook(yawDelta: number, pitchDelta: number): void {
+    if (yawDelta === 0 && pitchDelta === 0) return;
+    this.camYaw += yawDelta;
+    this.camPitch = Math.min(1.35, Math.max(-0.4, this.camPitch + pitchDelta));
+    this.noteIntent('look');
   }
 
   updateTouchLook(dt: number): void {
@@ -639,8 +674,8 @@ export class Input {
     if (this.controllerMoveInput) return { ...this.controllerMoveInput };
     const held = (id: string) => this.heldAction(id);
     const bothButtons = this.leftDown && this.rightDown;
-    const forward = held('forward') || bothButtons || this.autorun || this.touchMove.forward;
-    const back = held('back') || this.touchMove.back;
+    const forward = held('forward') || bothButtons || this.autorun || this.touchMove.forward || this.gamepadMove.forward;
+    const back = held('back') || this.touchMove.back || this.gamepadMove.back;
     // Jump is not a WASD key, so it keeps working in Attack Move mode.
     const jump = this.keybinds.codesForAction('jump').some((c) => this.keys.has(c)) || performance.now() <= this.touchJumpUntil;
 
@@ -649,8 +684,8 @@ export class Input {
         forward, back, jump,
         turnLeft: false,
         turnRight: false,
-        strafeLeft: held('strafeLeft') || held('turnLeft') || this.touchMove.strafeLeft,
-        strafeRight: held('strafeRight') || held('turnRight') || this.touchMove.strafeRight,
+        strafeLeft: held('strafeLeft') || held('turnLeft') || this.touchMove.strafeLeft || this.gamepadMove.strafeLeft,
+        strafeRight: held('strafeRight') || held('turnRight') || this.touchMove.strafeRight || this.gamepadMove.strafeRight,
       };
     }
 
@@ -659,8 +694,8 @@ export class Input {
     const dHeld = held('turnRight');
     return {
       forward, back, jump,
-      strafeLeft: held('strafeLeft') || (mouselook && aHeld) || this.touchMove.strafeLeft,
-      strafeRight: held('strafeRight') || (mouselook && dHeld) || this.touchMove.strafeRight,
+      strafeLeft: held('strafeLeft') || (mouselook && aHeld) || this.touchMove.strafeLeft || this.gamepadMove.strafeLeft,
+      strafeRight: held('strafeRight') || (mouselook && dHeld) || this.touchMove.strafeRight || this.gamepadMove.strafeRight,
       turnLeft: !mouselook && aHeld,
       turnRight: !mouselook && dHeld,
     };

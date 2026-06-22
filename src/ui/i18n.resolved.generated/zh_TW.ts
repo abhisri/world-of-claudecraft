@@ -234,6 +234,18 @@ export const zh_TW: EnTranslations = {
       "uiScale": "介面縮放",
       "highContrastBackground": "高對比度背景"
     },
+    "controller": {
+      "title": "手把",
+      "enable": "啟用手把",
+      "invertY": "反轉鏡頭（Y軸）",
+      "deadzone": "搖桿死區",
+      "cameraSpeed": "鏡頭速度",
+      "vibration": "震動",
+      "buttons": "按鍵配置",
+      "resetButtons": "重設按鍵配置",
+      "menuAction": "遊戲選單",
+      "help": "左搖桿移動，右搖桿控制鏡頭。開啟視窗即可使用螢幕指標。"
+    },
     "perf": {
       "title": "效能監視器",
       "enable": "顯示效能監視器",

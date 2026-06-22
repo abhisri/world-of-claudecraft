@@ -109,6 +109,22 @@ export const hudChromeStrings = {
     uiScale: "UI Scale",
     highContrastBackground: "High-Contrast Background",
   },
+  // Controller / gamepad options panel (Options > Controller). Player-facing
+  // chrome, so every label is a key here; the live numbers run through
+  // formatNumber. The button names themselves (A / LB / D-pad, etc.) stay as
+  // hardware glyphs in gamepad_map and need no translation.
+  controller: {
+    title: "Controller",
+    enable: "Enable Controller",
+    invertY: "Invert Camera (Y)",
+    deadzone: "Stick Deadzone",
+    cameraSpeed: "Camera Speed",
+    vibration: "Vibration",
+    buttons: "Button Layout",
+    resetButtons: "Reset Button Layout",
+    menuAction: "Game Menu",
+    help: "Left stick moves, right stick looks. Open a window to use the on-screen pointer.",
+  },
   // Performance overlay (the customizable in-game stats panel + its Options
   // sub-view). Player-facing, so every label is a key here; the live numbers in
   // the overlay run through formatNumber and these unit strings. Distinct from

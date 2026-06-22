@@ -234,6 +234,18 @@ export const it_IT: EnTranslations = {
       "uiScale": "Scala dell'interfaccia",
       "highContrastBackground": "Sfondo a contrasto elevato"
     },
+    "controller": {
+      "title": "Controller",
+      "enable": "Attiva controller",
+      "invertY": "Inverti telecamera (Y)",
+      "deadzone": "Zona morta dello stick",
+      "cameraSpeed": "Velocità telecamera",
+      "vibration": "Vibrazione",
+      "buttons": "Disposizione dei pulsanti",
+      "resetButtons": "Ripristina disposizione dei pulsanti",
+      "menuAction": "Menu di gioco",
+      "help": "Lo stick sinistro muove, quello destro orienta la telecamera. Apri una finestra per usare il puntatore a schermo."
+    },
     "perf": {
       "title": "Pannello prestazioni",
       "enable": "Mostra pannello prestazioni",

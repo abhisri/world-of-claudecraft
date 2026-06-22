@@ -234,6 +234,18 @@ export const fr_CA: EnTranslations = {
       "uiScale": "Échelle de l’interface",
       "highContrastBackground": "Arrière-plan à contraste élevé"
     },
+    "controller": {
+      "title": "Manette",
+      "enable": "Activer la manette",
+      "invertY": "Inverser la caméra (Y)",
+      "deadzone": "Zone morte du stick",
+      "cameraSpeed": "Vitesse de la caméra",
+      "vibration": "Vibrations",
+      "buttons": "Disposition des boutons",
+      "resetButtons": "Réinitialiser la disposition des boutons",
+      "menuAction": "Menu du jeu",
+      "help": "Le stick gauche déplace, le droit oriente la caméra. Ouvrez une fenêtre pour utiliser le pointeur à l'écran."
+    },
     "perf": {
       "title": "Surcouche de performance",
       "enable": "Afficher la surcouche de performance",

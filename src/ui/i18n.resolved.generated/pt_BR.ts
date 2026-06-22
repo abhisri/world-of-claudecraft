@@ -234,6 +234,18 @@ export const pt_BR: EnTranslations = {
       "uiScale": "Escala da interface",
       "highContrastBackground": "Fundo de alto contraste"
     },
+    "controller": {
+      "title": "Controle",
+      "enable": "Ativar Controle",
+      "invertY": "Inverter Câmera (Y)",
+      "deadzone": "Zona Morta do Analógico",
+      "cameraSpeed": "Velocidade da Câmera",
+      "vibration": "Vibração",
+      "buttons": "Disposição dos Botões",
+      "resetButtons": "Redefinir Disposição dos Botões",
+      "menuAction": "Menu do Jogo",
+      "help": "O analógico esquerdo move, o direito controla a câmera. Abra uma janela para usar o ponteiro na tela."
+    },
     "perf": {
       "title": "Sobreposição de Desempenho",
       "enable": "Mostrar Sobreposição de Desempenho",

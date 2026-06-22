@@ -234,6 +234,18 @@ export const es: EnTranslations = {
       "uiScale": "Escala de la interfaz",
       "highContrastBackground": "Fondo de alto contraste"
     },
+    "controller": {
+      "title": "Mando",
+      "enable": "Activar mando",
+      "invertY": "Invertir cámara (Y)",
+      "deadzone": "Zona muerta del stick",
+      "cameraSpeed": "Velocidad de cámara",
+      "vibration": "Vibración",
+      "buttons": "Distribución de botones",
+      "resetButtons": "Restablecer distribución de botones",
+      "menuAction": "Menú del juego",
+      "help": "El stick izquierdo mueve, el derecho controla la cámara. Abre una ventana para usar el puntero en pantalla."
+    },
     "perf": {
       "title": "Superposición de rendimiento",
       "enable": "Mostrar superposición de rendimiento",
