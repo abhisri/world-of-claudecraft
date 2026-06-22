@@ -1119,12 +1119,15 @@ describe('quest npc roles', () => {
     }
   });
 
-  it('despawns Varkas Boneguards after 60 seconds without damage and resets on damage taken', () => {
+  it('despawns Varkas Boneguards after 60 seconds out of combat without damage and resets on damage taken', () => {
     const sim = makeSim();
     const boneguard = createMob(909900, MOBS.varkas_boneguard, 19, { x: 0, y: 0, z: 0 });
     boneguard.maxHp = 1000;
     boneguard.hp = 1000;
     (sim as unknown as { addEntity(e: Entity): void }).addEntity(boneguard);
+    teleportTo(sim, 0, -2);
+    sim.player.maxHp = 100000;
+    sim.player.hp = sim.player.maxHp;
 
     for (let i = 0; i < 59 * 20; i++) sim.tick();
     expect(sim.entities.has(boneguard.id)).toBe(true);
@@ -1134,11 +1137,58 @@ describe('quest npc roles', () => {
     }).dealDamage(sim.player, boneguard, 5, false, 'physical', 'Test Strike', 'hit', true);
     expect(boneguard.damageIdleDespawnTimer).toBe(60);
 
+    boneguard.damageIdleDespawnTimer = 1;
+    boneguard.inCombat = true;
+    sim.tick();
+    expect(sim.entities.has(boneguard.id)).toBe(true);
+    expect(boneguard.damageIdleDespawnTimer).toBe(1);
+
+    teleportTo(sim, 100, 100);
+    boneguard.inCombat = false;
+    boneguard.aiState = 'idle';
+    boneguard.aggroTargetId = null;
+    boneguard.damageIdleDespawnTimer = 60;
     for (let i = 0; i < 59 * 20; i++) sim.tick();
     expect(sim.entities.has(boneguard.id)).toBe(true);
 
     for (let i = 0; i < 2 * 20; i++) sim.tick();
     expect(sim.entities.has(boneguard.id)).toBe(false);
+  });
+
+  it('despawns the Bound Guardian after 60 seconds out of combat without damage and resets on damage taken', () => {
+    const sim = makeSim();
+    const ritual = [...sim.entities.values()].find((e) => e.kind === 'object' && e.objectItemId === 'crypt_ritual_circle')!;
+    teleportTo(sim, ritual.pos.x, ritual.pos.z);
+    sim.questLog.set('q_nythraxis_bound_guardian', { questId: 'q_nythraxis_bound_guardian', counts: [0, 0, 0], state: 'active' });
+    sim.addItem('crypt_keystone', 1);
+    sim.player.maxHp = 100000;
+    sim.player.hp = sim.player.maxHp;
+
+    sim.pickUpObject(ritual.id);
+
+    const guardian = [...sim.entities.values()].find((e) => e.templateId === 'bound_guardian')!;
+    expect(guardian).toBeTruthy();
+
+    guardian.damageIdleDespawnTimer = 1;
+    sim.tick();
+    expect(sim.entities.has(guardian.id)).toBe(true);
+    expect(guardian.damageIdleDespawnTimer).toBe(1);
+
+    (sim as unknown as {
+      dealDamage(source: Entity, target: Entity, amount: number, crit: boolean, school: string, ability: string | null, kind: 'hit', noRage?: boolean): void;
+    }).dealDamage(sim.player, guardian, 5, false, 'physical', 'Test Strike', 'hit', true);
+    expect(guardian.damageIdleDespawnTimer).toBe(60);
+
+    teleportTo(sim, ritual.pos.x + 100, ritual.pos.z + 100);
+    guardian.inCombat = false;
+    guardian.aiState = 'idle';
+    guardian.aggroTargetId = null;
+    guardian.damageIdleDespawnTimer = 60;
+    for (let i = 0; i < 59 * 20; i++) sim.tick();
+    expect(sim.entities.has(guardian.id)).toBe(true);
+
+    for (let i = 0; i < 2 * 20; i++) sim.tick();
+    expect(sim.entities.has(guardian.id)).toBe(false);
   });
 
   it('shares Nythraxis ritual circle progress with nearby party members', () => {

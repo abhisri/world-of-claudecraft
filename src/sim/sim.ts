@@ -128,7 +128,8 @@ const PARTY_MAX = 5;
 const RAID_MIN = 5;
 const RAID_MAX = 10;
 const RAID_GROUP_MAX = 5;
-const VARKAS_BONEGUARD_DAMAGE_IDLE_DESPAWN_SECONDS = 60;
+const DAMAGE_IDLE_DESPAWN_SECONDS = 60;
+const DAMAGE_IDLE_DESPAWN_MOB_IDS = new Set(['varkas_boneguard', 'bound_guardian']);
 const RAID_ALLOWED_DUNGEON_IDS = new Set(['nythraxis_crypt', 'nythraxis_boss_arena']);
 const RAID_REQUIRED_DUNGEON_IDS = new Set(['nythraxis_boss_arena']);
 const PARTY_XP_RANGE = 80; // yards: members this close share kill xp/credit
@@ -1673,8 +1674,8 @@ export class Sim {
         e.despawnTimer -= DT;
         if (e.despawnTimer <= 0) despawnIds.push(e.id);
       }
-      if (e.kind === 'mob' && e.templateId === 'varkas_boneguard' && !e.dead) {
-        e.damageIdleDespawnTimer = (e.damageIdleDespawnTimer ?? VARKAS_BONEGUARD_DAMAGE_IDLE_DESPAWN_SECONDS) - DT;
+      if (e.kind === 'mob' && DAMAGE_IDLE_DESPAWN_MOB_IDS.has(e.templateId) && !e.dead && !e.inCombat) {
+        e.damageIdleDespawnTimer = (e.damageIdleDespawnTimer ?? DAMAGE_IDLE_DESPAWN_SECONDS) - DT;
         if (e.damageIdleDespawnTimer <= 0) despawnIds.push(e.id);
       }
       if (e.overheadEmoteId && this.time >= e.overheadEmoteUntil) {
@@ -4136,8 +4137,8 @@ export class Sim {
     this.emit({ type: 'damage', sourceId: source?.id ?? -1, targetId: target.id, amount, crit, school, ability, kind });
 
     if (amount > 0) {
-      if (target.kind === 'mob' && target.templateId === 'varkas_boneguard') {
-        target.damageIdleDespawnTimer = VARKAS_BONEGUARD_DAMAGE_IDLE_DESPAWN_SECONDS;
+      if (target.kind === 'mob' && DAMAGE_IDLE_DESPAWN_MOB_IDS.has(target.templateId)) {
+        target.damageIdleDespawnTimer = DAMAGE_IDLE_DESPAWN_SECONDS;
       }
       for (let i = target.auras.length - 1; i >= 0; i--) {
         if (target.auras[i].breaksOnDamage) {
