@@ -4,7 +4,7 @@ import { Input } from './game/input';
 import { Keybinds } from './game/keybinds';
 import { Settings, GameSettings, SETTING_RANGES, normalizeClickMoveButton } from './game/settings';
 import { MobileControls, PHONE_TOUCH_QUERY, isPhoneTouchDevice } from './game/mobile_controls';
-import { readBrowserEnv, cssEffectsTier, browserBodyClasses } from './game/browser_env';
+import { readBrowserEnv, cssEffectsTier, browserBodyClasses, BROWSER_BODY_CLASSES } from './game/browser_env';
 import { GFX } from './render/gfx';
 import { GamepadManager } from './game/gamepad';
 import { GamepadBindings } from './game/gamepad_bindings';
@@ -852,8 +852,6 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   // resolved by now (initGfxTier ran during renderer construction). Re-stamp all
   // classes on every call so a manual Esc-menu override repaints cleanly.
   const browserEnv = readBrowserEnv();
-  const FX_CLASSES = ['fx-full', 'fx-reduced', 'fx-minimal'];
-  const ENGINE_CLASSES = ['engine-chromium', 'engine-webkit', 'engine-gecko', 'engine-unknown'];
   function applyBrowserEffects(override: number): void {
     const tier = cssEffectsTier({
       engine: browserEnv.engine,
@@ -863,7 +861,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       override,
     });
     const body = document.body.classList;
-    body.remove(...FX_CLASSES, ...ENGINE_CLASSES, 'is-mobile', 'is-desktop');
+    body.remove(...BROWSER_BODY_CLASSES);
     body.add(...browserBodyClasses(browserEnv, tier));
   }
 
@@ -4832,6 +4830,27 @@ function wireStartScreens(): void {
   };
   syncContrastToggle(landingSettings.get('landingHighContrast'));
   applyLandingBackdrop(landingSettings.get('landingHighContrast'));
+
+  // Stamp the engine/device + CSS-effects classes on the landing screen too, so
+  // the decorative #start-screen-backdrop work (portal rings' heavy blur, nebula,
+  // embers, trailer) is toned down from the first paint on costly engines (mobile
+  // WebKit above all). The renderer (and its GPU tier) does not exist yet, so we
+  // pass the conservative 'high' render tier here: only known-bad engine/device
+  // quirks tone the first paint down. startGame() re-stamps with the real GFX.tier
+  // once in-world. Honors a persisted manual browserEffects override.
+  {
+    const landingEnv = readBrowserEnv();
+    const landingTier = cssEffectsTier({
+      engine: landingEnv.engine,
+      version: landingEnv.engineVersion,
+      mobile: landingEnv.mobile,
+      renderTier: 'high',
+      override: landingSettings.get('browserEffects') as number,
+    });
+    const body = document.body.classList;
+    body.remove(...BROWSER_BODY_CLASSES);
+    body.add(...browserBodyClasses(landingEnv, landingTier));
+  }
   contrastToggle?.addEventListener('click', () => {
     const next = !landingSettings.get('landingHighContrast');
     landingSettings.set('landingHighContrast', next);

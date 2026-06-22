@@ -118,6 +118,17 @@ export function cssEffectsTier(input: {
   return mobile ? 'minimal' : 'reduced';
 }
 
+/**
+ * Every body class this module can stamp, for callers that need to clear the
+ * full set before a re-stamp (the in-world Esc override and the landing screen
+ * stamp both re-apply from scratch). Pure data so the module stays DOM-free.
+ */
+export const BROWSER_BODY_CLASSES = [
+  'fx-full', 'fx-reduced', 'fx-minimal',
+  'engine-chromium', 'engine-webkit', 'engine-gecko', 'engine-unknown',
+  'is-mobile', 'is-desktop',
+] as const;
+
 /** The body classes that drive the adaptive CSS in index.html. */
 export function browserBodyClasses(env: BrowserEnv, tier: CssEffectsTier): string[] {
   return [`engine-${env.engine}`, env.mobile ? 'is-mobile' : 'is-desktop', `fx-${tier}`];

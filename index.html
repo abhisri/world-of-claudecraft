@@ -1982,11 +1982,6 @@
   body.fx-minimal .portal-ring-reverse { filter: none !important; }
   /* The ember particle field is pure ambience; hide it outright on Minimal. */
   body.fx-minimal .embers-container { display: none !important; }
-  /* Show FPS — small readout, hidden until toggled on (main.ts flips display). */
-  #fps-overlay { position: absolute; top: 6px; right: 8px; display: none; z-index: 60;
-    font-family: var(--title-font); font-size: 12px; color: var(--gold); pointer-events: none;
-    text-shadow: 1px 1px 2px #000; background: rgba(8, 8, 13, 0.55); padding: 2px 7px;
-    border-radius: 4px; border: 1px solid #463a1c; }
 
   /* ---------- Performance overlay (customizable stats panel) ----------
      Hidden until toggled on (showFps). perf_overlay.ts sets the inline left/top
