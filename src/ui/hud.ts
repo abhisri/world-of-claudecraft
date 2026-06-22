@@ -5115,12 +5115,14 @@ export class Hud {
 
   private lootRollRoot(): HTMLElement {
     let root = document.getElementById('loot-rolls');
+    const uiRoot = document.getElementById('ui');
     if (!root) {
       root = document.createElement('div');
       root.id = 'loot-rolls';
       root.setAttribute('aria-live', 'polite');
-      document.body.appendChild(root);
     }
+    if (uiRoot && root.parentElement !== uiRoot) uiRoot.appendChild(root);
+    else if (!root.parentElement) document.body.appendChild(root);
     return root;
   }
 
