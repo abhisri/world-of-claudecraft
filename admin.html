@@ -183,6 +183,27 @@
   .account-custom-expiry { width: 190px; }
   #mod-reason { min-width: 300px; flex: 1 1 300px; }
   #mod-custom-expiry { width: 190px; }
+
+  /* MMO-themed native controls (operators are users too): drop the cramped native
+     number steppers and recolor the datetime-local calendar picker to match the
+     gold-on-dark admin theme instead of the default light browser chrome. */
+  input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+  input[type="datetime-local"], input[type="date"], input[type="time"] {
+    background: #11111a; border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text); padding: 6px 8px; color-scheme: dark;
+  }
+  input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="time"]:focus {
+    outline: none; border-color: var(--gold-dim); box-shadow: 0 0 0 1px var(--gold-dim);
+  }
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    /* tint the default dark glyph toward gold so it reads on the dark field */
+    filter: invert(72%) sepia(60%) saturate(450%) hue-rotate(2deg) brightness(95%);
+  }
   .mod-confirm { display: none; margin: 10px 0; padding: 10px; border: 1px solid #8a6f2d; border-radius: 4px; background: #171207; }
   .mod-confirm.show { display: block; }
   .mod-confirm h4 { font-family: var(--title-font); color: var(--gold); margin-bottom: 6px; }

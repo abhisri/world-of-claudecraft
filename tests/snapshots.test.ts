@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the db layer so no Postgres is needed; snapshot logic is under test.
 vi.mock('../server/db', () => ({
@@ -76,6 +76,7 @@ function bareClient(pid: number): ClientWorld {
   c.duelInfo = null;
   c.lastSnapAt = 0;
   c.snapInterval = 50;
+  c.missingSince = new Map();
   c.pendingFacingDelta = 0;
   c.connected = true;
   c.eventQueue = [];
@@ -787,6 +788,119 @@ describe('client-side delta merge', () => {
     (client as any).applySnapshot(lastSnap(fc.sent));
     expect(client.inventory).not.toBe(invRef);
     expect(client.inventory.some((s) => s.itemId === 'baked_bread')).toBe(true);
+  });
+});
+
+describe('despawn grace (anti-flicker)', () => {
+  // A full ("first sight") wire record carrying identity, so applyWire creates
+  // the entity rather than skipping it as a half-initialized lite ghost.
+  function fullWire(id: number, x: number, z: number, extra: Record<string, unknown> = {}) {
+    return { id, k: 'player', tid: 'warrior', nm: `E${id}`, lv: 1, x, y: 0, z, f: 0, hp: 100, mhp: 100, ...extra };
+  }
+  function snap(self: any, ents: any[], keep: number[] = []) {
+    return { t: 'snap', tick: 1, time: 0, self, ents, keep };
+  }
+
+  let clock = 0;
+
+  beforeEach(() => {
+    clock = 1000;
+    vi.spyOn(performance, 'now').mockImplementation(() => clock);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('retains a far entity briefly missing from a snapshot, then drops it after the grace window', () => {
+    const c = bareClient(1);
+    const self = () => fullWire(1, 0, 0);
+
+    // Establish: self plus a far entity riding the interest boundary (~95yd).
+    (c as any).applySnapshot(snap(self(), [fullWire(2, 95, 0)]));
+    expect(c.entities.has(2)).toBe(true);
+
+    // Boundary churn: it drops out of the next snapshot. Held, not deleted.
+    clock += 50;
+    (c as any).applySnapshot(snap(self(), []));
+    expect(c.entities.has(2)).toBe(true);
+
+    // Still gone, but within the grace window: still retained.
+    clock += 200;
+    (c as any).applySnapshot(snap(self(), []));
+    expect(c.entities.has(2)).toBe(true);
+
+    // Gone past the grace window: now really removed.
+    clock += 600;
+    (c as any).applySnapshot(snap(self(), []));
+    expect(c.entities.has(2)).toBe(false);
+  });
+
+  it('clears the grace timer when the entity reappears (no flicker on re-entry)', () => {
+    const c = bareClient(1);
+    const self = () => fullWire(1, 0, 0);
+    const ent2 = c.entities; // ref to the live map
+
+    (c as any).applySnapshot(snap(self(), [fullWire(2, 95, 0)]));
+    const created = ent2.get(2);
+
+    clock += 50;
+    (c as any).applySnapshot(snap(self(), [])); // briefly missing
+    clock += 50;
+    (c as any).applySnapshot(snap(self(), [fullWire(2, 96, 0)])); // back
+    // Same entity object retained the whole time — the renderer never tore down
+    // and rebuilt its view, so no visible flash.
+    expect(ent2.get(2)).toBe(created);
+
+    // Marker cleared, so a later miss starts a fresh grace window rather than
+    // counting from the earlier one.
+    clock += 5000;
+    (c as any).applySnapshot(snap(self(), []));
+    expect(c.entities.has(2)).toBe(true);
+  });
+
+  it('treats a `keep`-listed entity as present (tier-throttle is never "missing")', () => {
+    const c = bareClient(1);
+    const self = () => fullWire(1, 0, 0);
+
+    (c as any).applySnapshot(snap(self(), [fullWire(2, 95, 0)]));
+    expect(c.entities.has(2)).toBe(true);
+
+    // First a genuine omission so the grace timer is actually armed — without
+    // this the `missingSince.has(2)` assertion below would be trivially false
+    // and never exercise the keep-clears-timer path.
+    clock += 50;
+    (c as any).applySnapshot(snap(self(), []));
+    expect(c.entities.has(2)).toBe(true);
+    expect((c as any).missingSince.has(2)).toBe(true);
+
+    // Now a distance-tier-throttled snapshot omits it from `ents` but lists it
+    // in `keep`, so it counts as seen — retained, and the armed grace timer is
+    // cleared.
+    clock += 50;
+    (c as any).applySnapshot(snap(self(), [], [2]));
+    expect(c.entities.has(2)).toBe(true);
+    expect((c as any).missingSince.has(2)).toBe(false);
+
+    // Because the timer was cleared, a genuine later miss starts a fresh grace
+    // window (held now, not deleted as if it had been missing since the throttle).
+    clock += 5000;
+    (c as any).applySnapshot(snap(self(), []));
+    expect(c.entities.has(2)).toBe(true);
+  });
+
+  it('drops a close-range disappearance immediately (preserves instant stealth-vanish)', () => {
+    const c = bareClient(1);
+    const self = () => fullWire(1, 0, 0);
+
+    (c as any).applySnapshot(snap(self(), [fullWire(2, 10, 0)]));
+    expect(c.entities.has(2)).toBe(true);
+
+    // A nearby enemy going stealth stops being observable and is omitted. It
+    // must vanish at once — no grace for close-range disappearances.
+    clock += 50;
+    (c as any).applySnapshot(snap(self(), []));
+    expect(c.entities.has(2)).toBe(false);
   });
 });
 

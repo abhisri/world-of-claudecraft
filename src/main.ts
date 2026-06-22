@@ -6,6 +6,8 @@ import { Settings, GameSettings, SETTING_RANGES, normalizeClickMoveButton } from
 import { MobileControls, PHONE_TOUCH_QUERY, isPhoneTouchDevice } from './game/mobile_controls';
 import { GamepadManager } from './game/gamepad';
 import { GamepadBindings } from './game/gamepad_bindings';
+import { shouldUseStaticBackdrop } from './game/landing_backdrop';
+import { navigatorSaveData } from './render/sky';
 import { Hud } from './ui/hud';
 import { PerfOverlay } from './ui/perf_overlay';
 import { PerfOverlayConfigStore, type PerfOverlayConfig } from './ui/perf_overlay_config';
@@ -17,8 +19,11 @@ import { voice } from './game/voice';
 import { sfx } from './game/sfx';
 import { activePvpOpponentIds, handlePickedEntity, hoverCursorKind, isAttackableEntity } from './game/interactions';
 import { clickMoveShouldCancel, clickMoveShouldWalk, clickMoveStep, distance2d, latencyAdjustedStopDistance, stepAngleToward } from './game/click_move';
-import { Api, ClientWorld, CharacterSummary, type ReleaseEntry } from './net/online';
+import { Api, isAuthError, ClientWorld, CharacterSummary, type ReleaseEntry } from './net/online';
 import { setWalletDisplayAvailable, setWocBalance, setWalletUiEnabled, resolveWocBalanceUpdate } from './ui/wallet_balance';
+import {
+  accountPortalModel, validatePasswordChange, validateEmailShape, deactivateConfirmReady,
+} from './ui/account_portal';
 import { absolutePublishedCardUrl, setCardUploader, setReferralProvider, setStandingProvider } from './ui/player_card_share';
 // The wallet module is loaded lazily via dynamic import() in the wallet
 // controller below, so it stays out of the main entry chunk and only loads when
@@ -44,7 +49,7 @@ import { portraitChipHtml, hydratePortraits } from './ui/portrait_chip';
 import { playerPortraitDataUrl } from './render/characters/portrait';
 import { createPerfMonitor } from './game/perf';
 import { startPerfReporter } from './game/perf_reporter';
-import { updateFollowCameraYaw, wrapAngle } from './game/camera_follow';
+import { cameraFollowShouldSettle, updateFollowCameraYaw, wrapAngle } from './game/camera_follow';
 
 
 const WORLD_SEED = 20061; // fixed: World of ClaudeCraft is a persistent place
@@ -163,6 +168,18 @@ function userFacingApiError(err: unknown): string {
   if (normalized === 'character already in world') return t('errors.api.alreadyInWorld');
   if (normalized === 'this character must be renamed before entering the world.') return t('errors.api.renameBeforeEntering');
   if (normalized === 'logins are only allowed from the game client') return t('errors.api.webLoginOnly');
+  // Account portal REST errors (server/main.ts /api/account/*). English-source,
+  // re-localized here onto the English-only hudChrome.account.* keys.
+  if (normalized === 'current password is incorrect') return t('hudChrome.account.errCurrentPassword');
+  if (normalized === 'enter a valid email address') return t('hudChrome.account.errEmailInvalid');
+  if (normalized === 'username does not match') return t('hudChrome.account.errUsernameMatch');
+  if (normalized === 'password is incorrect') return t('hudChrome.account.errPasswordIncorrect');
+  if (normalized === 'log out all characters before deactivating') return t('hudChrome.account.errCharactersOnline');
+  if (normalized === 'this account has been deactivated.') return t('hudChrome.account.deactivatedLocked');
+  if (normalized === 'password must be at most 128 chars') return t('hudChrome.account.errPasswordLong');
+  // The account row vanished mid-session (404 from /api/account/*); treat as a
+  // dropped session rather than rendering raw English in the form.
+  if (normalized === 'account not found') return t('errors.api.notAuthenticated');
   // Cloudflare Turnstile rejection on login/register (server/main.ts passesTurnstile).
   if (normalized === 'verification failed, please try again') return t('errors.api.verificationFailed');
   // WebSocket disconnect reasons surfaced through the fatal overlay (net/online.ts).
@@ -543,12 +560,16 @@ function mountGameUi(): void {
 // Shared game wiring (used by both offline sim and online world)
 // ---------------------------------------------------------------------------
 
-async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWorld | null): Promise<void> {
+async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWorld | null, keybindScope: string): Promise<void> {
   // Model/texture/HDRI fetches were kicked off at module import; the renderer
   // builds its scene synchronously, so everything must be resolved first.
   // The loading screen covers the gap - not a silent black screen.
   enterLoadingState(t('loading.world'));
   document.body.classList.add('game-active');
+  // We've left the start screen for the world, so pause + release the landing
+  // trailer: it's hidden now, and a decoding background video just wastes CPU/GPU
+  // and battery during play.
+  stopLandingTrailer();
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur();
   }
@@ -581,7 +602,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   const canvas = $('#game-canvas') as unknown as HTMLCanvasElement;
   const nameplates = $('#nameplates') as HTMLDivElement;
 
-  const keybinds = new Keybinds();
+  const keybinds = new Keybinds(keybindScope);
   const settings = new Settings();
   let renderer!: Renderer;
   let hud!: Hud;
@@ -870,6 +891,13 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       sfx.setFootstepsEnabled(settings.set('footstepSfx', !!value));
       return;
     }
+    if (key === 'landingHighContrast') {
+      // Mirror of the start-screen toggle; keeps the persisted preference in sync
+      // and re-applies the backdrop (the landing page is hidden in-game, but the
+      // setting still takes effect next time the start screen is shown / reloaded).
+      applyLandingBackdrop(settings.set('landingHighContrast', !!value));
+      return;
+    }
     const v = settings.set(key as keyof typeof SETTING_RANGES, value as number);
     switch (key) {
       case 'cameraSpeed': input.setCameraSpeed(v); break;
@@ -900,6 +928,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       case 'chatOpacity': document.documentElement.style.setProperty('--chat-opacity', String(v)); break;
       case 'fctScale': document.documentElement.style.setProperty('--fct-scale', String(v)); break;
       case 'hudOpacity': document.documentElement.style.setProperty('--hud-opacity', String(v)); break;
+      case 'uiScale': document.documentElement.style.setProperty('--ui-scale', String(v)); break;
     }
   }
   // apply persisted settings to the freshly-built subsystems
@@ -1179,7 +1208,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       frameDt,
       lastInterpFacing,
       mouselook: input.isMouselookActive(),
-      moving: mi.forward || mi.strafeLeft || mi.strafeRight || clickMoving,
+      moving: cameraFollowShouldSettle(mi, clickMoving),
       clickMoving,
       cameraDriven: input.isMouseCameraMode() && cameraMoveActive(),
       orbiting: input.leftDown && input.isCameraDragActive(),
@@ -1528,7 +1557,9 @@ async function startOffline(playerClass: PlayerClass, name: string, skin = 0): P
   enterLoadingState(t('loading.world'));
   const sim = new Sim({ seed: WORLD_SEED, playerClass, playerName: name });
   sim.setPlayerSkin(sim.playerId, skin);
-  void startGame(sim, sim, null);
+  // Offline characters are not persisted (a fresh name is typed each session),
+  // so the only stable handle is class + name. Keybinds scope to that pair.
+  void startGame(sim, sim, null, `offline:${playerClass}:${name}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -1698,7 +1729,7 @@ const hoverTimeouts: Record<string, number | null> = {
 };
 
 function switchMainView(targetId: string): void {
-  const views = ['#hero-view', '#highscores-view', '#wiki-view', '#news-view', '#download-view'];
+  const views = ['#hero-view', '#highscores-view', '#wiki-view', '#news-view', '#download-view', '#account-view'];
   const currentViewId = views.find(id => {
     const el = $(id);
     return el && !el.hasAttribute('hidden');
@@ -1711,7 +1742,8 @@ function switchMainView(targetId: string): void {
     '#highscores-view': 'nav-btn-highscores',
     '#wiki-view': 'nav-btn-wiki',
     '#news-view': 'nav-btn-news',
-    '#download-view': 'nav-btn-download'
+    '#download-view': 'nav-btn-download',
+    '#account-view': 'nav-btn-account'
   };
 
   const activeNavId = navMap[targetId];
@@ -1921,6 +1953,192 @@ async function enterRealmFlow(): Promise<void> {
   const auto = dir.realms.find((r) => r.name === remembered);
   if (auto) { selectRealm(auto); return; }
   showRealmList(dir);
+}
+
+// ── Home-page account portal ("Account" nav tab) ────────────────────────────
+// The nav swaps Login/Register → Account once a session exists; the portal page
+// is a thin consumer of the pure account_portal.ts model + the REST Api.
+function loginNavItem(): HTMLElement | null {
+  return ($('#nav-btn-login') as HTMLElement).closest('.nav-item') as HTMLElement | null;
+}
+
+const loggedInNavItems = ['#nav-item-account', '#nav-item-logout'];
+
+function enterLoggedInChrome(): void {
+  loggedInNavItems.forEach((sel) => { ($(sel) as HTMLElement).hidden = false; });
+  const li = loginNavItem();
+  if (li) li.hidden = true;
+}
+
+function enterLoggedOutChrome(): void {
+  loggedInNavItems.forEach((sel) => { ($(sel) as HTMLElement).hidden = true; });
+  const li = loginNavItem();
+  if (li) li.hidden = false;
+}
+
+function logoutAccount(): void {
+  const finish = () => {
+    api.clearSession();
+    location.reload();
+  };
+  if (!api.token) { finish(); return; }
+  void api.logout().finally(finish);
+}
+
+function setAccountFieldMsg(sel: string, text: string, ok: boolean): void {
+  const el = $(sel);
+  el.textContent = text;
+  el.classList.toggle('is-error', !ok && text !== '');
+  el.classList.toggle('is-ok', ok && text !== '');
+}
+
+function paintAccountPortal(
+  model: ReturnType<typeof accountPortalModel>,
+  // When the account fetch failed transiently we re-render the shell but must
+  // NOT clobber an already-populated email field: a blank value would otherwise
+  // be submitted as a null email update on the next save.
+  preserveEmailInput = false,
+): void {
+  ($('#account-logged-out') as HTMLElement).hidden = model.loggedIn;
+  ($('#account-sections') as HTMLElement).hidden = !model.loggedIn;
+  $('#account-username').textContent = model.header.username;
+  const since = $('#account-member-since');
+  since.textContent = model.header.memberSinceIso
+    ? t('hudChrome.account.memberSince', { date: formatDateTime(new Date(model.header.memberSinceIso), { dateStyle: 'medium' }) })
+    : '';
+  $('#account-char-count').textContent = t('hudChrome.account.charactersCount', {
+    count: formatNumber(model.header.characterCount),
+  });
+  if (!preserveEmailInput) ($('#account-email') as HTMLInputElement).value = model.email;
+}
+
+const loggedOutModel = () => accountPortalModel({ loggedIn: false, username: '', email: '', createdAt: '', characterCount: 0 });
+
+function handleAccountSessionExpired(): void {
+  api.clearSession();
+  enterLoggedOutChrome();
+  paintAccountPortal(loggedOutModel());
+}
+
+// Load the account portal from a (possibly restored) token. A 401/403 means the
+// token is genuinely stale → clear the session. Any other failure (5xx from a
+// restarting server, a captive-portal blip, being briefly offline) is transient:
+// keep the token and stay optimistically logged in, since only the local copy
+// would be lost. `setChrome` flips the nav into the logged-in state (boot path).
+async function loadAccountPortal(setChrome: boolean): Promise<void> {
+  if (!api.token) { paintAccountPortal(loggedOutModel()); return; }
+  try {
+    const acct = await api.getAccount();
+    if (setChrome) enterLoggedInChrome();
+    paintAccountPortal(accountPortalModel({
+      loggedIn: true, username: acct.username, email: acct.email,
+      createdAt: acct.createdAt, characterCount: acct.characterCount,
+    }));
+  } catch (err) {
+    if (isAuthError(err)) { handleAccountSessionExpired(); return; }
+    console.warn('account session check deferred (transient):', err);
+    if (setChrome) enterLoggedInChrome();
+    paintAccountPortal(accountPortalModel({
+      loggedIn: true, username: api.username ?? '', email: '', createdAt: '', characterCount: 0,
+    }), true);
+  }
+}
+
+// Boot path: a restored token re-validates and sets the logged-in nav chrome.
+const revalidateAccountSession = (): Promise<void> => loadAccountPortal(true);
+// Navigating to the Account view: refresh the portal without touching the chrome.
+const renderAccountPortal = (): Promise<void> => loadAccountPortal(false);
+
+// `focusWallet` differentiates the Wallet card's CTA from "View Characters":
+// both land on the realm/character picker, but Manage Wallet then scrolls to and
+// focuses the wallet control once it renders.
+let pendingWalletFocus = false;
+function accountGoToCharacters(focusWallet = false): void {
+  pendingWalletFocus = focusWallet;
+  switchMainView('#hero-view');
+  void enterRealmFlow().then(() => { if (pendingWalletFocus) tryFocusWalletButton(); });
+}
+
+function tryFocusWalletButton(attempt = 0): void {
+  const btn = document.getElementById('btn-wallet');
+  if (btn && btn.offsetParent !== null) {
+    pendingWalletFocus = false;
+    btn.scrollIntoView({ block: 'center' });
+    btn.focus();
+    return;
+  }
+  if (attempt < 20) window.setTimeout(() => tryFocusWalletButton(attempt + 1), 100);
+  else pendingWalletFocus = false;
+}
+
+let accountPortalWired = false;
+function setupAccountPortal(): void {
+  if (accountPortalWired) return;
+  accountPortalWired = true;
+
+  ($('#account-password-form') as HTMLFormElement).addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const current = ($('#account-current-pass') as HTMLInputElement).value;
+    const next = ($('#account-new-pass') as HTMLInputElement).value;
+    const confirm = ($('#account-confirm-pass') as HTMLInputElement).value;
+    const err = validatePasswordChange(current, next, confirm);
+    if (err) {
+      const key = err === 'empty-current' ? 'errCurrentRequired'
+        : err === 'too-short' ? 'errPasswordShort'
+        : err === 'too-long' ? 'errPasswordLong'
+        : err === 'confirm-mismatch' ? 'errPasswordConfirm'
+        : 'errPasswordUnchanged';
+      setAccountFieldMsg('#account-password-msg', t(`hudChrome.account.${key}` as TranslationKey), false);
+      return;
+    }
+    try {
+      await api.changePassword(current, next);
+      setAccountFieldMsg('#account-password-msg', t('hudChrome.account.passwordChanged'), true);
+      ($('#account-current-pass') as HTMLInputElement).value = '';
+      ($('#account-new-pass') as HTMLInputElement).value = '';
+      ($('#account-confirm-pass') as HTMLInputElement).value = '';
+    } catch (e2) {
+      setAccountFieldMsg('#account-password-msg', userFacingApiError(e2), false);
+    }
+  });
+
+  ($('#account-email-form') as HTMLFormElement).addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = ($('#account-email') as HTMLInputElement).value;
+    if (!validateEmailShape(email)) {
+      setAccountFieldMsg('#account-email-msg', t('hudChrome.account.errEmailInvalid'), false);
+      return;
+    }
+    try {
+      const saved = await api.setEmail(email);
+      ($('#account-email') as HTMLInputElement).value = saved;
+      setAccountFieldMsg('#account-email-msg', t('hudChrome.account.emailSaved'), true);
+    } catch (e2) {
+      setAccountFieldMsg('#account-email-msg', userFacingApiError(e2), false);
+    }
+  });
+
+  const deUser = $('#account-deactivate-user') as HTMLInputElement;
+  const dePass = $('#account-deactivate-pass') as HTMLInputElement;
+  const deBtn = $('#account-deactivate-btn') as HTMLButtonElement;
+  const syncDeactivate = () => { deBtn.disabled = !deactivateConfirmReady(api.username ?? '', deUser.value, dePass.value); };
+  deUser.addEventListener('input', syncDeactivate);
+  dePass.addEventListener('input', syncDeactivate);
+  ($('#account-deactivate-form') as HTMLFormElement).addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await api.deactivateAccount(deUser.value, dePass.value);
+      api.clearSession();
+      setAccountFieldMsg('#account-deactivate-msg', t('hudChrome.account.deactivated'), true);
+      window.setTimeout(() => location.reload(), 1200);
+    } catch (e2) {
+      setAccountFieldMsg('#account-deactivate-msg', userFacingApiError(e2), false);
+    }
+  });
+
+  ($('#account-manage-wallet') as HTMLElement).addEventListener('click', () => accountGoToCharacters(true));
+  ($('#account-go-characters') as HTMLElement).addEventListener('click', () => accountGoToCharacters(false));
+  ($('#account-logout') as HTMLElement).addEventListener('click', logoutAccount);
 }
 
 function showRealmList(dir?: import('./net/online').RealmDirectory): void {
@@ -2238,7 +2456,7 @@ async function enterWorld(c: CharacterSummary, button?: HTMLButtonElement): Prom
   const poll = setInterval(() => {
     if (world.connected && world.entities.has(world.playerId)) {
       clearInterval(poll);
-      void startGame(world, null, world);
+      void startGame(world, null, world, `char:${c.id}`);
     } else if (Date.now() - waitStart > 10000) {
       clearInterval(poll);
       world.close();
@@ -3528,6 +3746,76 @@ function wireWallet(): void {
   updateWalletButton();
 }
 
+// ---- Landing-page cinematic backdrop ------------------------------------
+// Decides per-visit whether the start screen shows the looping trailer video or
+// a static, dimmed, high-contrast poster — and crucially NEVER fetches the
+// 5.7 MB mp4 in the static case (the <video> ships with no source/autoplay; we
+// attach the source only when we choose the video path). Called at boot, when the
+// footer toggle flips, and when the in-game mirror setting changes.
+// Pause + tear down the start-screen trailer video (on enter-world). Releasing
+// the source frees the decoded buffer so it isn't still churning behind the HUD.
+function stopLandingTrailer(): void {
+  const backdrop = document.getElementById('start-screen-backdrop');
+  const video = document.getElementById('bg-home') as HTMLVideoElement | null;
+  backdrop?.classList.remove('trailer-ready', 'trailer-playing');
+  if (!video) return;
+  video.pause();
+  if (video.src) {
+    video.removeAttribute('src');
+    video.load();
+  }
+}
+
+let landingTrailerWired = false;
+function applyLandingBackdrop(highContrast: boolean): void {
+  const backdrop = document.getElementById('start-screen-backdrop');
+  const video = document.getElementById('bg-home') as HTMLVideoElement | null;
+  if (!backdrop) return;
+
+  const saveData = navigatorSaveData();
+  // Reduced motion: honour BOTH the OS-level prefers-reduced-motion query and
+  // the player's persisted in-app Reduce Motion toggle, so the drifting trailer
+  // stays off for anyone who asked for less motion in either place.
+  const reducedMotion = (typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    || new Settings().get('reduceMotion');
+  const useStatic = shouldUseStaticBackdrop({
+    phone: isPhoneTouchDevice(),
+    saveData,
+    reducedMotion,
+    highContrast,
+  });
+
+  backdrop.classList.toggle('backdrop-static', useStatic);
+
+  if (!video) return;
+  if (useStatic) {
+    // Keep the poster only; tear down any playing trailer and release the buffer.
+    backdrop.classList.remove('trailer-ready', 'trailer-playing');
+    if (video.src) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load(); // drop the decoded video so the poster shows + memory frees
+    }
+    return;
+  }
+
+  // Video path: attach the source lazily and play. Reveal classes flip on the
+  // first painted frame so the poster cross-fades into live motion.
+  const src = video.dataset.trailerSrc;
+  if (src && !video.src) {
+    video.src = src;
+    if (!landingTrailerWired) {
+      landingTrailerWired = true;
+      video.addEventListener('playing', () => {
+        backdrop.classList.add('trailer-ready', 'trailer-playing');
+      });
+    }
+    video.load();
+  }
+  video.play().catch(() => { /* autoplay blocked: poster stays, no error surfaced */ });
+}
+
 function wireStartScreens(): void {
   // Initial page translation and stats load. Lazy locale flip: a stored non-en locale is now
   // a real chunk fetch, and the homepage IS the first paint (there is no loading screen to sit
@@ -3565,7 +3853,34 @@ function wireStartScreens(): void {
   const offlineNameInput = $('#char-name') as HTMLInputElement;
   const offlineError = $('#offline-error');
   
-  const handleOnlineSelect = () => show('#login-panel');
+  const goToLoggedInPlay = () => {
+    void enterRealmFlow().catch((err) => {
+      if (isAuthError(err)) {
+        api.clearSession();
+        enterLoggedOutChrome();
+      } else {
+        loginError(userFacingApiError(err));
+      }
+      show('#login-panel');
+    });
+  };
+
+  const enterOnlinePlayFlow = () => {
+    switchMainView('#hero-view');
+    if (api.token) {
+      goToLoggedInPlay();
+      return;
+    }
+    show('#mode-select');
+  };
+
+  const handleOnlineSelect = () => {
+    if (api.token) {
+      goToLoggedInPlay();
+      return;
+    }
+    show('#login-panel');
+  };
 
   const handleOfflineStart = (cls: PlayerClass) => {
     const rawName = offlineNameInput.value.trim();
@@ -3879,6 +4194,10 @@ function wireStartScreens(): void {
     // so don't reset the widget or let the user re-submit the (now duplicate) auth.
     try {
       $('#charselect-user').textContent = api.username ?? '';
+      // Persist the session so a reload restores the logged-in "Account" tab,
+      // and reveal that tab now.
+      api.saveSession();
+      enterLoggedInChrome();
       // bind-on-login: surface the account's linked wallet (and flip a
       // connected-but-unlinked button into a "Link" call-to-action).
       void refreshWalletLinkStatus();
@@ -4246,10 +4565,7 @@ function wireStartScreens(): void {
     });
   };
 
-  setupNavBtn(navBtnPlay, '#hero-view', () => {
-    switchMainView('#hero-view');
-    show('#mode-select');
-  });
+  setupNavBtn(navBtnPlay, '#hero-view', enterOnlinePlayFlow);
 
   setupNavBtn(navBtnHighscores, '#highscores-view', () => {
     switchMainView('#highscores-view');
@@ -4264,6 +4580,20 @@ function wireStartScreens(): void {
   setupNavBtn(navBtnLogin, '#hero-view', () => {
     show('#login-panel');
   });
+  setupNavBtn($('#nav-btn-account'), '#account-view', () => {
+    switchMainView('#account-view');
+    void renderAccountPortal();
+  });
+  setupNavBtn($('#nav-btn-logout'), '#hero-view', logoutAccount);
+  setupAccountPortal();
+  // Restore a persisted session: show the Account tab immediately, then confirm
+  // the stored token is still valid against the server (clearing it if not).
+  if (api.restoreSession()) {
+    enterLoggedInChrome();
+    void revalidateAccountSession();
+  } else {
+    enterLoggedOutChrome();
+  }
 
   // Header Logo click listener to return to homepage
   const headerLogoBtn = $('#header-logo-btn');
@@ -4337,6 +4667,24 @@ function wireStartScreens(): void {
   };
 
   initBackgroundEmbers();
+
+  // Landing backdrop: read the persisted high-contrast preference and decide
+  // trailer-vs-static (also forced static on phones / Save-Data / reduced-motion).
+  // Uses a throwaway Settings read so it works before the game's settings object
+  // exists; the footer toggle persists changes through the same store.
+  const landingSettings = new Settings();
+  const contrastToggle = document.getElementById('landing-contrast-toggle') as HTMLButtonElement | null;
+  const syncContrastToggle = (on: boolean): void => {
+    if (contrastToggle) contrastToggle.setAttribute('aria-pressed', String(on));
+  };
+  syncContrastToggle(landingSettings.get('landingHighContrast'));
+  applyLandingBackdrop(landingSettings.get('landingHighContrast'));
+  contrastToggle?.addEventListener('click', () => {
+    const next = !landingSettings.get('landingHighContrast');
+    landingSettings.set('landingHighContrast', next);
+    syncContrastToggle(next);
+    applyLandingBackdrop(next);
+  });
 
   // Initialize 3D character preview once assets are ready
   assetsReady().then(() => {

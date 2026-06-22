@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Sim } from '../src/sim/sim';
 import { ACTIONS, encodeObs } from '../src/sim/obs';
 import { Entity, SimEvent, dist2d } from '../src/sim/types';
-import { CLASSES, CRYPT_DOOR_POS, DUNGEON_LIST, DUNGEON_X_THRESHOLD, ITEMS, LAKE, MOBS, NPCS, QUESTS, instanceOrigin, zoneAt, zoneWelcomeText } from '../src/sim/data';
+import { CLASSES, CRYPT_DOOR_POS, DUNGEON_LIST, DUNGEON_X_THRESHOLD, ITEMS, LAKE, MOBS, NPCS, QUESTS, dungeonAt, instanceOrigin, zoneAt, zoneWelcomeText } from '../src/sim/data';
 import { createMob } from '../src/sim/entity';
 import { generateDecorations, groundHeight, WATER_LEVEL } from '../src/sim/world';
 import { cameraOcclusion, isBlocked, lineOfSightClear, resolvePosition } from '../src/sim/colliders';
@@ -31,6 +31,15 @@ function placeEntity(sim: Sim, e: Entity, x: number, z: number) {
 
 function faceTarget(actor: Entity, target: Entity) {
   actor.facing = Math.atan2(target.pos.x - actor.pos.x, target.pos.z - actor.pos.z);
+}
+
+function formRaid(sim: Sim) {
+  while ((sim.partyOf(sim.playerId)?.members.length ?? 1) < 5) {
+    const pid = sim.addPlayer('priest', `RaidFill${sim.players.size}`);
+    sim.partyInvite(pid);
+    sim.partyAccept(pid);
+  }
+  sim.convertPartyToRaid();
 }
 
 describe('quest lifecycle', () => {
@@ -417,8 +426,9 @@ describe('dungeon instance placement and targetability', () => {
   it('places every dungeon entry and mob spawn on unblocked instance ground', () => {
     for (const dungeon of DUNGEON_LIST) {
       const sim = makeSim();
-      if (dungeon.id === 'nythraxis_crypt') {
-        sim.questLog.set('q_nythraxis_sealed_crypt', { questId: 'q_nythraxis_sealed_crypt', counts: [0, 0, 0], state: 'active' });
+      if (dungeon.id === 'nythraxis_boss_arena') {
+        sim.players.get(sim.playerId)!.questsDone.add('q_nythraxis_bound_guardian');
+        formRaid(sim);
       }
       sim.enterDungeon(dungeon.id);
       const p = sim.player;
@@ -426,7 +436,7 @@ describe('dungeon instance placement and targetability', () => {
       expect(isBlocked(SEED, p.pos.x, p.pos.z, 0.5), `${dungeon.id} entry spawned in geometry`).toBe(false);
 
       const mobs = [...sim.entities.values()].filter((e) => e.kind === 'mob' && e.spawnPos.x > DUNGEON_X_THRESHOLD);
-      const objects = [...sim.entities.values()].filter((e) => e.kind === 'object' && e.objectItemId && e.pos.x > DUNGEON_X_THRESHOLD);
+      const objects = [...sim.entities.values()].filter((e) => e.kind === 'object' && (e.objectItemId || e.templateId === 'dungeon_door') && e.pos.x > DUNGEON_X_THRESHOLD);
       expect(mobs.length + objects.length, `${dungeon.id} spawned no instance encounters`).toBeGreaterThan(0);
       for (const mob of mobs) {
         expect(mob.hostile, `${dungeon.id} ${mob.name} is not hostile`).toBe(true);
@@ -995,19 +1005,50 @@ describe('quest npc roles', () => {
     expect(QUESTS).not.toHaveProperty('q_nythraxis_deathless_king');
   });
 
+  it('restores the Crypt Keystone when reaccepting the Bound Guardian quest', () => {
+    const sim = makeSim();
+    sim.player.level = 20;
+    const aldric = [...sim.entities.values()].find((e) => e.templateId === 'brother_aldric_highwatch')!;
+    teleportTo(sim, aldric.pos.x + 2, aldric.pos.z);
+    sim.questLog.set('q_nythraxis_sealed_crypt', { questId: 'q_nythraxis_sealed_crypt', counts: [3, 1, 1], state: 'ready' });
+    sim.turnInQuest('q_nythraxis_sealed_crypt');
+    expect(sim.countItem('crypt_keystone')).toBe(1);
+
+    sim.removeItem('crypt_keystone', 1);
+    expect(sim.countItem('crypt_keystone')).toBe(0);
+    sim.acceptQuest('q_nythraxis_bound_guardian');
+    expect(sim.questState('q_nythraxis_bound_guardian')).toBe('active');
+    expect(sim.countItem('crypt_keystone')).toBe(1);
+
+    sim.removeItem('crypt_keystone', 1);
+    sim.abandonQuest('q_nythraxis_bound_guardian');
+    sim.acceptQuest('q_nythraxis_bound_guardian');
+    expect(sim.countItem('crypt_keystone')).toBe(1);
+  });
+
   it('gates the sealed crypt and grave visions behind Nythraxis quests', () => {
     const sim = makeSim();
     const crypt = DUNGEON_LIST.find((d) => d.id === 'nythraxis_crypt')!;
+    const bossArena = DUNGEON_LIST.find((d) => d.id === 'nythraxis_boss_arena')!;
 
-    sim.enterDungeon(crypt.id);
-    expect(sim.player.pos.x).toBeLessThan(DUNGEON_X_THRESHOLD);
-
-    sim.questLog.set('q_nythraxis_sealed_crypt', { questId: 'q_nythraxis_sealed_crypt', counts: [0, 0, 0], state: 'active' });
     sim.enterDungeon(crypt.id);
     expect(sim.player.pos.x).toBeGreaterThan(DUNGEON_X_THRESHOLD);
+    const outerCryptPos = { ...sim.player.pos };
+    sim.enterDungeon(bossArena.id);
+    expect(dist2d(sim.player.pos, outerCryptPos)).toBeLessThan(0.1);
+
+    sim.questLog.set('q_nythraxis_sealed_crypt', { questId: 'q_nythraxis_sealed_crypt', counts: [0, 0, 0], state: 'active' });
+    formRaid(sim);
+    sim.enterDungeon(bossArena.id);
+    expect(dist2d(sim.player.pos, outerCryptPos)).toBeLessThan(0.1);
+
+    sim.questLog.delete('q_nythraxis_sealed_crypt');
+    sim.players.get(sim.playerId)!.questsDone.add('q_nythraxis_bound_guardian');
+    formRaid(sim);
+    sim.enterDungeon(bossArena.id);
+    expect(dungeonAt(sim.player.pos.x)?.id).toBe('nythraxis_boss_arena');
 
     teleportTo(sim, 0, 660);
-    sim.questLog.delete('q_nythraxis_sealed_crypt');
     const grave = [...sim.entities.values()].find((e) => e.kind === 'object' && e.objectItemId === 'grave_sir_aldren')!;
     teleportTo(sim, grave.pos.x, grave.pos.z);
     sim.pickUpObject(grave.id);
@@ -1064,6 +1105,8 @@ describe('quest npc roles', () => {
     expect(guardian).toBeTruthy();
     expect(guardian).toMatchObject({ hostile: true, aiState: 'chase', aggroTargetId: sim.player.id });
 
+    sim.player.maxHp = 100000;
+    sim.player.hp = sim.player.maxHp;
     guardian!.hp = Math.floor(guardian!.maxHp * 0.49);
     sim.tick();
 
@@ -1074,6 +1117,28 @@ describe('quest npc roles', () => {
       expect(['chase', 'attack']).toContain(boneguard.aiState);
       expect(boneguard.aggroTargetId).toBe(sim.player.id);
     }
+  });
+
+  it('despawns Varkas Boneguards after 60 seconds without damage and resets on damage taken', () => {
+    const sim = makeSim();
+    const boneguard = createMob(909900, MOBS.varkas_boneguard, 19, { x: 0, y: 0, z: 0 });
+    boneguard.maxHp = 1000;
+    boneguard.hp = 1000;
+    (sim as unknown as { addEntity(e: Entity): void }).addEntity(boneguard);
+
+    for (let i = 0; i < 59 * 20; i++) sim.tick();
+    expect(sim.entities.has(boneguard.id)).toBe(true);
+
+    (sim as unknown as {
+      dealDamage(source: Entity, target: Entity, amount: number, crit: boolean, school: string, ability: string | null, kind: 'hit', noRage?: boolean): void;
+    }).dealDamage(sim.player, boneguard, 5, false, 'physical', 'Test Strike', 'hit', true);
+    expect(boneguard.damageIdleDespawnTimer).toBe(60);
+
+    for (let i = 0; i < 59 * 20; i++) sim.tick();
+    expect(sim.entities.has(boneguard.id)).toBe(true);
+
+    for (let i = 0; i < 2 * 20; i++) sim.tick();
+    expect(sim.entities.has(boneguard.id)).toBe(false);
   });
 
   it('shares Nythraxis ritual circle progress with nearby party members', () => {
@@ -1438,6 +1503,46 @@ describe('spell visuals', () => {
 
     expect(events.some((e) => e.type === 'spellfx' && e.targetId === mob.id)).toBe(false);
     expect(events.some((e) => e.type === 'damage' && e.ability === 'Auto Shot')).toBe(false);
+  });
+});
+
+describe('mob auto attacks against moving targets', () => {
+  function damageTimesFrom(events: SimEvent[], sourceId: number, targetId: number): boolean {
+    return events.some((e) => e.type === 'damage' && e.sourceId === sourceId && e.targetId === targetId);
+  }
+
+  it('continues landing melee swings after the target moves around melee range', () => {
+    const sim = makeSim();
+    const p = sim.player;
+    p.maxHp = 1_000_000;
+    p.hp = p.maxHp;
+    const wolf = [...sim.entities.values()].find((e) => e.kind === 'mob' && e.templateId === 'forest_wolf' && !e.dead)!;
+    wolf.maxHp = 1_000_000;
+    wolf.hp = wolf.maxHp;
+    teleportTo(sim, wolf.pos.x, wolf.pos.z + 2.5);
+    wolf.aiState = 'attack';
+    wolf.aggroTargetId = p.id;
+    wolf.inCombat = true;
+    wolf.swingTimer = 0;
+    wolf.threat.set(p.id, 1000);
+
+    const hitTimes: number[] = [];
+    for (let i = 0; i < 20 * 20; i++) {
+      const t = i / 20;
+      if (t > 2) {
+        const oldPos = { ...p.pos };
+        const angle = (t - 2) * 1.6;
+        p.pos.x = wolf.spawnPos.x + Math.sin(angle) * 8;
+        p.pos.z = wolf.spawnPos.z + Math.cos(angle) * 8;
+        p.pos.y = groundHeight(p.pos.x, p.pos.z, sim.cfg.seed);
+        p.prevPos = oldPos;
+      }
+      const events = sim.tick();
+      if (damageTimesFrom(events, wolf.id, p.id)) hitTimes.push(i / 20);
+    }
+
+    expect(hitTimes.length).toBeGreaterThanOrEqual(6);
+    expect(hitTimes.at(-1)).toBeGreaterThan(15);
   });
 });
 

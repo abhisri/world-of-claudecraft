@@ -43,6 +43,43 @@ describe('client HTML shell', () => {
     expect(liveHtml).not.toContain('id="chat-input"');
   });
 
+  it('keeps the Account nav tab hidden unless a session is restored', () => {
+    expect(html).toContain('<li class="nav-item" id="nav-item-account" hidden>');
+    expect(html).toContain('<li class="nav-item" id="nav-item-logout" hidden>');
+    expect(mainTs).toContain('if (api.restoreSession()) {');
+    expect(mainTs).toContain('} else {\n    enterLoggedOutChrome();\n  }');
+  });
+
+  it('shows a logged-in Logout nav item next to Account', () => {
+    expect(html).toContain('id="nav-btn-account"');
+    expect(html).toContain('id="nav-btn-logout"');
+    expect(html.indexOf('id="nav-btn-account"')).toBeLessThan(html.indexOf('id="nav-btn-logout"'));
+    expect(html).toContain('data-i18n="nav.logout"');
+    expect(mainTs).toContain("const loggedInNavItems = ['#nav-item-account', '#nav-item-logout'];");
+    expect(mainTs).toContain('function logoutAccount(): void {');
+    expect(mainTs).toContain('void api.logout().finally(finish);');
+    expect(mainTs).toContain('api.clearSession();');
+    expect(mainTs).toContain("setupNavBtn($('#nav-btn-logout'), '#hero-view', logoutAccount);");
+  });
+
+  it('requires users to confirm a new account password', () => {
+    expect(html).toContain('id="account-confirm-pass"');
+    expect(mainTs).toContain("const confirm = ($('#account-confirm-pass') as HTMLInputElement).value;");
+    expect(mainTs).toContain('validatePasswordChange(current, next, confirm)');
+  });
+
+  it('routes logged-in play navigation to the realm and character flow', () => {
+    expect(mainTs).toContain('const goToLoggedInPlay = () => {');
+    expect(mainTs).toContain('void enterRealmFlow().catch((err) => {');
+    expect(mainTs).toContain('api.clearSession();');
+    expect(mainTs).toContain('const enterOnlinePlayFlow = () => {');
+    expect(mainTs).toContain('if (api.token) {');
+    expect(mainTs).toContain('goToLoggedInPlay();');
+    expect(mainTs).toContain('setupNavBtn(navBtnPlay, \'#hero-view\', enterOnlinePlayFlow);');
+    expect(mainTs).toContain('const handleOnlineSelect = () => {');
+    expect(mainTs).toContain("show('#login-panel');");
+  });
+
   it('ships crawlable SEO metadata and sitemap hints', () => {
     expect(html).toContain('<meta name="robots" content="index, follow, max-image-preview:large" />');
     expect(html).toContain('<link rel="canonical" href="https://worldofclaudecraft.com/" />');
@@ -214,6 +251,20 @@ describe('client HTML shell', () => {
     expect(mainTs).not.toContain("visualViewport?.addEventListener('scroll', syncAppViewport)");
   });
 
+  it('lets HUD windows scroll by touch on iOS (Bag / Market)', () => {
+    // The HUD overlay must permit one-finger panning so scroll containers
+    // inside it can scroll on iOS — `touch-action: none` here would block them
+    // (Safari intersects touch-action down the ancestor chain, so a child's
+    // own pan-y cannot re-enable it). pan-x pan-y still blocks pinch-zoom.
+    expect(html).toContain('body.mobile-touch #ui { touch-action: pan-x pan-y; }');
+    expect(html).not.toContain('body.mobile-touch #ui { touch-action: none; }');
+    // Scrollable lists get iOS momentum + scroll isolation.
+    expect(html).toContain('#bags .bag-grid { flex: 1 1 auto; min-height: 0; overflow-y: auto;\n    touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }');
+    expect(html).toContain('#market-body { overflow-y: auto; flex: 1; min-height: 0; padding-right: 2px;\n    touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }');
+    // The world canvas still suppresses panning so camera drag is unaffected.
+    expect(html).toContain('body.mobile-touch #game-canvas { touch-action: none; }');
+  });
+
   it('places news release metadata below the heading on mobile', () => {
     expect(mainTs).toContain('<h3 class="news-item-title">${title}</h3><div class="news-item-meta">${tag}${badge}${when}</div></div>');
     expect(html).toContain('body.mobile-touch .news-item-head {\n    flex-direction: column;\n    align-items: flex-start;');
@@ -290,11 +341,16 @@ describe('client HTML shell', () => {
     expect(html).toContain('@media (orientation: landscape) {\n    body.mobile-touch .play-console {\n      width: 100%;\n      max-width: 460px;');
   });
 
-  it('ships a looping cinematic backdrop with a poster fallback', () => {
+  it('ships a looping cinematic backdrop with a poster fallback, lazy-loaded for perf', () => {
     expect(html).toContain('id="bg-home"');
     expect(html).toContain('poster="/home-bg.png"');
-    expect(html).toContain('<source src="/home-bg.mp4" type="video/mp4"');
-    expect(html).toContain('autoplay loop muted playsinline');
+    // The 5.7MB mp4 is NOT eagerly fetched: no <source>/autoplay/preload in the
+    // static markup. main.ts attaches data-trailer-src only on capable devices;
+    // phones / Save-Data / reduced-motion / high-contrast keep the poster only.
+    expect(html).toContain('data-trailer-src="/home-bg.mp4"');
+    expect(html).toContain('preload="none"');
+    expect(html).not.toContain('<source src="/home-bg.mp4"');
+    expect(mainTs).toContain('applyLandingBackdrop');
     // View transitions still honour reduced-motion.
     expect(mainTs).toContain("prefers-reduced-motion: reduce");
   });

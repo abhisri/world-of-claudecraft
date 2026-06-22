@@ -230,7 +230,9 @@ export const es: EnTranslations = {
       "clickMoveRight": "Clic derecho",
       "footstepSounds": "Sonidos de pasos",
       "showWalletOnCharacterScreen": "Mostrar cartera en la pantalla de personajes",
-      "showWalletOnPlayerCard": "Mostrar cartera en la tarjeta de jugador"
+      "showWalletOnPlayerCard": "Mostrar cartera en la tarjeta de jugador",
+      "uiScale": "Escala de la interfaz",
+      "highContrastBackground": "Fondo de alto contraste"
     },
     "controller": {
       "title": "Mando",
@@ -315,6 +317,44 @@ export const es: EnTranslations = {
     "playerCard": {
       "showWalletBadge": "Mostrar insignia de cartera"
     },
+    "landing": {
+      "highContrast": "Alto contraste",
+      "highContrastAria": "Alternar el fondo de alto contraste: desactiva el tráiler en movimiento para que el texto de la pantalla de inicio siga siendo legible"
+    },
+    "statInfo": {
+      "fromYour": "De tu {value} de {stat}:",
+      "desc": {
+        "str": "Aumenta tu poder de ataque, así que tus golpes con el arma impactan con más fuerza.",
+        "agi": "Agudiza tus reflejos y tu puntería, mejorando varias de tus estadísticas de combate.",
+        "sta": "Endurece tu cuerpo, elevando tu salud máxima y la rapidez con la que recuperas salud al descansar.",
+        "int": "Amplía la reserva de maná de un lanzador de hechizos y mejora su probabilidad de asestar un golpe crítico con hechizos.",
+        "spi": "Acelera la rapidez con la que regresa el maná de un lanzador de hechizos al descansar, fuera de combate.",
+        "armor": "Amortigua los golpes físicos que recibes. La reducción es mayor contra atacantes de menor nivel y tiene un tope del 75%.",
+        "attackPower": "Potencia tus ataques con el arma. Cada 14 de poder de ataque añade 1 de daño por segundo.",
+        "dps": "El daño por segundo estimado de tu arma, combinando el daño y la velocidad de tu arma con tu poder de ataque.",
+        "critChance": "Tu probabilidad de que un ataque aseste un golpe crítico, infligiendo el doble de daño.",
+        "dodge": "Tu probabilidad de evitar por completo un ataque cuerpo a cuerpo entrante, sin recibir daño."
+      },
+      "effects": {
+        "attackPower": "+{value} de poder de ataque",
+        "rangedAttackPower": "+{value} de poder de ataque a distancia",
+        "critPct": "+{value}% de golpe crítico",
+        "dodgePct": "+{value}% de esquiva",
+        "armor": "+{value} de armadura",
+        "maxHealth": "+{value} de salud máxima",
+        "maxMana": "+{value} de maná máximo",
+        "spellCritPct": "+{value}% de golpe crítico con hechizos",
+        "healthRegen": "Unos {value} de salud cada 5 seg mientras descansas",
+        "manaRegen": "Unos {value} de maná cada 5 seg mientras descansas",
+        "damageReduction": "Reducción de daño contra un atacante de nivel {level}: {value}%",
+        "dpsFromAp": "Añade {value} de daño por segundo a tus ataques"
+      },
+      "notes": {
+        "minorForClass": "De poco beneficio para tu clase.",
+        "baseChance": "Incluye un 5% de probabilidad base que comparten todos los aventureros.",
+        "dpsApprox": "Es una estimación, no incluye los golpes críticos ni el daño de habilidades."
+      }
+    },
     "talents": {
       "defaultBuildName": "Configuración {n}"
     },
@@ -346,6 +386,53 @@ export const es: EnTranslations = {
         "many": "Quién: {count} jugadores conectados en {realm}.",
         "other": "Quién: {count} jugadores conectados en {realm}."
       }
+    },
+    "paperdoll": {
+      "unequipAria": "Desequipar {item}",
+      "unequipHint": "Haz clic en ×, clic derecho o arrastra a las bolsas para desequipar"
+    },
+    "account": {
+      "title": "Cuenta",
+      "loggedOutPrompt": "Inicia sesión para gestionar tu cuenta.",
+      "memberSince": "Miembro desde {date}",
+      "sectionSettings": "Ajustes de Cuenta",
+      "sectionWallet": "Cartera $WOC",
+      "sectionCharacters": "Personajes",
+      "sectionDanger": "Zona de Peligro",
+      "changePassword": "Cambiar Contraseña",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Nueva contraseña",
+      "confirmNewPassword": "Confirmar nueva contraseña",
+      "savePassword": "Actualizar Contraseña",
+      "passwordChanged": "Contraseña actualizada. Se ha cerrado la sesión en los demás dispositivos.",
+      "errCurrentRequired": "Introduce tu contraseña actual.",
+      "errPasswordShort": "La nueva contraseña debe tener al menos 6 caracteres.",
+      "errPasswordLong": "La nueva contraseña debe tener como máximo 128 caracteres.",
+      "errPasswordUnchanged": "La nueva contraseña debe ser distinta de la actual.",
+      "errPasswordConfirm": "Las nuevas contraseñas no coinciden.",
+      "emailLabel": "Correo (opcional)",
+      "emailHint": "Se usa solo para recuperar la cuenta. Nunca enviamos correos de marketing.",
+      "saveEmail": "Guardar Correo",
+      "emailSaved": "Correo guardado.",
+      "errEmailInvalid": "Introduce una dirección de correo válida.",
+      "errCurrentPassword": "Tu contraseña actual es incorrecta.",
+      "errUsernameMatch": "Ese usuario no coincide con tu cuenta.",
+      "errPasswordIncorrect": "Tu contraseña es incorrecta.",
+      "errCharactersOnline": "Cierra la sesión de todos tus personajes antes de desactivar.",
+      "deactivatedLocked": "Esta cuenta ha sido desactivada. Contacta a un administrador para restaurarla.",
+      "charactersSummary": "Gestiona tus personajes y entra al mundo.",
+      "charactersCount": "Personajes: {count}",
+      "goToCharacters": "Ver Personajes",
+      "walletSummary": "Verifica una cartera de Solana para mostrar el distintivo de titular en tu tarjeta de jugador.",
+      "manageWallet": "Gestionar Cartera",
+      "deactivate": "Desactivar Cuenta",
+      "deactivateWarning": "La desactivación bloquea tu cuenta y cierra tu sesión en todas partes. Contacta a un administrador para restaurarla. Confirma volviendo a introducir tu usuario y contraseña.",
+      "confirmUsername": "Escribe tu usuario para confirmar",
+      "confirmPassword": "Contraseña",
+      "deactivateConfirm": "Desactivar Mi Cuenta",
+      "deactivated": "Tu cuenta ha sido desactivada.",
+      "logOut": "Cerrar Sesión",
+      "logOutSummary": "Cierra la sesión en este dispositivo."
     }
   },
   "skinEvent": {
@@ -390,6 +477,8 @@ export const es: EnTranslations = {
     "news": "Noticias",
     "download": "Descargar",
     "loginRegister": "Iniciar Sesión/Registrarse",
+    "account": "Cuenta",
+    "logout": "Cerrar sesión",
     "donate": "Donar"
   },
   "stats": {
@@ -583,36 +672,36 @@ export const es: EnTranslations = {
         "flavor": "Los mercados sienten cada movimiento tuyo: el 1 % del suministro."
       },
       "tidelord": {
-        "name": "Tidelord",
-        "flavor": "The tide answers your call: 2% of supply."
+        "name": "Señor de las mareas",
+        "flavor": "La marea responde a tu llamada: el 2 % del suministro."
       },
       "stormcaller": {
-        "name": "Stormcaller",
-        "flavor": "Storms gather at your name: 3% of supply."
+        "name": "Invocador de tormentas",
+        "flavor": "Las tormentas se reúnen ante tu nombre: el 3 % del suministro."
       },
       "krakencrown": {
-        "name": "Krakencrown",
-        "flavor": "Crowned by the deep: 4% of supply."
+        "name": "Corona del kraken",
+        "flavor": "Coronado por las profundidades: el 4 % del suministro."
       },
       "titanforged": {
-        "name": "Titanforged",
-        "flavor": "Forged among titans: 5% of supply."
+        "name": "Forjado entre titanes",
+        "flavor": "Forjado entre titanes: el 5 % del suministro."
       },
       "starhoard": {
-        "name": "Starhoard",
-        "flavor": "A hoard that bends starlight: 6% of supply."
+        "name": "Tesoro estelar",
+        "flavor": "Un tesoro que dobla la luz de las estrellas: el 6 % del suministro."
       },
       "voidwarden": {
-        "name": "Voidwarden",
-        "flavor": "Keeper at the void's edge: 7% of supply."
+        "name": "Guardián del vacío",
+        "flavor": "Vigía al borde del vacío: el 7 % del suministro."
       },
       "realmshaper": {
-        "name": "Realmshaper",
-        "flavor": "You reshape the realm: 8% of supply."
+        "name": "Modelador del reino",
+        "flavor": "Remodelas el reino: el 8 % del suministro."
       },
       "worldforger": {
-        "name": "Worldforger",
-        "flavor": "Forging a world of your own: 9% of supply."
+        "name": "Forjador de mundos",
+        "flavor": "Forjas un mundo propio: el 9 % del suministro."
       },
       "worldbearer": {
         "name": "Portamundos",
@@ -1284,6 +1373,7 @@ export const es: EnTranslations = {
         "unignoreChat": "Dejar de ignorar chat",
         "report": "Reportar jugador",
         "removeParty": "Expulsar del grupo",
+        "convertToRaid": "Convertir en banda",
         "cancel": "Cancelar"
       }
     },
@@ -1449,6 +1539,25 @@ export const es: EnTranslations = {
       "friendOnline": "{name} se ha conectado.",
       "friendOffline": "{name} se ha desconectado."
     },
+    "tutorial": {
+      "title": "Nuevo Aventurero",
+      "stepLabel": "Paso {current} de {total}",
+      "skip": "Saltar tutorial",
+      "dismiss": "Descartar",
+      "doneTitle": "Listo para la aventura",
+      "doneBody": "Ya dominas lo básico, {name}. El Valle es tuyo para explorar: pulsa {questKey} en cualquier momento para revisar tus misiones. ¡Buena caza!",
+      "moveTitle": "Da tus primeros pasos",
+      "moveBody": "Usa {moveKeys} para moverte y el ratón para mirar alrededor. Da unos pasos para empezar.",
+      "seekTitle": "Busca al Mariscal",
+      "seekBody": "El mariscal Redbrook espera en el pueblo y tiene trabajo para una nueva espada. Sigue la marca para llegar a él.",
+      "talkTitle": "Acepta la tarea",
+      "talkBody": "Acércate al mariscal Redbrook y pulsa {interactKey} para hablar; luego acepta su tarea.",
+      "slayTitle": "Lobos a las puertas",
+      "slayBody": "Caza a los lobos del bosque en el camino del norte. Selecciona uno y atácalo para diezmar la manada.",
+      "slayProgress": "Lobos del bosque abatidos: {current} / {needed}",
+      "returnTitle": "Reclama tu recompensa",
+      "returnBody": "Tu tarea está hecha. Vuelve con el mariscal Redbrook y pulsa {interactKey} para entregarla."
+    },
     "markers": {
       "names": {
         "star": "Estrella",
@@ -1502,6 +1611,12 @@ export const es: EnTranslations = {
       "guildTab": "Hermandad",
       "ignoreTab": "Ignorar",
       "leaveParty": "Salir del grupo",
+      "raidTab": "Banda",
+      "raidEmpty": "Convierte un grupo en banda para gestionar los grupos de banda aquí.",
+      "raidGroupEmpty": "No hay jugadores en este grupo.",
+      "raidGroupTitle": "Grupo {position} ({count}/5)",
+      "raidMoveToGroup": "Mover al grupo {position}",
+      "raidLeader": "Líder de banda",
       "offlineEmpty": "Amigos, hermandades y listas de ignorados están disponibles en juego en línea.",
       "friendsEmpty": "Aún no tienes amigos. Busca a alguien por nombre abajo.",
       "ignoreEmpty": "Tu lista de ignorados está vacía.",
@@ -1739,7 +1854,8 @@ export const es: EnTranslations = {
       "common": "Común",
       "uncommon": "Poco común",
       "rare": "Raro",
-      "epic": "Épico"
+      "epic": "Épico",
+      "legendary": "Legendario"
     },
     "kind": {
       "weapon": "Arma",
@@ -3446,6 +3562,36 @@ export const es: EnTranslations = {
       "event_skin_token": {
         "name": "Alijo cosmético misterioso"
       },
+      "deathless_heartwood": {
+        "name": "Duramen de la Corona Inmortal"
+      },
+      "kingsbane_last_oath": {
+        "name": "Matarrayes, último juramento de Thornpeak"
+      },
+      "crownforged_dreadhelm": {
+        "name": "Yelmo aterrador Forjacorona"
+      },
+      "crownforged_warspaulders": {
+        "name": "Hombreras de guerra Forjacorona"
+      },
+      "nighttalon_crown": {
+        "name": "Corona Garra Nocturna"
+      },
+      "nighttalon_shoulderguards": {
+        "name": "Guardahombros Garra Nocturna"
+      },
+      "soulflame_cowl": {
+        "name": "Caperuza Llama de Alma"
+      },
+      "soulflame_mantle": {
+        "name": "Manto Llama de Alma"
+      },
+      "stormcallers_crown": {
+        "name": "Corona del Invocatormentas"
+      },
+      "stormcallers_spaulders": {
+        "name": "Bufas del Invocatormentas"
+      },
       "unknown_alien_weaponry": {
         "name": "Armamento alienígena desconocido"
       },
@@ -3660,6 +3806,12 @@ export const es: EnTranslations = {
       },
       "bound_guardian": {
         "name": "Guardián Vinculado"
+      },
+      "nythraxis_skeleton_warrior": {
+        "name": "Guardia real alzado"
+      },
+      "nythraxis_scourge_of_thornpeak": {
+        "name": "Nythraxis, Azote de Thornpeak"
       },
       "brightwood_hare": {
         "name": "Liebre de Brightwood"
@@ -3912,6 +4064,11 @@ export const es: EnTranslations = {
         "name": "Montaraz Elwyn",
         "title": "Guardiana del claro",
         "greeting": "Silencio, {className}. El claro está tranquilo hoy, y pretendo que siga así."
+      },
+      "brother_aldric_raid": {
+        "name": "Hermano Aldric",
+        "title": "Sacerdote del Valle",
+        "greeting": "De un patio de capilla al techo del mundo... el rastro termina aquí. Siento que la montaña escucha."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",
@@ -4638,8 +4795,8 @@ export const es: EnTranslations = {
       },
       "q_nythraxis_bound_guardian": {
         "title": "El Guardián Vinculado",
-        "text": "Voss escribió que los supervivientes sellaron el Anillo del rey tras un guardián antiguo, para que nadie pudiera alcanzar la tumba de Nythraxis por accidente o ambición. Lleva la Piedra clave de la cripta al círculo ritual en el terreno llano al este de la cripta abandonada y al sureste de la tumba occidental. Úsala allí, rompe al guardián y trae el anillo.",
-        "completion": "Las tres reliquias cuentan la misma historia: Aldren luchó para defender a su rey, Malric rompió el límite de la muerte y Voss intentó detener lo que vino después. El sello se debilita, y este anillo es la llave de la tumba de Nythraxis. Ahora estás armonizado para entrar en La Cripta de Nythraxis.",
+        "text": "Voss escribio que los supervivientes sellaron el Anillo del rey tras un guardian antiguo, para que nadie pudiera alcanzar la tumba de Nythraxis por accidente o ambicion. Lleva la Piedra clave de la cripta al circulo ritual en el terreno llano al este de la cripta abandonada y al sureste de la tumba occidental. Usala alli, rompe al guardian y trae el anillo.",
+        "completion": "Las tres reliquias cuentan la misma historia: Aldren lucho para defender a su rey, Malric rompio el limite de la muerte y Voss intento detener lo que vino despues. El sello se debilita, y este anillo es la llave de la tumba de Nythraxis. Ahora estas armonizado para entrar en La Cripta de Nythraxis. Vuelve a la cripta abandonada, abre la puerta real y enfrenta a Nythraxis antes de que la ira del viejo rey desborde Thornpeak.",
         "objectives": {
           "0": {
             "label": "Piedra clave usada en el círculo ritual"
@@ -4649,6 +4806,16 @@ export const es: EnTranslations = {
           },
           "2": {
             "label": "Anillo del rey"
+          }
+        }
+      },
+      "q_nythraxis_scourges_end": {
+        "title": "El fin del Azote",
+        "text": "El sello ha abierto el camino, {playerName}, pero una tumba abierta no es una victoria. Nythraxis fue rey una vez, y la ruina bajo Thornpeak sigue ligada a su voluntad. Entra en la cripta con aliados de confianza. Rompe la corona inmortal antes de que su mandato alcance el campo de batalla de arriba.",
+        "completion": "Entonces la corona calla al fin. Thornpeak seguira cargando con sus muertos, pero ningun rey bajo la montana volvera a llamarlos a la guerra. Has terminado lo que Aldren, Malric y Voss solo pudieron contener.",
+        "objectives": {
+          "0": {
+            "label": "Nythraxis derrotado"
           }
         }
       },
@@ -4986,6 +5153,11 @@ export const es: EnTranslations = {
         "name": "Cripta abandonada",
         "enterText": "Cruzas el umbral de la cripta abandonada.",
         "leaveText": "Vuelves a salir al aire frío de Thornpeak."
+      },
+      "nythraxis_boss_arena": {
+        "name": "Arena de banda de Nythraxis",
+        "enterText": "Cruzas la puerta real sellada.",
+        "leaveText": "Regresas al aire frío de Thornpeak."
       },
       "drowned_temple": {
         "name": "El Templo Ahogado",

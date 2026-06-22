@@ -230,7 +230,9 @@ export const zh_CN: EnTranslations = {
       "clickMoveRight": "右键",
       "footstepSounds": "脚步声",
       "showWalletOnCharacterScreen": "在角色界面显示钱包",
-      "showWalletOnPlayerCard": "在玩家卡片显示钱包"
+      "showWalletOnPlayerCard": "在玩家卡片显示钱包",
+      "uiScale": "界面缩放",
+      "highContrastBackground": "高对比度背景"
     },
     "controller": {
       "title": "手柄",
@@ -315,6 +317,44 @@ export const zh_CN: EnTranslations = {
     "playerCard": {
       "showWalletBadge": "显示钱包徽章"
     },
+    "landing": {
+      "highContrast": "高对比度",
+      "highContrastAria": "切换高对比度背景：关闭动态预告片，使开始界面文字保持清晰"
+    },
+    "statInfo": {
+      "fromYour": "来自你的 {value} 点{stat}：",
+      "desc": {
+        "str": "提高你的攻击强度，使你的武器攻击造成更高的伤害。",
+        "agi": "提高你的反应和准度，强化你的多项战斗属性。",
+        "sta": "强健你的体魄，提高你的最大生命值以及休息时恢复生命值的速度。",
+        "int": "扩大施法者的法力值上限，并提高其造成法术暴击的几率。",
+        "spi": "加快施法者在脱离战斗、休息时恢复法力值的速度。",
+        "armor": "减轻受到的物理打击。对等级较低的攻击者减伤效果更强，最高减伤上限为75%。",
+        "attackPower": "强化你的武器攻击。每14点攻击强度可提高1点每秒伤害。",
+        "dps": "你的预估武器每秒伤害，由武器的伤害与速度以及你的攻击强度共同计算得出。",
+        "critChance": "你的攻击造成暴击的几率，暴击将造成双倍伤害。",
+        "dodge": "你完全躲开来袭近战攻击、不受任何伤害的几率。"
+      },
+      "effects": {
+        "attackPower": "+{value} 攻击强度",
+        "rangedAttackPower": "+{value} 远程攻击强度",
+        "critPct": "+{value}% 暴击",
+        "dodgePct": "+{value}% 躲闪",
+        "armor": "+{value} 护甲",
+        "maxHealth": "+{value} 最大生命值",
+        "maxMana": "+{value} 最大法力值",
+        "spellCritPct": "+{value}% 法术暴击",
+        "healthRegen": "休息时每5秒约恢复 {value} 点生命值",
+        "manaRegen": "休息时每5秒约恢复 {value} 点法力",
+        "damageReduction": "对{level}级攻击者的伤害减免：{value}%",
+        "dpsFromAp": "为你的攻击增加 {value} 点每秒伤害"
+      },
+      "notes": {
+        "minorForClass": "对你的职业益处不大。",
+        "baseChance": "包含所有冒险者共享的5%基础几率。",
+        "dpsApprox": "此为预估值，不计入暴击和技能伤害。"
+      }
+    },
     "talents": {
       "defaultBuildName": "配置 {n}"
     },
@@ -346,6 +386,53 @@ export const zh_CN: EnTranslations = {
         "many": "查询：{realm}上有{count}名玩家在线。",
         "other": "查询：{realm}上有{count}名玩家在线。"
       }
+    },
+    "paperdoll": {
+      "unequipAria": "卸下 {item}",
+      "unequipHint": "点击 ×、右键点击或拖到背包以卸下"
+    },
+    "account": {
+      "title": "账户",
+      "loggedOutPrompt": "登录以管理您的账户。",
+      "memberSince": "注册于 {date}",
+      "sectionSettings": "账户设置",
+      "sectionWallet": "$WOC 钱包",
+      "sectionCharacters": "角色",
+      "sectionDanger": "危险区域",
+      "changePassword": "修改密码",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "confirmNewPassword": "确认新密码",
+      "savePassword": "更新密码",
+      "passwordChanged": "密码已更新。其他设备已登出。",
+      "errCurrentRequired": "请输入当前密码。",
+      "errPasswordShort": "新密码至少需要 6 个字符。",
+      "errPasswordLong": "新密码最多只能包含 128 个字符。",
+      "errPasswordUnchanged": "新密码必须与当前密码不同。",
+      "errPasswordConfirm": "两次输入的新密码不一致。",
+      "emailLabel": "邮箱（可选）",
+      "emailHint": "仅用于账户找回。我们绝不发送营销邮件。",
+      "saveEmail": "保存邮箱",
+      "emailSaved": "邮箱已保存。",
+      "errEmailInvalid": "请输入有效的邮箱地址。",
+      "errCurrentPassword": "当前密码不正确。",
+      "errUsernameMatch": "该用户名与您的账户不匹配。",
+      "errPasswordIncorrect": "密码不正确。",
+      "errCharactersOnline": "请先登出所有角色再进行注销。",
+      "deactivatedLocked": "此账户已注销。请联系管理员以恢复。",
+      "charactersSummary": "管理您的角色并进入游戏世界。",
+      "charactersCount": "角色：{count}",
+      "goToCharacters": "查看角色",
+      "walletSummary": "验证 Solana 钱包以在玩家卡片上显示持有者标识。",
+      "manageWallet": "管理钱包",
+      "deactivate": "注销账户",
+      "deactivateWarning": "注销将锁定您的账户并在所有设备上登出。请联系管理员以恢复。请重新输入用户名和密码以确认。",
+      "confirmUsername": "输入您的用户名以确认",
+      "confirmPassword": "密码",
+      "deactivateConfirm": "注销我的账户",
+      "deactivated": "您的账户已注销。",
+      "logOut": "退出登录",
+      "logOutSummary": "退出当前设备的登录。"
     }
   },
   "skinEvent": {
@@ -390,6 +477,8 @@ export const zh_CN: EnTranslations = {
     "news": "新闻资讯",
     "download": "下载客户端",
     "loginRegister": "登录/注册",
+    "account": "账户",
+    "logout": "退出登录",
     "donate": "捐赠"
   },
   "stats": {
@@ -1284,6 +1373,7 @@ export const zh_CN: EnTranslations = {
         "unignoreChat": "取消屏蔽聊天",
         "report": "举报玩家",
         "removeParty": "移出队伍",
+        "convertToRaid": "转换为团队",
         "cancel": "取消"
       }
     },
@@ -1449,6 +1539,25 @@ export const zh_CN: EnTranslations = {
       "friendOnline": "{name} 上线了。",
       "friendOffline": "{name} 下线了。"
     },
+    "tutorial": {
+      "title": "新冒险者",
+      "stepLabel": "第 {current} 步，共 {total} 步",
+      "skip": "跳过教程",
+      "dismiss": "关闭",
+      "doneTitle": "准备好冒险了",
+      "doneBody": "你已掌握基础，{name}。东溪谷任你探索。随时按 {questKey} 查看任务。祝你狩猎顺利。",
+      "moveTitle": "迈出第一步",
+      "moveBody": "使用 {moveKeys} 移动，用鼠标环顾四周。先走几步开始吧。",
+      "seekTitle": "寻找元帅",
+      "seekBody": "雷德布鲁克元帅在镇上等候，他有任务交给新人。跟随指引前往找他。",
+      "talkTitle": "接受任务",
+      "talkBody": "靠近雷德布鲁克元帅并按 {interactKey} 与他交谈，然后接受他的任务。",
+      "slayTitle": "狼群来袭",
+      "slayBody": "前往北边的道路猎杀森林狼。选中一只发起攻击，削减狼群数量。",
+      "slayProgress": "已击杀森林狼：{current} / {needed}",
+      "returnTitle": "领取奖励",
+      "returnBody": "任务已完成。返回雷德布鲁克元帅处并按 {interactKey} 交付任务。"
+    },
     "markers": {
       "names": {
         "star": "星形",
@@ -1502,6 +1611,12 @@ export const zh_CN: EnTranslations = {
       "guildTab": "公会",
       "ignoreTab": "忽略",
       "leaveParty": "离开队伍",
+      "raidTab": "团队",
+      "raidEmpty": "将小队转换为团队后，可在这里管理团队分组。",
+      "raidGroupEmpty": "此小组没有玩家。",
+      "raidGroupTitle": "小组 {position} ({count}/5)",
+      "raidMoveToGroup": "移动到小组 {position}",
+      "raidLeader": "团队领袖",
       "offlineEmpty": "好友、公会和忽略列表仅在在线游戏中可用。",
       "friendsEmpty": "还没有好友。请在下方按名称搜索。",
       "ignoreEmpty": "你的忽略列表为空。",
@@ -1739,7 +1854,8 @@ export const zh_CN: EnTranslations = {
       "common": "普通",
       "uncommon": "优秀",
       "rare": "精良",
-      "epic": "史诗"
+      "epic": "史诗",
+      "legendary": "传说"
     },
     "kind": {
       "weapon": "武器",
@@ -3446,6 +3562,36 @@ export const zh_CN: EnTranslations = {
       "event_skin_token": {
         "name": "神秘外观宝箱"
       },
+      "deathless_heartwood": {
+        "name": "不朽王冠之心木"
+      },
+      "kingsbane_last_oath": {
+        "name": "弑王者，Thornpeak 最后的誓言"
+      },
+      "crownforged_dreadhelm": {
+        "name": "铸冠恐惧头盔"
+      },
+      "crownforged_warspaulders": {
+        "name": "铸冠战肩甲"
+      },
+      "nighttalon_crown": {
+        "name": "夜爪之冠"
+      },
+      "nighttalon_shoulderguards": {
+        "name": "夜爪护肩"
+      },
+      "soulflame_cowl": {
+        "name": "魂焰兜帽"
+      },
+      "soulflame_mantle": {
+        "name": "魂焰披肩"
+      },
+      "stormcallers_crown": {
+        "name": "唤雷者之冠"
+      },
+      "stormcallers_spaulders": {
+        "name": "唤雷者肩甲"
+      },
       "unknown_alien_weaponry": {
         "name": "未知异星武器"
       },
@@ -3660,6 +3806,12 @@ export const zh_CN: EnTranslations = {
       },
       "bound_guardian": {
         "name": "受缚守卫者"
+      },
+      "nythraxis_skeleton_warrior": {
+        "name": "复苏王室卫兵"
+      },
+      "nythraxis_scourge_of_thornpeak": {
+        "name": "尼瑟拉克斯，荆峰之灾"
       },
       "brightwood_hare": {
         "name": "明木野兔"
@@ -3912,6 +4064,11 @@ export const zh_CN: EnTranslations = {
         "name": "游侠埃尔温",
         "title": "林地守望者",
         "greeting": "安静些，{className}，林地今日很宁静，我也想让它一直如此。"
+      },
+      "brother_aldric_raid": {
+        "name": "奥德里克修士",
+        "title": "山谷牧师",
+        "greeting": "从礼拜堂墓地到世界屋脊... 线索到这里结束。我感觉山正在聆听。"
       },
       "tidewatcher_ondrel": {
         "name": "翁德雷尔·凡恩",
@@ -4652,6 +4809,16 @@ export const zh_CN: EnTranslations = {
           }
         }
       },
+      "q_nythraxis_scourges_end": {
+        "title": "天灾终结",
+        "text": "印戒已经打开道路，{playerName}，但敞开的陵墓还不是胜利。尼思拉克西斯曾是国王，而索恩峰地下的废墟仍受他的意志束缚。带上值得信任的盟友进入墓穴。在那不死王冠的命令传到上方战场之前，将它击碎。",
+        "completion": "王冠终于沉默了。索恩峰仍会背负它的亡者，但山下再没有国王能召他们重返战争。你完成了奥德伦、马尔里克和沃斯只能暂时封住的事。",
+        "objectives": {
+          "0": {
+            "label": "击败尼思拉克西斯"
+          }
+        }
+      },
       "q_brightwood_thinning": {
         "title": "削减林地之患",
         "text": "明木林地泛滥成灾了，{playerName}。棘丛猞猁繁殖的速度比我清剿的还快，鹿群又把所剩无几的草场践踏殆尽。击杀8只棘丛猞猁，并带回6张林间兽皮，好让我判断其余兽群的健康状况。",
@@ -4986,6 +5153,11 @@ export const zh_CN: EnTranslations = {
         "name": "废弃墓穴",
         "enterText": "你走下荆峰被遗忘废墟之下的废弃墓穴。",
         "leaveText": "你爬出废弃墓穴，回到荆峰的山风之中。"
+      },
+      "nythraxis_boss_arena": {
+        "name": "尼瑟拉克斯团队竞技场",
+        "enterText": "你穿过封印的王室之门。",
+        "leaveText": "你回到荆峰的寒冷空气中。"
       },
       "drowned_temple": {
         "name": "溺亡神殿",

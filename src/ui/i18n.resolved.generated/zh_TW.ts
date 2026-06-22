@@ -230,7 +230,9 @@ export const zh_TW: EnTranslations = {
       "clickMoveRight": "右鍵",
       "footstepSounds": "腳步聲",
       "showWalletOnCharacterScreen": "在角色畫面顯示錢包",
-      "showWalletOnPlayerCard": "在玩家卡片顯示錢包"
+      "showWalletOnPlayerCard": "在玩家卡片顯示錢包",
+      "uiScale": "介面縮放",
+      "highContrastBackground": "高對比度背景"
     },
     "controller": {
       "title": "手把",
@@ -315,6 +317,44 @@ export const zh_TW: EnTranslations = {
     "playerCard": {
       "showWalletBadge": "顯示錢包徽章"
     },
+    "landing": {
+      "highContrast": "高對比度",
+      "highContrastAria": "切換高對比度背景：關閉動態預告片，使開始畫面文字保持清晰"
+    },
+    "statInfo": {
+      "fromYour": "來自你的 {value} 點{stat}：",
+      "desc": {
+        "str": "提升你的攻擊強度，使你的武器攻擊更具威力。",
+        "agi": "磨練你的反應與準度，提升多項戰鬥屬性。",
+        "sta": "強化你的體魄，提高你的最大生命值，並加快你休息時的生命值恢復速度。",
+        "int": "擴大施法者的法力池，並提升其造成法術暴擊的機率。",
+        "spi": "加快施法者在脫離戰鬥休息時的法力恢復速度。",
+        "armor": "減緩受到的物理打擊。對等級較低的攻擊者減免效果更佳，上限為 75%。",
+        "attackPower": "強化你的武器攻擊。每 14 點攻擊強度可增加 1 點每秒傷害。",
+        "dps": "你的預估武器每秒傷害，由武器的傷害與速度結合你的攻擊強度計算而來。",
+        "critChance": "你的攻擊造成暴擊並施加雙倍傷害的機率。",
+        "dodge": "你完全閃躲受到的近戰攻擊、不受任何傷害的機率。"
+      },
+      "effects": {
+        "attackPower": "+{value} 攻擊強度",
+        "rangedAttackPower": "+{value} 遠程攻擊強度",
+        "critPct": "+{value}% 暴擊",
+        "dodgePct": "+{value}% 閃躲",
+        "armor": "+{value} 護甲",
+        "maxHealth": "+{value} 最大生命值",
+        "maxMana": "+{value} 最大法力值",
+        "spellCritPct": "+{value}% 法術暴擊",
+        "healthRegen": "休息時每 5 秒約恢復 {value} 點生命值",
+        "manaRegen": "休息時每 5 秒約恢復 {value} 點法力",
+        "damageReduction": "對等級 {level} 攻擊者的傷害減免：{value}%",
+        "dpsFromAp": "為你的攻擊增加 {value} 點每秒傷害"
+      },
+      "notes": {
+        "minorForClass": "對你的職業助益甚微。",
+        "baseChance": "包含所有冒險者共享的 5% 基礎機率。",
+        "dpsApprox": "此為估計值，不計入暴擊與技能傷害。"
+      }
+    },
     "talents": {
       "defaultBuildName": "配置 {n}"
     },
@@ -346,6 +386,53 @@ export const zh_TW: EnTranslations = {
         "many": "查詢：{realm} 上有 {count} 名玩家在線上。",
         "other": "查詢：{realm} 上有 {count} 名玩家在線上。"
       }
+    },
+    "paperdoll": {
+      "unequipAria": "卸下 {item}",
+      "unequipHint": "點擊 ×、右鍵點擊或拖曳至背包以卸下"
+    },
+    "account": {
+      "title": "帳號",
+      "loggedOutPrompt": "登入以管理您的帳號。",
+      "memberSince": "註冊於 {date}",
+      "sectionSettings": "帳號設定",
+      "sectionWallet": "$WOC 錢包",
+      "sectionCharacters": "角色",
+      "sectionDanger": "危險區域",
+      "changePassword": "變更密碼",
+      "currentPassword": "目前密碼",
+      "newPassword": "新密碼",
+      "confirmNewPassword": "確認新密碼",
+      "savePassword": "更新密碼",
+      "passwordChanged": "密碼已更新。其他裝置已登出。",
+      "errCurrentRequired": "請輸入目前密碼。",
+      "errPasswordShort": "新密碼至少需要 6 個字元。",
+      "errPasswordLong": "新密碼最多只能包含 128 個字元。",
+      "errPasswordUnchanged": "新密碼必須與目前密碼不同。",
+      "errPasswordConfirm": "兩次輸入的新密碼不一致。",
+      "emailLabel": "電子郵件（選填）",
+      "emailHint": "僅用於帳號復原。我們絕不寄送行銷郵件。",
+      "saveEmail": "儲存電子郵件",
+      "emailSaved": "電子郵件已儲存。",
+      "errEmailInvalid": "請輸入有效的電子郵件地址。",
+      "errCurrentPassword": "目前密碼不正確。",
+      "errUsernameMatch": "該使用者名稱與您的帳號不符。",
+      "errPasswordIncorrect": "密碼不正確。",
+      "errCharactersOnline": "請先登出所有角色再進行停用。",
+      "deactivatedLocked": "此帳號已停用。請聯絡管理員以還原。",
+      "charactersSummary": "管理您的角色並進入遊戲世界。",
+      "charactersCount": "角色：{count}",
+      "goToCharacters": "查看角色",
+      "walletSummary": "驗證 Solana 錢包以在玩家卡片上顯示持有者標誌。",
+      "manageWallet": "管理錢包",
+      "deactivate": "停用帳號",
+      "deactivateWarning": "停用將鎖定您的帳號並在所有裝置上登出。請聯絡管理員以還原。請重新輸入使用者名稱和密碼以確認。",
+      "confirmUsername": "輸入您的使用者名稱以確認",
+      "confirmPassword": "密碼",
+      "deactivateConfirm": "停用我的帳號",
+      "deactivated": "您的帳號已停用。",
+      "logOut": "登出",
+      "logOutSummary": "登出目前的裝置。"
     }
   },
   "skinEvent": {
@@ -390,6 +477,8 @@ export const zh_TW: EnTranslations = {
     "news": "最新消息",
     "download": "下載客戶端",
     "loginRegister": "登入/註冊",
+    "account": "帳號",
+    "logout": "登出",
     "donate": "捐贈"
   },
   "stats": {
@@ -1284,6 +1373,7 @@ export const zh_TW: EnTranslations = {
         "unignoreChat": "取消封鎖聊天",
         "report": "檢舉玩家",
         "removeParty": "移出隊伍",
+        "convertToRaid": "轉換為團隊",
         "cancel": "取消"
       }
     },
@@ -1449,6 +1539,25 @@ export const zh_TW: EnTranslations = {
       "friendOnline": "{name} 上線了。",
       "friendOffline": "{name} 下線了。"
     },
+    "tutorial": {
+      "title": "新冒險者",
+      "stepLabel": "第 {current} 步，共 {total} 步",
+      "skip": "跳過教學",
+      "dismiss": "關閉",
+      "doneTitle": "準備好冒險了",
+      "doneBody": "你已掌握基礎，{name}。東溪谷任你探索。隨時按 {questKey} 查看任務。祝你狩獵順利。",
+      "moveTitle": "邁出第一步",
+      "moveBody": "使用 {moveKeys} 移動，用滑鼠環顧四周。先走幾步開始吧。",
+      "seekTitle": "尋找元帥",
+      "seekBody": "雷德布魯克元帥在鎮上等候，他有任務交給新人。跟隨指引前往找他。",
+      "talkTitle": "接受任務",
+      "talkBody": "靠近雷德布魯克元帥並按 {interactKey} 與他交談，然後接受他的任務。",
+      "slayTitle": "狼群來襲",
+      "slayBody": "前往北路獵殺森林狼。選定一隻並發動攻擊，削減狼群數量。",
+      "slayProgress": "已擊殺森林狼：{current} / {needed}",
+      "returnTitle": "領取獎勵",
+      "returnBody": "任務已完成。返回雷德布魯克元帥處並按 {interactKey} 繳交任務。"
+    },
     "markers": {
       "names": {
         "star": "星形",
@@ -1502,6 +1611,12 @@ export const zh_TW: EnTranslations = {
       "guildTab": "公會",
       "ignoreTab": "忽略",
       "leaveParty": "離開隊伍",
+      "raidTab": "團隊",
+      "raidEmpty": "將隊伍轉換為團隊後，可在這裡管理團隊分組。",
+      "raidGroupEmpty": "此小隊沒有玩家。",
+      "raidGroupTitle": "小隊 {position} ({count}/5)",
+      "raidMoveToGroup": "移動到小隊 {position}",
+      "raidLeader": "團隊領袖",
       "offlineEmpty": "好友、公會和忽略名單僅在線上遊戲中可用。",
       "friendsEmpty": "還沒有好友。請在下方按名稱搜尋。",
       "ignoreEmpty": "你的忽略名單是空的。",
@@ -1739,7 +1854,8 @@ export const zh_TW: EnTranslations = {
       "common": "普通",
       "uncommon": "優秀",
       "rare": "精良",
-      "epic": "史詩"
+      "epic": "史詩",
+      "legendary": "傳說"
     },
     "kind": {
       "weapon": "武器",
@@ -3446,6 +3562,36 @@ export const zh_TW: EnTranslations = {
       "event_skin_token": {
         "name": "神秘外觀寶箱"
       },
+      "deathless_heartwood": {
+        "name": "不朽王冠之心木"
+      },
+      "kingsbane_last_oath": {
+        "name": "弒王者，Thornpeak 最後的誓言"
+      },
+      "crownforged_dreadhelm": {
+        "name": "鑄冠恐懼頭盔"
+      },
+      "crownforged_warspaulders": {
+        "name": "鑄冠戰肩甲"
+      },
+      "nighttalon_crown": {
+        "name": "夜爪之冠"
+      },
+      "nighttalon_shoulderguards": {
+        "name": "夜爪護肩"
+      },
+      "soulflame_cowl": {
+        "name": "魂焰兜帽"
+      },
+      "soulflame_mantle": {
+        "name": "魂焰披肩"
+      },
+      "stormcallers_crown": {
+        "name": "喚雷者之冠"
+      },
+      "stormcallers_spaulders": {
+        "name": "喚雷者肩甲"
+      },
       "unknown_alien_weaponry": {
         "name": "未知異星武器"
       },
@@ -3660,6 +3806,12 @@ export const zh_TW: EnTranslations = {
       },
       "bound_guardian": {
         "name": "受縛守衛者"
+      },
+      "nythraxis_skeleton_warrior": {
+        "name": "復甦王室衛兵"
+      },
+      "nythraxis_scourge_of_thornpeak": {
+        "name": "尼瑟拉克斯，荊峰之災"
       },
       "brightwood_hare": {
         "name": "明木野兔"
@@ -3912,6 +4064,11 @@ export const zh_TW: EnTranslations = {
         "name": "巡林員艾爾溫",
         "title": "林地守護",
         "greeting": "安靜點，{className}，今天林地很平靜，我打算讓它一直這樣。"
+      },
+      "brother_aldric_raid": {
+        "name": "奧德里克修士",
+        "title": "山谷牧師",
+        "greeting": "從禮拜堂墓地到世界屋脊... 線索到這裡結束。我感覺山正在聆聽。"
       },
       "tidewatcher_ondrel": {
         "name": "翁德瑞爾·韋恩",
@@ -4652,6 +4809,16 @@ export const zh_TW: EnTranslations = {
           }
         }
       },
+      "q_nythraxis_scourges_end": {
+        "title": "天譴終結",
+        "text": "印戒已經打開道路，{playerName}，但敞開的陵墓還不是勝利。尼思拉克西斯曾是國王，而索恩峰地下的廢墟仍受他的意志束縛。帶上值得信任的盟友進入墓穴。在那不死王冠的命令傳到上方戰場之前，將它擊碎。",
+        "completion": "王冠終於沉默了。索恩峰仍會背負它的亡者，但山下再沒有國王能召他們重返戰爭。你完成了奧德倫、馬爾里克和沃斯只能暫時封住的事。",
+        "objectives": {
+          "0": {
+            "label": "擊敗尼思拉克西斯"
+          }
+        }
+      },
       "q_brightwood_thinning": {
         "title": "疏減林地",
         "text": "明木林地已經氾濫成災了，{playerName}。棘叢猞猁繁衍的速度比我能撲滅牠們的還快，獸群又踐踏了所剩無幾的牧草。擊殺8隻棘叢猞猁，並帶6張林間獸皮回來，好讓我判斷其餘獸群的健康狀況。",
@@ -4985,6 +5152,11 @@ export const zh_TW: EnTranslations = {
       "nythraxis_crypt": {
         "name": "廢棄墓穴",
         "enterText": "你跨過廢棄墓穴的門檻。",
+        "leaveText": "你回到荊峰的寒冷空氣中。"
+      },
+      "nythraxis_boss_arena": {
+        "name": "尼瑟拉克斯團隊競技場",
+        "enterText": "你穿過封印的王室之門。",
         "leaveText": "你回到荊峰的寒冷空氣中。"
       },
       "drowned_temple": {

@@ -31,6 +31,7 @@ const itemStringsEn = {
       uncommon: "Uncommon",
       rare: "Rare",
       epic: "Epic",
+      legendary: "Legendary",
     },
     kind: {
       weapon: "Weapon",
@@ -196,7 +197,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "o", silverShort: "p", copperShort: "c", gold: "oro", silver: "plata", copper: "cobre" },
       slots: { mainhand: "Mano principal", helmet: "Cabeza", shoulder: "Hombros", chest: "Pecho", waist: "Cintura", legs: "Piernas", gloves: "Manos", feet: "Pies" },
-      quality: { poor: "Pobre", common: "Común", uncommon: "Poco común", rare: "Raro", epic: "Épico" },
+      quality: { poor: "Pobre", common: "Común", uncommon: "Poco común", rare: "Raro", epic: "Épico", legendary: "Legendario" },
       kind: { weapon: "Arma", armor: "Armadura", quest: "Objeto de misión", junk: "Chatarra", food: "Comida", drink: "Bebida" },
       stats: { armor: "Armadura", str: "Fuerza", agi: "Agilidad", sta: "Aguante", int: "Intelecto", spi: "Espíritu", attackPower: "Poder de ataque", dps: "Daño/seg", critChance: "Prob. de crítico", dodge: "Esquiva" },
       tooltip: {
@@ -220,7 +221,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "po", silverShort: "pa", copperShort: "pc", gold: "or", silver: "argent", copper: "cuivre" },
       slots: { mainhand: "Main droite", helmet: "Tête", shoulder: "Épaules", chest: "Torse", waist: "Taille", legs: "Jambes", gloves: "Mains", feet: "Pieds" },
-      quality: { poor: "Médiocre", common: "Commun", uncommon: "Inhabituel", rare: "Rare", epic: "Épique" },
+      quality: { poor: "Médiocre", common: "Commun", uncommon: "Inhabituel", rare: "Rare", epic: "Épique", legendary: "Légendaire" },
       kind: { weapon: "Arme", armor: "Armure", quest: "Objet de quête", junk: "Camelote", food: "Nourriture", drink: "Boisson" },
       stats: { armor: "Armure", str: "Force", agi: "Agilité", sta: "Endurance", int: "Intelligence", spi: "Esprit", attackPower: "Puissance d'attaque", dps: "Dégâts/s", critChance: "Chances de critique", dodge: "Esquive" },
       tooltip: {
@@ -245,7 +246,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "o", silverShort: "a", copperShort: "r", gold: "oro", silver: "argento", copper: "rame" },
       slots: { mainhand: "Mano principale", helmet: "Testa", shoulder: "Spalle", chest: "Torace", waist: "Vita", legs: "Gambe", gloves: "Mani", feet: "Piedi" },
-      quality: { poor: "Scadente", common: "Comune", uncommon: "Non comune", rare: "Raro", epic: "Epico" },
+      quality: { poor: "Scadente", common: "Comune", uncommon: "Non comune", rare: "Raro", epic: "Epico", legendary: "Leggendario" },
       kind: { weapon: "Arma", armor: "Armatura", quest: "Oggetto missione", junk: "Cianfrusaglia", food: "Cibo", drink: "Bevanda" },
       stats: { armor: "Armatura", str: "Forza", agi: "Agilità", sta: "Tempra", int: "Intelletto", spi: "Spirito", attackPower: "Potenza d'attacco", dps: "Danni/sec", critChance: "Prob. critico", dodge: "Schivata" },
       tooltip: {
@@ -268,7 +269,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "G", silverShort: "S", copperShort: "K", gold: "Gold", silver: "Silber", copper: "Kupfer" },
       slots: { mainhand: "Waffenhand", helmet: "Kopf", shoulder: "Schultern", chest: "Brust", waist: "Taille", legs: "Beine", gloves: "Hände", feet: "Füße" },
-      quality: { poor: "Schlecht", common: "Gewöhnlich", uncommon: "Ungewöhnlich", rare: "Selten", epic: "Episch" },
+      quality: { poor: "Schlecht", common: "Gewöhnlich", uncommon: "Ungewöhnlich", rare: "Selten", epic: "Episch", legendary: "Legendär" },
       kind: { weapon: "Waffe", armor: "Rüstung", quest: "Questgegenstand", junk: "Plunder", food: "Essen", drink: "Getränk" },
       stats: { armor: "Rüstung", str: "Stärke", agi: "Beweglichkeit", sta: "Ausdauer", int: "Intelligenz", spi: "Willenskraft", attackPower: "Angriffskraft", dps: "Schaden/Sek.", critChance: "Krit. Chance", dodge: "Ausweichen" },
       tooltip: {
@@ -291,7 +292,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "金", silverShort: "银", copperShort: "铜", gold: "金币", silver: "银币", copper: "铜币" },
       slots: { mainhand: "主手", helmet: "头部", shoulder: "肩部", chest: "胸部", waist: "腰部", legs: "腿部", gloves: "手部", feet: "脚部" },
-      quality: { poor: "粗糙", common: "普通", uncommon: "优秀", rare: "精良", epic: "史诗" },
+      quality: { poor: "粗糙", common: "普通", uncommon: "优秀", rare: "精良", epic: "史诗", legendary: "传说" },
       kind: { weapon: "武器", armor: "护甲", quest: "任务物品", junk: "杂物", food: "食物", drink: "饮料" },
       stats: { armor: "护甲", str: "力量", agi: "敏捷", sta: "耐力", int: "智力", spi: "精神", attackPower: "攻击强度", dps: "每秒伤害", critChance: "暴击几率", dodge: "躲闪" },
       tooltip: {
@@ -314,9 +315,9 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "金", silverShort: "銀", copperShort: "銅", gold: "金幣", silver: "銀幣", copper: "銅幣" },
       slots: { mainhand: "主手", helmet: "頭部", shoulder: "肩部", chest: "胸部", waist: "腰部", legs: "腿部", gloves: "手部", feet: "腳部" },
-      quality: { poor: "粗糙", common: "普通", uncommon: "優秀", rare: "精良", epic: "史詩" },
+      quality: { poor: "粗糙", common: "普通", uncommon: "優秀", rare: "精良", epic: "史詩", legendary: "傳說" },
       kind: { weapon: "武器", armor: "護甲", quest: "任務物品", junk: "雜物", food: "食物", drink: "飲料" },
-      stats: { armor: "護甲", str: "力量", agi: "敏捷", sta: "耐力", int: "智力", spi: "精神", attackPower: "攻擊強度", dps: "每秒傷害", critChance: "爆擊機率", dodge: "閃躲" },
+      stats: { armor: "護甲", str: "力量", agi: "敏捷", sta: "耐力", int: "智力", spi: "精神", attackPower: "攻擊強度", dps: "每秒傷害", critChance: "暴擊機率", dodge: "閃躲" },
       tooltip: {
         qualityKind: "{quality}{kind}", currentlyEquipped: "目前裝備", ifYouEquip: "裝備後", damageSpeed: "{min} - {max} 傷害  速度 {speed}", dps: "（每秒 {dps} 傷害）", dagger: "匕首", armorStat: "{value} 護甲", stat: "+{value} {stat}",
         useFood: "使用：在 {seconds} 秒內恢復 {amount} 點生命值。進食時必須保持坐下。", useDrink: "使用：在 {seconds} 秒內恢復 {amount} 點法力值。飲水時必須保持坐下。", questItem: "任務物品", classes: "職業：{classes}", sellPrice: "出售價格：{money}",
@@ -337,7 +338,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "금", silverShort: "은", copperShort: "동", gold: "금화", silver: "은화", copper: "동화" },
       slots: { mainhand: "주장비", helmet: "머리", shoulder: "어깨", chest: "가슴", waist: "허리", legs: "다리", gloves: "손", feet: "발" },
-      quality: { poor: "하급", common: "일반", uncommon: "고급", rare: "희귀", epic: "영웅" },
+      quality: { poor: "하급", common: "일반", uncommon: "고급", rare: "희귀", epic: "영웅", legendary: "전설" },
       kind: { weapon: "무기", armor: "방어구", quest: "퀘스트 아이템", junk: "잡동사니", food: "음식", drink: "음료" },
       stats: { armor: "방어도", str: "힘", agi: "민첩성", sta: "체력", int: "지능", spi: "정신력", attackPower: "전투력", dps: "초당 피해", critChance: "치명타율", dodge: "회피" },
       tooltip: {
@@ -360,7 +361,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "金", silverShort: "銀", copperShort: "銅", gold: "金貨", silver: "銀貨", copper: "銅貨" },
       slots: { mainhand: "メインハンド", helmet: "頭", shoulder: "肩", chest: "胸", waist: "腰", legs: "脚", gloves: "手", feet: "足" },
-      quality: { poor: "粗悪", common: "一般", uncommon: "良質", rare: "レア", epic: "エピック" },
+      quality: { poor: "粗悪", common: "一般", uncommon: "良質", rare: "レア", epic: "エピック", legendary: "レジェンダリー" },
       kind: { weapon: "武器", armor: "防具", quest: "クエストアイテム", junk: "雑貨", food: "食べ物", drink: "飲み物" },
       stats: { armor: "防御力", str: "筋力", agi: "敏捷性", sta: "スタミナ", int: "知力", spi: "精神力", attackPower: "攻撃力", dps: "秒間ダメージ", critChance: "クリティカル率", dodge: "回避" },
       tooltip: {
@@ -383,7 +384,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "o", silverShort: "p", copperShort: "c", gold: "ouro", silver: "prata", copper: "cobre" },
       slots: { mainhand: "Mão principal", helmet: "Cabeça", shoulder: "Ombros", chest: "Peito", waist: "Cintura", legs: "Pernas", gloves: "Mãos", feet: "Pés" },
-      quality: { poor: "Ruim", common: "Comum", uncommon: "Incomum", rare: "Raro", epic: "Épico" },
+      quality: { poor: "Ruim", common: "Comum", uncommon: "Incomum", rare: "Raro", epic: "Épico", legendary: "Lendário" },
       kind: { weapon: "Arma", armor: "Armadura", quest: "Item de missão", junk: "Sucata", food: "Comida", drink: "Bebida" },
       stats: { armor: "Armadura", str: "Força", agi: "Agilidade", sta: "Vigor", int: "Intelecto", spi: "Espírito", attackPower: "Poder de ataque", dps: "Dano/s", critChance: "Chance crítica", dodge: "Esquiva" },
       tooltip: {
@@ -406,7 +407,7 @@ export const itemStrings = {
     itemUi: {
       money: { goldShort: "з", silverShort: "с", copperShort: "м", gold: "золото", silver: "серебро", copper: "медь" },
       slots: { mainhand: "Правая рука", helmet: "Голова", shoulder: "Плечи", chest: "Грудь", waist: "Пояс", legs: "Ноги", gloves: "Кисти рук", feet: "Ступни" },
-      quality: { poor: "Низкое", common: "Обычное", uncommon: "Необычное", rare: "Редкое", epic: "Эпическое" },
+      quality: { poor: "Низкое", common: "Обычное", uncommon: "Необычное", rare: "Редкое", epic: "Эпическое", legendary: "Легендарное" },
       kind: { weapon: "Оружие", armor: "Броня", quest: "Задание", junk: "Хлам", food: "Еда", drink: "Напиток" },
       stats: { armor: "Броня", str: "Сила", agi: "Ловкость", sta: "Выносливость", int: "Интеллект", spi: "Дух", attackPower: "Сила атаки", dps: "Урон/сек", critChance: "Шанс крита", dodge: "Уклонение" },
       tooltip: {

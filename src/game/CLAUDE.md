@@ -35,8 +35,10 @@ command calls**. Everything here is DOM/WebAudio-only and runs in `main.ts`.
 - **`AudioContext` needs a user gesture** — `audio.init()`/`music.init()`/`sfx.init()`
   are called from `enterWorld` in `main.ts`, not at module load. `setVolume` is safe
   before init. (`voice.ts` uses a plain `Audio` element, so it has no gated init.)
-- **Each module owns its `localStorage` key:** keybinds `woc_keybinds`, settings
-  `woc_settings`, music on/off `ev_music_on`. All reads are try/catch-guarded
+- **Each module owns its `localStorage` key:** keybinds `woc_keybinds` (namespaced
+  per character: `woc_keybinds:char:<id>` online, `woc_keybinds:offline:<class>:<name>`
+  offline, with the bare key kept as a read-only legacy seed for fresh characters),
+  settings `woc_settings`, music on/off `ev_music_on`. All reads are try/catch-guarded
   (private mode / corrupt JSON fall back to defaults).
 - **Keybinds:** `Escape` is reserved (`isReservedCode`) and never bindable — it
   always toggles the game menu. A code lives on at most one action (rebinding

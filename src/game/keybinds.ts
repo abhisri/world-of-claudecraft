@@ -4,8 +4,9 @@
 // action (primary + secondary, e.g. W and ArrowUp both Move Forward). Input
 // dispatches edge actions and polls held (movement) actions through this map;
 // the HUD renders the rebind menu and action-bar keycaps from it. Bindings
-// persist globally in localStorage. Pure (no DOM) so the conflict/persistence
-// logic is unit-testable.
+// persist per character in localStorage (a fresh character seeds once from the
+// legacy account-wide blob; see KEY_PREFIX below). Pure (no DOM) so the
+// conflict/persistence logic is unit-testable.
 //
 // Escape is deliberately NOT a bindable action: it always opens/closes the
 // game menu, so it stays out of the registry and is refused by bind().
@@ -75,7 +76,12 @@ export const BIND_ACTIONS: BindAction[] = [
 
 const ACTION_BY_ID = new Map(BIND_ACTIONS.map((a) => [a.id, a]));
 export const BIND_CATEGORIES = [...new Set(BIND_ACTIONS.map((a) => a.category))];
-const STORE_KEY = 'woc_keybinds';
+// Bindings persist per character. The legacy account-wide blob lives under the
+// bare prefix; a per-character profile lives under `${KEY_PREFIX}:${scope}` (the
+// online characterId, or `offline:<class>:<name>` offline). A fresh character
+// with no stored profile seeds from the legacy blob once, then diverges on its
+// first rebind. The legacy blob is read-only here and never overwritten.
+const KEY_PREFIX = 'woc_keybinds';
 const SLOTS_PER_ACTION = 2; // primary + secondary
 
 export function actionKind(id: string): BindKind | null {
@@ -111,11 +117,25 @@ export function keyLabel(code: string | null): string {
   return named[code] ?? code;
 }
 
+// Read a stored bindings blob, returning a plain object map or null. A missing,
+// corrupt (unparseable), or non-object value (including a JSON array) counts as
+// "no profile"; the caller then falls back to the legacy seed or to defaults.
+function readBindingsBlob(key: string): Record<string, unknown> | null {
+  let parsed: unknown = null;
+  try { parsed = JSON.parse(localStorage.getItem(key) ?? 'null'); } catch { /* corrupt */ }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+  return parsed as Record<string, unknown>;
+}
+
 export class Keybinds {
   // actionId -> [primary, secondary] codes (either may be null)
   private map = new Map<string, (string | null)[]>();
+  // localStorage key this profile reads/writes. A non-empty scope namespaces it
+  // per character; an empty scope keeps the bare legacy/global key.
+  private readonly storeKey: string;
 
-  constructor() {
+  constructor(scope = '') {
+    this.storeKey = scope ? `${KEY_PREFIX}:${scope}` : KEY_PREFIX;
     this.load();
   }
 
@@ -129,10 +149,15 @@ export class Keybinds {
 
   private load(): void {
     this.map = this.defaults();
-    let stored: unknown = null;
-    try { stored = JSON.parse(localStorage.getItem(STORE_KEY) ?? 'null'); } catch { /* corrupt */ }
-    if (!stored || typeof stored !== 'object') return;
-    const obj = stored as Record<string, unknown>;
+    // This character's own profile, or the legacy account-wide blob as a
+    // one-time seed when it has none yet, so existing players keep their layout.
+    // Saving writes the scoped key, so the character diverges from here on. A
+    // missing, corrupt, or malformed scoped value counts as "no profile" and
+    // still seeds rather than dropping to bare defaults; the legacy blob is only
+    // ever read here, never overwritten.
+    let obj = readBindingsBlob(this.storeKey);
+    if (!obj && this.storeKey !== KEY_PREFIX) obj = readBindingsBlob(KEY_PREFIX);
+    if (!obj) return;
     // Apply stored codes over the defaults, but only for known actions and
     // never letting one code land on two actions (first writer keeps it).
     // Actions absent from the stored blob (e.g. ones added in a later release
@@ -174,7 +199,7 @@ export class Keybinds {
   private save(): void {
     const obj: Record<string, (string | null)[]> = {};
     for (const [id, codes] of this.map) obj[id] = codes;
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); } catch { /* storage unavailable */ }
+    try { localStorage.setItem(this.storeKey, JSON.stringify(obj)); } catch { /* storage unavailable */ }
   }
 
   /** The action a keypress should trigger, or null if the code is unbound. */

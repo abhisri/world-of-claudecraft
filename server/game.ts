@@ -1,7 +1,7 @@
 import type { WebSocket } from 'ws';
 import { Sim } from '../src/sim/sim';
 import type { PlayerMeta } from '../src/sim/sim';
-import { DT, Entity, SimEvent, dist2d, emptyMoveInput } from '../src/sim/types';
+import { DT, Entity, EQUIP_SLOTS, EquipSlot, SimEvent, dist2d, emptyMoveInput } from '../src/sim/types';
 import { parseMoveInputFrame } from '../src/sim/move_input';
 import { stealthDetectionRadius, threatEntries } from '../src/sim/threat';
 import { zoneAt, DUNGEONS } from '../src/sim/data';
@@ -377,6 +377,7 @@ export class GameServer {
       playerClass: 'warrior',
       noPlayer: true,
       devCommands: process.env.ALLOW_DEV_COMMANDS === '1',
+      lockoutNowMs: () => Date.now(),
     });
     this.social = new SocialService(this.socialDb, this.socialTransport());
   }
@@ -1187,6 +1188,11 @@ export class GameServer {
         break;
       case 'abandon': if (typeof msg.quest === 'string') { sim.abandonQuest(msg.quest, pid); this.resyncQuests(session); } break;
       case 'equip': if (typeof msg.item === 'string') sim.equipItem(msg.item, pid); break;
+      case 'unequip_item':
+        if (typeof msg.slot === 'string' && (EQUIP_SLOTS as readonly string[]).includes(msg.slot)) {
+          sim.unequipItem(msg.slot as EquipSlot, pid);
+        }
+        break;
       case 'use':
         if (typeof msg.item === 'string') {
           const result = sim.useItem(msg.item, pid);
@@ -1289,6 +1295,8 @@ export class GameServer {
       case 'pdecline': sim.partyDecline(pid); break;
       case 'pleave': sim.partyLeave(pid); break;
       case 'pkick': if (typeof msg.id === 'number') sim.partyKick(msg.id, pid); break;
+      case 'praid': sim.convertPartyToRaid(pid); break;
+      case 'pmoveRaid': if (typeof msg.id === 'number' && (msg.group === 1 || msg.group === 2)) sim.moveRaidMember(msg.id, msg.group, pid); break;
       // raid/target markers
       case 'setMarker': if (typeof msg.id === 'number' && typeof msg.marker === 'number') sim.setMarker(msg.id, msg.marker, pid); break;
       case 'clearMarker': if (typeof msg.id === 'number') sim.clearMarker(msg.id, pid); break;

@@ -8,7 +8,7 @@ import type { OverheadEmoteId } from '../../world_api';
 import { GFX } from '../gfx';
 import type { EmoteClipSpec, VisualDef } from './manifest';
 import {
-  applyMaterials, assembleModel, prepareVisual, skinTexture, skinEmissiveTexture, tintedFarMaterials,
+  applyMaterials, assembleModel, ensureSkinTexture, prepareVisual, skinTexture, skinEmissiveTexture, tintedFarMaterials,
 } from './assets';
 import { desiredBaseState, locomotionTimeScale, type AnimState, type BaseState } from './anim_state';
 
@@ -24,6 +24,8 @@ const SWIM_PITCH_PROCEDURAL = 1.18;
 const SWIM_RISE = 0.95; // body must break the surface or only the hat floats
 const MIXER_DT_CAP = 0.3; // throttled entities never integrate a huge step
 const GHOST_OPACITY = 0.34;
+const SOUL_REND_OPACITY = 0.58;
+const SOUL_REND_TINT = new THREE.Color(0x4f0505);
 
 // shared invisible click capsule — raycaster ignores `visible`, render doesn't
 let clickGeoSingleton: THREE.CylinderGeometry | null = null;
@@ -60,6 +62,7 @@ export class CharacterVisual {
   private key: string;
   private entityColor: number;
   private skinIndex: number;
+  private disposed = false;
   private ghosted = false;
   private mixer: THREE.AnimationMixer;
   private actions = new Map<string, THREE.AnimationAction>();
@@ -72,6 +75,7 @@ export class CharacterVisual {
   private casters: THREE.Mesh[] = [];
   private originalMaterials = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
   private ghostMaterials = new Map<THREE.Material, THREE.Material>();
+  private soulRendMaterials = new Map<THREE.Material, THREE.Material>();
 
   private baseState: BaseState = 'idle';
   private current: THREE.AnimationAction | null = null;
@@ -87,6 +91,7 @@ export class CharacterVisual {
 
   private shadowOn = true;
   private far = false;
+  private soulRend = false;
   private bobPhase = Math.random() * Math.PI * 2;
 
   constructor(key: string, entityColor: number, skinIndex = 0) {
@@ -335,11 +340,21 @@ export class CharacterVisual {
 
   setGhost(on: boolean): void {
     this.ghosted = on;
+    this.applyVisualMaterials();
+  }
+
+  setSoulRend(on: boolean): void {
+    if (on === this.soulRend) return;
+    this.soulRend = on;
+    this.applyVisualMaterials();
+  }
+
+  private applyVisualMaterials(): void {
     for (const [mesh, original] of this.originalMaterials) {
-      mesh.material = on ? this.toGhostMaterial(original) : original;
+      mesh.material = this.effectMaterial(original);
     }
     if (this.farMesh && this.farMaterials) {
-      this.farMesh.material = on ? this.toGhostMaterial(this.farMaterials) : this.farMaterials;
+      this.farMesh.material = this.effectMaterial(this.farMaterials);
     }
   }
 
@@ -348,6 +363,24 @@ export class CharacterVisual {
   setSkin(skinIndex: number): void {
     if (skinIndex === this.skinIndex) return;
     this.skinIndex = skinIndex;
+    this.applySkinMaterials(skinIndex);
+    // If the alternate atlas for this skin has not finished loading yet,
+    // skinTexture() returned null and the body is showing the embedded default.
+    // Load it on demand and re-apply once it arrives — but only if this is still
+    // the requested skin (a newer setSkin must win). Without this, a freshly
+    // selected skin stayed on the default until a relog warmed the atlas cache.
+    const pending = ensureSkinTexture(this.key, skinIndex);
+    if (pending) {
+      void pending.then(() => {
+        // Bail if the model was disposed while the atlas was loading — applying
+        // materials to a torn-down model is wasted work (and re-snapshots a stale
+        // material map). Also guard that this is still the requested skin.
+        if (!this.disposed && this.skinIndex === skinIndex) this.applySkinMaterials(skinIndex);
+      }).catch((err) => console.error('failed to load skin atlas:', err));
+    }
+  }
+
+  private applySkinMaterials(skinIndex: number): void {
     applyMaterials(this.model, this.def, this.entityColor, skinTexture(this.key, skinIndex), skinEmissiveTexture(this.key, skinIndex));
     // re-snapshot the material map ghost/restore relies on, then re-ghost if stealthed
     this.originalMaterials.clear();
@@ -355,10 +388,11 @@ export class CharacterVisual {
       const mesh = o as THREE.Mesh;
       if (mesh.isMesh) this.originalMaterials.set(mesh, mesh.material);
     });
-    if (this.ghosted) this.setGhost(true);
+    this.applyVisualMaterials();
   }
 
   dispose(): void {
+    this.disposed = true;
     this.mixer.stopAllAction();
     this.mixer.uncacheRoot(this.model);
     this.root.removeFromParent();
@@ -382,9 +416,15 @@ export class CharacterVisual {
     return desiredBaseState(s, !!this.def.clips.walkBack);
   }
 
-  private toGhostMaterial<T extends THREE.Material | THREE.Material[]>(material: T): T {
-    if (Array.isArray(material)) return material.map((m) => this.ghostMaterial(m)) as T;
-    return this.ghostMaterial(material) as T;
+  private effectMaterial<T extends THREE.Material | THREE.Material[]>(material: T): T {
+    if (Array.isArray(material)) return material.map((m) => this.effectSingleMaterial(m)) as T;
+    return this.effectSingleMaterial(material) as T;
+  }
+
+  private effectSingleMaterial(material: THREE.Material): THREE.Material {
+    if (this.soulRend) return this.soulRendMaterial(material);
+    if (this.ghosted) return this.ghostMaterial(material);
+    return material;
   }
 
   private ghostMaterial(material: THREE.Material): THREE.Material {
@@ -396,6 +436,23 @@ export class CharacterVisual {
     ghost.depthWrite = false;
     this.ghostMaterials.set(material, ghost);
     return ghost;
+  }
+
+  private soulRendMaterial(material: THREE.Material): THREE.Material {
+    const cached = this.soulRendMaterials.get(material);
+    if (cached) return cached;
+    const marked = material.clone();
+    marked.transparent = true;
+    marked.opacity = SOUL_REND_OPACITY;
+    marked.depthWrite = false;
+    const withColor = marked as THREE.Material & { color?: THREE.Color; emissive?: THREE.Color; emissiveIntensity?: number };
+    if (withColor.color) withColor.color.copy(SOUL_REND_TINT);
+    if (withColor.emissive) {
+      withColor.emissive.setHex(0x2a0000);
+      withColor.emissiveIntensity = Math.max(withColor.emissiveIntensity ?? 0, 0.35);
+    }
+    this.soulRendMaterials.set(material, marked);
+    return marked;
   }
 
   private action(name: string | undefined): THREE.AnimationAction | null {

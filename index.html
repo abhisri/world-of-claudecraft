@@ -278,6 +278,93 @@
     display: none;
   }
 
+  /* ---------- MMO-themed native form controls ----------
+     Global element-level theming so every slider/spinner/checkbox/textarea
+     inherits the dark-fantasy look (matches the scrollbar palette above),
+     replacing the default browser chrome. Keyed off element + type so new
+     controls are covered for free. Native <select> menus can't be themed
+     cross-browser, so those are migrated to the .ui-dd custom dropdown. */
+
+  /* Range sliders — inset groove with gold fill + a raised gem thumb. */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 18px;
+    background: transparent;
+    cursor: var(--cursor-point);
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+    border: 1px solid var(--scrollbar-border);
+    /* gold fill up to --range-fill (set per-slider in JS), dark groove beneath */
+    background:
+      linear-gradient(180deg, #ffef9e 0%, var(--gold) 100%) no-repeat,
+      linear-gradient(180deg, #15110a 0%, #0b0b10 100%);
+    background-size: var(--range-fill, 0%) 100%, 100% 100%;
+    box-shadow: inset 0 1px 2px #000a;
+  }
+  input[type="range"]::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    border: 1px solid var(--scrollbar-border);
+    background: linear-gradient(180deg, #15110a 0%, #0b0b10 100%);
+    box-shadow: inset 0 1px 2px #000a;
+  }
+  input[type="range"]::-moz-range-progress {
+    height: 6px;
+    border-radius: 3px;
+    /* gold to match the webkit fill (was the brown scrollbar palette) */
+    background: linear-gradient(180deg, #ffef9e 0%, var(--gold) 100%);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -6px; /* center the 16px thumb on the 6px track */
+    border-radius: 50%;
+    border: 1px solid #2a2008;
+    background: radial-gradient(circle at 35% 30%, #ffef9e 0%, var(--gold) 45%, #b8860b 100%);
+    box-shadow: 0 1px 3px #000b, 0 0 5px var(--color-primary-glow);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #2a2008;
+    background: radial-gradient(circle at 35% 30%, #ffef9e 0%, var(--gold) 45%, #b8860b 100%);
+    box-shadow: 0 1px 3px #000b, 0 0 5px var(--color-primary-glow);
+  }
+  input[type="range"]:hover::-webkit-slider-thumb { background: radial-gradient(circle at 35% 30%, #fff7c8 0%, #ffe14d 45%, #c79410 100%); }
+  input[type="range"]:hover::-moz-range-thumb { background: radial-gradient(circle at 35% 30%, #fff7c8 0%, #ffe14d 45%, #c79410 100%); }
+  input[type="range"]:focus-visible { outline: none; }
+  input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--color-border-focus), 0 1px 3px #000b; }
+  input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--color-border-focus), 0 1px 3px #000b; }
+
+  /* Number inputs — drop the cramped native spinner arrows (all such inputs
+     have explicit min/max validation, so the micro-steppers add nothing but
+     browser chrome and sub-40px tap targets). */
+  input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+
+  /* Checkboxes — gold accent + themed focus ring instead of OS blue. */
+  input[type="checkbox"], input[type="radio"] { accent-color: var(--gold); cursor: var(--cursor-point); }
+  input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible {
+    outline: 2px solid var(--color-border-focus); outline-offset: 2px;
+  }
+
+  /* Textareas — keep vertical resize but swap the native diagonal grip for a
+     themed gold corner that matches the chat-window resize grip. */
+  textarea { resize: vertical; }
+  textarea::-webkit-resizer {
+    background:
+      linear-gradient(135deg, transparent 0 46%, var(--scrollbar-border) 46% 54%, transparent 54% 71%, var(--scrollbar-border) 71% 79%, transparent 79%);
+    border-bottom-right-radius: 4px;
+  }
+
   [hidden] { display: none !important; }
   html, body {
     width: var(--app-vw); height: var(--app-vh); min-width: 100%; min-height: 100%;
@@ -499,7 +586,7 @@
     margin: 1px auto 0; border-radius: 2px; overflow: hidden; }
   .np-castfill { height: 100%; background: linear-gradient(#ffe27a, #d99a18); border-radius: 1px; transition: width 0.05s linear; }
   .np-castbar.channel .np-castfill { background: linear-gradient(#7ad0ff, #2f7fd6); }
-  .np-castlabel { position: absolute; inset: 0; font-size: 8px; line-height: 8px; font-weight: bold;
+  .np-castlabel { position: absolute; inset: 0; font-size: 9px; line-height: 9px; font-weight: bold;
     color: #fff; text-shadow: 1px 1px 1px #000; letter-spacing: 0.2px; }
   /* threat plate: this mob is aggroed on me — red bar + soft glow */
   .nameplate.np-threat .np-hpbar { border-color: #ff5a4a; box-shadow: 0 0 6px #ff3b2e99; }
@@ -541,6 +628,36 @@
     border-radius: 10px; padding: 4px 9px; font-size: 12px; line-height: 1.3;
     text-align: center; overflow-wrap: break-word; will-change: transform; z-index: 21; }
   .chat-bubble.yell { font-weight: bold; color: #7a1408; border-color: #c43a2a; }
+
+  /* ---------- new-adventurer tutorial ---------- */
+  .tut-card { position: absolute; left: 50%; top: 16px; transform: translateX(-50%);
+    width: 100%; max-width: 420px; box-sizing: border-box; pointer-events: auto;
+    background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 6px 24px #000a, inset 0 0 0 1px #ffffff10; padding: 14px 16px 12px;
+    color: #e8e2d0; z-index: 22; animation: tut-in 240ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .tut-card.tut-done { border-color: var(--color-friendly); }
+  .tut-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .tut-title { font-size: 16px; font-weight: 700; letter-spacing: 0.3px;
+    color: var(--gold); text-shadow: 0 1px 2px #000; }
+  .tut-card.tut-done .tut-title { color: var(--color-friendly); }
+  .tut-step { font-size: 11px; color: #b8ad8e; white-space: nowrap; }
+  .tut-body { margin-top: 7px; font-size: 13px; line-height: 1.45; color: #d8d0bc; }
+  .tut-progress { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--gold-dim); }
+  .tut-skip { margin-top: 11px; min-height: 40px; padding: 0 16px; width: 100%;
+    background: #1c1b14; color: #cfc6ab; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; cursor: pointer; transition: background 120ms, color 120ms; }
+  .tut-skip:hover { background: #2a2718; color: #f0e9d2; }
+  .tut-skip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .tut-arrow { position: absolute; left: 0; top: 0; display: none; pointer-events: none;
+    font-size: 30px; line-height: 1; color: var(--gold); text-shadow: 0 0 8px #000, 0 1px 2px #000;
+    z-index: 21; will-change: transform; animation: tut-pulse 1100ms ease-in-out infinite; }
+  @keyframes tut-in { from { transform: translateX(-50%) translateY(-14px); opacity: 0; }
+    to { transform: translateX(-50%); opacity: 1; } }
+  @keyframes tut-pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .tut-card { animation: none; }
+    .tut-arrow { animation: none; }
+  }
 
   /* ---------- unit frames ---------- */
   .unitframe { position: absolute; top: 12px; display: flex; gap: 0; align-items: center; }
@@ -615,7 +732,7 @@
   .bar { position: relative; height: 15px; background: #1a1a1a; border: 1px solid #000; margin-top: 3px; border-radius: 2px; overflow: hidden; }
   .bar-fill { position: absolute; inset: 0; width: 100%; transform-origin: left;
     background-image: linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.15)); }
-  .bar-text { position: absolute; inset: 0; text-align: center; font-size: 10px; line-height: 15px; color: #fff; text-shadow: 1px 1px 1px #000; font-weight: bold; }
+  .bar-text { position: absolute; inset: 0; text-align: center; font-size: 11px; line-height: 15px; color: #fff; text-shadow: 1px 1px 1px #000; font-weight: bold; }
   .hp .bar-fill { background-color: var(--color-hp); }
   .mana .bar-fill { background-color: var(--color-mana); }
   .rage .bar-fill { background-color: var(--color-rage); }
@@ -658,7 +775,7 @@
     position: relative; cursor: default; background-color: #10141c;
     background-size: cover; background-position: center; background-repeat: no-repeat; }
   .buff.debuff { border-color: var(--color-debuff); }
-  .buff .dur { position: absolute; bottom: -13px; left: 0; right: 0; text-align: center; font-size: 9px; color: #eee; text-shadow: 1px 1px 1px #000; }
+  .buff .dur { position: absolute; bottom: -13px; left: 0; right: 0; text-align: center; font-size: 10px; color: #eee; text-shadow: 1px 1px 1px #000; }
 
   /* ---------- cast bar ---------- */
   #castbar { position: absolute; left: 50%; transform: translateX(-50%); bottom: 200px; width: 300px;
@@ -670,6 +787,15 @@
     color: #fff; text-shadow: 1px 1px 2px #000; font-family: var(--title-font); }
   #castbar .timer { position: absolute; top: 0; right: 6px; line-height: 21px; font-size: 11px;
     color: #fff; text-shadow: 1px 1px 2px #000; font-family: var(--title-font); font-variant-numeric: tabular-nums; }
+  /* target/boss cast bar — sits under the target name+HP so the raid sees the cast */
+  #tf-castbar { position: relative; width: 100%; height: 22px; margin-top: 4px; display: none;
+    border: 2px solid var(--border); outline: 1px solid #000; border-radius: 4px; background: #100606; overflow: hidden; }
+  #tf-castbar .fill { height: 100%; width: 0%; background: linear-gradient(#ff9a8f, #c93024 60%, #73110d); box-shadow: inset 0 1px 0 #fff5; }
+  #tf-castbar.channel .fill { background: linear-gradient(#ff9a8f, #c93024 60%, #73110d); }
+  #tf-castbar .label { position: absolute; inset: 0; text-align: center; font-size: 12px; line-height: 21px;
+    color: #fff; text-shadow: 1px 1px 2px #000; font-family: var(--title-font); }
+  #tf-castbar .timer { position: absolute; top: 0; right: 6px; line-height: 21px; font-size: 11px;
+    color: #fff0d0; text-shadow: 1px 1px 2px #000; font-variant-numeric: tabular-nums; }
   /* swing timer: sits just under the cast bar, steel-on-amber to read as melee */
   #swingbar { position: absolute; left: 50%; transform: translateX(-50%); bottom: 174px; width: 220px;
     height: 12px; display: none; border: 1px solid var(--border); outline: 1px solid #000; border-radius: 3px;
@@ -677,7 +803,7 @@
   #swingbar .fill { height: 100%; width: 0%; background: linear-gradient(#ffcf7a, #d97b1e 60%, #8a4a10);
     box-shadow: inset 0 1px 0 #fff4; transition: width 60ms linear; }
   #swingbar.ready .fill { background: linear-gradient(#d8e8ff, #8fb6e6 60%, #5b86b8); }
-  #swingbar .label { position: absolute; inset: 0; text-align: center; font-size: 9px; line-height: 12px;
+  #swingbar .label { position: absolute; inset: 0; text-align: center; font-size: 10px; line-height: 12px;
     color: #fff; text-shadow: 1px 1px 1px #000; font-family: var(--title-font); letter-spacing: .5px; }
 
   /* ---------- bottom cluster ---------- */
@@ -690,7 +816,7 @@
   #xpbar.rested { outline-color: #2b6fd0; box-shadow: 0 0 6px #4a9eff55; }
   #xpbar .ticks { position: absolute; inset: 0; display: flex; }
   #xpbar .ticks i { flex: 1; border-right: 1px solid #00000055; }
-  #xpbar .label { position: absolute; inset: 0; font-size: 9px; color: #fff; text-align: center; line-height: 10px; text-shadow: 1px 1px 1px #000; opacity: 0; transition: opacity .15s; }
+  #xpbar .label { position: absolute; inset: 0; font-size: 10px; color: #fff; text-align: center; line-height: 10px; text-shadow: 1px 1px 1px #000; opacity: 0; transition: opacity .15s; }
   #xpbar:hover .label { opacity: 1; }
   /* Post-cap overflow bar (Max-Level XP Overflow): gold/prestige tint. */
   #xpbar.overflow { outline-color: #b8902a; box-shadow: 0 0 6px #f5c84355; }
@@ -723,7 +849,7 @@
   .action-btn:active { transform: translateY(1px); }
   .action-btn.used { border-color: var(--color-border-focus); box-shadow: 0 0 10px #ffd100aa, inset 0 0 0 1px #ffd10077, inset 0 1px 0 #ffffff28; }
   .action-btn.empty { background: #0d0d13; cursor: default; box-shadow: inset 0 0 10px #000; }
-  .action-btn .keybind { position: absolute; top: 1px; right: 3px; font-size: 9px; color: #ddd; font-family: var(--ui-font); }
+  .action-btn .keybind { position: absolute; top: 1px; right: 3px; font-size: 10px; color: #ddd; font-family: var(--ui-font); }
   .action-btn .item-count { position: absolute; right: 3px; bottom: 1px; min-width: 10px; text-align: right;
     font-size: 10px; color: #fff; font-family: var(--ui-font); font-weight: bold; text-shadow: 1px 1px 2px #000; }
   .action-btn .cdtext { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
@@ -760,7 +886,7 @@
   /* talent button glows while unspent talent points are available */
   .micro-btn.has-points, .mobile-btn.has-points { border-color: var(--gold); color: #fff; animation: tal-pulse 1.6s ease-in-out infinite; }
   @keyframes tal-pulse { 0%, 100% { box-shadow: 0 0 5px #ffd10066; } 50% { box-shadow: 0 0 12px #ffd100dd; } }
-  .micro-btn .keybind { position: absolute; bottom: -1px; right: 2px; font-size: 8px; color: #998; }
+  .micro-btn .keybind { position: absolute; bottom: -1px; right: 2px; font-size: 9px; color: #998; }
   /* music button: a bigger note with a small diagonal slash when audio is off */
   #mm-music .ui-icon { width: 22px; height: 22px; }
   .micro-btn.mm-muted::after {
@@ -1059,6 +1185,19 @@
   .char-stats { font-size: 12px; line-height: 1.65; color: #cfc6a8; margin-top: 10px; border-top: 1px solid #463a1c; padding-top: 8px;
     display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
   .char-stats b { color: #fff; font-weight: normal; }
+  /* Each stat is a hoverable/focusable cell that opens a class-aware breakdown
+     tooltip. The padding + matching negative margin turn the hover/focus tint into
+     a padded pill WITHOUT moving the text (layout-neutral: the margin box equals the
+     content box, so rows never reflow between states). Color/background only (no
+     transform) per the motion-sickness rule; keyboard focus gets the same pill as
+     hover so the affordance is identical for mouse and keyboard. */
+  .char-stats .stat-cell { cursor: help; border-radius: 4px; padding: 1px 5px; margin: -1px -5px;
+    transition: color .12s, background-color .12s; }
+  .char-stats .stat-cell:hover { color: #fff; background: rgba(255, 215, 120, 0.1); }
+  .char-stats .stat-cell:focus-visible { outline: 2px solid var(--color-border-focus); outline-offset: 1px;
+    color: #fff; background: rgba(255, 215, 120, 0.1); }
+  /* Honor the OS-level reduced-motion preference too, not just the in-app toggle. */
+  @media (prefers-reduced-motion: reduce) { .char-stats .stat-cell { transition: none; } }
 
   /* spellbook */
   #spellbook { width: 430px; }
@@ -1203,6 +1342,14 @@
   .ui-dd-item { padding: 5px 8px; font-size: 12px; color: #e8dcb0; border-radius: 3px; cursor: var(--cursor-point); white-space: nowrap; }
   .ui-dd-item:hover { background: #ffffff12; }
   .ui-dd-item.sel { color: var(--gold); }
+  .ui-dd-item:focus-visible { outline: none; background: #ffffff1f; color: var(--gold); box-shadow: inset 0 0 0 1px var(--color-border-focus); }
+  /* Touch: option rows are role="option" tap targets — meet the 40px / 16px floor. */
+  @media (pointer: coarse) {
+    .ui-dd-item { min-height: 40px; display: flex; align-items: center; font-size: 16px; }
+    /* The custom trigger replaces a native <select>; keep its ≥40px tap target
+       (the global coarse floor only covers input/textarea/select). */
+    .ui-dd-btn { min-height: 40px; }
+  }
   /* report dialog: dropdown drops downward (dialog sits high), full width */
   #report-window .ui-dd { display: block; }
   #report-window .ui-dd-menu { bottom: auto; top: calc(100% + 4px); }
@@ -1303,7 +1450,8 @@
     flex-direction: column;
   }
   #bags .panel-title { flex: none; }
-  #bags .bag-grid { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  #bags .bag-grid { flex: 1 1 auto; min-height: 0; overflow-y: auto;
+    touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
   #bags .money { flex: none; display: flex; align-items: center; gap: 10px; }
   /* coins stay right-aligned whether or not the $WOC chip is present */
   #bags .money .money-inline { margin-left: auto; }
@@ -1381,8 +1529,13 @@
   .soc-sugg-item:hover, .soc-sugg-item.active { background: #2f2740; }
   .soc-sugg-item.active { box-shadow: inset 2px 0 0 var(--gold); }
   .soc-empty { color: #887c5c; font-size: 12px; padding: 10px 6px; text-align: center; }
+  .soc-empty-action { margin-top: 12px; }
   .soc-guild-head { font-family: var(--title-font); color: var(--gold); font-size: 15px; padding: 2px 4px 6px; }
   .soc-guild-head .gm { color: #998d6a; font-size: 11px; }
+  .raid-groups { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .raid-group { border-top: 1px solid #3d3218; padding-top: 6px; }
+  .raid-group:first-child { border-top: 0; padding-top: 0; }
+  .raid-row .soc-actions { margin-left: 0; }
 
   /* map */
   #map-window { padding: 14px; }
@@ -1480,12 +1633,14 @@
   .mkt-select-chevron { width: 8px; height: 8px; flex: none; border-right: 2px solid #cabb8c; border-bottom: 2px solid #cabb8c; transform: translateY(-2px) rotate(45deg); }
   .mkt-select.open .mkt-select-chevron { transform: translateY(2px) rotate(225deg); }
   .mkt-select-menu { position: absolute; left: 0; top: calc(100% + 4px); width: 100%; max-height: 236px; overflow-y: auto;
+    touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
     padding: 5px; border: 1px solid #6f5a2a; border-radius: 6px; background: #140f09f7; box-shadow: 0 10px 24px #000c, inset 0 1px 0 #ffffff12; z-index: 20; }
   .mkt-select-option { width: 100%; display: block; border: 0; border-radius: 4px; background: transparent; color: #f0e4c8;
     font-family: var(--font-ui); font-size: 13px; line-height: 1.2; text-align: left; padding: 7px 8px; cursor: var(--cursor-point); }
   .mkt-select-option:hover, .mkt-select-option:focus-visible { outline: 0; background: #ffffff14; color: #ffe6a8; }
   .mkt-select-option.sel { background: #cc9a3c2e; color: var(--gold); }
-  #market-body { overflow-y: auto; flex: 1; min-height: 0; padding-right: 2px; }
+  #market-body { overflow-y: auto; flex: 1; min-height: 0; padding-right: 2px;
+    touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
   .mkt-note { font-size: 11.5px; color: #b6ad8c; line-height: 1.45; margin: 2px 0 8px; font-family: Georgia, serif; }
   .mkt-row { display: grid; grid-template-columns: 30px 1fr auto auto; gap: 9px; align-items: center;
     padding: 5px 6px; border-radius: 4px; font-size: 12px; }
@@ -1694,6 +1849,10 @@
   #tooltip .tt-stat { color: #fff; font-size: 11.5px; }
   #tooltip .tt-green { color: #1eff00; font-size: 11.5px; }
   #tooltip .tt-red { color: #ff5040; font-size: 11.5px; }
+  /* stat-tooltip prose (what a stat does) + the "From your N {stat}:" breakdown head */
+  #tooltip .tt-body { color: #cfc6a8; font-size: 11.5px; margin-top: 3px; }
+  #tooltip .tt-bd-head { color: #c2a86a; font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
+    margin-top: 6px; padding-top: 5px; border-top: 1px solid #3a3526; }
   /* item comparison block (hover an equippable item to see the worn one + deltas) */
   #tooltip .tt-cmp { margin-top: 6px; padding-top: 5px; border-top: 1px solid #3a3526; }
   #tooltip .tt-cmp-head { color: #8a7f5e; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; margin-top: 3px; }
@@ -1719,7 +1878,8 @@
   #tooltip { font-size: calc(12px * var(--tooltip-scale, 1)); }
   #tooltip .tt-title { font-size: calc(13.5px * var(--tooltip-scale, 1)); }
   #tooltip .tt-sub { font-size: calc(11px * var(--tooltip-scale, 1)); }
-  #tooltip .tt-desc, #tooltip .tt-stat, #tooltip .tt-green { font-size: calc(11.5px * var(--tooltip-scale, 1)); }
+  #tooltip .tt-desc, #tooltip .tt-stat, #tooltip .tt-green, #tooltip .tt-body { font-size: calc(11.5px * var(--tooltip-scale, 1)); }
+  #tooltip .tt-bd-head { font-size: calc(10px * var(--tooltip-scale, 1)); }
   /* Chat Text Size (--chat-font-scale) + Chat Background Opacity (--chat-opacity). */
   .chat-pane { font-size: calc(11px * var(--chat-font-scale, 1)); }
   #chatlog-frame { background: linear-gradient(170deg,
@@ -1727,6 +1887,17 @@
       rgba(8, 8, 13, var(--chat-opacity, 0.95)) 100%); }
   /* HUD Opacity (--hud-opacity) — fades frames/windows as a whole. */
   .panel, .window { opacity: var(--hud-opacity, 1); }
+  /* Global UI Scale (--ui-scale, uiScale setting) — the "everything's too small"
+     remedy. zoom scales the whole HUD layer; we divide the fixed overlay's box by
+     the same factor so it still maps exactly to the viewport and edge-anchored
+     frames (action bar, unit/target frames) keep their corners instead of being
+     pushed off-screen. Default 1 leaves the box identical to the base #ui rule. */
+  #ui {
+    zoom: var(--ui-scale, 1);
+    width: calc(var(--app-vw) / var(--ui-scale, 1));
+    height: calc(var(--app-vh) / var(--ui-scale, 1));
+    max-width: none;
+  }
   /* Compact Chat — shorter chat frame for a smaller footprint. */
   body.compact-chat #chatlog-frame { height: 120px; }
   /* High-Contrast Text — thicker dark outline behind HUD labels. */
@@ -2509,6 +2680,34 @@
   .footer-lang-row,
   .footer-legal-row { display: flex; justify-content: center; }
   .footer-legal-row { gap: 14px; flex-wrap: wrap; }
+  .footer-lang-row { align-items: center; gap: 12px; flex-wrap: wrap; }
+  /* Landing accessibility toggle: cinematic trailer vs static high-contrast
+     backdrop. Sits beside the language picker (the page's preferences area).
+     ≥40px tall tap target, aria-pressed reflects state. */
+  .landing-contrast-toggle {
+    min-height: 40px;
+    padding: 0 14px;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--color-text-light, #e8dcc0);
+    background: rgba(21, 21, 31, 0.7);
+    border: 1px solid var(--color-border-default, #4e3d1d);
+    border-radius: var(--radius-sm, 6px);
+    cursor: var(--cursor-point, pointer);
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .landing-contrast-toggle:hover,
+  .landing-contrast-toggle:focus-visible {
+    border-color: var(--color-primary, #ffd100);
+    color: #fff;
+  }
+  .landing-contrast-toggle[aria-pressed="true"] {
+    background: rgba(255, 209, 0, 0.16);
+    border-color: var(--color-primary, #ffd100);
+    color: var(--color-primary, #ffd100);
+  }
   .social-link.donate:hover,
   .social-link.donate:focus-visible { color: #ff9db3; border-color: #ff6b8b; box-shadow: 0 0 10px rgba(255, 107, 139, 0.35); }
 
@@ -2541,6 +2740,126 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
+  /* Account portal (logged-in "Account" nav tab) */
+  .account-portal {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    background: linear-gradient(180deg, rgba(21, 21, 31, 0.96) 0%, rgba(8, 8, 12, 0.98) 100%);
+    border: 2px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8),
+                inset 0 0 20px rgba(0, 0, 0, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+  }
+  .account-portal-head {
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    border-bottom: 1px solid rgba(200, 168, 56, 0.22);
+    padding-bottom: var(--spacing-md);
+  }
+  .account-id {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-end;
+    text-align: right;
+  }
+  #account-username { font-size: 1.4rem; font-weight: 700; }
+  .account-meta { font-size: 0.85rem; color: var(--color-text-muted); }
+  .account-logged-out { text-align: center; opacity: 0.8; }
+  .account-sections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  @media (min-width: 760px) {
+    .account-sections { grid-template-columns: 1fr 1fr; }
+    /* Settings + Danger zone span the full width; short cards pair up. */
+    .account-card:first-child, .account-card-danger { grid-column: 1 / -1; }
+  }
+  .account-card {
+    background: linear-gradient(180deg, rgba(14, 14, 22, 0.95) 0%, rgba(8, 8, 13, 0.98) 100%);
+    border: 1px solid rgba(200, 168, 56, 0.34);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                0 6px 18px rgba(0, 0, 0, 0.45);
+  }
+  .account-card-danger {
+    border-color: rgba(180, 60, 60, 0.62);
+    background: linear-gradient(180deg, rgba(28, 12, 14, 0.9) 0%, rgba(10, 7, 10, 0.98) 100%);
+  }
+  .account-card-title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    color: var(--color-primary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(255, 209, 0, 0.24);
+  }
+  .account-card-danger .account-card-title { color: #e08a8a; }
+  .account-form-title {
+    margin: var(--spacing-sm) 0 0;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+  }
+  .account-form { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+  .account-summary, .account-hint {
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin: 0;
+  }
+  .account-portal .auth-field { margin-bottom: var(--spacing-sm); }
+  .account-portal input {
+    display: block;
+    width: 100%;
+    background: var(--color-bg-input);
+    color: var(--color-text-light);
+    border: 2px solid var(--color-border-default);
+    outline: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    user-select: text;
+    transition: border-color var(--transition-speed) var(--transition-ease),
+                box-shadow var(--transition-speed) var(--transition-ease),
+                background-color var(--transition-speed) var(--transition-ease);
+  }
+  .account-portal input:focus-visible {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 8px var(--color-primary-glow);
+    background-color: #12121a;
+    outline: none;
+  }
+  .account-portal .btn { width: 100%; min-height: 40px; }
+  .account-form .btn { align-self: stretch; }
+  .auth-field-msg { font-size: 0.85rem; min-height: 1.1em; }
+  .auth-field-msg.is-error { color: #e88; }
+  .auth-field-msg.is-ok { color: #8d8; }
+  @media (max-width: 640px) {
+    .account-portal { padding: var(--spacing-md); }
+    .account-portal-head { flex-direction: column; align-items: flex-start; }
+    .account-id { align-items: flex-start; text-align: left; }
+  }
+  body.mobile-touch .account-portal input { font-size: 16px; }
 
   /* Hero view specific layout */
   #hero-view {
@@ -2657,7 +2976,7 @@
     max-width: none;
     background: none;
     border: none;
-    font-size: 12.5px;
+    font-size: 14px;
     text-align: center;
   }
 
@@ -2676,7 +2995,7 @@
   .stats-label {
     font-family: var(--font-heading);
     color: var(--color-text-muted);
-    font-size: 10px;
+    font-size: 11.5px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -3000,7 +3319,7 @@
   }
   .news-tag {
     font-family: var(--font-sans);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--color-text-muted, #b9ac82);
     font-variant-numeric: tabular-nums;
   }
@@ -3016,13 +3335,13 @@
   }
   .news-date {
     font-family: var(--font-sans);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--color-text-muted, #b9ac82);
   }
   .news-body {
     font-family: var(--font-sans);
-    font-size: 13px;
-    line-height: 1.55;
+    font-size: 14.5px;
+    line-height: 1.6;
     color: var(--color-text-light);
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -3812,6 +4131,48 @@
     color: #fff;
     box-shadow: 0 0 8px rgba(202, 164, 114, 0.45);
   }
+  /* Per-slot Unequip affordance in the character window (paperdoll): a corner ×
+     glyph revealed on hover/focus (always shown on touch). Also right-click the
+     slot, or drag the piece onto the bags window. */
+  .equip-slot .equip-unequip-btn {
+    margin-inline-start: auto;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(202, 164, 114, 0.42);
+    background: rgba(60, 38, 28, 0.42);
+    color: var(--color-text-secondary, #d6c1a0);
+    font-size: 20px;
+    line-height: 1;
+    font-weight: 600;
+    cursor: var(--cursor-point);
+    opacity: 0;
+    transition: border-color 0.12s, box-shadow 0.12s, color 0.12s, opacity 0.12s;
+  }
+  .equip-slot:hover .equip-unequip-btn,
+  .equip-slot:focus-within .equip-unequip-btn,
+  body.mobile-touch .equip-slot .equip-unequip-btn {
+    opacity: 1;
+  }
+  .equip-slot .equip-unequip-btn:hover,
+  .equip-slot .equip-unequip-btn:focus-visible {
+    border-color: rgba(255, 218, 160, 0.8);
+    color: #fff;
+    box-shadow: 0 0 7px rgba(202, 164, 114, 0.4);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .equip-slot .equip-unequip-btn { transition: none; }
+  }
+  /* Bags window lights up as a drop target while dragging a piece off the paperdoll. */
+  #bags.drop-target {
+    outline: 2px dashed rgba(255, 218, 160, 0.85);
+    outline-offset: -4px;
+    box-shadow: 0 0 14px rgba(202, 164, 114, 0.5);
+  }
 
   /* ---------- Premium Accessible Login Form styling ---------- */
   .auth-panel-premium {
@@ -4220,11 +4581,22 @@
     inset: 0;
     pointer-events: none;
     /* three stacked layers: top + bottom darkening for header/CTA legibility,
-       an edge vignette, and a brand-tinted wash to keep the palette cohesive. */
+       an edge vignette, and a brand-tinted wash to keep the palette cohesive.
+       Bumped from the original (0.46/0.58 top/bottom) so white/gold type clears
+       4.5:1 contrast over the brightest trailer frames — an accessibility fix. */
     background:
-      linear-gradient(180deg, rgba(4, 4, 8, 0.46) 0%, rgba(4, 4, 8, 0.06) 30%, rgba(4, 4, 8, 0.08) 60%, rgba(4, 4, 8, 0.58) 100%),
-      radial-gradient(130% 100% at 50% 42%, transparent 52%, rgba(4, 4, 8, 0.34) 100%),
+      linear-gradient(180deg, rgba(4, 4, 8, 0.62) 0%, rgba(4, 4, 8, 0.18) 30%, rgba(4, 4, 8, 0.2) 60%, rgba(4, 4, 8, 0.7) 100%),
+      radial-gradient(130% 100% at 50% 42%, transparent 46%, rgba(4, 4, 8, 0.46) 100%),
       linear-gradient(180deg, rgba(20, 17, 8, 0.08), rgba(8, 10, 18, 0.12));
+  }
+  /* High-contrast / static backdrop mode (landingHighContrast setting, or forced
+     for phones / Save-Data / reduced-motion). The trailer is hidden by JS; the
+     poster is dimmed hard and the scrim goes near-solid so type is unmissable. */
+  #start-screen-backdrop.backdrop-static .bg-home { opacity: 0.4; }
+  #start-screen-backdrop.backdrop-static .bg-trailer-scrim {
+    background:
+      linear-gradient(180deg, rgba(4, 4, 8, 0.8) 0%, rgba(4, 4, 8, 0.62) 50%, rgba(4, 4, 8, 0.86) 100%),
+      radial-gradient(130% 100% at 50% 42%, rgba(4, 4, 8, 0.3) 30%, rgba(4, 4, 8, 0.62) 100%);
   }
   @keyframes trailer-drift {
     0%   { transform: scale(1.04) translate3d(0, 0, 0); }
@@ -4953,7 +5325,12 @@
   #mobile-preflight { display: none; }
   #rotate-device { display: none; }
   body.mobile-touch #game-canvas { touch-action: none; }
-  body.mobile-touch #ui { touch-action: none; }
+  /* The HUD overlay must let one-finger panning reach scrollable windows (Bag,
+     Market, etc.) on iOS — Safari intersects touch-action down the ancestor
+     chain, so `none` here would block child scroll containers and a child's
+     own `pan-y` could not re-enable it. `pan-x pan-y` still blocks pinch/
+     double-tap zoom (also guarded globally in preventMobileZoom). */
+  body.mobile-touch #ui { touch-action: pan-x pan-y; }
   body.mobile-touch.game-active,
   body.mobile-touch.game-active #ui,
   body.mobile-touch.game-active #nameplates,
@@ -5634,6 +6011,16 @@
   body.mobile-touch .equip-col { width: 108px; }
   body.mobile-touch .equip-slot .slot-name { font-size: 9px; }
   body.mobile-touch .equip-slot .slot-item { font-size: 10px; }
+  /* Phones (the long-press peek audience, same body.mobile-touch gate attachTooltip
+     uses) get a comfortable >=40px long-press target per .stat-cell. Symmetric
+     vertical padding both reaches the touch floor and optically centers the single
+     line, so no flex is needed; the -5px side margins are unchanged, preserving the
+     hover/focus pill's bleed into the 12px column gap. Because the sizing applies in
+     every state (rest/hover/focus alike), rows still never reflow between states, and
+     the compact desktop sheet (no mobile-touch) is untouched. */
+  body.mobile-touch .char-stats .stat-cell {
+    min-height: 40px; box-sizing: border-box; padding: 10px 5px; margin: 0 -5px;
+  }
   body.mobile-touch .mkt-price-row {
     flex-wrap: wrap;
   }
@@ -7444,6 +7831,7 @@
       <div class="uf-bars">
         <div class="uf-name" id="tf-name"></div>
         <div class="bar hp"><div class="bar-fill" id="tf-hp"></div><div class="bar-absorb" id="tf-absorb"></div><div class="bar-text" id="tf-hp-text"></div></div>
+        <div id="tf-castbar"><div class="fill"></div><div class="label"></div><div class="timer"></div></div>
         <div class="combo-row" id="combo-row"></div>
         <div class="uf-buffs" id="tf-debuffs"></div>
       </div>
@@ -7610,9 +7998,11 @@
     <!-- Keep the backdrop here at the top level so it spans the entire screen behind content -->
     <div id="start-screen-backdrop" aria-hidden="true">
       <!-- Looping cinematic background video; poster = static key-art for instant paint + fallback. -->
-      <video id="bg-home" class="bg-trailer bg-home" autoplay loop muted playsinline preload="auto" poster="/home-bg.png" aria-hidden="true">
-        <source src="/home-bg.mp4" type="video/mp4" />
-      </video>
+      <!-- The poster (static key-art) paints instantly. The 5.7 MB looping trailer
+           is NOT eagerly fetched: no autoplay/preload/source here — main.ts attaches
+           the source and plays only on capable devices (see applyLandingBackdrop).
+           Phones / Save-Data / reduced-motion / high-contrast keep the poster only. -->
+      <video id="bg-home" class="bg-trailer bg-home" loop muted playsinline preload="none" poster="/home-bg.png" aria-hidden="true" data-trailer-src="/home-bg.mp4"></video>
       <div class="bg-trailer-scrim"></div>
       <div class="portal-ring"></div>
       <div class="portal-ring-reverse"></div>
@@ -7652,6 +8042,12 @@
             </li>
             <li class="nav-item">
               <button type="button" class="nav-link" id="nav-btn-login" aria-selected="false" aria-pressed="false" data-i18n="nav.loginRegister">Login/Register</button>
+            </li>
+            <li class="nav-item" id="nav-item-account" hidden>
+              <button type="button" class="nav-link" id="nav-btn-account" aria-selected="false" aria-pressed="false" data-i18n="nav.account">Account</button>
+            </li>
+            <li class="nav-item" id="nav-item-logout" hidden>
+              <button type="button" class="nav-link" id="nav-btn-logout" aria-selected="false" aria-pressed="false" data-i18n="nav.logout">Logout</button>
             </li>
           </ul>
         </nav>
@@ -8049,6 +8445,94 @@
           <div class="coming-soon-badge" data-i18n="comingSoon.placeholder">Coming Soon...</div>
         </div>
       </section>
+
+      <section id="account-view" class="view-section" hidden aria-hidden="true">
+        <div class="account-portal">
+          <header class="account-portal-head">
+            <h2 class="auth-title" data-i18n="hudChrome.account.title">Account</h2>
+            <div class="account-id">
+              <span id="account-username" class="gold"></span>
+              <span id="account-member-since" class="account-meta"></span>
+            </div>
+          </header>
+
+          <p id="account-logged-out" class="account-logged-out" hidden data-i18n="hudChrome.account.loggedOutPrompt">Log in to manage your account.</p>
+
+          <div id="account-sections" class="account-sections">
+            <!-- Account Settings: password + email -->
+            <section class="account-card">
+              <h3 class="account-card-title" data-i18n="hudChrome.account.sectionSettings">Account Settings</h3>
+              <form id="account-password-form" class="account-form" novalidate>
+                <h4 class="account-form-title" data-i18n="hudChrome.account.changePassword">Change Password</h4>
+                <div class="auth-field">
+                  <label for="account-current-pass" class="auth-label" data-i18n="hudChrome.account.currentPassword">Current password</label>
+                  <input id="account-current-pass" type="password" maxlength="128" autocomplete="current-password" />
+                </div>
+                <div class="auth-field">
+                  <label for="account-new-pass" class="auth-label" data-i18n="hudChrome.account.newPassword">New password</label>
+                  <input id="account-new-pass" type="password" maxlength="128" autocomplete="new-password" />
+                </div>
+                <div class="auth-field">
+                  <label for="account-confirm-pass" class="auth-label" data-i18n="hudChrome.account.confirmNewPassword">Confirm new password</label>
+                  <input id="account-confirm-pass" type="password" maxlength="128" autocomplete="new-password" />
+                </div>
+                <div id="account-password-msg" class="auth-field-msg" aria-live="polite"></div>
+                <button type="submit" class="btn btn-primary" data-i18n="hudChrome.account.savePassword">Update Password</button>
+              </form>
+
+              <form id="account-email-form" class="account-form" novalidate>
+                <div class="auth-field">
+                  <label for="account-email" class="auth-label" data-i18n="hudChrome.account.emailLabel">Email (optional)</label>
+                  <input id="account-email" type="email" maxlength="254" autocomplete="email" />
+                  <p class="account-hint" data-i18n="hudChrome.account.emailHint">Used only for account recovery. We never send marketing email.</p>
+                </div>
+                <div id="account-email-msg" class="auth-field-msg" aria-live="polite"></div>
+                <button type="submit" class="btn btn-secondary" data-i18n="hudChrome.account.saveEmail">Save Email</button>
+              </form>
+            </section>
+
+            <!-- Wallet / $WOC -->
+            <section class="account-card">
+              <h3 class="account-card-title" data-i18n="hudChrome.account.sectionWallet">$WOC Wallet</h3>
+              <p class="account-summary" data-i18n="hudChrome.account.walletSummary">Verify a Solana wallet to show holder flair on your player card.</p>
+              <button type="button" class="btn btn-secondary" id="account-manage-wallet" data-i18n="hudChrome.account.manageWallet">Manage Wallet</button>
+            </section>
+
+            <!-- Characters -->
+            <section class="account-card">
+              <h3 class="account-card-title" data-i18n="hudChrome.account.sectionCharacters">Characters</h3>
+              <p class="account-summary" data-i18n="hudChrome.account.charactersSummary">Manage your characters and enter the world.</p>
+              <p id="account-char-count" class="account-meta" aria-live="polite"></p>
+              <button type="button" class="btn btn-primary" id="account-go-characters" data-i18n="hudChrome.account.goToCharacters">View Characters</button>
+            </section>
+
+            <!-- Log out -->
+            <section class="account-card">
+              <h3 class="account-card-title" data-i18n="hudChrome.account.logOut">Log Out</h3>
+              <p class="account-summary" data-i18n="hudChrome.account.logOutSummary">Sign out of this device.</p>
+              <button type="button" class="btn btn-secondary" id="account-logout" data-i18n="hudChrome.account.logOut">Log Out</button>
+            </section>
+
+            <!-- Danger zone: deactivate -->
+            <section class="account-card account-card-danger">
+              <h3 class="account-card-title" data-i18n="hudChrome.account.sectionDanger">Danger Zone</h3>
+              <p class="account-summary" data-i18n="hudChrome.account.deactivateWarning">Deactivation locks your account and signs you out everywhere. Contact an admin to restore it. Confirm by re-entering your username and password.</p>
+              <form id="account-deactivate-form" class="account-form" novalidate>
+                <div class="auth-field">
+                  <label for="account-deactivate-user" class="auth-label" data-i18n="hudChrome.account.confirmUsername">Type your username to confirm</label>
+                  <input id="account-deactivate-user" type="text" maxlength="24" autocomplete="off" />
+                </div>
+                <div class="auth-field">
+                  <label for="account-deactivate-pass" class="auth-label" data-i18n="hudChrome.account.confirmPassword">Password</label>
+                  <input id="account-deactivate-pass" type="password" maxlength="128" autocomplete="off" />
+                </div>
+                <div id="account-deactivate-msg" class="auth-field-msg" aria-live="polite"></div>
+                <button type="submit" class="btn btn-danger" id="account-deactivate-btn" disabled data-i18n="hudChrome.account.deactivateConfirm">Deactivate My Account</button>
+              </form>
+            </section>
+          </div>
+        </div>
+      </section>
     </div>
 
     <div id="delete-character-modal" class="modal-backdrop" hidden>
@@ -8110,6 +8594,7 @@
           </select>
           <span id="lang-select-status" class="visually-hidden" role="status" aria-live="polite"></span>
         </div>
+        <button type="button" id="landing-contrast-toggle" class="landing-contrast-toggle" aria-pressed="false" data-i18n="hudChrome.landing.highContrast" data-i18n-aria="hudChrome.landing.highContrastAria" aria-label="Toggle high-contrast background">High Contrast</button>
       </div>
       </div>
     </footer>
