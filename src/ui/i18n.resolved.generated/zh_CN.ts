@@ -1805,6 +1805,10 @@ export const zh_CN: EnTranslations = {
       "completedStatus": "已完成",
       "returnTo": "返回 {name} 处",
       "abandon": "放弃任务",
+      "abandonConfirmTitle": "放弃任务",
+      "abandonConfirmBody": "确定要放弃{name}吗？",
+      "abandonConfirm": "是",
+      "abandonCancel": "取消",
       "suggestedPlayers": "建议玩家数：{count}"
     },
     "dialog": {

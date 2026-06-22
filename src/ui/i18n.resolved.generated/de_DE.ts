@@ -1805,6 +1805,10 @@ export const de_DE: EnTranslations = {
       "completedStatus": "Abgeschlossen",
       "returnTo": "Kehrt zu {name} zurück",
       "abandon": "Quest aufgeben",
+      "abandonConfirmTitle": "Quest aufgeben",
+      "abandonConfirmBody": "Möchtet Ihr {name} wirklich aufgeben?",
+      "abandonConfirm": "Ja",
+      "abandonCancel": "Abbrechen",
       "suggestedPlayers": "Empfohlene Spieler: {count}"
     },
     "dialog": {

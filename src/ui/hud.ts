@@ -994,7 +994,7 @@ export class Hud {
   }
 
   private placeNewWindow(el: HTMLElement): void {
-    if (el.dataset.windowMoved === '1' || el.id === 'loot-window') return;
+    if (el.dataset.windowMoved === '1' || el.id === 'loot-window' || el.id === 'confirm-dialog') return;
     if (document.body.classList.contains('vendor-open') && (el.id === 'vendor-window' || el.id === 'bags')) return;
     const openCount = [...document.querySelectorAll<HTMLElement>('.window.panel')]
       .filter((win) => win !== el && this.isWindowVisible(win)).length;
@@ -7090,18 +7090,22 @@ export class Hud {
     );
   }
 
-  // Minimal modal confirm dialog (reuses the .window/.panel chrome). Used by the
-  // prestige flow; built on demand and removed on dismiss.
+  // Minimal modal confirm dialog (reuses the .window/.panel chrome). Built on
+  // demand and removed on dismiss.
   private confirmDialog(title: string, body: string, okText: string, cancelText: string, onOk: () => void): void {
     document.getElementById('confirm-dialog')?.remove();
     const el = document.createElement('div');
     el.id = 'confirm-dialog';
     el.className = 'window panel';
     el.style.display = 'block';
-    el.innerHTML = `<div class="panel-title"><span>${title}</span><span class="x-btn" data-cancel>${svgIcon('close')}</span></div>`
-      + `<div class="cd-body">${body}</div>`
-      + `<div class="cd-actions"><button class="btn" data-cancel>${cancelText}</button><button class="btn cd-ok" data-ok>${okText}</button></div>`;
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.innerHTML = `<div class="panel-title"><span>${esc(title)}</span><button type="button" class="x-btn" data-cancel aria-label="${esc(cancelText)}">${svgIcon('close')}</button></div>`
+      + `<div class="cd-body">${esc(body)}</div>`
+      + `<div class="cd-actions"><button type="button" class="btn" data-cancel>${esc(cancelText)}</button><button type="button" class="btn cd-ok" data-ok>${esc(okText)}</button></div>`;
     document.body.appendChild(el);
+    this.bringWindowToFront(el);
+    el.querySelector<HTMLElement>('[data-ok]')?.focus();
     const close = () => el.remove();
     el.querySelectorAll('[data-cancel]').forEach((b) => b.addEventListener('click', () => { audio.click(); close(); }));
     el.querySelector('[data-ok]')?.addEventListener('click', () => { close(); onOk(); });
@@ -7788,7 +7792,7 @@ export class Hud {
       if (this.sim.activeLoadout < 0) { this.showError(t('game.talents.selectBuildFirst')); return; }
       const active = this.sim.loadouts[this.sim.activeLoadout];
       if (!active) { this.showError(t('game.talents.selectBuildFirst')); return; }
-      const body = esc(t('game.talents.deleteBuildBody').replace('{name}', active.name));
+      const body = t('game.talents.deleteBuildBody', { name: active.name });
       this.confirmDialog(t('game.talents.deleteBuildTitle'), body, t('game.talents.deleteBuildConfirm'), t('game.talents.cancel'), () => {
         this.sim.deleteLoadout(this.sim.activeLoadout);
         this.renderTalents();
@@ -7870,7 +7874,7 @@ export class Hud {
     const quests = [...sim.questLog.values()];
     if (quests.length === 0) {
       list.innerHTML = `<div class="ql-empty">${esc(t('questUi.log.emptyTitle'))}</div>`;
-      detail.innerHTML = `<div class="qd-text">${esc(t('questUi.log.emptyHint'))}</div>`;
+      detail.innerHTML = `<div class="ql-detail-body"><div class="qd-text">${esc(t('questUi.log.emptyHint'))}</div></div>`;
     }
     if (!this.selectedQuestLogId || !sim.questLog.has(this.selectedQuestLogId)) {
       this.selectedQuestLogId = quests[0]?.questId ?? null;
@@ -7902,15 +7906,35 @@ export class Hud {
       }
       const giver = NPCS[quest.turnInNpcId];
       html += `<div class="qd-obj quest-return">${esc(t('questUi.log.returnTo', { name: giver ? npcDisplayName(giver.id) : '?' }))}</div>`;
-      detail.innerHTML = html;
-      const rewardRow = detail.querySelector('[data-reward]') as HTMLElement | null;
+      const body = document.createElement('div');
+      body.className = 'ql-detail-body';
+      body.innerHTML = html;
+      detail.replaceChildren(body);
+      const rewardRow = body.querySelector('[data-reward]') as HTMLElement | null;
       if (rewardRow && rewardItem) this.attachTooltip(rewardRow, () => this.itemTooltip(ITEMS[rewardItem]));
+      const actions = document.createElement('div');
+      actions.className = 'ql-detail-actions';
       const abandon = document.createElement('button');
       abandon.className = 'btn';
       abandon.type = 'button';
       abandon.textContent = t('questUi.log.abandon');
-      abandon.addEventListener('click', () => { sim.abandonQuest(this.selectedQuestLogId!); this.renderQuestLog(); });
-      detail.appendChild(abandon);
+      abandon.addEventListener('click', () => {
+        const questId = this.selectedQuestLogId;
+        if (!questId) return;
+        this.confirmDialog(
+          t('questUi.log.abandonConfirmTitle'),
+          t('questUi.log.abandonConfirmBody', { name: questTitle(questId) }),
+          t('questUi.log.abandonConfirm'),
+          t('questUi.log.abandonCancel'),
+          () => {
+            sim.abandonQuest(questId);
+            this.selectedQuestLogId = null;
+            this.renderQuestLog();
+          },
+        );
+      });
+      actions.appendChild(abandon);
+      detail.appendChild(actions);
     }
     el.querySelector('[data-close]')?.addEventListener('click', () => this.closeQuestLog());
     this.focusFirstInteractive(el);
