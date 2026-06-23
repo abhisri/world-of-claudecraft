@@ -1882,7 +1882,9 @@ export const en_CA: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "Multiplayer",
     "applicationCategory": "Game",
-    "operatingSystem": "Web browser"
+    "operatingSystem": "Web browser",
+    "officialLabel": "Official World of ClaudeCraft website",
+    "officialBody": "worldofclaudecraft.com is the official free browser MMO for the Claudemoon realm. Play online with a persistent character, explore solo offline, read the wiki, and follow verified community links from this site."
   },
   "a11y": {
     "goHome": "Go to homepage",

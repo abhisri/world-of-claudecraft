@@ -1882,7 +1882,9 @@ export const it_IT: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "Multigiocatore",
     "applicationCategory": "Gioco",
-    "operatingSystem": "Browser web"
+    "operatingSystem": "Browser web",
+    "officialLabel": "Sito ufficiale di World of ClaudeCraft",
+    "officialBody": "worldofclaudecraft.com è l'MMO gratuito ufficiale da browser del reame Claudemoon. Gioca online con un personaggio persistente, esplora offline in solitaria, leggi il wiki e segui i link della community verificati da questo sito."
   },
   "a11y": {
     "goHome": "Vai alla pagina iniziale",

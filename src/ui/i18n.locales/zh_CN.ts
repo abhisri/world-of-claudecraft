@@ -14,6 +14,9 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const zh_CN: Partial<Record<TranslationKey, string>> = {
+  'seo.officialLabel': 'World of ClaudeCraft 官方网站',
+  'seo.officialBody':
+    'worldofclaudecraft.com 是 Claudemoon 服务器的官方免费浏览器 MMO。你可以用持久角色在线游玩，也可以离线单人探索，阅读 wiki，并从本站访问已验证的社区链接。',
   'hudChrome.tutorial.moveBodyTouch': '使用摇杆移动，拖动屏幕环顾四周。先走几步开始吧。',
   'hudChrome.tutorial.talkBodyTouch':
     '靠近雷德布鲁克元帅并点击“使用”按钮与他交谈，然后接受他的任务。',

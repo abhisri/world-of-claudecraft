@@ -14,6 +14,9 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const ru_RU: Partial<Record<TranslationKey, string>> = {
+  'seo.officialLabel': 'Официальный сайт World of ClaudeCraft',
+  'seo.officialBody':
+    'worldofclaudecraft.com - официальная бесплатная браузерная MMO для мира Claudemoon. Играйте онлайн с постоянным персонажем, исследуйте мир в одиночку офлайн, читайте wiki и переходите по проверенным ссылкам сообщества с этого сайта.',
   'hudChrome.tutorial.moveBodyTouch':
     'Используйте джойстик передвижения, чтобы двигаться, и проведите по экрану, чтобы осмотреться. Сделайте несколько шагов, чтобы начать.',
   'hudChrome.tutorial.talkBodyTouch':

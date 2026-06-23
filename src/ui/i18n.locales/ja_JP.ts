@@ -14,6 +14,9 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const ja_JP: Partial<Record<TranslationKey, string>> = {
+  'seo.officialLabel': 'World of ClaudeCraft 公式サイト',
+  'seo.officialBody':
+    'worldofclaudecraft.com は Claudemoon レルムの公式無料ブラウザMMOです。永続キャラクターでオンラインプレイし、オフラインでソロ探索し、wikiを読み、このサイトから確認済みのコミュニティリンクをたどれます。',
   'hudChrome.tutorial.moveBodyTouch':
     '移動スティックで移動し、画面をドラッグして周囲を見回します。数歩進んで始めましょう。',
   'hudChrome.tutorial.talkBodyTouch':
