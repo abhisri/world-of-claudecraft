@@ -73,6 +73,8 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
     loot: [
       { copper: 220, chance: 1 },
       { itemId: 'ridge_stalker_pelt', chance: 1 },
+      { itemId: 'pristine_ridge_stalker_pelt', chance: 1 },
+      { itemId: 'cragmaw_huntcord', chance: 0.25 },
       { itemId: 'cragmaw_prowlboots', chance: 0.3 },
     ],
     scale: 1.3, color: 0x6e6453,
@@ -891,11 +893,24 @@ export const ZONE3_ITEMS: Record<string, ItemDef> = {
     id: 'ridgestalker_treads', name: 'Ridgestalker Treads', kind: 'armor', slot: 'feet', quality: 'uncommon',
     stats: { armor: 50, agi: 3, sta: 2 }, sellValue: 600,
   },
+  // Old Cragmaw's signature trophy — the unblemished hide of the ridge's oldest
+  // hunter, guaranteed to the slayer of the rare elite. Pure vendor value, no
+  // quest tie, so it always feels like a boss-kill reward and never blocks a turn-in.
+  pristine_ridge_stalker_pelt: {
+    id: 'pristine_ridge_stalker_pelt', name: 'Pristine Ridge Stalker Pelt', kind: 'junk', quality: 'uncommon',
+    sellValue: 300,
+  },
   // Old Cragmaw's rare drop — a notch above the Ridgestalker Treads. Leather,
   // so it stays unrestricted by class.
   cragmaw_prowlboots: {
     id: 'cragmaw_prowlboots', name: 'Cragmaw Prowlboots', kind: 'armor', slot: 'feet', quality: 'rare',
     stats: { armor: 58, agi: 5, sta: 3 }, sellValue: 750,
+  },
+  // A waist piece to pair with the Prowlboots — agi-leaning leather, waist armor
+  // sits a touch under the feet slot. Drops less often than the boots.
+  cragmaw_huntcord: {
+    id: 'cragmaw_huntcord', name: "Cragmaw's Huntcord", kind: 'armor', slot: 'waist', quality: 'rare',
+    stats: { armor: 44, agi: 5, sta: 3 }, sellValue: 340,
   },
   boneplate_vest: {
     id: 'boneplate_vest', name: 'Boneplate Vest', kind: 'armor', slot: 'chest', quality: 'uncommon',

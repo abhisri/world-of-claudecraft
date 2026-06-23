@@ -174,6 +174,28 @@ export const en: EnTranslations = {
       "title": "Emotes",
       "done": "Done"
     },
+    "theme": {
+      "preset": "UI Theme",
+      "customColors": "Custom Colors",
+      "reset": "Reset",
+      "presets": {
+        "classic": "Classic Gold",
+        "midnight": "Midnight",
+        "parchment": "Parchment",
+        "highContrast": "High Contrast"
+      },
+      "knob": {
+        "accent": "Accent",
+        "border": "Border",
+        "panel": "Frame",
+        "text": "Text",
+        "textMuted": "Muted Text",
+        "hp": "Health",
+        "mana": "Mana",
+        "rage": "Rage",
+        "energy": "Energy"
+      }
+    },
     "questTracker": {
       "count": "({count})",
       "collapseHint": "Collapse quest tracker",
@@ -253,6 +275,8 @@ export const en: EnTranslations = {
       "interfaceModeNote": "Auto picks desktop or touch controls from your device. Choose Desktop to force keyboard and mouse (useful on a tablet with a keyboard), or Touch for the on-screen controls.",
       "footstepSounds": "Footstep Sounds",
       "clickFeedback": "Click Marker",
+      "lockCursorOnRotate": "Lock Cursor While Rotating",
+      "keybindHelpLockCursorOnRotate": "Keeps the mouse cursor inside the window while you drag to rotate the camera, so it cannot reach the screen edge or move to another monitor. Turn off if you prefer a free cursor.",
       "showWalletOnCharacterScreen": "Show Wallet on Character Screen",
       "showWalletOnPlayerCard": "Show Wallet on Player Card",
       "uiScale": "UI Scale",
@@ -510,6 +534,22 @@ export const en: EnTranslations = {
       "exportBtn": "Download My Data",
       "exportDone": "Your data was downloaded. We emailed you a confirmation.",
       "exportFailed": "Could not export your data. Try again in a moment."
+    },
+    "bags": {
+      "filterGroupAria": "Filter bags by category",
+      "filterAll": "All",
+      "filterWeapon": "Weapons",
+      "filterArmor": "Armor",
+      "filterConsumable": "Consumables",
+      "filterMaterial": "Materials",
+      "filterQuest": "Quest",
+      "sortAria": "Sort bag items",
+      "sortRecent": "Recent",
+      "sortQuality": "Quality",
+      "sortName": "Name",
+      "searchPlaceholder": "Search items",
+      "searchAria": "Search bag items by name",
+      "noMatch": "No items match your filters."
     }
   },
   "guide": {
@@ -2350,6 +2390,10 @@ export const en: EnTranslations = {
       "whisperAmbiguous": "Several players match '{name}'. Use exact capitalization.",
       "whisperMissing": "There is no player named '{name}' online.",
       "whisperSelf": "You mutter to yourself. Nobody hears it.",
+      "assistSelf": "You can't assist yourself.",
+      "assistNoTarget": "{name} has no target.",
+      "assistWhom": "Assist whom? Target a player or use /assist <name>.",
+      "assisting": "Assisting {name}.",
       "notInParty": "You are not in a party.",
       "unknownCommand": "Unknown command: {command}. Try /s /y /w /p /g.",
       "chatCooldown": "Chat is on cooldown for {seconds}s.",
@@ -3809,6 +3853,9 @@ export const en: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "Ridge Stalker Pelt"
       },
+      "pristine_ridge_stalker_pelt": {
+        "name": "Pristine Ridge Stalker Pelt"
+      },
       "glowing_wax": {
         "name": "Glowing Wax"
       },
@@ -4249,6 +4296,9 @@ export const en: EnTranslations = {
       },
       "cragmaw_prowlboots": {
         "name": "Cragmaw Prowlboots"
+      },
+      "cragmaw_huntcord": {
+        "name": "Cragmaw's Huntcord"
       },
       "drowned_tide_scepter": {
         "name": "Drowned Tide Scepter"

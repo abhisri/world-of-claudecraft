@@ -106,6 +106,10 @@ export const SETTING_RANGES = {
 
 export const BOOL_SETTINGS = {
   mouseCamera: { def: false },
+  // on by default: while a camera drag is active, pointer-lock the canvas so the
+  // OS cursor cannot leave the window during rotation (otherwise it hits the
+  // screen edge and the camera freezes, or slips onto a second monitor).
+  lockCursorOnRotate: { def: true },
   // on by default: poll a connected controller for input. Off ignores the pad
   // entirely (keyboard/mouse/touch unaffected).
   gamepadEnabled: { def: true },

@@ -174,6 +174,28 @@ export const pt_BR: EnTranslations = {
       "title": "Emotes",
       "done": "Concluído"
     },
+    "theme": {
+      "preset": "UI Theme",
+      "customColors": "Custom Colors",
+      "reset": "Reset",
+      "presets": {
+        "classic": "Classic Gold",
+        "midnight": "Midnight",
+        "parchment": "Parchment",
+        "highContrast": "High Contrast"
+      },
+      "knob": {
+        "accent": "Accent",
+        "border": "Border",
+        "panel": "Frame",
+        "text": "Text",
+        "textMuted": "Muted Text",
+        "hp": "Health",
+        "mana": "Mana",
+        "rage": "Rage",
+        "energy": "Energy"
+      }
+    },
     "questTracker": {
       "count": "({count})",
       "collapseHint": "Recolher missões",
@@ -253,6 +275,8 @@ export const pt_BR: EnTranslations = {
       "interfaceModeNote": "Auto escolhe os controles Desktop ou Touch conforme o seu dispositivo. Escolha Desktop para forçar teclado e mouse (útil em um tablet com teclado), ou Touch para os controles na tela.",
       "footstepSounds": "Sons de passos",
       "clickFeedback": "Marcador de clique",
+      "lockCursorOnRotate": "Lock Cursor While Rotating",
+      "keybindHelpLockCursorOnRotate": "Keeps the mouse cursor inside the window while you drag to rotate the camera, so it cannot reach the screen edge or move to another monitor. Turn off if you prefer a free cursor.",
       "showWalletOnCharacterScreen": "Mostrar carteira na tela de personagens",
       "showWalletOnPlayerCard": "Mostrar carteira no cartão de jogador",
       "uiScale": "Escala da interface",
@@ -477,39 +501,55 @@ export const pt_BR: EnTranslations = {
       "deactivated": "Sua conta foi desativada.",
       "logOut": "Sair",
       "logOutSummary": "Sair deste dispositivo.",
-      "sectionSecurity": "Security",
-      "changeEmailTitle": "Change Email",
-      "changeEmailHint": "We email a confirmation link to the new address and a notice to the old one. Your email only changes once you open the link.",
-      "changeEmailNew": "New email",
-      "changeEmailSubmit": "Send Confirmation Link",
-      "changeEmailSent": "Check your inbox: open the link we sent to confirm your new email.",
-      "errEmailUnchanged": "That is already your email address.",
-      "twoFactorTitle": "Two-Factor Authentication",
-      "twoFactorStatusOn": "Two-factor authentication is ON for your account.",
-      "twoFactorStatusOff": "Add an authenticator app for stronger account security.",
-      "twoFactorSetupBtn": "Set Up Two-Factor",
-      "twoFactorBeginHint": "Enter your password to begin setup.",
-      "twoFactorBegin": "Begin Setup",
-      "twoFactorScanHint": "Add this key to your authenticator app (Google Authenticator, Authy, 1Password, and similar), then enter the 6-digit code it shows.",
-      "twoFactorSecretLabel": "Setup key",
-      "twoFactorOpenApp": "Open in authenticator app",
-      "twoFactorCodeLabel": "6-digit code",
-      "twoFactorVerifyBtn": "Verify and Enable",
-      "twoFactorEnabledMsg": "Two-factor authentication is now on.",
-      "twoFactorRecoveryTitle": "Save your recovery codes",
-      "twoFactorRecoveryHint": "Each code works once. Store them somewhere safe: they are the only way back in if you lose your authenticator app.",
-      "twoFactorDownloadCodes": "Download Codes",
-      "twoFactorDone": "Done",
-      "twoFactorDisableHint": "Enter your password to turn two-factor off. Your recovery codes will be discarded.",
-      "twoFactorDisableBtn": "Turn Off Two-Factor",
-      "twoFactorDisabledMsg": "Two-factor authentication is off.",
-      "errTwoFactorCode": "That code is not valid, try again.",
-      "errTwoFactorState": "Two-factor setup is not in the expected state. Reload and try again.",
-      "exportTitle": "Export My Data",
-      "exportHint": "Download a copy of your account and characters as a JSON file. We also email you a confirmation.",
-      "exportBtn": "Download My Data",
-      "exportDone": "Your data was downloaded. We emailed you a confirmation.",
-      "exportFailed": "Could not export your data. Try again in a moment."
+      "sectionSecurity": "Segurança",
+      "changeEmailTitle": "Alterar email",
+      "changeEmailHint": "Enviamos um link de confirmação para o novo endereço e um aviso para o antigo. Seu email só muda quando você abre o link.",
+      "changeEmailNew": "Novo email",
+      "changeEmailSubmit": "Enviar link de confirmação",
+      "changeEmailSent": "Verifique sua caixa de entrada: abra o link que enviamos para confirmar seu novo email.",
+      "errEmailUnchanged": "Esse já é o seu endereço de email.",
+      "twoFactorTitle": "Autenticação em duas etapas",
+      "twoFactorStatusOn": "A autenticação em duas etapas está ATIVADA para sua conta.",
+      "twoFactorStatusOff": "Adicione um app autenticador para reforçar a segurança da sua conta.",
+      "twoFactorSetupBtn": "Configurar duas etapas",
+      "twoFactorBeginHint": "Digite sua senha para começar a configuração.",
+      "twoFactorBegin": "Iniciar configuração",
+      "twoFactorScanHint": "Adicione esta chave ao seu app autenticador (Google Authenticator, Authy, 1Password e similares) e depois digite o código de 6 dígitos que ele mostrar.",
+      "twoFactorSecretLabel": "Chave de configuração",
+      "twoFactorOpenApp": "Abrir no app autenticador",
+      "twoFactorCodeLabel": "Código de 6 dígitos",
+      "twoFactorVerifyBtn": "Verificar e ativar",
+      "twoFactorEnabledMsg": "A autenticação em duas etapas agora está ativada.",
+      "twoFactorRecoveryTitle": "Salve seus códigos de recuperação",
+      "twoFactorRecoveryHint": "Cada código funciona uma vez. Guarde-os em um lugar seguro: são a única forma de voltar a entrar se você perder seu app autenticador.",
+      "twoFactorDownloadCodes": "Baixar códigos",
+      "twoFactorDone": "Concluído",
+      "twoFactorDisableHint": "Digite sua senha para desativar a autenticação em duas etapas. Seus códigos de recuperação serão descartados.",
+      "twoFactorDisableBtn": "Desativar duas etapas",
+      "twoFactorDisabledMsg": "A autenticação em duas etapas está desativada.",
+      "errTwoFactorCode": "Esse código não é válido, tente novamente.",
+      "errTwoFactorState": "A configuração da autenticação em duas etapas não está no estado esperado. Recarregue e tente novamente.",
+      "exportTitle": "Exportar meus dados",
+      "exportHint": "Baixe uma cópia da sua conta e dos seus personagens como um arquivo JSON. Também enviamos uma confirmação por email.",
+      "exportBtn": "Baixar meus dados",
+      "exportDone": "Seus dados foram baixados. Enviamos uma confirmação por email.",
+      "exportFailed": "Não foi possível exportar seus dados. Tente novamente em instantes."
+    },
+    "bags": {
+      "filterGroupAria": "Filtrar bolsas por categoria",
+      "filterAll": "Todos",
+      "filterWeapon": "Armas",
+      "filterArmor": "Armadura",
+      "filterConsumable": "Consumíveis",
+      "filterMaterial": "Materiais",
+      "filterQuest": "Missão",
+      "sortAria": "Ordenar itens da bolsa",
+      "sortRecent": "Recentes",
+      "sortQuality": "Qualidade",
+      "sortName": "Nome",
+      "searchPlaceholder": "Pesquisar itens",
+      "searchAria": "Pesquisar itens da bolsa por nome",
+      "noMatch": "Nenhum item corresponde aos seus filtros."
     }
   },
   "guide": {
@@ -1422,9 +1462,9 @@ export const pt_BR: EnTranslations = {
     "enterWorld": "Entrar no mundo",
     "offlineCharacter": "Personagem offline",
     "create": "Criar",
-    "twoFactorLabel": "Authentication code",
-    "twoFactorPlaceholder": "6-digit or recovery code",
-    "twoFactorHint": "Enter the code from your authenticator app, or one of your recovery codes."
+    "twoFactorLabel": "Código de autenticação",
+    "twoFactorPlaceholder": "Código de 6 dígitos ou de recuperação",
+    "twoFactorHint": "Digite o código do seu app autenticador ou um dos seus códigos de recuperação."
   },
   "wallet": {
     "label": "Carteira $WOC",
@@ -2350,6 +2390,10 @@ export const pt_BR: EnTranslations = {
       "whisperAmbiguous": "Vários jogadores correspondem a '{name}'. Use a capitalização exata.",
       "whisperMissing": "Não há jogador chamado '{name}' online.",
       "whisperSelf": "Você murmura para si mesmo. Ninguém ouve.",
+      "assistSelf": "Você não pode ajudar a si mesmo.",
+      "assistNoTarget": "{name} não tem alvo.",
+      "assistWhom": "Ajudar quem? Selecione um jogador ou use /assist <name>.",
+      "assisting": "Ajudando {name}.",
       "notInParty": "Você não está em um grupo.",
       "unknownCommand": "Comando desconhecido: {command}. Tente /s /y /w /p /g.",
       "chatCooldown": "O chat está em recarga por {seconds}s.",
@@ -3809,6 +3853,9 @@ export const pt_BR: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "Pele de espreitador da crista"
       },
+      "pristine_ridge_stalker_pelt": {
+        "name": "Pele imaculada de espreitador da crista"
+      },
       "glowing_wax": {
         "name": "Cera brilhante"
       },
@@ -4249,6 +4296,9 @@ export const pt_BR: EnTranslations = {
       },
       "cragmaw_prowlboots": {
         "name": "Botas furtivas de Cragmaw"
+      },
+      "cragmaw_huntcord": {
+        "name": "Cinta de caça de Cragmaw"
       },
       "drowned_tide_scepter": {
         "name": "Cetro da maré afogada"

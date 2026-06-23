@@ -174,6 +174,28 @@ export const ru_RU: EnTranslations = {
       "title": "Эмоции",
       "done": "Готово"
     },
+    "theme": {
+      "preset": "Тема интерфейса",
+      "customColors": "Свои цвета",
+      "reset": "Сброс",
+      "presets": {
+        "classic": "Классическое золото",
+        "midnight": "Полночь",
+        "parchment": "Пергамент",
+        "highContrast": "Высокий контраст"
+      },
+      "knob": {
+        "accent": "Акцент",
+        "border": "Рамка",
+        "panel": "Панель",
+        "text": "Текст",
+        "textMuted": "Тусклый текст",
+        "hp": "Здоровье",
+        "mana": "Мана",
+        "rage": "Ярость",
+        "energy": "Энергия"
+      }
+    },
     "questTracker": {
       "count": "({count})",
       "collapseHint": "Свернуть трекер заданий",
@@ -253,6 +275,8 @@ export const ru_RU: EnTranslations = {
       "interfaceModeNote": "В режиме «Авто» управление для компьютера или сенсорное выбирается по вашему устройству. Выберите «Компьютер», чтобы включить клавиатуру и мышь (удобно на планшете с клавиатурой), или «Сенсорный» для экранного управления.",
       "footstepSounds": "Звуки шагов",
       "clickFeedback": "Метка клика",
+      "lockCursorOnRotate": "Блокировать курсор при вращении",
+      "keybindHelpLockCursorOnRotate": "Удерживает курсор мыши внутри окна, пока вы вращаете камеру перетаскиванием, чтобы он не достигал края экрана и не переходил на другой монитор. Отключите, если предпочитаете свободный курсор.",
       "showWalletOnCharacterScreen": "Показывать кошелек на экране персонажей",
       "showWalletOnPlayerCard": "Показывать кошелек на карточке игрока",
       "uiScale": "Масштаб интерфейса",
@@ -510,6 +534,22 @@ export const ru_RU: EnTranslations = {
       "exportBtn": "Скачать мои данные",
       "exportDone": "Ваши данные были скачаны. Мы отправили вам подтверждение по email.",
       "exportFailed": "Не удалось экспортировать ваши данные. Попробуйте снова через мгновение."
+    },
+    "bags": {
+      "filterGroupAria": "Фильтровать сумки по категории",
+      "filterAll": "Все",
+      "filterWeapon": "Оружие",
+      "filterArmor": "Броня",
+      "filterConsumable": "Расходники",
+      "filterMaterial": "Материалы",
+      "filterQuest": "Задания",
+      "sortAria": "Сортировать предметы в сумках",
+      "sortRecent": "Недавние",
+      "sortQuality": "Качество",
+      "sortName": "Название",
+      "searchPlaceholder": "Поиск предметов",
+      "searchAria": "Поиск предметов в сумках по названию",
+      "noMatch": "Нет предметов, соответствующих фильтрам."
     }
   },
   "guide": {
@@ -2350,6 +2390,10 @@ export const ru_RU: EnTranslations = {
       "whisperAmbiguous": "Несколько игроков подходят под '{name}'. Используйте точный регистр.",
       "whisperMissing": "Игрока с именем '{name}' нет в сети.",
       "whisperSelf": "Вы бормочете себе под нос. Никто не слышит.",
+      "assistSelf": "Вы не можете помогать самому себе.",
+      "assistNoTarget": "У {name} нет цели.",
+      "assistWhom": "Кому помочь? Выберите игрока или используйте /assist <name>.",
+      "assisting": "Помогаете {name}.",
       "notInParty": "Вы не в группе.",
       "unknownCommand": "Неизвестная команда: {command}. Попробуйте /s /y /w /p /g.",
       "chatCooldown": "Чат на восстановлении еще {seconds} сек.",
@@ -3809,6 +3853,9 @@ export const ru_RU: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "Шкура хребтового охотника"
       },
+      "pristine_ridge_stalker_pelt": {
+        "name": "Безупречная шкура хребтового охотника"
+      },
       "glowing_wax": {
         "name": "Светящийся воск"
       },
@@ -4249,6 +4296,9 @@ export const ru_RU: EnTranslations = {
       },
       "cragmaw_prowlboots": {
         "name": "Крадущиеся сапоги Крэгмо"
+      },
+      "cragmaw_huntcord": {
+        "name": "Охотничий пояс Крэгмо"
       },
       "drowned_tide_scepter": {
         "name": "Скипетр утопшего прилива"

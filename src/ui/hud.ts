@@ -66,6 +66,7 @@ import { Keybinds, BIND_ACTIONS, BIND_CATEGORIES, isReservedCode, keyLabel } fro
 import { GAMEPAD_BUTTON_LABELS, GAMEPAD_NONE } from '../game/gamepad_map';
 import { Settings, GameSettings, BoolSettingKey, NumericSettingKey, SETTING_RANGES, normalizeClickMoveButton } from '../game/settings';
 import { PerfOverlaySettingsPanel, type PerfOverlayHooks, type PerfSettingsHost } from './perf_overlay_settings';
+import { PRESET_ORDER, THEME_KNOB_ORDER, THEME_KNOB_LABEL_KEY, resolveTheme, type PresetId, type ThemeKnob, type ThemeState } from './theme';
 import { useTouchInterface, isNativeAppShell } from '../game/mobile_controls';
 import { chatPlayerContextActions } from './player_context_menu';
 import {
@@ -80,6 +81,17 @@ import {
   type MarketRarityFilter,
   type MarketSubtypeFilter,
 } from './market_filters';
+import {
+  BAG_CATEGORIES,
+  BAG_SORTS,
+  DEFAULT_BAG_FILTER,
+  applyBagFilter,
+  parseBagFilter,
+  serializeBagFilter,
+  type BagCategory,
+  type BagFilterState,
+  type BagSort,
+} from './bag_filter';
 import {
   CHAT_TAB_CHANNELS, CHANNEL_LABEL_KEYS, channelNeedsJoin, composeChatLine,
   parseChatTabs, serializeChatTabs, isChatTabChannel,
@@ -127,10 +139,19 @@ export interface OptionsHooks {
   // feature is off or no wallet is connected/linked.
   refreshWocBalance(): void;
   perfOverlay: PerfOverlayHooks;
+  // UI theming seam — main.ts owns the ThemeStore + live CSS-variable apply.
+  theme: ThemeHooks;
   // Gamepad button-layout seam (the concrete GamepadBindings satisfies it
   // structurally), so the Controller options panel can read & rebind buttons
   // without the HUD importing the manager.
   gamepad: GamepadBindingsHooks;
+}
+
+export interface ThemeHooks {
+  get(): ThemeState;
+  setPreset(id: PresetId): void;
+  setCustom(knob: ThemeKnob, value: string | null): void;
+  resetCustom(): void;
 }
 
 // Read/rebind the gamepad's button→action layout from the options panel.
@@ -213,6 +234,19 @@ const RESOURCE_LABEL_KEYS: Record<ResourceType, TranslationKey> = {
   mana: 'abilityUi.resources.mana',
   rage: 'abilityUi.resources.rage',
   energy: 'abilityUi.resources.energy',
+};
+const BAG_CATEGORY_LABEL_KEYS: Record<BagCategory, TranslationKey> = {
+  all: 'hudChrome.bags.filterAll',
+  weapon: 'hudChrome.bags.filterWeapon',
+  armor: 'hudChrome.bags.filterArmor',
+  consumable: 'hudChrome.bags.filterConsumable',
+  material: 'hudChrome.bags.filterMaterial',
+  quest: 'hudChrome.bags.filterQuest',
+};
+const BAG_SORT_LABEL_KEYS: Record<BagSort, TranslationKey> = {
+  recent: 'hudChrome.bags.sortRecent',
+  quality: 'hudChrome.bags.sortQuality',
+  name: 'hudChrome.bags.sortName',
 };
 const RAID_MARKER_LABEL_KEYS = [
   'hud.markers.names.star',
@@ -584,6 +618,13 @@ export class Hud {
   private marketSellItem: string | null = null; // bag item staged for listing
   private marketSearchQuery = ''; // active browse search term (sent to the server)
   private lastMarketSig = '';
+  // Modular bag filtering: category chips + sort + live search, persisted across
+  // sessions. Pure logic lives in bag_filter.ts; renderBags() is the thin consumer.
+  private static readonly BAG_FILTER_KEY = 'woc_bag_filter';
+  private bagFilter: BagFilterState = (() => {
+    try { return parseBagFilter(localStorage.getItem(Hud.BAG_FILTER_KEY)); }
+    catch { return { ...DEFAULT_BAG_FILTER }; }
+  })();
   // all-time ladder, fetched best-effort from the server (online only)
   private arenaAllTime: Partial<Record<ArenaFormat, { name: string; class: string; level: number; rating: number; wins: number; losses: number }[]>> = {};
   private arenaLbFetchedAt: Partial<Record<ArenaFormat, number>> = {};
@@ -4587,6 +4628,8 @@ export class Hud {
       'You cannot afford that.': 'itemUi.errors.cannotAfford',
       'That is not your listing.': 'itemUi.errors.notYourListing',
       'You have nothing to collect.': 'itemUi.errors.nothingToCollect',
+      "You can't assist yourself.": 'hud.errors.assistSelf',
+      'Assist whom? Target a player or use /assist <name>.': 'hud.errors.assistWhom',
     };
     const key = exact[text];
     if (key) return t(key);
@@ -4603,6 +4646,13 @@ export class Hud {
     if (match) return t('hud.errors.whisperAmbiguous', { name: match[1] });
     match = /^There is no player named '(.+)' online\.$/.exec(text);
     if (match) return t('hud.errors.whisperMissing', { name: match[1] });
+    match = /^Assisting (.+)\.$/.exec(text);
+    if (match) return t('hud.errors.assisting', { name: match[1] });
+    // Assist reply only: anchor the name to a single un-punctuated token run so a
+    // future unmapped "... has no target." sim line is not mis-localized with a wrong
+    // {name}. Player names never contain a period, so excluding "." keeps this specific.
+    match = /^([^.]+) has no target\.$/.exec(text);
+    if (match) return t('hud.errors.assistNoTarget', { name: match[1] });
     // Lenient suffix match: the sim's command-help list (". Try /s /y /w /p /g, /me, …")
     // evolves over time; capture the command non-greedily and tolerate any "Try /…" tail
     // so this never silently falls through to raw English again.
@@ -5970,6 +6020,77 @@ export class Hud {
     if ($('#char-window').style.display === 'block') this.renderChar();
   }
 
+  private persistBagFilter(): void {
+    try { localStorage.setItem(Hud.BAG_FILTER_KEY, serializeBagFilter(this.bagFilter)); }
+    catch { /* storage unavailable (private mode); filter still works in-session */ }
+  }
+
+  // The category-chip + sort + search controls above the bag grid. Each control
+  // mutates this.bagFilter, persists, and re-renders; the actual filtering is the
+  // pure applyBagFilter() in bag_filter.ts.
+  private buildBagFilterBar(): HTMLElement {
+    const bar = document.createElement('div');
+    bar.className = 'bag-filter-bar';
+
+    const chips = document.createElement('div');
+    chips.className = 'bag-chips';
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', t('hudChrome.bags.filterGroupAria'));
+    for (const category of BAG_CATEGORIES) {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'bag-chip' + (this.bagFilter.category === category ? ' active' : '');
+      chip.textContent = t(BAG_CATEGORY_LABEL_KEYS[category]);
+      chip.setAttribute('aria-pressed', this.bagFilter.category === category ? 'true' : 'false');
+      chip.addEventListener('click', () => {
+        if (this.bagFilter.category === category) return;
+        this.bagFilter.category = category;
+        this.persistBagFilter();
+        audio.click();
+        this.renderBags();
+      });
+      chips.appendChild(chip);
+    }
+    bar.appendChild(chips);
+
+    const tools = document.createElement('div');
+    tools.className = 'bag-tools';
+
+    const search = document.createElement('input');
+    search.type = 'search';
+    search.className = 'bag-search';
+    search.placeholder = t('hudChrome.bags.searchPlaceholder');
+    search.setAttribute('aria-label', t('hudChrome.bags.searchAria'));
+    search.value = this.bagFilter.search;
+    search.addEventListener('input', () => {
+      this.bagFilter.search = search.value;
+      this.persistBagFilter();
+      this.refreshBagGrid();
+    });
+    tools.appendChild(search);
+
+    const sort = document.createElement('select');
+    sort.className = 'bag-sort';
+    sort.setAttribute('aria-label', t('hudChrome.bags.sortAria'));
+    for (const option of BAG_SORTS) {
+      const opt = document.createElement('option');
+      opt.value = option;
+      opt.textContent = t(BAG_SORT_LABEL_KEYS[option]);
+      if (this.bagFilter.sort === option) opt.selected = true;
+      sort.appendChild(opt);
+    }
+    sort.addEventListener('change', () => {
+      this.bagFilter.sort = sort.value as BagSort;
+      this.persistBagFilter();
+      audio.click();
+      this.renderBags();
+    });
+    tools.appendChild(sort);
+
+    bar.appendChild(tools);
+    return bar;
+  }
+
   renderBags(): void {
     const el = $('#bags');
     const sim = this.sim;
@@ -5978,12 +6099,43 @@ export class Hud {
     // otherwise using an item (e.g. a potion) snaps the list back to the top.
     const prevScrollTop = el.querySelector('.bag-grid')?.scrollTop ?? 0;
     el.innerHTML = `<div class="panel-title"><span>${esc(t('itemUi.bags.title'))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('itemUi.bags.close'))}">${svgIcon('close')}</button></div>`;
+    // Skip the chip/search row entirely when the bag is empty: a full filter bar
+    // above a single "(empty)" line is just noise.
+    if (sim.inventory.length > 0) el.appendChild(this.buildBagFilterBar());
     const grid = document.createElement('div');
     grid.className = 'bag-grid';
+    this.fillBagGrid(grid);
+    el.appendChild(grid);
+    grid.scrollTop = prevScrollTop;
+    const moneyRow = document.createElement('div');
+    moneyRow.className = 'money';
+    moneyRow.innerHTML = `${this.wocBalanceHtml()}${this.moneyHtml(sim.copper)}`;
+    el.appendChild(moneyRow);
+    el.querySelector('[data-close]')?.addEventListener('click', () => {
+      if (this.vendorOpen && document.body.classList.contains('mobile-touch')) {
+        this.closeVendor();
+        return;
+      }
+      el.style.display = 'none';
+      this.hideTooltip();
+      this.cancelPetFeed();
+    });
+  }
+
+  // Populate (or repopulate) the .bag-grid scroll container from the current
+  // filter state. Split out so a search keystroke can refresh just the grid
+  // (refreshBagGrid) without rebuilding the filter bar and stealing input focus.
+  private fillBagGrid(grid: HTMLElement): void {
+    const sim = this.sim;
+    const visible = applyBagFilter(sim.inventory, (id) => ITEMS[id], this.bagFilter);
     if (sim.inventory.length === 0) {
       grid.innerHTML = `<div class="bag-empty">${esc(t('itemUi.bags.empty'))}</div>`;
+      return;
+    } else if (visible.length === 0) {
+      grid.innerHTML = `<div class="bag-empty">${esc(t('hudChrome.bags.noMatch'))}</div>`;
+      return;
     }
-    for (const s of [...sim.inventory]) {
+    for (const s of visible) {
       const item = ITEMS[s.itemId];
       if (!item) continue;
       const row = document.createElement('button');
@@ -6053,21 +6205,17 @@ export class Hud {
       });
       grid.appendChild(row);
     }
-    el.appendChild(grid);
+  }
+
+  // Refresh only the grid contents (used by live search) so the search input
+  // keeps focus and caret position across keystrokes.
+  private refreshBagGrid(): void {
+    const grid = $('#bags').querySelector('.bag-grid') as HTMLElement | null;
+    if (!grid) return;
+    const prevScrollTop = grid.scrollTop;
+    grid.innerHTML = '';
+    this.fillBagGrid(grid);
     grid.scrollTop = prevScrollTop;
-    const money = document.createElement('div');
-    money.className = 'money';
-    money.innerHTML = `${this.wocBalanceHtml()}${this.moneyHtml(sim.copper)}`;
-    el.appendChild(money);
-    el.querySelector('[data-close]')?.addEventListener('click', () => {
-      if (this.vendorOpen && document.body.classList.contains('mobile-touch')) {
-        this.closeVendor();
-        return;
-      }
-      el.style.display = 'none';
-      this.hideTooltip();
-      this.cancelPetFeed();
-    });
   }
 
   private sellBagItem(slot: InvSlot, ev: MouseEvent): void {
@@ -9572,9 +9720,81 @@ export class Hud {
     parent.append(row, status);
   }
 
+  // UI theme picker: a preset selector plus a full-palette custom-colour block.
+  // Preset/custom changes route through OptionsHooks.theme; main.ts persists and
+  // live-applies the resulting CSS variables, so no reload is needed.
+  private renderThemeControls(body: HTMLElement): void {
+    const hooks = this.optionsHooks;
+    if (!hooks) return;
+    const theme = hooks.theme;
+
+    const presetRow = document.createElement('div');
+    presetRow.className = 'set-row';
+    const presetName = document.createElement('span');
+    presetName.className = 'set-name';
+    presetName.textContent = t('hudChrome.theme.preset');
+    const seg = document.createElement('div');
+    seg.className = 'set-seg theme-presets';
+    const presetLabel = (id: PresetId): string => t(`hudChrome.theme.presets.${id}` as TranslationKey);
+    for (const id of PRESET_ORDER) {
+      const btn = document.createElement('button');
+      btn.className = 'btn set-seg-btn';
+      btn.textContent = presetLabel(id);
+      btn.classList.toggle('active', theme.get().preset === id);
+      btn.addEventListener('click', () => {
+        audio.click();
+        theme.setPreset(id);
+        this.renderInterface(); // refresh active state + custom pickers
+      });
+      seg.appendChild(btn);
+    }
+    presetRow.append(presetName, seg);
+    body.appendChild(presetRow);
+
+    // Custom palette: one colour input per knob, seeded with the effective value.
+    const effective = resolveTheme(theme.get());
+    const customCount = Object.keys(theme.get().custom).length;
+    const customRow = document.createElement('div');
+    customRow.className = 'set-row theme-custom-head';
+    const customName = document.createElement('span');
+    customName.className = 'set-name';
+    customName.textContent = t('hudChrome.theme.customColors');
+    const reset = document.createElement('button');
+    reset.className = 'btn set-toggle';
+    reset.textContent = t('hudChrome.theme.reset');
+    reset.disabled = customCount === 0;
+    reset.addEventListener('click', () => {
+      audio.click();
+      theme.resetCustom();
+      this.renderInterface();
+    });
+    customRow.append(customName, reset);
+    body.appendChild(customRow);
+
+    const grid = document.createElement('div');
+    grid.className = 'theme-color-grid';
+    for (const knob of THEME_KNOB_ORDER) {
+      const row = document.createElement('label');
+      row.className = 'theme-color-row';
+      const swatchLabel = document.createElement('span');
+      swatchLabel.textContent = t(`hudChrome.theme.knob.${THEME_KNOB_LABEL_KEY[knob]}` as TranslationKey);
+      const input = document.createElement('input');
+      input.type = 'color';
+      input.value = effective[knob];
+      input.setAttribute('aria-label', swatchLabel.textContent);
+      // 'input' fires continuously while dragging the picker → live preview.
+      input.addEventListener('input', () => theme.setCustom(knob, input.value));
+      input.addEventListener('change', () => { theme.setCustom(knob, input.value); reset.disabled = false; });
+      row.append(input, swatchLabel);
+      grid.appendChild(row);
+    }
+    body.appendChild(grid);
+  }
+
   private renderInterface(): void {
     const body = this.settingsViewShell(t('hud.options.interface'));
     this.languageSelect(body);
+    this.renderThemeControls(body);
     this.settingSlider(body, t('hudChrome.options.uiScale'), 'uiScale');
     this.settingSlider(body, t('hud.options.hudOpacity'), 'hudOpacity');
     this.settingSlider(body, t('hud.options.tooltipScale'), 'tooltipScale');
@@ -9726,7 +9946,7 @@ export class Hud {
   // Toggle row styled for the Key Bindings panel. Handles the bool Mouse Camera
   // setting and the numeric (0/1) Click to Move setting, which both live here
   // alongside the rebindable keys.
-  private settingToggleKeybind(parent: HTMLElement, label: string, key: BoolSettingKey | 'clickToMove'): void {
+  private settingToggleKeybind(parent: HTMLElement, label: string, key: BoolSettingKey | 'clickToMove', help?: string): void {
     const hooks = this.optionsHooks;
     if (!hooks) return;
     const isOn = () => (key === 'clickToMove' ? hooks.settings.get(key) >= 0.5 : hooks.settings.get(key));
@@ -9757,6 +9977,12 @@ export class Hud {
     });
     row.append(name, toggle);
     parent.appendChild(row);
+    if (help) {
+      const hint = document.createElement('div');
+      hint.className = 'kb-note kb-toggle-help';
+      hint.textContent = help;
+      parent.appendChild(hint);
+    }
   }
 
   private clickMoveMouseButtonRow(parent: HTMLElement): void {
@@ -9853,6 +10079,7 @@ export class Hud {
     el.classList.add('kb-wide');
     el.innerHTML = `<div class="panel-title"><span>${esc(t('hud.options.keyBindings'))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('hud.options.returnToGame'))}">${svgIcon('close')}</button></div>`;
     this.settingToggleKeybind(el, t('hud.options.mouseCamera'), 'mouseCamera');
+    this.settingToggleKeybind(el, t('hudChrome.options.lockCursorOnRotate'), 'lockCursorOnRotate', t('hudChrome.options.keybindHelpLockCursorOnRotate'));
     this.settingToggleKeybind(el, t('hud.options.clickToMove'), 'clickToMove');
     this.clickMoveMouseButtonRow(el);
     this.settingToggleKeybind(el, t('hud.keybinds.actions.attackMove'), 'attackMove');

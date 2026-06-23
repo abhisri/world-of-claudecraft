@@ -11,6 +11,7 @@ import { PLAYER_BODY_RADIUS, PLAYER_MAX_CLIMB_SLOPE, PLAYER_SWIM_DEPTH, findPlay
 import { combatProfileForMob, effectiveMobMeleeRange, type MobCombatProfile } from './mob_combat';
 import { createGroundObject, createMob, createNpc, createPlayer, recalcPlayerStats, PlayerEquipment } from './entity';
 import { canEquipItem } from './equipment_rules';
+import { resolveAssist, type AssistCandidate } from './assist';
 import {
   computeTalentModifiers, emptyAllocation, emptyModifiers, talentsFor, talentPointsAtLevel,
   validateAllocation, cloneAllocation, pointsSpent, defaultBuild, FIRST_TALENT_LEVEL, MAX_LOADOUTS,
@@ -243,6 +244,11 @@ function isDevourableAura(a: Aura): boolean {
 }
 const NEARBY_RANGE = 40; // /nearby scan radius — wider than say, tighter than yell
 const NEARBY_MAX = 10; // cap the /nearby list so a crowded camp can't spam chat
+// /assist resolves a named player only if they are within interest range (you can see
+// them) OR in your party/raid (you coordinate with them across the whole map). This
+// mirrors the server's ~120yd snapshot scope so /assist never reaches a stranger on the
+// far side of the world. Party/raid members are always included, regardless of distance.
+const ASSIST_RANGE = 120;
 const CHAT_BURST = 8; // messages a player may send back-to-back...
 const CHAT_REFILL = 2; // ...then this many more per second (caps spam amplifiers)
 // Max characters in a single chat line, matching classic WoW's 255-char editbox.
@@ -8472,6 +8478,31 @@ export class Sim {
       return null;
     }
 
+    // "/assist [name]" targets whatever the named player is targeting (group-play /
+    // multiboxing target-matching). With no name it assists the player you currently
+    // have targeted. Resolution lives in the pure resolveAssist() core.
+    const am = /^\/(?:assist|as)(?:\s+([\s\S]+))?$/i.exec(raw);
+    if (am) {
+      // Scope the candidate roster the way the server scopes a snapshot: players within
+      // interest range of the caster, PLUS the caster's party/raid members by name no
+      // matter how far they have roamed. Classic /assist only resolves a unit you could
+      // know about, never an arbitrary stranger across the map.
+      const assistParty = this.partyOf(r.meta.entityId);
+      const candidates: AssistCandidate[] = [];
+      for (const meta of this.players.values()) {
+        const ent = this.entities.get(meta.entityId);
+        const inParty = assistParty ? assistParty.members.includes(meta.entityId) : false;
+        const inRange = ent ? dist2d(r.e.pos, ent.pos) <= ASSIST_RANGE : false;
+        if (meta.entityId !== r.meta.entityId && !inParty && !inRange) continue;
+        candidates.push({ entityId: meta.entityId, name: meta.name, targetId: ent ? ent.targetId : null });
+      }
+      const res = resolveAssist(candidates, r.meta.entityId, am[1] ?? '');
+      if (res.kind === 'error') { this.error(r.meta.entityId, res.message); return null; }
+      this.targetEntity(res.targetId, pid);
+      this.error(r.meta.entityId, `Assisting ${res.leaderName}.`);
+      return null;
+    }
+
     // "/played" — report how long this character has been in the world this
     // session. Self-only informational line, like /who's reply.
     if (/^\/played(?:\s|$)/i.test(raw)) {
@@ -11463,7 +11494,7 @@ export class Sim {
     return [
       'Chat channels: /s say, /y yell, /general, /p party, /world, /lfg.',
       'Whisper a player with /w <name> <message>, reply with /r.',
-      'Other commands: /join <world|lfg>, /roll, /inspect <name>, /follow <name>, /unfollow, /afk, /dnd, /who.',
+      'Other commands: /join <world|lfg>, /roll, /inspect <name>, /follow <name>, /unfollow, /assist <name>, /afk, /dnd, /who.',
       'Character readouts: /played, /xp, /gold, /stats, /bags, /gear, /abilities, /buffs, /cooldowns, /quest, /completed.',
       'World readouts: /where, /zones, /nearby, /pois, /graveyard, /dungeons, /arena, /session, /listings, /buyback.',
       'Combat readouts: /target, /targetbuffs, /range, /attack, /casting, /combat, /threat, /consider, /combo, /overpower.',

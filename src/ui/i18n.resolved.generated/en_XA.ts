@@ -174,6 +174,28 @@ export const en_XA: EnTranslations = {
       "title": "[Éɱóţéš]",
       "done": "[Ðóñé]"
     },
+    "theme": {
+      "preset": "[ÚÍ Ţĥéɱé]",
+      "customColors": "[Çúšţóɱ Çóļóŕš]",
+      "reset": "[Ŕéšéţ]",
+      "presets": {
+        "classic": "[Çļáššíç Ĝóļð]",
+        "midnight": "[Ɱíðñíĝĥţ]",
+        "parchment": "[Þáŕçĥɱéñţ]",
+        "highContrast": "[Ĥíĝĥ Çóñţŕášţ]"
+      },
+      "knob": {
+        "accent": "[Áççéñţ]",
+        "border": "[Ɓóŕðéŕ]",
+        "panel": "[Ƒŕáɱé]",
+        "text": "[Ţéẋţ]",
+        "textMuted": "[Ɱúţéð Ţéẋţ]",
+        "hp": "[Ĥéáļţĥ]",
+        "mana": "[Ɱáñá]",
+        "rage": "[Ŕáĝé]",
+        "energy": "[Éñéŕĝý]"
+      }
+    },
     "questTracker": {
       "count": "[({count})]",
       "collapseHint": "[Çóļļáþšé ɋúéšţ ţŕáçķéŕ]",
@@ -253,6 +275,8 @@ export const en_XA: EnTranslations = {
       "interfaceModeNote": "[Áúţó þíçķš ðéšķţóþ óŕ ţóúçĥ çóñţŕóļš ƒŕóɱ ýóúŕ ðéʋíçé. Çĥóóšé Ðéšķţóþ ţó ƒóŕçé ķéýƀóáŕð áñð ɱóúšé (úšéƒúļ óñ á ţáƀļéţ ŵíţĥ á ķéýƀóáŕð), óŕ Ţóúçĥ ƒóŕ ţĥé óñ-šçŕééñ çóñţŕóļš.]",
       "footstepSounds": "[Ƒóóţšţéþ Šóúñðš]",
       "clickFeedback": "[Çļíçķ Ɱáŕķéŕ]",
+      "lockCursorOnRotate": "[Ļóçķ Çúŕšóŕ Ŵĥíļé Ŕóţáţíñĝ]",
+      "keybindHelpLockCursorOnRotate": "[Ķééþš ţĥé ɱóúšé çúŕšóŕ íñšíðé ţĥé ŵíñðóŵ ŵĥíļé ýóú ðŕáĝ ţó ŕóţáţé ţĥé çáɱéŕá, šó íţ çáññóţ ŕéáçĥ ţĥé šçŕééñ éðĝé óŕ ɱóʋé ţó áñóţĥéŕ ɱóñíţóŕ. Ţúŕñ óƒƒ íƒ ýóú þŕéƒéŕ á ƒŕéé çúŕšóŕ.]",
       "showWalletOnCharacterScreen": "[Šĥóŵ Ŵáļļéţ óñ Çĥáŕáçţéŕ Šçŕééñ]",
       "showWalletOnPlayerCard": "[Šĥóŵ Ŵáļļéţ óñ Þļáýéŕ Çáŕð]",
       "uiScale": "[ÚÍ Šçáļé]",
@@ -510,6 +534,22 @@ export const en_XA: EnTranslations = {
       "exportBtn": "[Ðóŵñļóáð Ɱý Ðáţá]",
       "exportDone": "[Ýóúŕ ðáţá ŵáš ðóŵñļóáðéð. Ŵé éɱáíļéð ýóú á çóñƒíŕɱáţíóñ.]",
       "exportFailed": "[Çóúļð ñóţ éẋþóŕţ ýóúŕ ðáţá. Ţŕý áĝáíñ íñ á ɱóɱéñţ.]"
+    },
+    "bags": {
+      "filterGroupAria": "[Ƒíļţéŕ ƀáĝš ƀý çáţéĝóŕý]",
+      "filterAll": "[Áļļ]",
+      "filterWeapon": "[Ŵéáþóñš]",
+      "filterArmor": "[Áŕɱóŕ]",
+      "filterConsumable": "[Çóñšúɱáƀļéš]",
+      "filterMaterial": "[Ɱáţéŕíáļš]",
+      "filterQuest": "[Ɋúéšţ]",
+      "sortAria": "[Šóŕţ ƀáĝ íţéɱš]",
+      "sortRecent": "[Ŕéçéñţ]",
+      "sortQuality": "[Ɋúáļíţý]",
+      "sortName": "[Ñáɱé]",
+      "searchPlaceholder": "[Šéáŕçĥ íţéɱš]",
+      "searchAria": "[Šéáŕçĥ ƀáĝ íţéɱš ƀý ñáɱé]",
+      "noMatch": "[Ñó íţéɱš ɱáţçĥ ýóúŕ ƒíļţéŕš.]"
     }
   },
   "guide": {
@@ -2350,6 +2390,10 @@ export const en_XA: EnTranslations = {
       "whisperAmbiguous": "[Šéʋéŕáļ þļáýéŕš ɱáţçĥ '{name}'. Úšé éẋáçţ çáþíţáļížáţíóñ.]",
       "whisperMissing": "[Ţĥéŕé íš ñó þļáýéŕ ñáɱéð '{name}' óñļíñé.]",
       "whisperSelf": "[Ýóú ɱúţţéŕ ţó ýóúŕšéļƒ. Ñóƀóðý ĥéáŕš íţ.]",
+      "assistSelf": "[Ýóú çáñ'ţ áššíšţ ýóúŕšéļƒ.]",
+      "assistNoTarget": "[{name} ĥáš ñó ţáŕĝéţ.]",
+      "assistWhom": "[Áššíšţ ŵĥóɱ? Ţáŕĝéţ á þļáýéŕ óŕ úšé /áššíšţ <ñáɱé>.]",
+      "assisting": "[Áššíšţíñĝ {name}.]",
       "notInParty": "[Ýóú áŕé ñóţ íñ á þáŕţý.]",
       "unknownCommand": "[Úñķñóŵñ çóɱɱáñð: {command}. Ţŕý /š /ý /ŵ /þ /ĝ.]",
       "chatCooldown": "[Çĥáţ íš óñ çóóļðóŵñ ƒóŕ {seconds}š.]",
@@ -3809,6 +3853,9 @@ export const en_XA: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "[Ŕíðĝé Šţáļķéŕ Þéļţ]"
       },
+      "pristine_ridge_stalker_pelt": {
+        "name": "[Þŕíšţíñé Ŕíðĝé Šţáļķéŕ Þéļţ]"
+      },
       "glowing_wax": {
         "name": "[Ĝļóŵíñĝ Ŵáẋ]"
       },
@@ -4249,6 +4296,9 @@ export const en_XA: EnTranslations = {
       },
       "cragmaw_prowlboots": {
         "name": "[Çŕáĝɱáŵ Þŕóŵļƀóóţš]"
+      },
+      "cragmaw_huntcord": {
+        "name": "[Çŕáĝɱáŵ'š Ĥúñţçóŕð]"
       },
       "drowned_tide_scepter": {
         "name": "[Ðŕóŵñéð Ţíðé Šçéþţéŕ]"

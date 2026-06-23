@@ -174,6 +174,28 @@ export const zh_TW: EnTranslations = {
       "title": "表情",
       "done": "完成"
     },
+    "theme": {
+      "preset": "介面主題",
+      "customColors": "自訂顏色",
+      "reset": "重設",
+      "presets": {
+        "classic": "經典金色",
+        "midnight": "午夜",
+        "parchment": "羊皮紙",
+        "highContrast": "高對比"
+      },
+      "knob": {
+        "accent": "強調色",
+        "border": "邊框",
+        "panel": "框架",
+        "text": "文字",
+        "textMuted": "次要文字",
+        "hp": "生命",
+        "mana": "法力",
+        "rage": "怒氣",
+        "energy": "能量"
+      }
+    },
     "questTracker": {
       "count": "（{count}）",
       "collapseHint": "收合任務追蹤器",
@@ -253,6 +275,8 @@ export const zh_TW: EnTranslations = {
       "interfaceModeNote": "自動會根據你的裝置選擇桌面或觸控操作。選擇桌面可強制使用鍵盤與滑鼠（適合有鍵盤的平板），選擇觸控則使用螢幕上的操作控制項。",
       "footstepSounds": "腳步聲",
       "clickFeedback": "點擊標記",
+      "lockCursorOnRotate": "旋轉時鎖定游標",
+      "keybindHelpLockCursorOnRotate": "拖曳旋轉鏡頭時將滑鼠游標保持在視窗內，使其無法到達螢幕邊緣或移動到另一台顯示器。若你偏好自由游標，請關閉此選項。",
       "showWalletOnCharacterScreen": "在角色畫面顯示錢包",
       "showWalletOnPlayerCard": "在玩家卡片顯示錢包",
       "uiScale": "介面縮放",
@@ -510,6 +534,22 @@ export const zh_TW: EnTranslations = {
       "exportBtn": "下載我的資料",
       "exportDone": "你的資料已下載。我們已寄送確認信給你。",
       "exportFailed": "無法匯出你的資料。請稍候再試一次。"
+    },
+    "bags": {
+      "filterGroupAria": "依類別篩選背包",
+      "filterAll": "全部",
+      "filterWeapon": "武器",
+      "filterArmor": "護甲",
+      "filterConsumable": "消耗品",
+      "filterMaterial": "材料",
+      "filterQuest": "任務",
+      "sortAria": "排序背包物品",
+      "sortRecent": "最近",
+      "sortQuality": "品質",
+      "sortName": "名稱",
+      "searchPlaceholder": "搜尋物品",
+      "searchAria": "依名稱搜尋背包物品",
+      "noMatch": "沒有符合篩選條件的物品。"
     }
   },
   "guide": {
@@ -2350,6 +2390,10 @@ export const zh_TW: EnTranslations = {
       "whisperAmbiguous": "有多名玩家符合「{name}」。請使用準確大小寫。",
       "whisperMissing": "沒有名為「{name}」的玩家在線上。",
       "whisperSelf": "你自言自語，沒人聽見。",
+      "assistSelf": "你無法協助自己。",
+      "assistNoTarget": "{name} 沒有目標。",
+      "assistWhom": "協助誰？請選定一名玩家，或使用 /assist <name>。",
+      "assisting": "正在協助 {name}。",
       "notInParty": "你不在隊伍中。",
       "unknownCommand": "未知指令：{command}。請嘗試 /s /y /w /p /g。",
       "chatCooldown": "聊天冷卻中，還需 {seconds} 秒。",
@@ -3809,6 +3853,9 @@ export const zh_TW: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "山脊潛伏者毛皮"
       },
+      "pristine_ridge_stalker_pelt": {
+        "name": "無瑕的山脊潛伏者毛皮"
+      },
       "glowing_wax": {
         "name": "發光蠟塊"
       },
@@ -4249,6 +4296,9 @@ export const zh_TW: EnTranslations = {
       },
       "cragmaw_prowlboots": {
         "name": "裂顎潛行靴"
+      },
+      "cragmaw_huntcord": {
+        "name": "裂顎的狩獵腰索"
       },
       "drowned_tide_scepter": {
         "name": "溺亡潮汐權杖"

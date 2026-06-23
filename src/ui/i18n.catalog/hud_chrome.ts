@@ -33,6 +33,28 @@ export const hudChromeStrings = {
     title: "Emotes",
     done: "Done",
   },
+  theme: {
+    preset: "UI Theme",
+    customColors: "Custom Colors",
+    reset: "Reset",
+    presets: {
+      classic: "Classic Gold",
+      midnight: "Midnight",
+      parchment: "Parchment",
+      highContrast: "High Contrast",
+    },
+    knob: {
+      accent: "Accent",
+      border: "Border",
+      panel: "Frame",
+      text: "Text",
+      textMuted: "Muted Text",
+      hp: "Health",
+      mana: "Mana",
+      rage: "Rage",
+      energy: "Energy",
+    },
+  },
   // On-screen quest tracker. The "(N)" count shown beside the header while the
   // tracker is collapsed (the number is spliced in via formatNumber), plus the
   // header button's state-aware hover/title hint (Collapse while expanded,
@@ -136,6 +158,11 @@ export const hudChromeStrings = {
     // Toggle for the OSRS-style click-feedback marker: entity targets and
     // click-to-move destinations (on by default).
     clickFeedback: "Click Marker",
+    // Keybind panel toggle: pointer-lock the canvas during a camera drag so the
+    // cursor cannot leave the window (hit the screen edge or slip to a second
+    // monitor) while rotating. On by default.
+    lockCursorOnRotate: "Lock Cursor While Rotating",
+    keybindHelpLockCursorOnRotate: "Keeps the mouse cursor inside the window while you drag to rotate the camera, so it cannot reach the screen edge or move to another monitor. Turn off if you prefer a free cursor.",
     showWalletOnCharacterScreen: "Show Wallet on Character Screen",
     showWalletOnPlayerCard: "Show Wallet on Player Card",
     // Interface panel: global HUD zoom slider, and the mirror of the landing
@@ -445,5 +472,23 @@ export const hudChromeStrings = {
     exportBtn: "Download My Data",
     exportDone: "Your data was downloaded. We emailed you a confirmation.",
     exportFailed: "Could not export your data. Try again in a moment.",
+  },
+  // Modular bag filtering controls: the category chips, sort dropdown, and live
+  // search above the bag grid, plus the "no items match" empty state.
+  bags: {
+    filterGroupAria: "Filter bags by category",
+    filterAll: "All",
+    filterWeapon: "Weapons",
+    filterArmor: "Armor",
+    filterConsumable: "Consumables",
+    filterMaterial: "Materials",
+    filterQuest: "Quest",
+    sortAria: "Sort bag items",
+    sortRecent: "Recent",
+    sortQuality: "Quality",
+    sortName: "Name",
+    searchPlaceholder: "Search items",
+    searchAria: "Search bag items by name",
+    noMatch: "No items match your filters.",
   },
 };

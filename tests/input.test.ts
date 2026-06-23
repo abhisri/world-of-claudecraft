@@ -182,16 +182,60 @@ describe('Input pointer lock', () => {
     expect(canvas.requestPointerLock).not.toHaveBeenCalled();
   });
 
-  it('requests pointer lock after mouse movement becomes an active drag', () => {
+  it('does not request pointer lock for a quick right-click with sub-threshold jitter (#116)', () => {
+    let now = 1000;
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    const { canvas, canvasListeners, windowListeners } = makeInput();
+
+    // A real click jitters a few pixels well under CAMERA_DRAG_START_DISTANCE
+    // and releases before CAMERA_DRAG_START_MS: it must stay a click, never a
+    // drag, so the browser pointer-capture banner is never shown.
+    canvasListeners.get('mousedown')!({ button: 2, clientX: 100, clientY: 100, preventDefault: vi.fn() });
+    now += 30;
+    windowListeners.get('mousemove')!({ movementX: 3, movementY: 2 });
+    now += 30;
+    windowListeners.get('mouseup')!({ button: 2, clientX: 103, clientY: 102, target: canvas });
+
+    expect(canvas.requestPointerLock).not.toHaveBeenCalled();
+  });
+
+  it('requests pointer lock the instant a press becomes an active drag (before any rotation)', () => {
     const { canvas, canvasListeners, windowListeners } = makeInput();
 
     canvasListeners.get('mousedown')!({ button: 2, clientX: 100, clientY: 100 });
     windowListeners.get('mousemove')!({ movementX: 10, movementY: 5 });
-    windowListeners.get('mousemove')!({ movementX: 4, movementY: 0 });
     expect(canvas.requestPointerLock).not.toHaveBeenCalled();
+    // This move crosses the drag threshold: lock must engage on the SAME frame so
+    // rotation never begins with a free cursor that can escape the window.
+    windowListeners.get('mousemove')!({ movementX: 4, movementY: 0 });
+    expect(canvas.requestPointerLock).toHaveBeenCalledTimes(1);
+
+    // Continuing the drag does not re-request (avoids re-showing the banner).
     windowListeners.get('mousemove')!({ movementX: 1, movementY: 0 });
+    expect(canvas.requestPointerLock).toHaveBeenCalledTimes(1);
+  });
+
+  it('requests pointer lock in Mouse Camera mode too (regression: cursor used to escape there)', () => {
+    const { canvas, input, canvasListeners, windowListeners } = makeInput();
+    input.setMouseCameraEnabled(true);
+
+    canvasListeners.get('mousedown')!({ button: 0, clientX: 100, clientY: 100, preventDefault: vi.fn() });
+    windowListeners.get('mousemove')!({ movementX: 10, movementY: 5 });
+    windowListeners.get('mousemove')!({ movementX: 4, movementY: 0 });
 
     expect(canvas.requestPointerLock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not request pointer lock when "Lock Cursor While Rotating" is off', () => {
+    const { canvas, input, canvasListeners, windowListeners } = makeInput();
+    input.setLockCursorOnRotate(false);
+
+    canvasListeners.get('mousedown')!({ button: 2, clientX: 100, clientY: 100 });
+    windowListeners.get('mousemove')!({ movementX: 10, movementY: 5 });
+    windowListeners.get('mousemove')!({ movementX: 4, movementY: 0 });
+    windowListeners.get('mousemove')!({ movementX: 2, movementY: 0 });
+
+    expect(canvas.requestPointerLock).not.toHaveBeenCalled();
   });
 
   it('uses normal mouse dragging instead of pointer lock while browser fullscreen is active', () => {
@@ -234,8 +278,10 @@ describe('Input pointer lock', () => {
     windowListeners.get('mousemove')!({ movementX: 10, movementY: 5 });
     windowListeners.get('mousemove')!({ movementX: 4, movementY: 0 });
     expect(input.isCameraDragActive()).toBe(true);
+    // The threshold-crossing movement is still discarded (no rotation jump), but
+    // the lock now engages on this frame so the cursor is captured immediately.
     expect(input.camYaw).toBe(yaw);
-    expect(canvas.requestPointerLock).not.toHaveBeenCalled();
+    expect(canvas.requestPointerLock).toHaveBeenCalledTimes(1);
 
     windowListeners.get('mousemove')!({ movementX: 2, movementY: 0 });
     expect(canvas.requestPointerLock).toHaveBeenCalledTimes(1);
@@ -288,7 +334,8 @@ describe('Input pointer lock', () => {
     windowListeners.get('mousemove')!({ movementX: 1, movementY: 0 });
     expect(input.isCameraDragActive()).toBe(true);
     expect(input.camYaw).toBe(yaw);
-    expect(canvas.requestPointerLock).not.toHaveBeenCalled();
+    // Lock engages on the activation frame (the click timer has expired).
+    expect(canvas.requestPointerLock).toHaveBeenCalledTimes(1);
 
     windowListeners.get('mousemove')!({ movementX: 2, movementY: 0 });
     expect(canvas.requestPointerLock).toHaveBeenCalledTimes(1);

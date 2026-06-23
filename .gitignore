@@ -47,3 +47,5 @@ Thumbs.db
 !.claude/skills/
 !.claude/agents/
 pr-assets-2fa
+
+.vite/

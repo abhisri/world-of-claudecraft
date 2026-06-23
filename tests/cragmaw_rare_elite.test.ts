@@ -36,6 +36,34 @@ describe('Old Cragmaw — rare elite ridge beast (Thornpeak Heights)', () => {
     expect(boots.stats!.armor!).toBeGreaterThan(ITEMS.ridgestalker_treads.stats!.armor!);
   });
 
+  it('guarantees a unique boss trophy distinct from the shared quest pelt', () => {
+    const m = MOBS.old_cragmaw;
+    const trophy = m.loot.find((l) => l.itemId === 'pristine_ridge_stalker_pelt');
+    expect(trophy).toBeTruthy();
+    expect(trophy!.chance).toBe(1); // always rewards a kill of the rare elite
+
+    const pelt = ITEMS.pristine_ridge_stalker_pelt;
+    expect(pelt).toMatchObject({ kind: 'junk', quality: 'uncommon' });
+    expect(pelt.sellValue).toBeGreaterThan(0);
+    // It is a pure vendor trophy, not the q_stalker_pelts turn-in pelt the trash mob shares.
+    expect(pelt.questId).toBeUndefined();
+    expect(ITEMS.ridge_stalker_pelt.kind).toBe('quest');
+  });
+
+  it('offers a chance at a waist piece that pairs with the prowlboots', () => {
+    const m = MOBS.old_cragmaw;
+    const drop = m.loot.find((l) => l.itemId === 'cragmaw_huntcord');
+    expect(drop).toBeTruthy();
+    expect(drop!.chance).toBeGreaterThan(0);
+    expect(drop!.chance).toBeLessThan(1); // rarer than the guaranteed trophy
+
+    const belt = ITEMS.cragmaw_huntcord;
+    expect(belt).toMatchObject({ kind: 'armor', slot: 'waist', quality: 'rare' });
+    // Agility-leaning leather, like the boots; waist armor sits under the feet slot.
+    expect(belt.stats!.agi!).toBeGreaterThan(0);
+    expect(belt.stats!.armor!).toBeLessThan(ITEMS.cragmaw_prowlboots.stats!.armor!);
+  });
+
   it('has exactly one lone overworld spawn placed on the Thornpeak ridge', () => {
     const camps = CAMPS.filter((c) => c.mobId === 'old_cragmaw');
     expect(camps).toHaveLength(1);
