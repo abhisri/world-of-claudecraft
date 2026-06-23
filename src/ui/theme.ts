@@ -103,13 +103,69 @@ export function mixHex(hex: string, target: string, t: number): string {
   return rgbToHex(r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t);
 }
 
+// --- WCAG contrast (sRGB relative luminance + ratio) -----------------------
+// Pure helpers so the contrast guards below (and the unit tests) never need a
+// DOM. Follows WCAG 2.1: linearize each channel, weight, then ratio with the
+// +0.05 flare term.
+
+function srgbChannel(c: number): number {
+  const cs = c / 255;
+  return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4);
+}
+
+/** WCAG relative luminance in [0,1] for a #rrggbb colour. Pure. */
+export function relativeLuminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex);
+  return 0.2126 * srgbChannel(r) + 0.7152 * srgbChannel(g) + 0.0722 * srgbChannel(b);
+}
+
+/** WCAG contrast ratio (>=1) between two #rrggbb colours. Pure. */
+export function contrastRatio(a: string, b: string): number {
+  const la = relativeLuminance(a);
+  const lb = relativeLuminance(b);
+  const hi = Math.max(la, lb);
+  const lo = Math.min(la, lb);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/** True when `panel` reads as a light surface (so text should go dark). */
+export function isLightPanel(hex: string): boolean {
+  return relativeLuminance(hex) > 0.4;
+}
+
 /** `rgba(...)` string from a hex colour and an alpha in [0,1]. Pure. */
 export function rgba(hex: string, alpha: number): string {
   const [r, g, b] = hexToRgb(hex);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-/** Effective knobs: the preset overlaid with any valid custom overrides. */
+/** Minimum body-text contrast we will let a resolved theme ship with. */
+export const MIN_TEXT_CONTRAST = 4.5;
+/** Minimum contrast for muted/secondary and accent (large-text tier). */
+export const MIN_LARGE_CONTRAST = 3;
+
+/**
+ * Repair a text colour so it clears `min` contrast against `panel`. We keep the
+ * caller's hue when it already passes; otherwise we step it toward whichever of
+ * black/white the panel contrasts with best until it clears (or fall back to
+ * that pole). Pure, so the custom-override guard is unit-testable.
+ */
+export function ensureReadable(textHex: string, panelHex: string, min: number): string {
+  if (contrastRatio(textHex, panelHex) >= min) return textHex;
+  const pole = isLightPanel(panelHex) ? '#000000' : '#ffffff';
+  if (contrastRatio(pole, panelHex) < min) return pole; // panel itself is mid-grey; best effort
+  for (let t = 0.15; t < 1; t += 0.15) {
+    const candidate = mixHex(textHex, pole, t);
+    if (contrastRatio(candidate, panelHex) >= min) return candidate;
+  }
+  return pole;
+}
+
+/**
+ * Effective knobs: the preset overlaid with any valid custom overrides, then a
+ * contrast guard so a custom text/panel pair (e.g. white-on-white) can never
+ * ship below AA. Both text shades are repaired against the resolved panel.
+ */
 export function resolveTheme(state: ThemeState): ThemeKnobs {
   const base = THEME_PRESETS[state.preset] ?? THEME_PRESETS[DEFAULT_PRESET];
   const out: ThemeKnobs = { ...base };
@@ -117,6 +173,8 @@ export function resolveTheme(state: ThemeState): ThemeKnobs {
     const v = state.custom[knob];
     if (isValidHex(v)) out[knob] = v;
   }
+  out.text = ensureReadable(out.text, out.panel, MIN_TEXT_CONTRAST);
+  out.textMuted = ensureReadable(out.textMuted, out.panel, MIN_LARGE_CONTRAST);
   return out;
 }
 
@@ -128,10 +186,28 @@ export function resolveTheme(state: ThemeState): ThemeKnobs {
 export function themeCssVars(knobs: ThemeKnobs): Record<string, string> {
   const { accent, border, panel, text, textMuted, hp, mana, rage, energy } = knobs;
   const accentDim = mixHex(accent, '#000000', 0.22);
-  const panelEdge = mixHex(panel, '#000000', 0.45);
+  const lightPanel = isLightPanel(panel);
+  // panelEdge: dark panels darken hard (the classic vignette); light panels only
+  // tint slightly so body/muted/accent text stays above AA over the gradient's
+  // bottom band instead of dropping onto a near-#827b6c mid-grey.
+  const panelEdge = lightPanel ? mixHex(panel, '#000000', 0.14) : mixHex(panel, '#000000', 0.45);
+  // A panel-aware gold: on a dark panel the raw accent reads fine, but a bright
+  // accent on the light Parchment panel is gold-on-cream (sub-AA). Darken the
+  // accent toward black until it clears the large-text tier against BOTH the
+  // panel and its edge so accent values recolor and stay readable per preset.
+  const colorGold = ensureReadable(
+    ensureReadable(accent, panel, MIN_LARGE_CONTRAST),
+    panelEdge,
+    MIN_LARGE_CONTRAST,
+  );
+  // Overlay text sits over the 3D world (quest tracker), NOT a panel, so it must
+  // stay light regardless of preset and lean on its text-shadow for contrast.
+  const overlayText = '#f4eede';
   return {
     '--gold': accent,
     '--gold-dim': accentDim,
+    '--color-gold': colorGold,
+    '--color-accent': colorGold,
     '--color-primary-glow': rgba(accent, 0.2),
     '--color-primary-glow-heavy': rgba(accent, 0.4),
     '--color-border-focus': accentDim,
@@ -139,9 +215,11 @@ export function themeCssVars(knobs: ThemeKnobs): Record<string, string> {
     '--color-border-default': mixHex(border, '#000000', 0.25),
     '--panel-base': panel,
     '--panel-bg': `linear-gradient(170deg, ${rgba(panel, 0.95)} 0%, ${rgba(panelEdge, 0.95)} 60%, ${rgba(panelEdge, 0.95)} 100%)`,
+    '--panel-edge': panelEdge,
     '--color-bg-dark': panelEdge,
     '--color-text-light': text,
     '--color-text-muted': textMuted,
+    '--color-text-overlay': overlayText,
     '--scrollbar-thumb': mixHex(border, '#000000', 0.15),
     '--scrollbar-thumb-hover': border,
     '--scrollbar-border': border,
