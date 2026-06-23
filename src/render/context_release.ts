@@ -41,9 +41,16 @@ export function releaseTrackedWebGLContexts(): void {
  * Wire context release to the page-teardown event. `pagehide` fires on reload,
  * navigation, and tab close, and unlike `unload` it does not disqualify the page
  * from the bfcache. Call once at startup.
+ *
+ * Release only on a real teardown (`persisted === false`). When the page is
+ * frozen into the bfcache (`persisted === true`) the contexts must survive:
+ * `dispose()` is terminal and nothing rebuilds them, so a bfcache restore
+ * (`pageshow` with `persisted`) has to come back to live canvases, not dead ones.
  */
 export function installWebGLContextRelease(
   target: Pick<EventTarget, 'addEventListener'> = window,
 ): void {
-  target.addEventListener('pagehide', releaseTrackedWebGLContexts);
+  target.addEventListener('pagehide', (e) => {
+    if (!(e as PageTransitionEvent).persisted) releaseTrackedWebGLContexts();
+  });
 }

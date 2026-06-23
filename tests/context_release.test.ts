@@ -56,20 +56,32 @@ describe('context_release', () => {
     expect(good.dispose).toHaveBeenCalledTimes(1);
   });
 
-  it('releases tracked contexts when the page-teardown event fires', () => {
+  const pagehide = (persisted: boolean) =>
+    Object.assign(new Event('pagehide'), { persisted });
+
+  it('releases tracked contexts on a real page teardown (persisted === false)', () => {
     releaseTrackedWebGLContexts();
-    const listeners: Record<string, (() => void) | undefined> = {};
-    const target = {
-      addEventListener: (type: string, cb: () => void) => { listeners[type] = cb; },
-    };
+    const target = new EventTarget();
     const a = fakeHolder();
     trackWebGLContext(a);
 
     installWebGLContextRelease(target);
-    expect(listeners.pagehide).toBeTypeOf('function');
+    target.dispatchEvent(pagehide(false));
 
-    listeners.pagehide!();
     expect(a.forceContextLoss).toHaveBeenCalledTimes(1);
     expect(a.dispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps contexts when the page is frozen into the bfcache (persisted === true)', () => {
+    releaseTrackedWebGLContexts();
+    const target = new EventTarget();
+    const a = fakeHolder();
+    trackWebGLContext(a);
+
+    installWebGLContextRelease(target);
+    target.dispatchEvent(pagehide(true));
+
+    expect(a.forceContextLoss).not.toHaveBeenCalled();
+    expect(a.dispose).not.toHaveBeenCalled();
   });
 });
