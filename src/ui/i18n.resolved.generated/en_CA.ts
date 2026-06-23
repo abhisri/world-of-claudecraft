@@ -3468,7 +3468,7 @@ export const en_CA: EnTranslations = {
       },
       "travel_form": {
         "name": "Travel Form",
-        "description": "Instantly shift into a swift travel form, increasing movement speed by 40%. You cannot use other abilities while shifted, but can shift in or out of combat — ideal for escaping."
+        "description": "Instantly shift into a swift travel form, increasing movement speed by 40%. You cannot use other abilities while shifted, but can shift in or out of combat, ideal for escaping."
       },
       "enrage": {
         "name": "Enrage",

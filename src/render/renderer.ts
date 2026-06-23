@@ -47,6 +47,8 @@ import { tEntity } from '../ui/entity_i18n';
 import { raidMarkerDataUrl } from '../ui/icons';
 import { holderTierByIndex, holderTierBadgeDataUrl, holderTierDisplayName } from '../ui/holder_tier';
 import { isProjectedNameplateAnchorVisible, nameplateScreenTransform } from './nameplate_projection';
+import { targetIntensity } from './travel_speed_fx';
+import { TravelSpeedFxPainter } from './travel_speed_fx_painter';
 import { comboPipsFor, COMBO_PIP_MAX } from './nameplate_combo';
 import { stepCameraOcclusion, type CameraOcclusionState } from './camera_collision';
 import { castBarState } from './cast_bar';
@@ -594,6 +596,17 @@ export class Renderer {
   webgl: THREE.WebGLRenderer;
   views = new Map<number, EntityView>();
   nameplateLayer: HTMLDivElement;
+  // Travel-form speed-illusion overlay (presentation only; see travel_speed_fx*).
+  private travelSpeedFx: TravelSpeedFxPainter;
+  // Last local-player XZ, to derive ground speed for the speed cue (yd/s).
+  private lastLocalPos: { x: number; z: number } | null = null;
+  // Cached prefers-reduced-motion query. `.matches` stays live as the OS setting
+  // changes, so we read it per frame without re-allocating a MediaQueryList
+  // (matchMedia allocates a new object on every call) in the render hot path.
+  private reduceMotionMql: MediaQueryList | null =
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : null;
   selectionRing: THREE.Group;
   selectionRingMesh: THREE.Mesh;
   selectionRingTicks: THREE.Group;
@@ -762,6 +775,7 @@ export class Renderer {
 
   constructor(private sim: IWorld, canvas: HTMLCanvasElement, nameplateLayer: HTMLDivElement) {
     this.nameplateLayer = nameplateLayer;
+    this.travelSpeedFx = new TravelSpeedFxPainter(nameplateLayer);
     // No default-framebuffer MSAA on any tier: high/ultra get AA from the
     // composer's MSAA HalfFloat target, low is meant to run without AA — and
     // requesting it here would hit software GL (the autodetect can only run
@@ -3415,6 +3429,7 @@ export class Renderer {
     this.updateNameplates(fullNameplatePass);
     this.updateChatBubbles();
     markPhase('nameplates');
+    this.updateTravelSpeedFx(p, selfPos, dt);
     // Fiesta screen shake: trauma^2 jitter offsets the camera for the draw only.
     let shakeX = 0, shakeY = 0;
     if (this.shakeTrauma > 0) {
@@ -3473,6 +3488,35 @@ export class Renderer {
       activeViews: this.views.size,
       visibleViews,
     };
+  }
+
+  // Drive the travel-form speed-illusion overlay. Presentation only: gated on the
+  // LOCAL player being shifted into travel form AND actually moving, with the
+  // intensity scaled by real ground speed. Honors prefers-reduced-motion. The
+  // streak/vignette math lives in the pure core (travel_speed_fx.ts); this only
+  // derives the speed and forwards a target intensity to the painter.
+  private updateTravelSpeedFx(p: Entity, selfPos: THREE.Vector3, dt: number): void {
+    // Measure ground speed from the SAME interpolated self render position the
+    // camera uses (selfPos), advanced per render frame, so the cue tracks the
+    // smooth on-screen motion rather than the raw 20Hz sim-tick snapping of p.pos.
+    let speed = 0;
+    const last = this.lastLocalPos;
+    if (last && dt > 0) {
+      speed = Math.hypot(selfPos.x - last.x, selfPos.z - last.z) / dt;
+    }
+    if (this.lastLocalPos) {
+      this.lastLocalPos.x = selfPos.x;
+      this.lastLocalPos.z = selfPos.z;
+    } else {
+      this.lastLocalPos = { x: selfPos.x, z: selfPos.z };
+    }
+    const inTravelForm = p.auras.some((a) => a.kind === 'form_travel');
+    const target = targetIntensity({ inTravelForm, speed, reducedMotion: this.reducedMotion() });
+    this.travelSpeedFx.update(target, dt);
+  }
+
+  private reducedMotion(): boolean {
+    return this.reduceMotionMql?.matches ?? false;
   }
 
   // Grab a JPEG screenshot of the live scene for a bug report. The main
