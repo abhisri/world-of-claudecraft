@@ -1353,6 +1353,7 @@ export class GameServer {
       case 'pleave': sim.partyLeave(pid); break;
       case 'pkick': if (typeof msg.id === 'number') sim.partyKick(msg.id, pid); break;
       case 'praid': sim.convertPartyToRaid(pid); break;
+      case 'punraid': sim.convertRaidToParty(pid); break;
       case 'pmoveRaid': if (typeof msg.id === 'number' && (msg.group === 1 || msg.group === 2)) sim.moveRaidMember(msg.id, msg.group, pid); break;
       // raid/target markers
       case 'setMarker': if (typeof msg.id === 'number' && typeof msg.marker === 'number') sim.setMarker(msg.id, msg.marker, pid); break;

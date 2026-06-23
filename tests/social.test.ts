@@ -389,6 +389,46 @@ describe('parties', () => {
     expect(sim.partyInfo?.members.find((m) => m.pid === c)?.group).toBe(2);
   });
 
+  it('lets the raid leader convert a small raid (<= 5) back to a party', () => {
+    const { sim, a, b } = makeDuo();
+    const members = fillPartyToFive(sim, a);
+    sim.convertPartyToRaid(a);
+    expect(sim.partyOf(a)?.raid).toBe(true);
+
+    // only the leader may demote
+    sim.convertRaidToParty(b);
+    expect(sim.partyOf(a)?.raid).toBe(true);
+
+    sim.convertRaidToParty(a);
+    const party = sim.partyOf(a)!;
+    expect(party.raid).toBe(false);
+    expect(party.raidGroups.size).toBe(0);
+    // membership is preserved; the group is intact, just no longer a raid
+    expect(party.members).toHaveLength(5);
+    expect(sim.partyInfo?.raid).toBe(false);
+
+    // converting again when it is no longer a raid is a no-op (already a party)
+    sim.convertRaidToParty(a);
+    expect(sim.partyOf(a)?.raid).toBe(false);
+    void members;
+  });
+
+  it('refuses to demote a raid larger than one party (> 5 members)', () => {
+    const sim = makeWorld();
+    const leader = sim.addPlayer('warrior', 'BigLeader');
+    const pids = Array.from({ length: 9 }, (_, i) => sim.addPlayer('priest', `Big${i}`));
+    fillPartyToFive(sim, leader);
+    sim.convertPartyToRaid(leader);
+    for (const pid of pids.slice(0, 5)) {
+      sim.partyInvite(pid, leader);
+      sim.partyAccept(pid);
+    }
+    const party = sim.partyOf(leader)!;
+    expect(party.members.length).toBeGreaterThan(5);
+    sim.convertRaidToParty(leader);
+    expect(party.raid).toBe(true);
+  });
+
   it('blocks raid groups from standard dungeons while requiring raid groups for Nythraxis entry', () => {
     const sim = makeWorld();
     const leader = sim.addPlayer('warrior', 'Leader');

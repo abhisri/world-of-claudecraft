@@ -565,6 +565,12 @@ export const en_XA: EnTranslations = {
       "searchPlaceholder": "[Šéáŕçĥ íţéɱš]",
       "searchAria": "[Šéáŕçĥ ƀáĝ íţéɱš ƀý ñáɱé]",
       "noMatch": "[Ñó íţéɱš ɱáţçĥ ýóúŕ ƒíļţéŕš.]"
+    },
+    "raidConvert": {
+      "toPartyDone": "[Ýóúŕ ŕáíð ĥáš çóñʋéŕţéð ƀáçķ ţó á þáŕţý.]",
+      "notRaid": "[Ýóúŕ ĝŕóúþ íš ñóţ á ŕáíð.]",
+      "leaderOnly": "[Óñļý ţĥé ŕáíð ļéáðéŕ ɱáý çóñʋéŕţ ţó á þáŕţý.]",
+      "tooLarge": "[Á ŕáíð ŵíţĥ ɱóŕé ţĥáñ ƒíʋé ɱéɱƀéŕš çáññóţ çóñʋéŕţ ƀáçķ ţó á þáŕţý.]"
     }
   },
   "guide": {
@@ -2285,6 +2291,7 @@ export const en_XA: EnTranslations = {
         "report": "[Ŕéþóŕţ Þļáýéŕ]",
         "removeParty": "[Ŕéɱóʋé ƒŕóɱ Þáŕţý]",
         "convertToRaid": "[Çóñʋéŕţ ţó ŕáíð]",
+        "convertToParty": "[Çóñʋéŕţ ţó þáŕţý]",
         "cancel": "[Çáñçéļ]"
       }
     },

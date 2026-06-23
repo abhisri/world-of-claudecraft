@@ -219,6 +219,7 @@ const hudStringsEn = {
         report: "Report Player",
         removeParty: "Remove from Party",
         convertToRaid: "Convert to raid",
+        convertToParty: "Convert to party",
         cancel: "Cancel",
       },
     },

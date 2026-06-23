@@ -9,17 +9,89 @@
 // Reproducibility is checked by tests/i18n_resolved_equivalence.test.ts.
 
 export const pending: Record<string, readonly string[]> = {
-  "es": [],
-  "es_ES": [],
-  "fr_FR": [],
-  "fr_CA": [],
+  "es": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "es_ES": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "fr_FR": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "fr_CA": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
   "en_CA": [],
-  "it_IT": [],
-  "de_DE": [],
-  "zh_CN": [],
-  "zh_TW": [],
-  "ko_KR": [],
-  "ja_JP": [],
-  "pt_BR": [],
-  "ru_RU": []
+  "it_IT": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "de_DE": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "zh_CN": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "zh_TW": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "ko_KR": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "ja_JP": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "pt_BR": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ],
+  "ru_RU": [
+    "hud.chat.context.convertToParty",
+    "hudChrome.raidConvert.leaderOnly",
+    "hudChrome.raidConvert.notRaid",
+    "hudChrome.raidConvert.toPartyDone",
+    "hudChrome.raidConvert.tooLarge"
+  ]
 };

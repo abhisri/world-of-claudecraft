@@ -524,4 +524,14 @@ export const hudChromeStrings = {
     searchAria: "Search bag items by name",
     noMatch: "No items match your filters.",
   },
+  // Raid -> party demotion (Social panel raid tab). The sim emits these in English;
+  // src/ui/sim_i18n.ts re-localizes them through these keys. Mirrors the existing
+  // convert-to-raid messages (which live in sim_i18n's RAID_EXTRA table). Lives here
+  // in the English-only hud_chrome domain so an English-only PR compiles.
+  raidConvert: {
+    toPartyDone: "Your raid has converted back to a party.",
+    notRaid: "Your group is not a raid.",
+    leaderOnly: "Only the raid leader may convert to a party.",
+    tooLarge: "A raid with more than five members cannot convert back to a party.",
+  },
 };

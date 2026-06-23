@@ -333,6 +333,7 @@ export interface IWorld {
   partyLeave(): void;
   partyKick(targetPid: number): void;
   convertPartyToRaid(): void;
+  convertRaidToParty(): void;
   moveRaidMember(targetPid: number, group: 1 | 2): void;
   // raid/target markers (party-scoped): markerId 0..7, null = no mark
   markerFor(entityId: number): number | null;
