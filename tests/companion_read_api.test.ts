@@ -92,9 +92,29 @@ describe('sheet routes use the right gate', () => {
     expect(block).not.toContain('bearerReadAccount');
   });
 
-  it('bearerReadAccount is used by exactly one route (owner /sheet)', () => {
+  it('bearerReadAccount gates exactly the two read routes (owner /sheet + /api/me/characters)', () => {
     const count = (MAIN.match(/bearerReadAccount\(req, res\)/g) ?? []).length;
-    expect(count).toBe(1);
+    expect(count).toBe(2);
+  });
+});
+
+describe('GET /api/me/characters (read-scoped my-characters list)', () => {
+  it('is gated by bearerReadAccount and reuses the shared list payload', () => {
+    const idx = MAIN.indexOf("url === '/api/me/characters'");
+    expect(idx).toBeGreaterThanOrEqual(0);
+    const block = MAIN.slice(idx, idx + 250);
+    expect(block).toContain('bearerReadAccount(req, res)');
+    expect(block).toContain('characterListPayload(await listCharacters(accountId))');
+    expect(block).not.toContain('bearerActiveAccount');
+  });
+
+  it('returns the same shape as GET /api/characters (both call characterListPayload)', () => {
+    const calls = (MAIN.match(/characterListPayload\(await listCharacters\(accountId\)\)/g) ?? []).length;
+    expect(calls).toBe(2); // /api/me/characters and the full-session GET /api/characters
+  });
+
+  it('is matched before the generic /api/characters route', () => {
+    expect(MAIN.indexOf("url === '/api/me/characters'")).toBeLessThan(MAIN.indexOf("if (url === '/api/characters')"));
   });
 });
 
@@ -105,5 +125,23 @@ describe('CORS opens only the public read surfaces', () => {
     // The * is set only in publicCors, not maybeCors.
     const publicCorsIdx = MAIN.indexOf('function publicCors');
     expect(MAIN.slice(publicCorsIdx, publicCorsIdx + 300)).toContain("'Access-Control-Allow-Origin', '*'");
+  });
+});
+
+describe('OAuth token revocation is scope-restricted', () => {
+  const DB = readFileSync(join(__dirname, '..', 'server', 'db.ts'), 'utf8');
+  const OAUTH = readFileSync(join(__dirname, '..', 'server', 'oauth.ts'), 'utf8');
+
+  it("revokeReadToken deletes only scope='read' rows (never a full web session)", () => {
+    const idx = DB.indexOf('export async function revokeReadToken');
+    expect(idx).toBeGreaterThanOrEqual(0);
+    expect(DB.slice(idx, idx + 300)).toContain("scope = 'read'");
+  });
+
+  it('POST /oauth/revoke is dispatched and uses the scope-restricted revoke', () => {
+    expect(OAUTH).toContain("path === '/oauth/revoke'");
+    const idx = OAUTH.indexOf('async function revokeEndpoint');
+    expect(idx).toBeGreaterThanOrEqual(0);
+    expect(OAUTH.slice(idx, idx + 300)).toContain('revokeReadToken(token)');
   });
 });

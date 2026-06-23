@@ -11,6 +11,7 @@ import {
   referralCountForAccount, primarySlugForAccount, lifetimeXpStanding, lifetimeXpRankForCharacter, isAdminAccount,
   accountById, characterCountForAccount, updatePasswordHash, revokeTokensExcept, setAccountEmail, setAccountDeactivated,
   guildNameForCharacter, createCompanionToken, listCompanionTokens, revokeCompanionToken,
+  type CharacterRow,
 } from './db';
 import { characterSheet, type SheetRank } from './character_sheet';
 import { virtualLevel } from '../src/sim/types';
@@ -230,6 +231,23 @@ function normalizeDeleteConfirmation(name: unknown): string {
 // Shape a realm rank lookup into the character-sheet's rank field.
 function toSheetRank(rank: { rank: number; total: number } | null): SheetRank | null {
   return rank ? { scope: 'realm', rank: rank.rank, total: rank.total } : null;
+}
+
+// The character-list response shared by the full-session GET /api/characters and
+// the read-scoped GET /api/me/characters, so both stay byte-identical.
+function characterListPayload(chars: CharacterRow[]): {
+  realm: string;
+  characters: { id: number; name: string; class: PlayerClass; level: number; skin: number; online: boolean; forceRename: boolean }[];
+} {
+  return {
+    realm: REALM,
+    characters: chars.map((c) => ({
+      id: c.id, name: c.name, class: c.class, level: c.level,
+      skin: c.state?.skin ?? 0,
+      online: [...game.clients.values()].some((s) => s.characterId === c.id),
+      forceRename: c.force_rename,
+    })),
+  };
 }
 
 async function bearerAccount(req: http.IncomingMessage): Promise<number | null> {
@@ -510,20 +528,22 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
       await saveToken(token, account.id);
       return json(res, 200, { token, username: account.username });
     }
+    // Read-scoped "my characters" list: lets a companion holding a character:read
+    // token (OAuth or a pasted companion token) discover its character ids so it
+    // can then call /sheet. Same body as GET /api/characters, but gated by
+    // bearerReadAccount so a read token is accepted (the full-session list below
+    // still uses bearerActiveAccount and stays mutation-only). Placed before the
+    // generic /api routes.
+    if (req.method === 'GET' && url === '/api/me/characters') {
+      const accountId = await bearerReadAccount(req, res);
+      if (accountId === null) return;
+      return json(res, 200, characterListPayload(await listCharacters(accountId)));
+    }
     if (url === '/api/characters') {
       const accountId = await bearerActiveAccount(req, res);
       if (accountId === null) return;
       if (req.method === 'GET') {
-        const chars = await listCharacters(accountId);
-        return json(res, 200, {
-          realm: REALM,
-          characters: chars.map((c) => ({
-            id: c.id, name: c.name, class: c.class, level: c.level,
-            skin: c.state?.skin ?? 0,
-            online: [...game.clients.values()].some((s) => s.characterId === c.id),
-            forceRename: c.force_rename,
-          })),
-        });
+        return json(res, 200, characterListPayload(await listCharacters(accountId)));
       }
       if (req.method === 'POST') {
         const body = await readBody(req);

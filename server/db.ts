@@ -568,6 +568,14 @@ export async function revokeToken(token: string): Promise<void> {
   await pool.query('DELETE FROM auth_tokens WHERE token = $1', [token]);
 }
 
+// Revoke a read-scoped token by value (OAuth/RFC-7009 revocation, companion
+// logout). Restricted to scope='read' so a presented full web-session token can
+// never be deleted through this path. Returns true if a row was removed.
+export async function revokeReadToken(token: string): Promise<boolean> {
+  const res = await pool.query(`DELETE FROM auth_tokens WHERE token = $1 AND scope = 'read'`, [token]);
+  return (res.rowCount ?? 0) > 0;
+}
+
 // ── Companion read-only tokens (scope='read') ──────────────────────────────
 // Long-lived (default 90-day) read tokens a user can paste into a companion app
 // instead of running the OAuth flow. They are ordinary auth_tokens rows with

@@ -8,6 +8,7 @@ vi.mock('../server/db', () => ({
   saveToken: vi.fn(async () => {}),
   accountAndScopeForToken: vi.fn(async () => ({ accountId: 5, scope: 'full' })),
   moderationStatusForAccount: vi.fn(async () => ({ locked: false, message: '' })),
+  revokeReadToken: vi.fn(async () => true),
 }));
 vi.mock('../server/oauth_db', () => ({
   getOAuthClient: vi.fn(async () => ({ client_id: 'companion', name: 'Companion', redirect_uris: 'https://app.example/cb' })),
@@ -189,5 +190,34 @@ describe('authorize approval reuses the web session', () => {
     }, BEARER);
     expect(r.status).toBe(401);
     expect(oauthDb.createAuthCode).not.toHaveBeenCalled();
+  });
+});
+
+describe('POST /oauth/revoke (RFC 7009)', () => {
+  it('revokes the presented token and returns 200', async () => {
+    const r = await call('POST', '/oauth/revoke', { token: 'a'.repeat(64) });
+    expect(r.status).toBe(200);
+    // It deletes only via the scope='read'-restricted revoke (never a full session).
+    expect(db.revokeReadToken).toHaveBeenCalledWith('a'.repeat(64));
+  });
+
+  it('accepts a form-encoded body', async () => {
+    const r = await call('POST', '/oauth/revoke', 'token=' + 'b'.repeat(64), {
+      'content-type': 'application/x-www-form-urlencoded',
+    });
+    expect(r.status).toBe(200);
+    expect(db.revokeReadToken).toHaveBeenCalledWith('b'.repeat(64));
+  });
+
+  it('still returns 200 for an unknown / already-revoked token', async () => {
+    (db.revokeReadToken as any).mockResolvedValueOnce(false);
+    const r = await call('POST', '/oauth/revoke', { token: 'deadbeef' });
+    expect(r.status).toBe(200);
+  });
+
+  it('returns 200 with no token and does not call the DB', async () => {
+    const r = await call('POST', '/oauth/revoke', {});
+    expect(r.status).toBe(200);
+    expect(db.revokeReadToken).not.toHaveBeenCalled();
   });
 });

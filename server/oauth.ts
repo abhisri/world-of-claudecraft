@@ -15,7 +15,7 @@ import * as http from 'node:http';
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { json, readBinaryBody } from './http_util';
 import { newToken } from './auth';
-import { pool, accountAndScopeForToken, saveToken, moderationStatusForAccount } from './db';
+import { pool, accountAndScopeForToken, saveToken, moderationStatusForAccount, revokeReadToken } from './db';
 import { REALM_PUBLIC_ORIGIN } from './realm';
 import {
   getOAuthClient, upsertOAuthClient, createAuthCode, consumeAuthCode,
@@ -149,6 +149,7 @@ export async function handleOAuth(req: http.IncomingMessage, res: http.ServerRes
     if (req.method === 'GET' && path === '/oauth/authorize') return await renderAuthorize(req, res);
     if (req.method === 'POST' && path === '/oauth/authorize') return await approveAuthorize(req, res);
     if (req.method === 'POST' && path === '/oauth/token') return await tokenEndpoint(req, res);
+    if (req.method === 'POST' && path === '/oauth/revoke') return await revokeEndpoint(req, res);
     if (req.method === 'POST' && path === '/oauth/device_authorization') return await deviceAuthorization(req, res);
     if (req.method === 'GET' && path === '/oauth/device') return renderDevicePage(res);
     if (req.method === 'POST' && path === '/oauth/device') return await approveDevice(req, res);
@@ -209,6 +210,16 @@ async function approveAuthorize(req: http.IncomingMessage, res: http.ServerRespo
   });
   const redirect = appendQuery(redirectUri, body.state ? { code, state: body.state } : { code });
   json(res, 200, { redirect });
+}
+
+// POST /oauth/revoke — RFC 7009 token revocation. Deletes the presented token,
+// restricted to scope='read' rows so it can never invalidate a full web session.
+// Always 200, even for an unknown/already-revoked token (RFC 7009 §2.2).
+async function revokeEndpoint(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
+  const body = await readForm(req);
+  const token = body.token ?? '';
+  if (token) await revokeReadToken(token);
+  json(res, 200, { ok: true });
 }
 
 // POST /oauth/token — exchange a code (PKCE) or poll a device code.
