@@ -46,6 +46,12 @@ import {
 } from './game/settings';
 import { sfx } from './game/sfx';
 import { voice } from './game/voice';
+import {
+  CHAR_SORT_MODES,
+  type CharSortMode,
+  normalizeCharSortMode,
+  sortCharacters,
+} from './net/char_sort';
 import { createNativeAttestationProof } from './net/native_attestation';
 import {
   Api,
@@ -74,6 +80,7 @@ import { Sim } from './sim/sim';
 import { TAB_NEAR_RADIUS, TAB_QUERY_RADIUS, tabConeHalfAt } from './sim/tab_target';
 import { DT, dist2d, INTERACT_RANGE, MELEE_RANGE, type PlayerClass, RUN_SPEED } from './sim/types';
 import { zoneBiomeAt } from './sim/world';
+import { startSitePresence } from './site_presence';
 import {
   accountPortalModel,
   deactivateConfirmReady,
@@ -132,6 +139,7 @@ import {
   setWalletDisplayAvailable,
   setWalletUiEnabled,
   setWocBalance,
+  shouldDisconnectUnverifiedWallet,
 } from './ui/wallet_balance';
 import { formatXp } from './ui/xp_bar';
 import type { IWorld, LeaderboardEntry } from './world_api';
@@ -900,6 +908,7 @@ async function startGame(
     chatInput.style.height = '';
     chatInput.style.overflowY = '';
     chatInput.blur();
+    hud.clearPendingQuestLinks();
     recoverFromMobileKeyboard();
   };
   function openChat(): void {
@@ -935,8 +944,11 @@ async function startGame(
       // the active channel tab supplies the send prefix, so plain text goes to
       // that channel without the player retyping "/world" etc.
       const raw = chatInput.value;
-      const text = hud.composeChatSend(raw);
-      if (text) world.chat(text);
+      // "/share" links the selected quest into party chat; skip the normal send path.
+      if (!hud.maybeHandleQuestShareCommand(raw)) {
+        const text = hud.composeChatSend(raw);
+        if (text) world.chat(text);
+      }
       // a typed "/join world"/"/leave lfg" opens or closes its channel tab too,
       // mirroring the "+" menu (without hijacking the active send channel)
       hud.syncChatTabsForInput(raw);
@@ -1466,13 +1478,25 @@ async function startGame(
       bestObjD = INTERACT_RANGE;
     let bestNpc: number | null = null,
       bestNpcD = INTERACT_RANGE + 1;
+    // Delve interactables (warded chest, cracked grave, sealed/tombstone passage,
+    // surface stairs) are driven through delveInteract, not the generic pickup
+    // path, the sim owns their per-object proximity + state gating and the
+    // lockpick offer. Selected a touch wider than INTERACT_RANGE so the sim can
+    // emit its precise "move closer to the chest/passage" hint.
+    let bestDelve: number | null = null,
+      bestDelveD = INTERACT_RANGE + 1;
     for (const e of world.entities.values()) {
       const d = dist2d(p.pos, e.pos);
       if (e.kind === 'mob' && e.lootable && d < bestCorpseD) {
         bestCorpse = e.id;
         bestCorpseD = d;
       }
-      if (e.kind === 'object' && e.lootable && d < bestObjD) {
+      if (e.kind === 'object' && e.templateId?.startsWith('delve_')) {
+        if (d < bestDelveD) {
+          bestDelve = e.id;
+          bestDelveD = d;
+        }
+      } else if (e.kind === 'object' && e.lootable && d < bestObjD) {
         bestObj = e.id;
         bestObjD = d;
       }
@@ -1483,6 +1507,10 @@ async function startGame(
     }
     if (bestCorpse !== null) {
       world.lootCorpse(bestCorpse);
+      return;
+    }
+    if (bestDelve !== null) {
+      world.delveInteract(bestDelve);
       return;
     }
     if (bestObj !== null) {
@@ -1499,7 +1527,9 @@ async function startGame(
       return;
     }
     if (bestNpc !== null) {
-      hud.openQuestDialog(bestNpc);
+      const npc = world.entities.get(bestNpc);
+      if (npc?.kind === 'npc' && npc.templateId === 'brother_halven') hud.openDelveBoard(bestNpc);
+      else hud.openQuestDialog(bestNpc);
       return;
     }
     hud.showError(t('errors.nothingInteract'));
@@ -1998,6 +2028,9 @@ async function startGame(
 
     if (offlineSim) {
       acc += frameDt;
+      // Supply the UTC day for the delve daily reset (the sim never reads the wall
+      // clock itself, to stay deterministic).
+      offlineSim.utcDay = new Date().toISOString().slice(0, 10);
       while (acc >= DT) {
         const { mi, facing } = resolveMove(
           mouselook,
@@ -2183,6 +2216,13 @@ async function startGame(
           controller,
           perf,
           gamepad,
+          /** Opens the board and drains queued sim events. Do not call sim.lockpickEngage directly offline. */
+          lockpickEngage: (objectId: number, ante: number) =>
+            hud.submitLockpickEngage(objectId, ante as 1 | 2 | 3),
+          /** Syncs HUD col/row from sim before acting; always drains step events. Use instead of sim.lockpickAction. */
+          lockpickAction: (action: string) =>
+            hud.submitLockpickAction(action as import('./sim/lockpick').PickAction),
+          flushLockpickEvents: () => hud.flushLockpickEvents(),
         };
       }, LOADING_FADE_MS);
     }),
@@ -2209,7 +2249,12 @@ function sanitizeOfflineName(raw: string): string {
 async function startOffline(playerClass: PlayerClass, name: string, skin = 0): Promise<void> {
   if (!(await prepareWorldEntry())) return;
   enterLoadingState(t('loading.world'));
-  const sim = new Sim({ seed: WORLD_SEED, playerClass, playerName: name });
+  const sim = new Sim({
+    seed: WORLD_SEED,
+    playerClass,
+    playerName: name,
+    devCommands: import.meta.env.DEV,
+  });
   sim.setPlayerSkin(sim.playerId, skin);
   // Offline characters are not persisted (a fresh name is typed each session),
   // so the only stable handle is class + name. Keybinds scope to that pair.
@@ -2892,22 +2937,6 @@ function setupAccountPortal(): void {
     }
   });
 
-  ($('#account-email-form') as HTMLFormElement).addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = ($('#account-email') as HTMLInputElement).value;
-    if (!validateEmailShape(email)) {
-      setAccountFieldMsg('#account-email-msg', t('hudChrome.account.errEmailInvalid'), false);
-      return;
-    }
-    try {
-      const saved = await api.setEmail(email);
-      ($('#account-email') as HTMLInputElement).value = saved;
-      setAccountFieldMsg('#account-email-msg', t('hudChrome.account.emailSaved'), true);
-    } catch (e2) {
-      setAccountFieldMsg('#account-email-msg', userFacingApiError(e2), false);
-    }
-  });
-
   const deUser = $('#account-deactivate-user') as HTMLInputElement;
   const dePass = $('#account-deactivate-pass') as HTMLInputElement;
   const deBtn = $('#account-deactivate-btn') as HTMLButtonElement;
@@ -3162,7 +3191,7 @@ function selectRealm(entry: import('./net/online').RealmEntry): void {
 }
 
 // --- Inline realm switcher (dropdown on the character-select screen) ----------
-const REALM_TYPE_KEYS = {
+const _REALM_TYPE_KEYS = {
   Normal: 'realmTypes.normal',
   PvP: 'realmTypes.pvp',
   RP: 'realmTypes.rp',
@@ -3248,6 +3277,63 @@ function selectRealmInline(entry: import('./net/online').RealmEntry): void {
   void refreshCharacters();
 }
 
+// --- Character sort dropdown (character-select screen) ------------------------
+const CHAR_SORT_KEY = 'wocc.charSort';
+const CHAR_SORT_LABEL_KEYS: Record<CharSortMode, TranslationKey> = {
+  level: 'character.sortLevel',
+  name: 'character.sortName',
+  recent: 'character.sortRecent',
+  playtime: 'character.sortPlaytime',
+};
+let charSortMode: CharSortMode = normalizeCharSortMode(localStorage.getItem(CHAR_SORT_KEY));
+let sortDropdownOpen = false;
+
+function updateSortButtonLabel(): void {
+  const el = document.getElementById('cs-sort-current');
+  if (el) el.textContent = t(CHAR_SORT_LABEL_KEYS[charSortMode]);
+}
+
+function closeSortDropdown(): void {
+  document.getElementById('cs-sort-menu')?.setAttribute('hidden', '');
+  document.getElementById('cs-sort-btn')?.setAttribute('aria-expanded', 'false');
+  sortDropdownOpen = false;
+}
+
+function setCharSort(mode: CharSortMode): void {
+  closeSortDropdown();
+  if (mode === charSortMode) return;
+  charSortMode = mode;
+  localStorage.setItem(CHAR_SORT_KEY, mode);
+  updateSortButtonLabel();
+  void refreshCharacters();
+}
+
+function renderSortDropdown(): void {
+  const menu = $('#cs-sort-menu');
+  menu.innerHTML = CHAR_SORT_MODES.map((m) => {
+    const sel = m === charSortMode;
+    return `<div class="realm-row cs-realm-row cs-sort-row${sel ? ' sel' : ''}" role="option" aria-selected="${sel}" data-mode="${m}">
+        <div class="realm-name">${escapeHtml(t(CHAR_SORT_LABEL_KEYS[m]))}</div>
+      </div>`;
+  }).join('');
+  menu.querySelectorAll('.cs-sort-row').forEach((row) => {
+    row.addEventListener('click', () => {
+      setCharSort(normalizeCharSortMode((row as HTMLElement).dataset.mode));
+    });
+  });
+}
+
+function toggleSortDropdown(): void {
+  if (sortDropdownOpen) {
+    closeSortDropdown();
+    return;
+  }
+  $('#cs-sort-btn').setAttribute('aria-expanded', 'true');
+  $('#cs-sort-menu').removeAttribute('hidden');
+  sortDropdownOpen = true;
+  renderSortDropdown();
+}
+
 function setDeleteCharacterError(message: string): void {
   $('#delete-character-error').textContent = message;
 }
@@ -3285,10 +3371,11 @@ function openDeleteCharacterDialog(character: CharacterSummary): void {
 
 async function refreshCharacters(): Promise<void> {
   if (api.realm) $('#charselect-realm').textContent = api.realm;
+  updateSortButtonLabel();
   const listEl = $('#char-list');
   listEl.innerHTML = `<li class="char-list-message">${escapeHtml(t('character.loading'))}</li>`;
   try {
-    const chars = await api.characters();
+    const chars = sortCharacters(await api.characters(), charSortMode);
     if (api.realm) $('#charselect-realm').textContent = api.realm;
     listEl.innerHTML = '';
     if (chars.length === 0) {
@@ -3327,14 +3414,14 @@ async function refreshCharacters(): Promise<void> {
               : `<span class="char-actions"><button class="btn btn-danger delete-char-btn">${escapeHtml(t('character.delete'))}</button><button class="btn enter-world-btn">${escapeHtml(t('auth.enterWorld'))}</button></span>`
         }`;
 
-      row.querySelector('.delete-char-btn')!.addEventListener('click', (e) => {
+      row.querySelector('.delete-char-btn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         openDeleteCharacterDialog(c);
       });
 
       if (c.forceRename) {
         const input = row.querySelector('.rename-input') as HTMLInputElement;
-        row.querySelector('.rename-btn')!.addEventListener('click', async (e) => {
+        row.querySelector('.rename-btn')?.addEventListener('click', async (e) => {
           e.stopPropagation();
           $('#charselect-error').textContent = '';
           try {
@@ -3345,7 +3432,7 @@ async function refreshCharacters(): Promise<void> {
           }
         });
       } else if (c.online) {
-        row.querySelector('.take-over-btn')!.addEventListener('click', async (e) => {
+        row.querySelector('.take-over-btn')?.addEventListener('click', async (e) => {
           e.stopPropagation();
           const btn = e.currentTarget as HTMLButtonElement;
           // Taking over disconnects the other live session with no undo, so guard a
@@ -3370,7 +3457,7 @@ async function refreshCharacters(): Promise<void> {
           }
         });
       } else {
-        row.querySelector('.enter-world-btn')!.addEventListener('click', (e) => {
+        row.querySelector('.enter-world-btn')?.addEventListener('click', (e) => {
           e.stopPropagation();
           void enterWorld(c, e.currentTarget as HTMLButtonElement);
         });
@@ -4266,6 +4353,11 @@ let linkedWocBalance: number | null = null;
 let connectedWocBalance: number | null = null;
 let walletVerifyPending = false;
 let walletVerifyInProgress = false;
+// True from when a logged-in session starts loading its linked-wallet status until
+// that load settles. While pending, an auto-reconnected wallet must NOT be treated
+// as unverified and disconnected; otherwise a restored session re-signs on every
+// reload (the link is durable server-side; we just haven't fetched it yet).
+let walletLinkStatusPending = false;
 let walletVerifyTimeout: number | null = null;
 let walletVerifyModalUnsubscribe: (() => void) | null = null;
 let walletFlowStatus: 'connect' | 'sign' | 'verify' | null = null;
@@ -4689,7 +4781,16 @@ async function disconnectUnverifiedWallet(): Promise<void> {
 }
 
 async function disconnectUnverifiedWalletIfIdle(): Promise<void> {
-  if (walletVerifyPending || walletVerifyInProgress) return;
+  if (
+    !shouldDisconnectUnverifiedWallet({
+      connectedAddress: walletMod?.currentWallet().address ?? null,
+      linkedPubkey: linkedWalletPubkey,
+      verifyPending: walletVerifyPending,
+      verifyInProgress: walletVerifyInProgress,
+      linkStatusPending: walletLinkStatusPending,
+    })
+  )
+    return;
   await disconnectUnverifiedWallet();
 }
 
@@ -4765,23 +4866,33 @@ async function refreshWalletLinkStatus(): Promise<void> {
     linkedWalletPubkey = null;
     linkedWocBalance = null;
     connectedWocBalance = null;
+    walletLinkStatusPending = false;
     updateWalletButton();
     return;
   }
   if (!api.token) {
     linkedWalletPubkey = null;
     linkedWocBalance = null;
+    walletLinkStatusPending = false;
     updateWalletButton();
     return;
   }
+  // Set synchronously (before the first await) so an auto-reconnecting wallet that
+  // fires mid-load is held, not disconnected, until we know whether it's the link.
+  walletLinkStatusPending = true;
+  let statusKnown = false;
   try {
     const wallet = await api.linkedWallet();
     linkedWalletPubkey = wallet?.pubkey ?? null;
     linkedWocBalance = null;
+    statusKnown = true;
   } catch (err) {
+    // Transient failure (offline/5xx): we genuinely don't know the link status, so
+    // keep any prior linked pubkey and do NOT disconnect a connected wallet, since
+    // that would force a needless re-sign. A later refresh resolves it.
     console.error('[wallet] could not load link status', err);
-    linkedWalletPubkey = null;
-    linkedWocBalance = null;
+  } finally {
+    walletLinkStatusPending = false;
   }
   updateWalletButton();
   const pubkey = linkedWalletPubkey;
@@ -4797,7 +4908,8 @@ async function refreshWalletLinkStatus(): Promise<void> {
       console.error('[wallet] could not load linked balance', err);
     }
   }
-  await disconnectUnverifiedWalletIfIdle();
+  // Only reap an unverified wallet once we've definitively learned the link status.
+  if (statusKnown) await disconnectUnverifiedWalletIfIdle();
 }
 
 // challenge → sign → link, with a verified mirror written server-side.
@@ -5034,7 +5146,7 @@ function wireStartScreens(): void {
   const bootLang = getLanguage();
   const startScreen = document.getElementById('start-screen');
   const gated = !!startScreen && !isLocaleResident(bootLang);
-  if (gated) startScreen!.style.visibility = 'hidden';
+  if (gated && startScreen) startScreen.style.visibility = 'hidden';
   const revealLocalized = () => {
     // Restore visibility even if translatePage() throws (e.g. a dev-build untracked-key
     // throw or any mid-translate DOM error), so a translation failure can never strand the
@@ -5042,7 +5154,7 @@ function wireStartScreens(): void {
     try {
       translatePage();
     } finally {
-      if (gated) startScreen!.style.visibility = '';
+      if (gated && startScreen) startScreen.style.visibility = '';
     }
   };
   void ensureLocaleLoaded(bootLang).then(revealLocalized, revealLocalized);
@@ -5569,6 +5681,20 @@ function wireStartScreens(): void {
     if (realmDropdownOpen && e.key === 'Escape') closeRealmDropdown();
   });
 
+  // Character sort dropdown: toggle, outside-click, and Escape.
+  $('#cs-sort-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSortDropdown();
+  });
+  document.addEventListener('click', (e) => {
+    if (!sortDropdownOpen) return;
+    const sw = document.querySelector('.cs-sort-switch');
+    if (sw && !sw.contains(e.target as Node)) closeSortDropdown();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (sortDropdownOpen && e.key === 'Escape') closeSortDropdown();
+  });
+
   // character creation
   document.querySelectorAll('#charcreate-panel .mini-class').forEach((el) => {
     const handleMiniClassSelect = () => {
@@ -5882,6 +6008,10 @@ function wireStartScreens(): void {
   if (api.restoreSession()) {
     enterLoggedInChrome();
     void revalidateAccountSession();
+    // Re-bind the account's linked wallet on a restored session (not just on fresh
+    // login), so an auto-reconnected wallet shows verified and is NOT treated as
+    // unverified and disconnected (the bug that forced a re-sign on every reload).
+    void refreshWalletLinkStatus();
   } else {
     enterLoggedOutChrome();
   }
@@ -5914,7 +6044,11 @@ function wireStartScreens(): void {
       void changeLanguage(selected, (msg) => {
         if (langStatus) langStatus.textContent = msg;
       }).then((ok) => {
-        if (!ok) langSelect.value = getLanguage();
+        if (!ok) {
+          langSelect.value = getLanguage();
+          return;
+        }
+        updateSortButtonLabel(); // char-select sort dropdown label follows the locale
       });
     });
   }
@@ -6117,5 +6251,6 @@ function fadeOutHomepageMusic(durationMs = 1600): void {
   }
 })();
 
+startSitePresence('home');
 wireStartScreens();
 initHomepageMusic();

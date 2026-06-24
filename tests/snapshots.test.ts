@@ -15,8 +15,10 @@ vi.mock('../server/db', () => ({
 import { saveCharacterState } from '../server/db';
 import { type ClientSession, GameServer, wireEntity } from '../server/game';
 import { ClientWorld } from '../src/net/online';
+import { DELVES } from '../src/sim/data';
 import { Sim } from '../src/sim/sim';
 import { DT, type PlayerClass } from '../src/sim/types';
+import { terrainHeight } from '../src/sim/world';
 
 const DELTA_KEYS = [
   'inv',
@@ -537,8 +539,8 @@ describe('raid party wire', () => {
     const client = bareClient(leader.pid);
     (client as any).applySnapshot(snap);
     expect(client.partyInfo).not.toBeNull();
-    expect(client.partyInfo!.raid).toBe(true);
-    expect(client.partyInfo!.members.find((m) => m.pid === member.pid)?.group).toBe(2);
+    expect(client.partyInfo?.raid).toBe(true);
+    expect(client.partyInfo?.members.find((m) => m.pid === member.pid)?.group).toBe(2);
   });
 });
 
@@ -967,6 +969,39 @@ describe('client-side delta merge', () => {
     }
   });
 
+  it('reconstructs stacking-debuff stack counts from the wire (Sunder Armor)', () => {
+    const client = bareClient(1);
+    (client as any).applySnapshot({
+      ents: [
+        {
+          id: 2,
+          k: 'mob',
+          tid: 'wolf',
+          nm: 'Wolf',
+          lv: 3,
+          x: 0,
+          y: 0,
+          z: 0,
+          f: 0,
+          hp: 40,
+          mhp: 40,
+          auras: [
+            {
+              id: 'sunder_armor',
+              name: 'Sunder Armor',
+              kind: 'sunder',
+              rem: 30,
+              dur: 30,
+              stacks: 3,
+            },
+          ],
+        },
+      ],
+    });
+    const aura = client.entities.get(2)?.auras.find((a) => a.kind === 'sunder');
+    expect(aura?.stacks, 'client should mirror the wire stack count').toBe(3);
+  });
+
   it('snaps the interpolation anchor on a teleport but tweens normal moves', () => {
     const client = bareClient(1);
     const ent = (x: number, z: number) => ({
@@ -1200,10 +1235,261 @@ describe('guild nameplate wire', () => {
     };
 
     (client as any).applySnapshot({ t: 'snap', ents: [{ ...base, gd: 'Silver Hand' }] });
-    expect(client.entities.get(7)!.guild).toBe('Silver Hand');
+    expect(client.entities.get(7)?.guild).toBe('Silver Hand');
 
     // a later full record without `gd` means "no guild" → reset to ''
     (client as any).applySnapshot({ t: 'snap', ents: [base] });
-    expect(client.entities.get(7)!.guild).toBe('');
+    expect(client.entities.get(7)?.guild).toBe('');
+  });
+});
+
+// Equipped mainhand item id rides the identity wire (terse key `mh`) so the
+// renderer can show each player's held weapon model. Recomputed in
+// recalcPlayerStats; the renderer maps it to a GLB (ITEM_WEAPON_VARIANTS).
+describe('held weapon wire (mainhandItemId)', () => {
+  it('carries the equipped mainhand item through wireEntity', () => {
+    const sim = new Sim({ seed: 1, playerClass: 'warrior', noPlayer: true });
+    const pid = sim.addPlayer('warrior', 'Thaldrin');
+    const e = sim.entities.get(pid)!;
+    // a fresh warrior starts holding its class startWeapon
+    expect(e.mainhandItemId).toBe('worn_sword');
+    expect(wireEntity(e).mh).toBe('worn_sword');
+  });
+
+  it('restores entity.mainhandItemId on the client from a full record', () => {
+    const client = bareClient(99);
+    const base = {
+      id: 7,
+      k: 'player',
+      tid: 'warrior',
+      nm: 'Brae',
+      lv: 5,
+      x: 0,
+      y: 0,
+      z: 0,
+      f: 0,
+      hp: 100,
+      mhp: 100,
+    };
+
+    (client as any).applySnapshot({ t: 'snap', ents: [{ ...base, mh: 'zealotsbane_blade' }] });
+    expect(client.entities.get(7)?.mainhandItemId).toBe('zealotsbane_blade');
+
+    // a later full record without `mh` means "no equipped weapon" → reset to null
+    (client as any).applySnapshot({ t: 'snap', ents: [base] });
+    expect(client.entities.get(7)?.mainhandItemId).toBeNull();
+  });
+});
+
+describe('delve self-state mirrors over the wire', () => {
+  let server: GameServer;
+  let fc: FakeClient;
+  let session: ClientSession;
+
+  beforeEach(() => {
+    server = new GameServer();
+    fc = fakeWs();
+    session = joinServer(server, fc, 1, 'Delver');
+  });
+
+  function enterDelveOnServer(): void {
+    const sim = server.sim;
+    sim.setPlayerLevel(DELVES.collapsed_reliquary.minLevel);
+    const door = DELVES.collapsed_reliquary.doorPos;
+    const p = sim.entities.get(session.pid)!;
+    p.pos.x = door.x;
+    p.pos.z = door.z;
+    p.pos.y = terrainHeight(door.x, door.z, sim.cfg.seed);
+    p.prevPos = { ...p.pos };
+    sim.enterDelve('collapsed_reliquary', 'normal', session.pid);
+  }
+
+  it('geo-gates companion_upgrade and enter_delve to the board NPC door', () => {
+    const sim = server.sim;
+    sim.setPlayerLevel(DELVES.collapsed_reliquary.minLevel);
+    const meta = sim.meta(session.pid)!;
+    meta.companionUpgrades.companion_tessa = 1;
+    meta.delveMarks = 100;
+    const p = sim.entities.get(session.pid)!;
+    const door = DELVES.collapsed_reliquary.doorPos;
+    const place = (x: number, z: number) => {
+      p.pos.x = x;
+      p.pos.z = z;
+      p.pos.y = terrainHeight(x, z, sim.cfg.seed);
+      p.prevPos = { ...p.pos };
+    };
+    // Far from Brother Halven: the upgrade command is rejected (rank unchanged)...
+    place(door.x + 200, door.z);
+    server.handleMessage(
+      session,
+      JSON.stringify({ t: 'cmd', cmd: 'companion_upgrade', companionId: 'companion_tessa' }),
+    );
+    expect(meta.companionUpgrades.companion_tessa).toBe(1);
+    // ...and enter_delve does not claim a run from across the world.
+    server.handleMessage(
+      session,
+      JSON.stringify({
+        t: 'cmd',
+        cmd: 'enter_delve',
+        delveId: 'collapsed_reliquary',
+        tierId: 'normal',
+      }),
+    );
+    expect(sim.delveRunForPlayer(session.pid)).toBeNull();
+    // Standing on the board door: the upgrade goes through.
+    place(door.x, door.z);
+    server.handleMessage(
+      session,
+      JSON.stringify({ t: 'cmd', cmd: 'companion_upgrade', companionId: 'companion_tessa' }),
+    );
+    expect(meta.companionUpgrades.companion_tessa).toBe(2);
+  });
+
+  it('sends drun + dcompanion on entering a delve and the client mirrors them', () => {
+    enterDelveOnServer();
+    broadcast(server);
+    const snap = lastSnap(fc.sent);
+    expect(snap.self).toHaveProperty('drun');
+    expect(snap.self).toHaveProperty('dcompanion');
+    const client = bareClient(session.pid);
+    (client as any).applySnapshot(snap);
+    expect(client.delveRun).not.toBeNull();
+    expect(client.companionState?.companionId).toBe('companion_tessa');
+  });
+
+  it('mirrors delveMarks + delveClears + delveDaily to the client when they change', () => {
+    enterDelveOnServer();
+    broadcast(server);
+    fc.sent.length = 0;
+    server.sim.meta(session.pid)!.delveMarks = 5;
+    const meta = server.sim.meta(session.pid)!;
+    meta.delveClears['collapsed_reliquary:heroic'] = 1;
+    meta.delveDaily.markClears = 2;
+    broadcast(server);
+    const snap = lastSnap(fc.sent);
+    expect(snap.self.dmarks).toBe(5);
+    expect(snap.self.dclears['collapsed_reliquary:heroic']).toBe(1);
+    expect(snap.self.delveDaily.markClears).toBe(2);
+    const client = bareClient(session.pid);
+    (client as any).applySnapshot(snap);
+    expect(client.delveMarks).toBe(5);
+    expect(client.delveClears['collapsed_reliquary:heroic']).toBe(1);
+    // the shop view resolves the heroic-gated rare as unlocked off the mirror
+    expect(
+      client.delveShopOffers('collapsed_reliquary').find((o: any) => o.requiresHeroicClear)
+        ?.unlocked,
+    ).toBe(true);
+    expect(client.delveDaily.markClears).toBe(2);
+  });
+
+  it('does NOT resend drun on an unchanged delve-less first/second tick', () => {
+    // Outside a delve, drun is null and must be omitted after the first send.
+    broadcast(server);
+    fc.sent.length = 0;
+    server.sim.tick();
+    broadcast(server);
+    const snap = lastSnap(fc.sent);
+    expect(snap.self).not.toHaveProperty('drun');
+  });
+
+  it('clears drun + dcompanion (value to null) on leaving a delve and the client mirror follows', () => {
+    enterDelveOnServer();
+    broadcast(server);
+    const client = bareClient(session.pid);
+    (client as any).applySnapshot(lastSnap(fc.sent));
+    expect(client.delveRun).not.toBeNull();
+    fc.sent.length = 0;
+    server.sim.leaveDelve(session.pid);
+    broadcast(server);
+    const snap = lastSnap(fc.sent);
+    expect(snap.self.drun).toBeNull();
+    expect(snap.self.dcompanion).toBeNull();
+    (client as any).applySnapshot(snap);
+    expect(client.delveRun).toBeNull();
+    expect(client.companionState).toBeNull();
+  });
+});
+
+describe('lockpick view rebuilds from events on the online client', () => {
+  function sessionEvent(sid: string, col: number, visible: any[]) {
+    return {
+      type: 'lockpickSession',
+      sessionId: sid,
+      objectId: 77,
+      w: 11,
+      h: 6,
+      col,
+      row: 2,
+      page: 1,
+      pageCount: 1,
+      tries: 1,
+      triesTotal: 1,
+      lootTier: 'premium',
+      allowed: ['hardSet', 'set', 'steady', 'ease', 'drop'],
+      visible,
+      stepTimeoutMs: 20000,
+    };
+  }
+  function feed(client: ClientWorld, ev: any) {
+    (client as any).onMessage(JSON.stringify({ t: 'events', list: [ev] }));
+  }
+
+  it('builds on session, advances on step, ignores foreign sessions, clears on end', () => {
+    const client = bareClient(1);
+    (client as any).lockpickState = null;
+    const v0 = [{ col: 0, row: 2, kind: 'channel' }];
+    feed(client, sessionEvent('s1', 0, v0));
+    expect(client.lockpickState).not.toBeNull();
+    expect(client.lockpickState?.sessionId).toBe('s1');
+    expect(client.lockpickState?.lootTier).toBe('premium');
+    expect(client.lockpickState?.visible).toEqual(v0);
+
+    // Step advances col + visible, leaves identity fields (w/h/lootTier) intact.
+    const v1 = [{ col: 1, row: 3, kind: 'channel' }];
+    feed(client, {
+      type: 'lockpickStep',
+      sessionId: 's1',
+      col: 1,
+      row: 3,
+      page: 1,
+      pageCount: 1,
+      tries: 1,
+      triesTotal: 1,
+      result: 'advanced',
+      visible: v1,
+    });
+    expect(client.lockpickState?.col).toBe(1);
+    expect(client.lockpickState?.visible).toEqual(v1);
+    expect(client.lockpickState?.w).toBe(11);
+    expect(client.lockpickState?.lootTier).toBe('premium');
+
+    // A step for a different session must not mutate the active view.
+    feed(client, {
+      type: 'lockpickStep',
+      sessionId: 'OTHER',
+      col: 9,
+      row: 9,
+      page: 1,
+      pageCount: 1,
+      tries: 1,
+      triesTotal: 1,
+      result: 'advanced',
+      visible: [],
+    });
+    expect(client.lockpickState?.col).toBe(1);
+
+    // End for the active session clears it; events still reach the HUD queue.
+    feed(client, { type: 'lockpickEnd', sessionId: 's1', outcome: 'success', lootTier: 'premium' });
+    expect(client.lockpickState).toBeNull();
+    expect(client.drainEvents().length).toBeGreaterThan(0);
+  });
+
+  it('does not clear the view on a foreign lockpickEnd', () => {
+    const client = bareClient(1);
+    (client as any).lockpickState = null;
+    feed(client, sessionEvent('s2', 0, []));
+    feed(client, { type: 'lockpickEnd', sessionId: 'OTHER', outcome: 'fail' });
+    expect(client.lockpickState).not.toBeNull();
+    expect(client.lockpickState?.sessionId).toBe('s2');
   });
 });

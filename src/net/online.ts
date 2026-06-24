@@ -12,8 +12,9 @@ import {
   type TalentAllocation,
   talentPointsAtLevel,
 } from '../sim/content/talents';
-import { abilitiesKnownAt, NPCS } from '../sim/data';
+import { abilitiesKnownAt, NPCS, resolveDelveShopOffers } from '../sim/data';
 import { LEADERBOARD_PAGE_SIZE } from '../sim/leaderboard_page';
+import type { Ante, PickAction } from '../sim/lockpick';
 import { normalizeMoveFacing, sanitizeMoveInput } from '../sim/move_input';
 import { computeQuestState, type ResolvedAbility } from '../sim/sim';
 import {
@@ -33,12 +34,17 @@ import {
   type AccountCosmetics,
   type ArenaInfo,
   type CharacterSearchResult,
+  type DelveCompanionInfo,
+  type DelveDailyInfo,
+  type DelveRunInfo,
+  type DelveShopOfferView,
   type DuelInfo,
   type FriendInfo,
   type IWorld,
   isOverheadEmoteId,
   type LeaderboardEntry,
   type LeaderboardPage,
+  type LockpickView,
   type MarketInfo,
   type OverheadEmoteId,
   type PartyInfo,
@@ -60,6 +66,8 @@ export interface CharacterSummary {
   skin: number;
   online: boolean;
   forceRename: boolean;
+  lastPlayed?: string | null;
+  playtimeSeconds?: number;
 }
 
 function stringList(value: unknown): string[] {
@@ -335,11 +343,6 @@ export class Api {
 
   async logout(): Promise<void> {
     await this.post('/api/account/logout', {});
-  }
-
-  async setEmail(email: string): Promise<string> {
-    const data = await this.post('/api/account/email', { email });
-    return typeof data.email === 'string' ? data.email : '';
   }
 
   async deactivateAccount(username: string, password: string): Promise<void> {
@@ -679,6 +682,8 @@ function blankEntity(id: number): Entity {
     ownerId: null,
     petMode: 'defensive',
     petTauntTimer: 0,
+    petAutoTaunt: false,
+    petManualTauntPending: false,
     spawnPos: { x: 0, y: 0, z: 0 },
     leashAnchor: null,
     evadeStall: 0,
@@ -702,6 +707,7 @@ function blankEntity(id: number): Entity {
     color: 0xffffff,
     skinCatalog: 'class',
     skin: 0,
+    mainhandItemId: null,
     guild: '',
   };
 }
@@ -738,6 +744,17 @@ export class ClientWorld implements IWorld {
   socialInfo: SocialInfo | null = null;
   arenaInfo: ArenaInfo | null = null;
   marketInfo: MarketInfo | null = null;
+  delveRun: DelveRunInfo | null = null;
+  companionState: DelveCompanionInfo | null = null;
+  // Lockpicking: rebuilt from the lockpick* events (there is no snapshot field).
+  // Holds only the fog-windowed cells the server discloses.
+  lockpickState: LockpickView | null = null;
+  delveMarks = 0;
+  companionUpgrades: Record<string, number> = {};
+  // Per-delve clears (key `${delveId}:${tierId}`), mirrored from the self-wire so
+  // delveShopOffers can resolve the shop lock badge client-side.
+  delveClears: Record<string, number> = {};
+  delveDaily: DelveDailyInfo = { date: '', firstClearXp: [], markClears: 0 };
   markers: Record<number, number> = {}; // entityId -> markerId, mirrored from the self-wire
   private lootRollPrompts: LootRollPrompt[] = []; // open need-greed rolls, mirrored from the self-wire
   realm = '';
@@ -942,7 +959,10 @@ export class ClientWorld implements IWorld {
       return;
     }
     if (msg.t === 'events') {
-      for (const ev of msg.list) this.eventQueue.push(ev as SimEvent);
+      for (const ev of msg.list) {
+        this.applyLockpickEvent(ev as SimEvent);
+        this.eventQueue.push(ev as SimEvent);
+      }
       return;
     }
     if (msg.t === 'social') {
@@ -1047,6 +1067,7 @@ export class ClientWorld implements IWorld {
         e.name = w.nm;
         e.level = w.lv;
         e.skin = w.sk ?? 0;
+        e.mainhandItemId = w.mh ?? null; // equipped mainhand → held weapon model (render-only)
         e.skinCatalog = w.cat === 'mech' ? 'mech' : 'class';
         e.holderTier = w.ht ?? 0; // $WOC holder-tier flair (cosmetic, server-set)
         e.holderBalance = typeof w.hb === 'number' ? w.hb : undefined; // exact $WOC, for inspect
@@ -1131,6 +1152,8 @@ export class ClientWorld implements IWorld {
       e.ownerId = w.own ?? null;
       e.petMode = w.pm ?? 'defensive';
       e.petTauntTimer = w.pt ?? 0;
+      e.petAutoTaunt = !!w.pa;
+      e.petManualTauntPending = false;
       e.threat = new Map(w.thr ?? []);
       e.auras = (w.auras ?? []).map((a: any) => ({
         id: a.id,
@@ -1141,6 +1164,7 @@ export class ClientWorld implements IWorld {
         value: 0,
         sourceId: 0,
         school: 'physical' as const,
+        stacks: a.stacks,
       }));
       e.loot = w.lootList ?? null;
       return e;
@@ -1242,6 +1266,12 @@ export class ClientWorld implements IWorld {
       if (s.arena !== undefined) this.arenaInfo = s.arena;
       if (s.market !== undefined) this.marketInfo = s.market;
       if (s.lroll !== undefined) this.lootRollPrompts = s.lroll ?? [];
+      if (s.drun !== undefined) this.delveRun = s.drun;
+      if (s.dcompanion !== undefined) this.companionState = s.dcompanion;
+      if (s.dmarks !== undefined) this.delveMarks = s.dmarks ?? 0;
+      if (s.dcomp !== undefined) this.companionUpgrades = s.dcomp ?? {};
+      if (s.dclears !== undefined) this.delveClears = s.dclears ?? {};
+      if (s.delveDaily !== undefined) this.delveDaily = s.delveDaily;
       // camera follows server-side facing changes when not mouselooking
       if (prevSelfFacing !== undefined && this.mouselookFacing === null) {
         let d = e.facing - prevSelfFacing;
@@ -1319,7 +1349,7 @@ export class ClientWorld implements IWorld {
   // self-heals on the next GCD. (Mob respawn clears attackers' targetId, so it
   // has no such window.)
   private deadTargetCast(def: ResolvedAbility['def'] | undefined): boolean {
-    if (!def || !def.requiresTarget || def.targetType === 'friendly') return false;
+    if (!def?.requiresTarget || def.targetType === 'friendly') return false;
     const tid = this.player.targetId;
     const target = tid !== null ? this.entities.get(tid) : undefined;
     return !!target && target.dead;
@@ -1403,6 +1433,9 @@ export class ClientWorld implements IWorld {
     this.pendingQuestCommands.delete(questId);
     this.cmd({ cmd: 'abandon', quest: questId });
   }
+  acceptLinkedQuest(questId: string, fromPid: number): void {
+    this.cmd({ cmd: 'qlinkaccept', quest: questId, from: fromPid });
+  }
   equipItem(itemId: string): void {
     this.cmd({ cmd: 'equip', item: itemId });
   }
@@ -1420,6 +1453,9 @@ export class ClientWorld implements IWorld {
   }
   sellItem(itemId: string, count?: number): void {
     this.cmd({ cmd: 'sell', item: itemId, count });
+  }
+  sellAllJunk(): void {
+    this.cmd({ cmd: 'sell_all_junk' });
   }
   buyBackItem(itemId: string): void {
     this.cmd({ cmd: 'buyback', item: itemId });
@@ -1492,6 +1528,15 @@ export class ClientWorld implements IWorld {
   }
   petTaunt(): void {
     this.cmd({ cmd: 'pet_taunt' });
+  }
+  setPetAutoTaunt(enabled: boolean): void {
+    for (const e of this.entities.values()) {
+      if (e.kind === 'mob' && e.ownerId === this.playerId) {
+        e.petAutoTaunt = enabled;
+        break;
+      }
+    }
+    this.cmd({ cmd: 'pet_auto_taunt', enabled });
   }
   feedPet(itemId: string): void {
     this.cmd({ cmd: 'pet_feed', item: itemId });
@@ -1646,6 +1691,71 @@ export class ClientWorld implements IWorld {
   }
   leaveDungeon(): void {
     this.cmd({ cmd: 'leave_dungeon' });
+  }
+  enterDelve(delveId: string, tierId: string): void {
+    this.cmd({ cmd: 'enter_delve', delveId, tierId });
+  }
+  leaveDelve(): void {
+    this.cmd({ cmd: 'leave_delve' });
+  }
+  delveInteract(objectId: number): void {
+    this.cmd({ cmd: 'delve_interact', objectId });
+  }
+  companionUpgrade(companionId: string): void {
+    this.cmd({ cmd: 'companion_upgrade', companionId });
+  }
+  delveBuyShopItem(delveId: string, itemId: string): void {
+    this.cmd({ cmd: 'delve_buy', delveId, itemId });
+  }
+  delveShopOffers(delveId: string): DelveShopOfferView[] {
+    return resolveDelveShopOffers(delveId, this.delveClears);
+  }
+  lockpickEngage(objectId: number, ante: Ante): void {
+    this.cmd({ cmd: 'lockpick_engage', objectId, ante });
+  }
+  lockpickAction(action: PickAction): void {
+    this.cmd({ cmd: 'lockpick_action', sid: this.lockpickState?.sessionId, action });
+  }
+  lockpickAbort(): void {
+    this.cmd({ cmd: 'lockpick_abort', sid: this.lockpickState?.sessionId });
+  }
+  collectDelveChestLoot(chestId: number): void {
+    this.cmd({ cmd: 'collect_delve_chest_loot', objectId: chestId });
+  }
+  // Mirror the authoritative lockpick lifecycle into lockpickState. The events
+  // still flow to the HUD (drainEvents) for transient feedback (juice/sounds).
+  private applyLockpickEvent(ev: SimEvent): void {
+    if (ev.type === 'lockpickSession') {
+      this.lockpickState = {
+        sessionId: ev.sessionId,
+        objectId: ev.objectId,
+        w: ev.w,
+        h: ev.h,
+        col: ev.col,
+        row: ev.row,
+        page: ev.page,
+        pageCount: ev.pageCount,
+        tries: ev.tries,
+        triesTotal: ev.triesTotal,
+        lootTier: ev.lootTier,
+        allowed: ev.allowed,
+        visible: ev.visible,
+        stepTimeoutMs: ev.stepTimeoutMs,
+      };
+    } else if (ev.type === 'lockpickStep') {
+      const s = this.lockpickState;
+      if (s && s.sessionId === ev.sessionId) {
+        s.col = ev.col;
+        s.row = ev.row;
+        s.page = ev.page;
+        s.pageCount = ev.pageCount;
+        s.tries = ev.tries;
+        s.triesTotal = ev.triesTotal;
+        s.visible = ev.visible;
+      }
+    } else if (ev.type === 'lockpickEnd') {
+      if (this.lockpickState?.sessionId === ev.sessionId) this.lockpickState = null;
+    }
   }
   // Raid lockouts mirrored from snapshot self as {dungeonId: expiryEpochMs}; the
   // remaining time is derived locally so the countdown ticks down without traffic.

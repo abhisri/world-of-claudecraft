@@ -54,10 +54,16 @@ import type { ZoneDef } from '../sim/data';
 import {
   ABILITIES,
   CLASSES,
+  COMPANION_UPGRADE_COSTS,
+  DELVE_AFFIXES,
+  DELVE_LIST,
+  DELVES,
   DUNGEON_LIST,
   DUNGEON_X_THRESHOLD,
+  delveAt,
   dungeonAt,
   ITEMS,
+  isDelvePos,
   MOBS,
   NPCS,
   PROPS,
@@ -70,8 +76,11 @@ import {
   ZONES,
   zoneAt,
 } from '../sim/data';
+import { DELVE_MODULE_LAYOUTS, type DelveModuleId } from '../sim/delve_layout';
 import { armorTypeForItem, weaponArchetypeForItem } from '../sim/equipment_rules';
 import { LEADERBOARD_PAGE_SIZE } from '../sim/leaderboard_page';
+import type { Ante, PickAction } from '../sim/lockpick';
+import { PICK_ACTIONS } from '../sim/lockpick';
 import type { ResolvedAbility } from '../sim/sim';
 import type {
   AbilityDef,
@@ -105,6 +114,7 @@ import type { Decoration } from '../sim/world';
 import { generateDecorations } from '../sim/world';
 import {
   type ArenaFormat,
+  type DelveRunInfo,
   type FriendInfo,
   type IWorld,
   isOverheadEmoteId,
@@ -151,6 +161,13 @@ import {
 } from './combat_sfx';
 import { type CardinalId, compassView } from './compass';
 import { formatMinimapCoords } from './coords';
+import {
+  delveAreaLabel,
+  delveSchematicPlayer,
+  delveSchematicStatic,
+  playerDelveLocal,
+  type SchematicPrimitive,
+} from './delve_map';
 import { dropdownKeyNav } from './dropdown_nav';
 import { emoteIconUrl } from './emote_icons';
 import { itemDisplayName, tEntity } from './entity_i18n';
@@ -191,6 +208,8 @@ import {
 } from './i18n';
 import { iconDataUrl, QUALITY_COLOR, raidMarkerDataUrl } from './icons';
 import { itemStatDeltas } from './item_compare';
+import { PICK_ACTION_HOTKEYS } from './lockpick_panel';
+import { LockpickWindow } from './lockpick_window';
 import { reconcileLootRolls as computeLootRollReconcile } from './loot_roll_reconcile';
 import { lowHealthVignette } from './low_health';
 import { lowResourceView } from './low_resource';
@@ -217,6 +236,7 @@ import {
   minimapZoomValue,
   nextMinimapZoom,
 } from './minimap_zoom';
+import { selectPartyFrameMembers } from './party_frames';
 import {
   type PerfOverlayHooks,
   PerfOverlaySettingsPanel,
@@ -241,6 +261,7 @@ import {
 import { chatPlayerContextActions } from './player_context_menu';
 import { hydratePortraits, portraitChipHtml } from './portrait_chip';
 import { maskProfanity } from './profanity';
+import { encodeQuestLink, parseChatSegments } from './quest_link';
 import { type QuestTrackerView, questTrackerView, type TrackedQuest } from './quest_tracker';
 import { lockoutParts, lockoutShape } from './raid_lockout';
 import { type RaidLockoutI18n, raidLockoutPanelHtml } from './raid_lockout_view';
@@ -490,9 +511,6 @@ const ITEM_STAT_LABEL_KEYS: Partial<Record<keyof Stats, TranslationKey>> = {
 const classCss = (cls: string): string =>
   `#${((CLASSES as Record<string, { color: number }>)[cls]?.color ?? 0x5fa8ff).toString(16).padStart(6, '0')}`;
 
-// Party frames dim and the minimap pins members to the rim once they pass
-// this range (yards) — just inside the server's ~120 yd interest scope.
-const PARTY_RANGE_YD = 100;
 const EMOTE_WHEEL_LIMIT = 8;
 const DEFAULT_EMOTE_WHEEL: OverheadEmoteId[] = [
   'wave',
@@ -570,6 +588,18 @@ const CHAT_TEMPLATE_KEYS = {
   say: 'hud.chat.templates.say',
 } satisfies Record<string, TranslationKey>;
 type HotbarForm = 'normal' | 'bear' | 'cat' | 'stealth';
+
+const DELVE_AFFIX_COLORS: Record<string, string> = {
+  restless_graves: '#8b7355',
+  bad_air: '#6a8a6a',
+  candleblind: '#c9a227',
+  old_mechanisms: '#7a8a9a',
+  flooded_paths: '#4a7a9a',
+  grave_tax: '#9a6a4a',
+  unstable_roof: '#8a6a5a',
+  cult_remnants: '#7a4a8a',
+  chapel_candle: '#ffd100',
+};
 type MobileHotbarDrag = {
   pointerId: number;
   sourceIndex: number;
@@ -662,6 +692,7 @@ function yellVoiceKey(text: string): string {
 
 export class Hud {
   private static readonly BAR_ABILITY_SLOTS = 11; // bar slots 1..11; slot 0 is the fixed Attack toggle
+  private static readonly PET_AUTOCAST_TOUCH_HOLD_MS = 2000;
   private static ddSeq = 0; // monotonic id source for buildDropdown listbox/option ARIA wiring
   private static readonly FORM_TOGGLE_IDS = new Set(['bear_form', 'cat_form', 'travel_form']); // shift toggles, castable in any form
   private abilityButtons: {
@@ -802,7 +833,14 @@ export class Hud {
   // matching canceller; a clearTimeout on an idle id (or vice versa) could cancel
   // an unrelated timer that happens to share the number.
   private mapPrewarmVia: 'idle' | 'timeout' | null = null;
+  // Delve schematic caches: static background (floor/pillars/tombs/dais/exit)
+  // keyed by module id, redrawn only when the module changes.
+  private delveSchematicBg: HTMLCanvasElement | null = null;
+  private delveSchematicBgModuleId: string = '';
+  private delveMapBg: HTMLCanvasElement | null = null;
+  private delveMapBgModuleId: string = '';
   private openLootMobId: number | null = null;
+  private openLootChestId: number | null = null;
   private activeLootRolls = new Map<
     number,
     { event: Extract<SimEvent, { type: 'lootRoll' }>; receivedAt: number; durationMs: number }
@@ -815,9 +853,30 @@ export class Hud {
   // that the mirror simply has not caught up to a just-shown event yet.
   private confirmedLootRolls = new Set<number>();
   private openVendorNpcId: number | null = null;
+  private openDelveBoardNpcId: number | null = null;
+  private lastDelveTrackerSig = '';
+  private selectedDelveTier: 'normal' | 'heroic' = 'normal';
+  private delveBoardTab: 'delve' | 'shop' = 'delve';
+  private delveBoardReturnFocus: HTMLElement | null = null;
+  private lockpickOfferId: number | null = null;
+  private lockpickCoffer = false;
+  private lockpickReturnFocus: HTMLElement | null = null;
+  private lockpickKeyHandler: ((e: KeyboardEvent) => void) | null = null;
+  // The board paints from the authoritative world.lockpickState (never a cached
+  // copy), and owns the per-page countdown with a generation guard. hud.ts keeps
+  // only offer routing, focus restore, and keybinds.
+  private readonly lockpickWindow = new LockpickWindow({
+    getState: () => this.sim.lockpickState,
+    tierName: (tier) => this.lockpickTierName(tier),
+    onEngage: (objectId, ante) => this.submitLockpickEngage(objectId, ante),
+    onAction: (action) => this.submitLockpickAction(action),
+    onAbort: () => this.submitLockpickAbort(),
+    onClose: () => this.closeLockpick(),
+  });
   private openGossipNpcId: number | null = null;
   private openQuestDetailId: string | null = null;
   private selectedQuestLogId: string | null = null;
+  private pendingChatLinks = new Map<string, string>(); // display "[Name]" -> questId
   private questDialogReturnFocus: HTMLElement | null = null;
   private questDialogOpenedAtMs = 0;
   private questLogReturnFocus: HTMLElement | null = null;
@@ -1149,6 +1208,17 @@ export class Hud {
         this.toggleQuestTrackerCollapsed();
       }
     });
+    // The delve board and lockpick panel are non-modal .window.panel overlays, so
+    // canUseGameKeys() stays true and the global jump (Space) / chat (Enter) binds
+    // would otherwise hijack those keys on a focused panel button. Stop propagation
+    // (but NOT the default, so the button's native activation still fires) when a
+    // panel button has focus, mirroring the quest-tracker guard above.
+    for (const panelId of ['#delve-board', '#lockpick-panel']) {
+      $(panelId).addEventListener('keydown', (e) => {
+        if ((e.target as HTMLElement).tagName !== 'BUTTON') return;
+        if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') e.stopPropagation();
+      });
+    }
     $('#mm-map').addEventListener('click', () => this.toggleMap());
     $('#map-close').addEventListener('click', () => {
       $('#map-window').style.display = 'none';
@@ -1542,6 +1612,9 @@ export class Hud {
         break;
       case 'quest-dialog':
         this.closeQuestDialog();
+        break;
+      case 'delve-board':
+        this.closeDelveBoard();
         break;
       case 'bags':
         if (this.vendorOpen && document.body.classList.contains('mobile-touch')) this.closeVendor();
@@ -1954,8 +2027,54 @@ export class Hud {
   // channel tab. main.ts calls this on Enter so a channel tab works without
   // retyping the slash command; an explicit "/..." the player typed still wins.
   composeChatSend(typed: string): string {
+    const withLinks = this.applyPendingQuestLinks(typed);
     const ch = this.chatFilterChannel();
-    return ch ? composeChatLine(ch, typed) : typed.trim();
+    return ch ? composeChatLine(ch, withLinks) : withLinks.trim();
+  }
+
+  // Shift-click a quest-log entry: open the chat input and insert a readable
+  // [Name] link. composeChatSend swaps it for the canonical [[q:id]] token on send.
+  insertQuestChatLink(questId: string): void {
+    const input = $('#chat-input') as unknown as HTMLInputElement;
+    const display = `[${questTitle(questId)}]`;
+    this.pendingChatLinks.set(display, questId);
+    input.placeholder = this.activeChatPlaceholder();
+    input.style.display = 'block';
+    input.value =
+      input.value && !input.value.endsWith(' ')
+        ? `${input.value} ${display}`
+        : `${input.value}${display}`;
+    input.focus();
+  }
+
+  // Drop any shift-click-inserted links that were never sent (chat closed/cleared),
+  // so a stale [Name] entry can't silently rewrite a later message.
+  clearPendingQuestLinks(): void {
+    this.pendingChatLinks.clear();
+  }
+
+  // Replace any inserted readable [Name] with its [[q:id]] token, then forget them.
+  private applyPendingQuestLinks(typed: string): string {
+    if (this.pendingChatLinks.size === 0) return typed;
+    let out = typed;
+    for (const [display, questId] of this.pendingChatLinks)
+      out = out.split(display).join(encodeQuestLink(questId));
+    this.pendingChatLinks.clear();
+    return out;
+  }
+
+  // Intercept "/share": link the selected quest into party chat. Returns true when
+  // handled (the caller then skips normal send). Not-in-a-party is left to the sim's
+  // existing "You are not in a party." error from the /p path.
+  maybeHandleQuestShareCommand(raw: string): boolean {
+    if (!/^\/share(?:\s|$)/i.test(raw.trim())) return false;
+    const id = this.selectedQuestLogId;
+    if (!id || !this.sim.questLog.has(id)) {
+      this.showError(t('hudChrome.questShare.noQuestSelected'));
+      return true;
+    }
+    this.sim.chat(`/p ${encodeQuestLink(id)}`);
+    return true;
   }
 
   // Placeholder for the chat input reflecting the active channel tab.
@@ -2485,6 +2604,7 @@ export class Hud {
   private refreshLocalizedDynamicUi(): void {
     this.refreshKeybindLabels();
     this.updateQuestTracker();
+    this.updateDelveTracker();
     const log = $('#quest-log-window');
     if (log.style.display === 'block') this.renderQuestLog();
     if ($('#bags').style.display === 'block') this.renderBags();
@@ -3217,8 +3337,9 @@ export class Hud {
     }
     const mode = pet.petMode ?? 'defensive';
     const cd = Math.ceil(Math.max(0, pet.petTauntTimer));
+    const autoTaunt = pet.petAutoTaunt === true;
     const ownerClass = this.sim.cfg.playerClass;
-    const sig = `${pet.id}:${ownerClass}:${mode}:${cd}:${this.pendingPetFeed ? 'feed' : ''}:${this.petModeMenuOpen ? 'modes' : ''}`;
+    const sig = `${pet.id}:${ownerClass}:${mode}:${cd}:${autoTaunt ? 'auto' : 'manual'}:${this.pendingPetFeed ? 'feed' : ''}:${this.petModeMenuOpen ? 'modes' : ''}`;
     bar.style.display = 'flex';
     if (sig === this.lastPetBarSig) return;
     this.lastPetBarSig = sig;
@@ -3237,13 +3358,22 @@ export class Hud {
       title: string,
       tooltip: string,
       onClick: () => void,
-      opts: { active?: boolean; cooldownText?: string } = {},
+      opts: {
+        active?: boolean;
+        autocast?: boolean;
+        cooldownText?: string;
+        onContextMenu?: () => void;
+        onTouchHold?: () => void;
+      } = {},
     ) => {
       const btn = document.createElement('button');
       btn.className = 'pet-btn';
       if (opts.active) btn.classList.add('active');
+      if (opts.autocast) btn.classList.add('autocast');
       if (opts.cooldownText) btn.classList.add('cooldown');
       btn.title = title;
+      btn.setAttribute('aria-label', title);
+      if (opts.active || opts.autocast) btn.setAttribute('aria-pressed', 'true');
       const icon = document.createElement('span');
       icon.className = 'icon-label';
       icon.style.backgroundImage = `url(${iconDataUrl('ability', iconId)})`;
@@ -3254,11 +3384,110 @@ export class Hud {
         cdText.textContent = opts.cooldownText;
         btn.appendChild(cdText);
       }
-      btn.addEventListener('click', () => {
+      let suppressNextClick = false;
+      let touchHoldTimer: number | undefined;
+      let touchHoldPointerId: number | null = null;
+      let touchHoldStartX = 0;
+      let touchHoldStartY = 0;
+      let touchHoldTriggered = false;
+      let touchHoldCanceled = false;
+      const clearTouchHoldTimer = () => {
+        if (touchHoldTimer !== undefined) window.clearTimeout(touchHoldTimer);
+        touchHoldTimer = undefined;
+      };
+      const runClickAction = () => {
         if (opts.cooldownText) return;
         audio.click();
         onClick();
+      };
+      btn.addEventListener('click', () => {
+        if (suppressNextClick) {
+          suppressNextClick = false;
+          this.peekGuard.consume();
+          this.hideTooltip();
+          btn.blur();
+          return;
+        }
+        if (this.peekGuard.consume()) {
+          this.hideTooltip();
+          btn.blur();
+          return;
+        }
+        runClickAction();
       });
+      if (opts.onContextMenu) {
+        btn.addEventListener('contextmenu', (event) => {
+          event.preventDefault();
+          if (document.body.classList.contains('mobile-touch')) return;
+          audio.click();
+          opts.onContextMenu?.();
+        });
+      }
+      if (opts.onTouchHold) {
+        btn.addEventListener('pointerdown', (event) => {
+          if (!document.body.classList.contains('mobile-touch') || event.pointerType !== 'touch') {
+            return;
+          }
+          event.preventDefault();
+          clearTouchHoldTimer();
+          suppressNextClick = false;
+          touchHoldTriggered = false;
+          touchHoldCanceled = false;
+          touchHoldPointerId = event.pointerId;
+          touchHoldStartX = event.clientX;
+          touchHoldStartY = event.clientY;
+          try {
+            btn.setPointerCapture?.(event.pointerId);
+          } catch {
+            /* pointer already released */
+          }
+          touchHoldTimer = window.setTimeout(() => {
+            if (touchHoldPointerId !== event.pointerId || touchHoldCanceled) return;
+            touchHoldTriggered = true;
+            suppressNextClick = true;
+            audio.click();
+            opts.onTouchHold?.();
+            this.hideTooltip();
+            this.peekGuard.consume();
+            btn.blur();
+          }, Hud.PET_AUTOCAST_TOUCH_HOLD_MS);
+        });
+        btn.addEventListener('pointermove', (event) => {
+          if (touchHoldPointerId !== event.pointerId) return;
+          const moved = Math.hypot(
+            event.clientX - touchHoldStartX,
+            event.clientY - touchHoldStartY,
+          );
+          if (moved > 9) {
+            touchHoldCanceled = true;
+            clearTouchHoldTimer();
+          }
+        });
+        const finishTouchHold = (event: PointerEvent, canceled: boolean) => {
+          if (touchHoldPointerId !== event.pointerId) return;
+          event.preventDefault();
+          const triggered = touchHoldTriggered;
+          const movedAway = touchHoldCanceled || canceled;
+          clearTouchHoldTimer();
+          touchHoldPointerId = null;
+          touchHoldTriggered = false;
+          touchHoldCanceled = false;
+          suppressNextClick = true;
+          if (triggered || movedAway) {
+            this.peekGuard.consume();
+            return;
+          }
+          if (this.peekGuard.consume()) {
+            this.hideTooltip();
+            btn.blur();
+            return;
+          }
+          runClickAction();
+          btn.blur();
+        };
+        btn.addEventListener('pointerup', (event) => finishTouchHold(event, false));
+        btn.addEventListener('pointercancel', (event) => finishTouchHold(event, true));
+      }
       this.attachTooltip(btn, () => tooltip);
       parent.appendChild(btn);
     };
@@ -3275,7 +3504,18 @@ export class Hud {
       t('hud.pet.taunt'),
       petTooltip(t('hud.pet.petTauntTitle'), t('hud.pet.petTauntDesc')),
       () => this.sim.petTaunt(),
-      { cooldownText: cd > 0 ? `${cd}` : undefined },
+      {
+        autocast: autoTaunt,
+        cooldownText: cd > 0 ? `${cd}` : undefined,
+        onContextMenu: () => {
+          this.sim.setPetAutoTaunt(!autoTaunt);
+          this.lastPetBarSig = '';
+        },
+        onTouchHold: () => {
+          this.sim.setPetAutoTaunt(!autoTaunt);
+          this.lastPetBarSig = '';
+        },
+      },
     );
     if (ownerClass === 'warlock') {
       addButton(
@@ -3399,6 +3639,7 @@ export class Hud {
     if (slowHud) this.lastHudSlowAt = now;
 
     this.meters.update();
+    this.lockpickWindow.repaintIfChanged();
     this.tutorial.update(sim, this.renderer, this.keybinds);
     this.reconcileLootRolls();
     this.updateLootRollTimers(now);
@@ -3773,14 +4014,23 @@ export class Hud {
         bossEngaged || inNythraxisArena || now - this.lastNythraxisCombatEventAt < 10000;
       const hub = currentZone.hub;
       const inHub = !inDungeon && Math.hypot(p.pos.x - hub.x, p.pos.z - hub.z) < hub.radius + 10;
+      // Delves sit past the dungeon x-threshold (so inDungeon is already true) but
+      // dungeonAt() returns null for them, so feed the delve id as the instance id:
+      // delves use the dungeon theme (dungeonMusicZoneForDungeon falls back to
+      // dungeon_hollow_crypt) and get the same fresh-phrasing reset on entry that
+      // real dungeons do, instead of relying on the accidental null fallback.
+      const inDelveBand = isDelvePos(p.pos.x);
+      const instanceId = inDelveBand
+        ? (delveAt(p.pos.x)?.id ?? 'collapsed_reliquary')
+        : (dungeon?.id ?? null);
       const zone = musicZoneForLocation(
         currentZone.id,
         currentZone.biome,
         inHub,
         inDungeon || inNythraxisArena,
-        dungeon?.id ?? null,
+        instanceId,
       );
-      const musicDungeonId = inDungeon || inNythraxisArena ? (dungeon?.id ?? null) : null;
+      const musicDungeonId = inDungeon || inNythraxisArena ? instanceId : null;
       if (shouldResetMusicForDungeonEntry(this.lastMusicDungeonId, musicDungeonId)) {
         music.resetForDungeonEntry(musicDungeonId);
       }
@@ -3801,6 +4051,7 @@ export class Hud {
       }
 
       this.updateQuestTracker();
+      this.updateDelveTracker();
       this.updatePartyFrames();
       this.updateTradeWindow();
       this.updateArenaStatus();
@@ -3810,6 +4061,10 @@ export class Hud {
       if (this.openLootMobId !== null) {
         const mob = sim.entities.get(this.openLootMobId);
         if (!mob?.lootable || dist2d(p.pos, mob.pos) > 7) this.closeLoot();
+      }
+      if (this.openLootChestId !== null) {
+        const chest = sim.entities.get(this.openLootChestId);
+        if (!chest || dist2d(p.pos, chest.pos) > 7) this.closeLoot();
       }
       if (this.openVendorNpcId !== null) {
         const npc = sim.entities.get(this.openVendorNpcId);
@@ -3930,7 +4185,7 @@ export class Hud {
 
   private renderAuras(el: HTMLElement, e: Entity, mode: 'all' | 'debuffs'): void {
     // cheap diff: rebuild only when the aura set changes
-    const sig = e.auras.map((a) => a.id + Math.ceil(a.remaining)).join('|');
+    const sig = e.auras.map((a) => `${a.id}${Math.ceil(a.remaining)}x${a.stacks ?? 0}`).join('|');
     if ((el as any).__sig === sig) return;
     (el as any).__sig = sig;
     el.innerHTML = '';
@@ -3947,6 +4202,10 @@ export class Hud {
           'polymorph',
           'attackspeed',
           'debuff_ap',
+          'sunder',
+          'mortal_wound',
+          'silence',
+          'disarm',
           'blind',
           'expose',
           'spellvuln',
@@ -3967,6 +4226,12 @@ export class Hud {
       dur.className = 'dur';
       dur.textContent = a.remaining < 99 ? `${Math.ceil(a.remaining)}s` : '';
       d.appendChild(dur);
+      if (a.stacks && a.stacks > 1) {
+        const st = document.createElement('div');
+        st.className = 'stacks';
+        st.textContent = formatNumber(a.stacks, { maximumFractionDigits: 0 });
+        d.appendChild(st);
+      }
       const auraName = ABILITIES[a.id]
         ? abilityDisplayName(ABILITIES[a.id])
         : auraDisplayNameFromSource(a.name);
@@ -4059,6 +4324,457 @@ export class Hud {
     audio.click();
     this.updateQuestTracker();
     if (refocus) ($('#quest-tracker').querySelector('.qt-header') as HTMLElement | null)?.focus();
+  }
+
+  // -------------------------------------------------------------------------
+  // Delve board & tracker
+  // -------------------------------------------------------------------------
+
+  openDelveBoard(npcId: number): void {
+    const npc = this.sim.entities.get(npcId);
+    if (npc?.kind !== 'npc') return;
+    const delve = Object.values(DELVES).find((d) => d.boardNpcId === npc.templateId);
+    if (!delve) return;
+    if ($('#delve-board').style.display !== 'block')
+      this.delveBoardReturnFocus = this.currentFocusableElement();
+    this.openDelveBoardNpcId = npcId;
+    this.selectedDelveTier = 'normal';
+    this.delveBoardTab = 'delve';
+    this.closeOtherWindows('#delve-board');
+    $('#delve-board').style.display = 'block';
+    this.renderDelveBoard(true);
+  }
+
+  private renderDelveBoard(focus = false): void {
+    const el = $('#delve-board');
+    const npcId = this.openDelveBoardNpcId;
+    if (npcId === null) {
+      el.style.display = 'none';
+      return;
+    }
+    const npc = this.sim.entities.get(npcId);
+    if (npc?.kind !== 'npc') {
+      this.closeDelveBoard();
+      return;
+    }
+    const delve = Object.values(DELVES).find((d) => d.boardNpcId === npc.templateId);
+    if (!delve) {
+      this.closeDelveBoard();
+      return;
+    }
+    const delveName = delveDisplayName(delve.id);
+    const canEnter = this.sim.player.level >= delve.minLevel;
+    const tierNormal = t('delveUi.board.tier.normal');
+    const tierHeroic = t('delveUi.board.tier.heroic');
+    const marks = formatNumber(this.sim.delveMarks, { maximumFractionDigits: 0 });
+    const tab = this.delveBoardTab;
+    const tabBtn = (id: 'delve' | 'shop', label: string): string =>
+      `<button type="button" class="delve-tab${tab === id ? ' active' : ''}" role="tab" aria-selected="${tab === id}" data-board-tab="${id}">${esc(label)}</button>`;
+    let body: string;
+    if (tab === 'shop') {
+      body = this.delveShopBodyHtml(delve.id);
+    } else {
+      const tessaRank = this.sim.companionUpgrades.companion_tessa ?? 1;
+      const tessaRankLabel = t('delveUi.board.companion.rank', {
+        rank: formatNumber(tessaRank, { maximumFractionDigits: 0 }),
+      });
+      // Companion rank-up: max rank is the highest cost tier; the next rank's
+      // Marks cost is shown on the button so the upgrade path is visible, and the
+      // button only enables when the player can afford it (the buy is re-checked
+      // sim-side regardless). Mirrors the Marks-shop affordability gating.
+      const companionMaxRank = Math.max(...Object.keys(COMPANION_UPGRADE_COSTS).map(Number));
+      const nextRank = tessaRank + 1;
+      const nextCost = COMPANION_UPGRADE_COSTS[nextRank];
+      const tessaName = t('delveUi.board.companion.tessa');
+      let companionAction: string;
+      if (tessaRank >= companionMaxRank || !nextCost) {
+        companionAction = `<div class="delve-companion-max quest-muted">${esc(t('delveUi.board.companion.maxRank'))}</div>`;
+      } else {
+        const costMarks = formatNumber(nextCost.marks, { maximumFractionDigits: 0 });
+        const nextRankLabel = formatNumber(nextRank, { maximumFractionDigits: 0 });
+        const affordable = this.sim.delveMarks >= nextCost.marks;
+        companionAction =
+          `<button type="button" class="btn delve-companion-upgrade" data-companion-upgrade` +
+          ` aria-label="${esc(t('delveUi.board.companion.upgradeAria', { name: tessaName, rank: nextRankLabel, marks: costMarks }))}"` +
+          `${affordable ? '' : ' disabled'}>${esc(t('delveUi.board.companion.upgrade', { rank: nextRankLabel, marks: costMarks }))}</button>`;
+      }
+      const tierRow = ['normal', 'heroic']
+        .map((tierId) => {
+          const label = tierId === 'heroic' ? tierHeroic : tierNormal;
+          const selected = this.selectedDelveTier === tierId ? ' selected' : '';
+          return `<button type="button" class="delve-tier-btn${selected}" data-tier-pick="${esc(tierId)}" aria-pressed="${this.selectedDelveTier === tierId}">${esc(label)}</button>`;
+        })
+        .join('');
+      body =
+        `<div class="delve-board-greeting">${esc(t('delveUi.npc.halven.greeting', { playerName: this.sim.player.name }))}</div>` +
+        `<div class="delve-tier-row">${tierRow}</div>` +
+        `<div class="delve-companion-row"><div class="delve-companion-label">${esc(t('delveUi.board.companion.pick'))}</div>` +
+        `<div class="delve-companion-name">${esc(tessaName)} <span class="quest-muted">(${esc(tessaRankLabel)})</span></div>` +
+        `<div class="delve-companion-boon quest-muted">${esc(t('delveUi.board.companion.boon'))}</div>` +
+        `${companionAction}</div>` +
+        `<button type="button" class="btn delve-enter-btn" data-delve-enter aria-label="${esc(t('delveUi.board.enterAria', { delve: delveName, tier: this.selectedDelveTier === 'heroic' ? tierHeroic : tierNormal }))}"${canEnter ? '' : ' disabled'}>${esc(t('delveUi.board.enter'))}</button>`;
+    }
+    el.innerHTML =
+      `<div class="panel-title"><span>${esc(t('delveUi.board.title'))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('questUi.dialog.close'))}">${svgIcon('close')}</button></div>` +
+      `<div class="delve-board-name">${esc(delveName)}</div>` +
+      `<div class="delve-board-meta">${esc(t('delveUi.board.marks', { count: marks }))}</div>` +
+      `<div class="delve-board-req${canEnter ? '' : ' req-unmet'}">${esc(t('delveUi.board.minLevel', { level: formatNumber(delve.minLevel, { maximumFractionDigits: 0 }) }))}</div>` +
+      `<div class="delve-tabs" role="tablist" aria-label="${esc(t('delveUi.board.title'))}">${tabBtn('delve', t('delveUi.board.tabDelve'))}${tabBtn('shop', t('delveUi.board.tabShop'))}</div>` +
+      `<div class="delve-board-body" role="tabpanel">${body}</div>`;
+    el.querySelectorAll('[data-board-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = (btn as HTMLElement).dataset.boardTab as 'delve' | 'shop';
+        if (next === this.delveBoardTab) return;
+        this.delveBoardTab = next;
+        this.renderDelveBoard(true);
+      });
+    });
+    if (tab === 'shop') {
+      this.bindDelveShopHandlers(el, delve.id);
+    } else {
+      el.querySelectorAll('[data-tier-pick]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.selectedDelveTier = (btn as HTMLElement).dataset.tierPick as 'normal' | 'heroic';
+          this.renderDelveBoard(true);
+        });
+      });
+      el.querySelector('[data-companion-upgrade]')?.addEventListener('click', () => {
+        this.sim.companionUpgrade('companion_tessa');
+        this.renderDelveBoard(true);
+      });
+      el.querySelector('[data-delve-enter]')?.addEventListener('click', () => {
+        const tierId = this.selectedDelveTier;
+        this.sim.enterDelve(delve.id, tierId);
+        // enterDelve queues delveEntered for the next sim tick; kick interior
+        // prebuild now so the first rendered frame is not a fog void.
+        this.renderer.handleEvent({ type: 'delveEntered', delveId: delve.id, tierId });
+        this.closeDelveBoard();
+      });
+    }
+    el.querySelector('[data-close]')?.addEventListener('click', () => this.closeDelveBoard());
+    if (focus)
+      this.focusFirstInteractive(el, tab === 'shop' ? '.delve-shop-buy' : '.delve-enter-btn');
+  }
+
+  // Brother Halven's Marks-vendor stock for the open delve. Offers + lock state
+  // come resolved through IWorld (delveShopOffers); item display (name/quality/
+  // icon/tooltip) is rendered locally like the silver vendor. The buy itself is
+  // server-authoritative -- a locked or unaffordable offer is also re-checked sim-side.
+  private delveShopBodyHtml(delveId: string): string {
+    const rows = this.sim
+      .delveShopOffers(delveId)
+      .map((offer) => {
+        const item = ITEMS[offer.itemId];
+        if (!item) return '';
+        const qColor = QUALITY_COLOR[item.quality ?? 'common'] ?? '#fff';
+        const name = itemDisplayName(item);
+        const marksLabel = formatNumber(offer.marks, { maximumFractionDigits: 0 });
+        const priceLabel = t('delveUi.shop.price', { marks: marksLabel });
+        const affordable = this.sim.delveMarks >= offer.marks;
+        let action: string;
+        if (!offer.unlocked) {
+          const req = offer.requiresHeroicClear
+            ? t('delveUi.shop.reqHeroic')
+            : t('delveUi.shop.reqClears', {
+                count: formatNumber(offer.requiresClears, { maximumFractionDigits: 0 }),
+              });
+          action = `<span class="delve-shop-req">${esc(req)}</span>`;
+        } else {
+          const buyAria = t('delveUi.shop.buyAria', { item: name, marks: marksLabel });
+          action = `<button type="button" class="delve-shop-buy" data-buy="${esc(offer.itemId)}" aria-label="${esc(buyAria)}"${affordable ? '' : ' disabled'}>${esc(t('delveUi.shop.buy'))}</button>`;
+        }
+        const priceCls = offer.unlocked && !affordable ? ' unaffordable' : '';
+        return (
+          `<div class="delve-shop-row${offer.unlocked ? '' : ' locked'}" role="listitem" data-shop-item="${esc(offer.itemId)}">` +
+          `${this.itemIcon(item)}` +
+          `<div class="delve-shop-info"><span class="delve-shop-name" style="color:${qColor}">${esc(name)}</span>` +
+          `<span class="delve-shop-price${priceCls}">${esc(priceLabel)}</span></div>` +
+          `${action}</div>`
+        );
+      })
+      .join('');
+    if (!rows) return `<div class="delve-shop-empty">${esc(t('delveUi.shop.empty'))}</div>`;
+    return `<div class="delve-shop-list" role="list">${rows}</div>`;
+  }
+
+  private bindDelveShopHandlers(el: HTMLElement, delveId: string): void {
+    el.querySelectorAll('[data-shop-item]').forEach((row) => {
+      const item = ITEMS[(row as HTMLElement).dataset.shopItem ?? ''];
+      if (item) this.attachTooltip(row as HTMLElement, () => this.itemTooltip(item));
+    });
+    el.querySelectorAll('[data-buy]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if ((btn as HTMLButtonElement).disabled) return;
+        this.sim.delveBuyShopItem(delveId, (btn as HTMLElement).dataset.buy ?? '');
+      });
+    });
+  }
+
+  private closeDelveBoard(restoreFocus = true): void {
+    $('#delve-board').style.display = 'none';
+    this.openDelveBoardNpcId = null;
+    this.hideTooltip();
+    const target = this.delveBoardReturnFocus;
+    this.delveBoardReturnFocus = null;
+    if (restoreFocus) this.restoreFocus(target);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Lockpicking minigame ("Tumbler's Path"). The chest's first touch emits a
+  // lockpickOffer (ante selector); engaging opens a live, server-authoritative
+  // board driven entirely by lockpickSession/Step/End events. The HUD only ever
+  // sees the fogged LockpickView, never the full lock. Player text renders through
+  // the lockpickUi.* t() keys.
+  // ---------------------------------------------------------------------------
+
+  private openLockpickAnte(objectId: number, bountiful = false): void {
+    const el = $('#lockpick-panel');
+    if (el.style.display !== 'block') this.lockpickReturnFocus = this.currentFocusableElement();
+    this.lockpickOfferId = objectId;
+    this.lockpickCoffer = bountiful;
+    el.style.display = 'block';
+    this.bindLockpickKeys();
+    this.lockpickWindow.renderAnte(objectId, bountiful);
+    this.focusFirstInteractive(el, '.lp-ante-btn');
+  }
+
+  // The lockpick loot tier names are shared with the combat-log lines, so reuse
+  // the sim.lockpick.tier* keys rather than minting parallel lockpickUi ones.
+  private lockpickTierName(tier: 'premium' | 'medium' | 'low'): string {
+    return t(
+      tier === 'premium'
+        ? 'sim.lockpick.tierPremium'
+        : tier === 'medium'
+          ? 'sim.lockpick.tierMedium'
+          : 'sim.lockpick.tierLow',
+    );
+  }
+
+  // A lockpickSession event means the authoritative board is live in
+  // world.lockpickState; show the panel and let the window paint from it.
+  private openLockpickBoard(): void {
+    const el = $('#lockpick-panel');
+    if (el.style.display !== 'block') this.lockpickReturnFocus = this.currentFocusableElement();
+    this.lockpickOfferId = null;
+    el.style.display = 'block';
+    this.bindLockpickKeys();
+    this.lockpickWindow.openBoard();
+  }
+
+  private endLockpick(
+    outcome: 'success' | 'fail' | 'abandoned',
+    tier?: 'premium' | 'medium' | 'low',
+  ): void {
+    const summary =
+      outcome === 'success'
+        ? tier
+          ? t('lockpickUi.summary.success', { tier: this.lockpickTierName(tier) })
+          : t('lockpickUi.summary.successGeneric')
+        : outcome === 'fail'
+          ? t('lockpickUi.summary.fail')
+          : t('lockpickUi.summary.abandoned');
+    if (outcome === 'success') this.showBanner(summary);
+    this.log(summary, outcome === 'success' ? '#7fdc4f' : outcome === 'fail' ? '#ff7a6a' : '#ccc');
+    this.closeLockpick();
+  }
+
+  private openDelveLoot(chestId: number, items: { itemId: string; count: number }[]): void {
+    this.closeLockpick();
+    if (items.length === 0) return;
+    this.closeOtherWindows('#loot-window');
+    this.openLootMobId = null;
+    this.openLootChestId = chestId;
+    const chest = this.sim.entities.get(chestId);
+    const el = $('#loot-window');
+    let html = `<div class="panel-title"><span>${esc(chest ? entityDisplayName(chest) : 'Chest')}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('itemUi.loot.close'))}">${svgIcon('close')}</button></div>`;
+    for (const s of items) {
+      const item = ITEMS[s.itemId];
+      html += `<div class="loot-item" data-item="${s.itemId}">${this.itemIcon(item)}<span style="font-size:12px">${esc(itemDisplayName(item))}${s.count > 1 ? ` x${s.count}` : ''}</span></div>`;
+    }
+    el.innerHTML = html;
+    el.querySelectorAll('[data-item]').forEach((row) => {
+      const itemId = (row as HTMLElement).dataset.item!;
+      this.attachTooltip(row as HTMLElement, () => this.itemTooltip(ITEMS[itemId]));
+    });
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = t('itemUi.loot.takeAll');
+    btn.addEventListener('click', () => {
+      this.sim.collectDelveChestLoot(chestId);
+      this.closeLoot();
+    });
+    el.appendChild(btn);
+    el.querySelector('[data-close]')?.addEventListener('click', () => this.closeLoot());
+    el.style.left = `${Math.max(10, (window.innerWidth - 230) / 2)}px`;
+    el.style.top = `${Math.max(10, (window.innerHeight - 220) / 2)}px`;
+    el.style.transform = 'none';
+    el.style.display = 'block';
+  }
+
+  private bindLockpickKeys(): void {
+    if (this.lockpickKeyHandler) return;
+    const handler = (e: KeyboardEvent): void => {
+      if ($('#lockpick-panel').style.display !== 'block') return;
+      // A live board exists iff the authoritative session is non-null; otherwise
+      // the panel is the ante selector and only Escape (close) applies.
+      const live = this.sim.lockpickState;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if (live) this.submitLockpickAbort();
+        else this.closeLockpick();
+        return;
+      }
+      if (!live) return;
+      if (e.repeat) return;
+      const key = e.key.toLowerCase();
+      const idx = (PICK_ACTION_HOTKEYS as readonly string[]).indexOf(key);
+      if (idx < 0) return;
+      const action = PICK_ACTIONS[idx];
+      if (!live.allowed.includes(action)) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      this.submitLockpickAction(action);
+    };
+    this.lockpickKeyHandler = handler;
+    window.addEventListener('keydown', handler, true); // capture: beats game input
+  }
+
+  /** Offline sim queues lockpick events until the 20 Hz tick; flush them now so
+   * the step feedback toast, timer, and audio react immediately. The board
+   * POSITION never depends on this (it always paints from world.lockpickState);
+   * online has no drainEvents and reacts to the normal event stream instead. */
+  flushLockpickEvents(): void {
+    const drain = (this.sim as { drainEvents?: () => SimEvent[] }).drainEvents;
+    if (!drain) return;
+    const events = drain.call(this.sim);
+    if (events.length > 0) this.handleEvents(events);
+  }
+
+  /** Engage through the HUD path (always flushes queued sim events). Dev consoles
+   * should call this instead of sim.lockpickEngage directly. */
+  submitLockpickEngage(objectId: number, ante: Ante): void {
+    this.sim.lockpickEngage(objectId, ante);
+    this.flushLockpickEvents();
+  }
+
+  submitLockpickAction(action: PickAction): void {
+    this.sim.lockpickAction(action);
+    this.flushLockpickEvents();
+    // Safety net for any path that didn't emit a step event (e.g. a rejected
+    // action): realign the board to the authoritative state.
+    this.lockpickWindow.repaintIfChanged();
+  }
+
+  submitLockpickAbort(): void {
+    this.lockpickWindow.stopTimer();
+    this.sim.lockpickAbort();
+    this.flushLockpickEvents();
+  }
+
+  private closeLockpick(restoreFocus = true): void {
+    $('#lockpick-panel').style.display = 'none';
+    this.lockpickOfferId = null;
+    this.lockpickCoffer = false;
+    this.lockpickWindow.close();
+    this.hideTooltip();
+    if (this.lockpickKeyHandler) {
+      window.removeEventListener('keydown', this.lockpickKeyHandler, true);
+      this.lockpickKeyHandler = null;
+    }
+    const target = this.lockpickReturnFocus;
+    this.lockpickReturnFocus = null;
+    if (restoreFocus) this.restoreFocus(target);
+  }
+
+  private delveObjectiveLine(run: DelveRunInfo): string {
+    const isFinale = run.moduleIndex >= run.moduleCount - 1;
+    if (!isFinale) return t('delveUi.objective.clear_room');
+    if (run.objective.kind === 'kill_boss') {
+      const bossId = DELVES[run.delveId]?.bosses[0] ?? 'deacon_varric';
+      return t('delveUi.objective.kill_boss', { boss: mobDisplayName(bossId) });
+    }
+    return t(`delveUi.objective.${run.objective.kind}` as TranslationKey);
+  }
+
+  private delveAffixLabel(affixId: string): string {
+    const affix = DELVE_AFFIXES[affixId];
+    if (!affix) return affixId;
+    if (affix.blessing) return t(`delveUi.blessing.${affixId}` as TranslationKey);
+    return t(`delveUi.affix.${affixId}` as TranslationKey);
+  }
+
+  private updateDelveTracker(): void {
+    const el = $('#delve-tracker');
+    const run = this.sim.delveRun;
+    if (!run) {
+      this.lastDelveTrackerSig = '';
+      if (el.innerHTML !== '') el.innerHTML = '';
+      el.style.display = 'none';
+      return;
+    }
+    const sig = JSON.stringify([
+      run.delveId,
+      run.tierId,
+      run.moduleIndex,
+      run.moduleCount,
+      run.modules,
+      run.objective,
+      run.affixes,
+      run.completed,
+      run.exitPortalOpen,
+      this.sim.delveMarks,
+    ]);
+    if (sig === this.lastDelveTrackerSig) return;
+    this.lastDelveTrackerSig = sig;
+    el.style.display = 'block';
+    const delveName = delveDisplayName(run.delveId);
+    const tierLabel =
+      run.tierId === 'heroic' ? t('delveUi.board.tier.heroic') : t('delveUi.board.tier.normal');
+    const modId = run.modules[run.moduleIndex];
+    const modName = modId ? t(`delveUi.moduleName.${modId}` as TranslationKey) : '';
+    const moduleLine = t('delveUi.tracker.module', {
+      current: formatNumber(run.moduleIndex + 1, { maximumFractionDigits: 0 }),
+      total: formatNumber(run.moduleCount, { maximumFractionDigits: 0 }),
+    });
+    const objectiveLine = this.delveObjectiveLine(run);
+    const complete =
+      run.objective.complete || run.completed
+        ? ` <span class="quest-complete">(${esc(t('delveUi.tracker.complete'))})</span>`
+        : '';
+    let affixHtml = '';
+    if (run.affixes.length > 0) {
+      affixHtml = `<div class="dt-affix-row"><span class="dt-affix-label">${esc(t('delveUi.tracker.affix'))}</span>`;
+      for (const affixId of run.affixes) {
+        const color = DELVE_AFFIX_COLORS[affixId] ?? '#888';
+        affixHtml += `<span class="dt-affix-icon" data-affix="${esc(affixId)}" style="background:${color}" role="img" tabindex="0" aria-label="${esc(this.delveAffixLabel(affixId))}"></span>`;
+      }
+      affixHtml += '</div>';
+    }
+    const marks = formatNumber(this.sim.delveMarks, { maximumFractionDigits: 0 });
+    let exitHint = '';
+    if (run.moduleIndex < run.moduleCount - 1) {
+      if (run.exitPortalOpen) {
+        exitHint = `<div class="dt-obj dt-hint">-> ${esc(t('delveUi.tracker.exitHintOpen'))}</div>`;
+      } else {
+        exitHint = `<div class="dt-obj dt-hint">${esc(t('delveUi.tracker.exitHintLocked'))}</div>`;
+      }
+    }
+    el.innerHTML =
+      `<div class="dt-header">${esc(t('delveUi.tracker.title'))}</div>` +
+      `<div class="dt-title">${esc(delveName)} <span class="dt-tier">${esc(tierLabel)}</span>${complete}</div>` +
+      `<div class="dt-obj">- ${esc(moduleLine)}${modName ? `: ${esc(modName)}` : ''}</div>` +
+      `<div class="dt-obj${run.objective.complete ? ' done' : ''}">- ${esc(t('delveUi.tracker.objective'))}: ${esc(objectiveLine)}</div>` +
+      exitHint +
+      `<div class="dt-obj">- ${esc(t('delveUi.tracker.marks', { count: marks }))}</div>` +
+      affixHtml;
+    el.querySelectorAll('.dt-affix-icon').forEach((icon) => {
+      const affixId = (icon as HTMLElement).dataset.affix!;
+      this.attachTooltip(
+        icon as HTMLElement,
+        () => `<div class="tt-title">${esc(this.delveAffixLabel(affixId))}</div>`,
+      );
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -4307,13 +5023,106 @@ export class Hud {
     const ctx = this.minimapCtx;
     const S = 162;
     const p = this.sim.player;
-    $('#zone-label').textContent = zoneDisplayName(zoneAt(p.pos.z).id);
+    const run = this.sim.delveRun;
+    const inDelve = isDelvePos(p.pos.x);
+
+    // Area label: delve module name or overworld zone name
+    if (inDelve && run) {
+      const modId = run.modules[run.moduleIndex];
+      const delveName = delveDisplayName(run.delveId);
+      const modName = modId ? t(`delveUi.moduleName.${modId}` as TranslationKey) : '';
+      $('#zone-label').textContent = delveAreaLabel(delveName, modName);
+    } else {
+      $('#zone-label').textContent = zoneDisplayName(zoneAt(p.pos.z).id);
+    }
+
     ctx.clearRect(0, 0, S, S);
     ctx.save();
     ctx.beginPath();
     ctx.arc(S / 2, S / 2, S / 2 - 2, 0, Math.PI * 2);
     ctx.clip();
     ctx.imageSmoothingEnabled = false;
+
+    if (inDelve && run) {
+      // Draw delve schematic instead of overworld terrain
+      const modId = run.modules[run.moduleIndex];
+      const layoutId = (modId ?? 'reliquary_sunken_ossuary') as DelveModuleId;
+      const layout =
+        DELVE_MODULE_LAYOUTS[layoutId] ?? DELVE_MODULE_LAYOUTS.reliquary_sunken_ossuary;
+      const pad = 8;
+
+      // Rebuild static background only when module changes
+      if (!this.delveSchematicBg || this.delveSchematicBgModuleId !== layoutId) {
+        const bgCanvas = document.createElement('canvas');
+        bgCanvas.width = S;
+        bgCanvas.height = S;
+        const bgCtx = bgCanvas.getContext('2d')!;
+        // Dark room fill behind everything
+        bgCtx.fillStyle = '#0e0c0a';
+        bgCtx.fillRect(0, 0, S, S);
+        drawSchematicPrimitives(bgCtx, delveSchematicStatic(layout, S, pad));
+        this.delveSchematicBg = bgCanvas;
+        this.delveSchematicBgModuleId = layoutId;
+      }
+      ctx.drawImage(this.delveSchematicBg, 0, 0);
+
+      // Entity overlay (mobs and party only -- no NPCs/loot inside delves for simplicity)
+      const { localX: pLocalX, localZ: pLocalZ } = playerDelveLocal(p.pos.x, p.pos.z, run.origin);
+      for (const e of this.sim.entities.values()) {
+        if (e.id === p.id) continue;
+        if (e.kind !== 'mob' || e.dead) continue;
+        const elocalX = e.pos.x - run.origin.x;
+        const elocalZ = e.pos.z - run.origin.z;
+        // Map from module-local to the same toCanvas space (mirror X for map-left)
+        const ex = pad + ((23 - elocalX) / 46) * (S - pad * 2);
+        const ey = pad + ((elocalZ - layout.zMin) / (layout.zMax - layout.zMin)) * (S - pad * 2);
+        if (ex < 0 || ex > S || ey < 0 || ey > S) continue;
+        ctx.fillStyle = e.aggroTargetId === p.id ? '#ff8800' : '#e74c3c';
+        ctx.fillRect(ex - 1.5, ey - 1.5, 3, 3);
+      }
+
+      // Party members in the delve
+      const party = this.sim.partyInfo;
+      if (party) {
+        for (const m of party.members) {
+          if (m.pid === p.id) continue;
+          const mlx = m.x - run.origin.x;
+          const mlz = m.z - run.origin.z;
+          const mx = pad + ((23 - mlx) / 46) * (S - pad * 2);
+          const my = pad + ((mlz - layout.zMin) / (layout.zMax - layout.zMin)) * (S - pad * 2);
+          if (mx < 0 || mx > S || my < 0 || my > S) continue;
+          const color = m.dead ? '#9a9a9a' : classCss(m.cls);
+          ctx.fillStyle = color;
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(mx, my, 4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+
+      // Player arrow (schematic uses absolute canvas position from delveSchematicPlayer)
+      const arrow = delveSchematicPlayer(pLocalX, pLocalZ, p.facing, layout, S, pad);
+      ctx.save();
+      ctx.translate(arrow.cx, arrow.cy);
+      ctx.rotate(arrow.angle);
+      ctx.fillStyle = arrow.fill;
+      ctx.strokeStyle = arrow.stroke;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, -arrow.size);
+      ctx.lineTo(arrow.size * 0.6, arrow.size * 0.8);
+      ctx.lineTo(-arrow.size * 0.6, arrow.size * 0.8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.restore();
+      return;
+    }
+
     // 1.7 is the historical base scale; the zoom multiplier shrinks the world
     // radius shown so markers spread out as you zoom in (default 1 = unchanged).
     const pxPerYard = 1.7 * this.minimapZoom;
@@ -4754,6 +5563,98 @@ export class Hud {
     const ctx = canvas.getContext('2d')!;
     const S = canvas.width;
     const p = this.sim.player;
+
+    // --- Delve branch: render the module schematic instead of the overworld map
+    const run = this.sim.delveRun;
+    if (isDelvePos(p.pos.x) && run) {
+      const modId = run.modules[run.moduleIndex];
+      const layoutId = (modId ?? 'reliquary_sunken_ossuary') as DelveModuleId;
+      const layout =
+        DELVE_MODULE_LAYOUTS[layoutId] ?? DELVE_MODULE_LAYOUTS.reliquary_sunken_ossuary;
+      const pad = Math.round(S * 0.06);
+
+      // Rebuild static background only when module changes
+      if (!this.delveMapBg || this.delveMapBgModuleId !== layoutId) {
+        const bgCanvas = document.createElement('canvas');
+        bgCanvas.width = S;
+        bgCanvas.height = S;
+        const bgCtx = bgCanvas.getContext('2d')!;
+        bgCtx.fillStyle = '#0e0c0a';
+        bgCtx.fillRect(0, 0, S, S);
+        drawSchematicPrimitives(bgCtx, delveSchematicStatic(layout, S, pad));
+        this.delveMapBg = bgCanvas;
+        this.delveMapBgModuleId = layoutId;
+      }
+
+      ctx.clearRect(0, 0, S, S);
+      ctx.drawImage(this.delveMapBg, 0, 0);
+
+      // Map-local coordinate helper (mirrors local-to-canvas from delve_map.ts)
+      const toDelveMap = (localX: number, localZ: number) => ({
+        mx: pad + ((23 - localX) / 46) * (S - pad * 2),
+        my: pad + ((localZ - layout.zMin) / (layout.zMax - layout.zMin)) * (S - pad * 2),
+      });
+
+      // Mob overlays
+      for (const e of this.sim.entities.values()) {
+        if (e.kind !== 'mob' || e.dead) continue;
+        const { mx, my } = toDelveMap(e.pos.x - run.origin.x, e.pos.z - run.origin.z);
+        if (mx < 0 || mx > S || my < 0 || my > S) continue;
+        ctx.fillStyle = e.aggroTargetId === p.id ? '#ff8800' : '#e74c3c';
+        ctx.fillRect(mx - 2, my - 2, 4, 4);
+      }
+
+      // Party members
+      const party = this.sim.partyInfo;
+      if (party) {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        for (const m of party.members) {
+          if (m.pid === p.id) continue;
+          const { mx, my } = toDelveMap(m.x - run.origin.x, m.z - run.origin.z);
+          if (mx < 0 || mx > S || my < 0 || my > S) continue;
+          ctx.fillStyle = m.dead ? '#9a9a9a' : classCss(m.cls);
+          ctx.beginPath();
+          ctx.arc(mx, my, 5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+
+      // Player arrow
+      const { localX: pLocalX, localZ: pLocalZ } = playerDelveLocal(p.pos.x, p.pos.z, run.origin);
+      const arrow = delveSchematicPlayer(pLocalX, pLocalZ, p.facing, layout, S, pad);
+      ctx.save();
+      ctx.translate(arrow.cx, arrow.cy);
+      ctx.rotate(arrow.angle);
+      ctx.fillStyle = arrow.fill;
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -arrow.size);
+      ctx.lineTo(arrow.size * 0.6, arrow.size * 0.8);
+      ctx.lineTo(-arrow.size * 0.6, arrow.size * 0.8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Module title at top
+      const delveName = delveDisplayName(run.delveId);
+      const modName = modId ? t(`delveUi.moduleName.${modId}` as TranslationKey) : '';
+      const areaLabel = delveAreaLabel(delveName, modName);
+      ctx.font = 'bold 14px Georgia';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = '#ffe9a0';
+      ctx.strokeText(areaLabel, S / 2, 6);
+      ctx.fillText(areaLabel, S / 2, 6);
+      ctx.textBaseline = 'alphabetic';
+      return;
+    }
+
     // inside an instance, show the zone the dungeon's door is in (dungeonAt
     // owns the instance x-band layout); outdoors, follow the committed zone
     // so border-straddling can't thrash the 280px canvas regen below
@@ -5330,6 +6231,9 @@ export class Hud {
         case 'vendor': {
           if ($('#bags').style.display !== 'none') this.renderBags();
           if (this.openVendorNpcId !== null) this.renderVendor();
+          // A delve Marks purchase rides the same 'vendor' event; refresh the shop
+          // tab so the balance and per-offer affordability update after a buy.
+          if (this.openDelveBoardNpcId !== null) this.renderDelveBoard();
           break;
         }
         case 'skinEvent':
@@ -5365,10 +6269,24 @@ export class Hud {
           if (this.isChatIgnored(ev.from)) break;
           switch (ev.channel) {
             case 'party':
-              this.chatLogFrom(ev.from, ev.text, '#7fd4ff', CHAT_TEMPLATE_KEYS.party, 'party');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#7fd4ff',
+                CHAT_TEMPLATE_KEYS.party,
+                'party',
+                ev.fromPid,
+              );
               break;
             case 'yell':
-              this.chatLogFrom(ev.from, ev.text, '#ff5040', CHAT_TEMPLATE_KEYS.yell, 'yell');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff5040',
+                CHAT_TEMPLATE_KEYS.yell,
+                'yell',
+                ev.fromPid,
+              );
               break;
             case 'whisper':
               if (ev.to)
@@ -5378,6 +6296,7 @@ export class Hud {
                   '#ff80ff',
                   CHAT_TEMPLATE_KEYS.toWhisper,
                   'whisper',
+                  ev.fromPid,
                 );
               else {
                 this.chatLogFrom(
@@ -5386,40 +6305,97 @@ export class Hud {
                   '#ff80ff',
                   CHAT_TEMPLATE_KEYS.whisper,
                   'whisper',
+                  ev.fromPid,
                 );
                 audio.whisper();
               }
               break;
             case 'general':
-              this.chatLogFrom(ev.from, ev.text, '#ffc864', CHAT_TEMPLATE_KEYS.general, 'general');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ffc864',
+                CHAT_TEMPLATE_KEYS.general,
+                'general',
+                ev.fromPid,
+              );
               break;
             case 'world':
-              this.chatLogFrom(ev.from, ev.text, '#ff9d5c', CHAT_TEMPLATE_KEYS.world, 'world');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff9d5c',
+                CHAT_TEMPLATE_KEYS.world,
+                'world',
+                ev.fromPid,
+              );
               break;
             case 'lfg':
-              this.chatLogFrom(ev.from, ev.text, '#5cd6a0', CHAT_TEMPLATE_KEYS.lfg, 'lfg');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#5cd6a0',
+                CHAT_TEMPLATE_KEYS.lfg,
+                'lfg',
+                ev.fromPid,
+              );
               break;
             case 'guild':
-              this.chatLogFrom(ev.from, ev.text, '#40d264', CHAT_TEMPLATE_KEYS.guild, 'guild');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#40d264',
+                CHAT_TEMPLATE_KEYS.guild,
+                'guild',
+                ev.fromPid,
+              );
               break;
             case 'officer':
-              this.chatLogFrom(ev.from, ev.text, '#4ce0c0', CHAT_TEMPLATE_KEYS.officer, 'officer');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#4ce0c0',
+                CHAT_TEMPLATE_KEYS.officer,
+                'officer',
+                ev.fromPid,
+              );
               break;
             case 'emote':
-              this.chatLogFrom(ev.from, ev.text, '#ff8040', CHAT_TEMPLATE_KEYS.emote, 'emote');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff8040',
+                CHAT_TEMPLATE_KEYS.emote,
+                'emote',
+                ev.fromPid,
+              );
               break;
             case 'roll':
-              this.chatLogFrom(ev.from, ev.text, '#ffd100', CHAT_TEMPLATE_KEYS.roll, 'roll');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ffd100',
+                CHAT_TEMPLATE_KEYS.roll,
+                'roll',
+                ev.fromPid,
+              );
               break;
             default:
-              this.chatLogFrom(ev.from, ev.text, '#f0ead8', CHAT_TEMPLATE_KEYS.say, 'say');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#f0ead8',
+                CHAT_TEMPLATE_KEYS.say,
+                'say',
+                ev.fromPid,
+              );
               break;
           }
           if (
             (ev.channel === 'say' || ev.channel === 'yell' || ev.channel === 'emote') &&
             ev.entityId !== undefined
           ) {
-            const masked = this.maskChat(ev.text);
+            const masked = this.maskChat(this.questLinkPlainText(ev.text));
             const bubble = ev.channel === 'emote' ? `${ev.from} ${masked}` : masked;
             this.renderer.showChatBubble(ev.entityId, bubble, ev.channel === 'yell');
           }
@@ -5683,6 +6659,58 @@ export class Hud {
           }
           break;
         }
+        case 'lockpickOffer':
+          this.openLockpickAnte(ev.objectId, ev.bountiful);
+          break;
+        case 'lockpickSession':
+          this.openLockpickBoard();
+          break;
+        case 'lockpickStep':
+          this.lockpickWindow.onStep(ev.result);
+          break;
+        case 'lockpickEnd':
+          this.endLockpick(ev.outcome, ev.lootTier);
+          break;
+        case 'lockpickBonus': {
+          const tier =
+            ev.tier === 'premium'
+              ? t('sim.lockpick.tierPremium')
+              : ev.tier === 'medium'
+                ? t('sim.lockpick.tierMedium')
+                : t('sim.lockpick.tierLow');
+          this.combatLog(t('sim.lockpick.lockYields', { tier }), '#ffdd88');
+          break;
+        }
+        case 'delveChestLoot':
+          this.openDelveLoot(ev.chestId, ev.items);
+          break;
+        case 'delveComplete':
+          this.showBanner(t('delveUi.summary.title'));
+          break;
+        case 'delveFailed':
+          this.showBanner(t('delveUi.run.failed'));
+          break;
+        case 'companionBark': {
+          // Acolyte Tessa's voice line: overhead bubble over her (when on-screen),
+          // plus an attributed combat-log line so it is never missed off-screen.
+          const KNOWN_BARKS = ['combat_start', 'low_hp', 'trap_spotted', 'boss_pull', 'completion'];
+          if (!KNOWN_BARKS.includes(ev.barkId)) break;
+          const line = t(`delveUi.companion.tessa.${ev.barkId}` as TranslationKey, {
+            playerName: this.sim.player.name,
+          });
+          const companion = this.sim.companionState;
+          if (companion) this.renderer.showChatBubble(companion.entityId, line, false);
+          this.combatLog(
+            t('delveUi.companion.barkLine', { name: t('delveUi.board.companion.tessa'), line }),
+            '#c9a6e0',
+          );
+          break;
+        }
+        case 'delveLoreUnlock': {
+          const title = t(`delveUi.lore.${ev.loreId}` as TranslationKey);
+          this.combatLog(t('delveUi.summary.loreUnlock', { title }), '#cba6f0');
+          break;
+        }
         case 'log': {
           const text = this.localizeSystemText(ev.text);
           this.log(text, ev.color ?? '#ccc');
@@ -5765,6 +6793,7 @@ export class Hud {
     color: string,
     templateKey: TranslationKey,
     chan: string,
+    fromPid?: number,
   ): void {
     const wasNearBottom =
       this.chatLogEl.scrollHeight - this.chatLogEl.scrollTop - this.chatLogEl.clientHeight < 24;
@@ -5790,7 +6819,6 @@ export class Hud {
       const rect = sender.getBoundingClientRect();
       this.openChatPlayerContextMenu(name, rect.left, rect.bottom);
     });
-    const masked = this.maskChat(text);
     const nameToken = '__WOC_CHAT_NAME__';
     const messageToken = '__WOC_CHAT_MESSAGE__';
     const rendered = t(templateKey, { name: nameToken, message: messageToken });
@@ -5801,7 +6829,7 @@ export class Hud {
         div.append(sender);
         senderAppended = true;
       } else if (part === messageToken) {
-        div.append(document.createTextNode(masked));
+        this.appendChatMessageBody(div, text, fromPid);
         messageAppended = true;
       } else if (part) {
         div.append(document.createTextNode(part));
@@ -5809,12 +6837,53 @@ export class Hud {
     }
     if (!senderAppended || !messageAppended) {
       div.textContent = '';
-      div.append(sender, document.createTextNode(`: ${masked}`));
+      div.append(sender, document.createTextNode(': '));
+      this.appendChatMessageBody(div, text, fromPid);
     }
     this.chatLogEl.appendChild(div);
     while (this.chatLogEl.children.length > 200)
       this.chatLogEl.removeChild(this.chatLogEl.firstChild!);
     if (wasNearBottom) this.chatLogEl.scrollTop = this.chatLogEl.scrollHeight;
+  }
+
+  // Append a chat message body, rendering [[q:id]] tokens as clickable quest links
+  // and masking only the plain-text segments. Links bind the message author (fromPid)
+  // so a click can offer accept to the author's party members.
+  private appendChatMessageBody(parent: HTMLElement, text: string, fromPid?: number): void {
+    for (const seg of parseChatSegments(text)) {
+      if (seg.kind === 'text') {
+        if (seg.value) parent.append(document.createTextNode(this.maskChat(seg.value)));
+        continue;
+      }
+      const quest = QUESTS[seg.questId];
+      if (!quest) {
+        parent.append(document.createTextNode(this.maskChat('[?]')));
+        continue;
+      }
+      const link = document.createElement('span');
+      link.className = 'chat-quest-link';
+      link.textContent = `[${questTitle(seg.questId)}]`;
+      link.setAttribute('role', 'button');
+      link.tabIndex = 0;
+      const open = (): void => this.openLinkedQuestDialog(seg.questId, fromPid);
+      link.addEventListener('click', open);
+      link.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        ev.preventDefault();
+        open();
+      });
+      parent.append(link);
+    }
+  }
+
+  // The plain-text form of a chat string with [[q:id]] tokens replaced by [Name]
+  // — used for 3D chat bubbles, which can't host interactive spans.
+  private questLinkPlainText(text: string): string {
+    return parseChatSegments(text)
+      .map((s) =>
+        s.kind === 'text' ? s.value : `[${QUESTS[s.questId] ? questTitle(s.questId) : '?'}]`,
+      )
+      .join('');
   }
 
   /** Replace the server-supplied soft word list (online play only). */
@@ -5896,6 +6965,7 @@ export class Hud {
       'That quest giver is not nearby.': 'questUi.errors.giverMissing',
       'That quest turn-in is not nearby.': 'questUi.errors.turnInMissing',
       'Too far away.': 'questUi.errors.tooFar',
+      "This quest can't be shared.": 'hudChrome.questShare.notShareable',
       'That item is not sold here.': 'itemUi.errors.notSoldHere',
       'Not enough money.': 'itemUi.errors.notEnoughMoney',
       'You must bring your goods to the Merchant.': 'itemUi.errors.bringGoods',
@@ -5958,6 +7028,8 @@ export class Hud {
     if (match) return t('hud.errors.alreadyInParty', { name: match[1] });
     match = /^(.+) already has a pending invitation\.$/.exec(text);
     if (match) return t('hud.errors.pendingInvite', { name: match[1] });
+    match = /^You must be in (.+)'s party to accept that quest\.$/.exec(text);
+    if (match) return t('hudChrome.questShare.notInSharerParty', { name: match[1] });
     match = /^You may keep at most (\d+) goods on the market at once\.$/.exec(text);
     if (match)
       return t('itemUi.errors.tooManyListings', {
@@ -5966,10 +7038,16 @@ export class Hud {
     match = /^That is your own listing (?:\u2014|-) cancel it to reclaim it\.$/.exec(text);
     if (match) return t('itemUi.errors.ownListing');
     match = /^All instances of (.+) are busy\. Try again soon\.$/.exec(text);
-    if (match)
+    if (match) {
+      const busyName = match[1];
+      // The same line is emitted for dungeons and delves; resolve the name in the
+      // matching table so a delve name does not fall through as raw English.
+      const delve = Object.values(DELVES).find((d) => d.name === busyName);
+      if (delve) return t('sim.delve.instancesBusy', { name: delveDisplayName(delve.id) });
       return t('worldContent.dungeonInstanceBusy', {
-        name: dungeonDisplayNameFromSource(match[1]),
+        name: dungeonDisplayNameFromSource(busyName),
       });
+    }
     const server = localizeServerText(text);
     if (server !== null) return server;
     // Sim-emitted log/error/loot text (src/sim) is English at the source; localize it
@@ -6000,6 +7078,10 @@ export class Hud {
       if (text === dungeon.enterText) return dungeonText(dungeon.id, 'enterText');
       if (text === dungeon.leaveText) return dungeonText(dungeon.id, 'leaveText');
     }
+    for (const delve of DELVE_LIST) {
+      if (text === delve.enterText) return delveText(delve.id, 'enterText');
+      if (text === delve.leaveText) return delveText(delve.id, 'leaveText');
+    }
 
     let match = /^You have invited (.+) to your party\.$/.exec(text);
     if (match) return t('hud.logs.partyInviteSent', { name: match[1] });
@@ -6025,6 +7107,8 @@ export class Hud {
     if (match) return t('questUi.logs.abandoned', { name: questTitleFromSource(match[1]) });
     match = /^Quest completed: (.+)$/.exec(text);
     if (match) return t('questUi.logs.completed', { name: questTitleFromSource(match[1]) });
+    match = /^(.+) accepted your shared quest\.$/.exec(text);
+    if (match) return t('hudChrome.questShare.accepted', { name: match[1] });
     match = /^(.+) \(Complete\)$/.exec(text);
     if (match)
       return t('questUi.logs.ready', {
@@ -6078,6 +7162,14 @@ export class Hud {
     match = /^Everyone passed on (.+)\.$/.exec(text);
     if (match)
       return t('itemUi.lootRoll.everyonePassed', { item: itemDisplayNameFromSource(match[1]) });
+    match = /^Sold (\d+) junk items? for (.+)\.$/.exec(text);
+    if (match) {
+      const n = Number(match[1]);
+      return t(n === 1 ? 'hud.logs.soldJunkOne' : 'hud.logs.soldJunkMany', {
+        count: formatNumber(n, { maximumFractionDigits: 0 }),
+        money: this.localizeSimMoney(match[2]),
+      });
+    }
     match = /^Sold (.+) for (.+)\.$/.exec(text);
     if (match)
       return t('hud.logs.soldItem', {
@@ -6573,6 +7665,9 @@ export class Hud {
     if (def?.market) {
       html += `<button type="button" class="qd-list-item" data-market="1" aria-label="${esc(t('questUi.dialog.worldMarketAria'))}"><span class="gold">${svgIcon('market')}</span> ${esc(t('questUi.dialog.worldMarket'))}</button>`;
     }
+    if (Object.values(DELVES).some((d) => d.boardNpcId === npc.templateId)) {
+      html += `<button type="button" class="qd-list-item" data-delve-board="1" aria-label="${esc(t('delveUi.board.openDelveAria', { name: npcName }))}"><span class="gold">${svgIcon('skull')}</span> ${esc(t('delveUi.board.openDelve'))}</button>`;
+    }
     el.innerHTML = html;
     el.querySelectorAll('[data-quest]').forEach((item) => {
       item.addEventListener('click', () =>
@@ -6594,6 +7689,10 @@ export class Hud {
     el.querySelector('[data-market]')?.addEventListener('click', () => {
       this.closeQuestDialog(false);
       this.openMarket();
+    });
+    el.querySelector('[data-delve-board]')?.addEventListener('click', () => {
+      this.closeQuestDialog(false);
+      this.openDelveBoard(npc.id);
     });
     el.querySelector('[data-close]')?.addEventListener('click', () => this.closeQuestDialog());
     el.style.display = 'block';
@@ -6675,6 +7774,76 @@ export class Hud {
     back.textContent = t('questUi.dialog.back');
     back.addEventListener('click', () => this.renderGossip(npc));
     el.appendChild(back);
+    el.querySelector('[data-close]')?.addEventListener('click', () => this.closeQuestDialog());
+    el.style.display = 'block';
+    this.focusFirstInteractive(el);
+  }
+
+  // Open the read-only quest detail for a chat-link click. Shows Accept only when the
+  // viewer is in the link author's party AND the quest is available; the server
+  // re-validates on accept. Non-party / ineligible viewers see view-only info.
+  openLinkedQuestDialog(questId: string, fromPid?: number): void {
+    const quest = QUESTS[questId];
+    if (!quest) return;
+    this.openGossipNpcId = null;
+    if ($('#quest-dialog').style.display !== 'block')
+      this.questDialogReturnFocus = this.currentFocusableElement();
+    this.closeOtherWindows('#quest-dialog');
+    const el = $('#quest-dialog');
+    const state = this.sim.questState(questId);
+    const inSharerParty =
+      fromPid !== undefined &&
+      (this.sim.partyInfo?.members.some((m) => m.pid === fromPid) ?? false);
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'false');
+    el.setAttribute('aria-labelledby', 'quest-dialog-title');
+    el.setAttribute('tabindex', '-1');
+    let html = `<div class="panel-title"><span id="quest-dialog-title">${esc(questTitle(questId))}${this.questSuggestedPlayersHtml(quest.suggestedPlayers)} <span class="quest-muted">&lt;${esc(t('hudChrome.questShare.dialogTitle'))}&gt;</span></span><button type="button" class="x-btn" data-close aria-label="${esc(t('questUi.dialog.close'))}">${svgIcon('close')}</button></div>`;
+    if (quest.minLevel)
+      html += `<div class="qd-req">${esc(t('questUi.detail.requiresLevel', { level: this.questNumber(quest.minLevel) }))}</div>`;
+    html += `<div class="qd-text">${esc(questNarrative(questId, 'text', this.sim.player.name))}</div>`;
+    html += `<div class="qd-sub">${esc(t('questUi.detail.objectives'))}</div>`;
+    html += quest.objectives
+      .map(
+        (o, i) =>
+          `<div class="qd-obj">${esc(this.questProgressText(questObjectiveLabel(questId, i), 0, o.count))}</div>`,
+      )
+      .join('');
+    html += `<div class="qd-sub">${esc(t('questUi.detail.rewards'))}</div>`;
+    html += `<div class="qd-obj">${esc(t('questUi.detail.xpReward', { xp: this.questNumber(quest.xpReward) }))} &nbsp; ${this.moneyHtml(quest.copperReward)}</div>`;
+    const rewardItem = questRewardItem(quest, this.sim.cfg.playerClass);
+    if (rewardItem) {
+      const item = ITEMS[rewardItem];
+      html += `<div class="qd-reward-row" data-reward><span class="qd-reward-label">${esc(t('questUi.detail.itemReward'))}</span>${this.itemIcon(item)}<span class="qd-reward-name" style="color:${QUALITY_COLOR[item.quality ?? 'common'] ?? '#fff'}">${esc(itemDisplayName(item))}</span></div>`;
+    }
+    el.innerHTML = html;
+    const rewardRow = el.querySelector('[data-reward]') as HTMLElement | null;
+    if (rewardRow && rewardItem)
+      this.attachTooltip(rewardRow, () => this.itemTooltip(ITEMS[rewardItem]));
+    if (inSharerParty && state === 'available') {
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.type = 'button';
+      btn.textContent = t('questUi.dialog.accept');
+      btn.addEventListener('click', () => {
+        this.sim.acceptLinkedQuest(questId, fromPid!);
+        this.closeQuestDialog();
+      });
+      el.appendChild(btn);
+    } else {
+      // View-only: explain why no Accept. Non-party -> join hint; in-party but
+      // ineligible -> the reason (already on it / done / requirements unmet).
+      const hint = document.createElement('div');
+      hint.className = 'qd-req';
+      hint.textContent = !inSharerParty
+        ? t('hudChrome.questShare.viewOnlyHint')
+        : state === 'done'
+          ? t('hudChrome.questShare.alreadyDone')
+          : state === 'active' || state === 'ready'
+            ? t('hudChrome.questShare.alreadyOn')
+            : t('hudChrome.questShare.ineligible');
+      el.appendChild(hint);
+    }
     el.querySelector('[data-close]')?.addEventListener('click', () => this.closeQuestDialog());
     el.style.display = 'block';
     this.focusFirstInteractive(el);
@@ -6905,6 +8074,7 @@ export class Hud {
     if (mob.loot.copper <= 0 && visibleItems.length === 0) return;
     this.closeOtherWindows('#loot-window');
     this.openLootMobId = mobId;
+    this.openLootChestId = null;
     const el = $('#loot-window');
     let html = `<div class="panel-title"><span>${esc(entityDisplayName(mob))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('itemUi.loot.close'))}">${svgIcon('close')}</button></div>`;
     if (mob.loot.copper > 0) {
@@ -6936,6 +8106,7 @@ export class Hud {
   closeLoot(): void {
     $('#loot-window').style.display = 'none';
     this.openLootMobId = null;
+    this.openLootChestId = null;
     this.hideTooltip();
   }
 
@@ -6956,6 +8127,20 @@ export class Hud {
     if (this.openVendorNpcId === null) return;
     const npc = this.sim.entities.get(this.openVendorNpcId);
     if (!npc) return;
+    const junk = this.sim.inventory.filter((slot) => {
+      const item = ITEMS[slot.itemId];
+      return (
+        !!item &&
+        item.quality === 'poor' &&
+        item.kind !== 'quest' &&
+        !item.noVendorSell &&
+        slot.count > 0
+      );
+    });
+    const junkProceeds = junk.reduce(
+      (sum, slot) => sum + ITEMS[slot.itemId]?.sellValue * slot.count,
+      0,
+    );
     const buyAndRefresh = (buy: () => void) => {
       buy();
       if ($('#bags').style.display !== 'none') this.renderBags();
@@ -6973,7 +8158,12 @@ export class Hud {
         hideTooltip: () => this.hideTooltip(),
         onBuy: (itemId) => buyAndRefresh(() => this.sim.buyItem(npc.id, itemId)),
         onBuyBack: (itemId) => buyAndRefresh(() => this.sim.buyBackItem(itemId)),
+        onSellJunk: () => buyAndRefresh(() => this.sim.sellAllJunk()),
         onClose: () => this.closeVendor(),
+        sellJunk: {
+          enabled: junk.length > 0,
+          proceeds: junkProceeds,
+        },
       },
     );
   }
@@ -8131,8 +9321,11 @@ export class Hud {
     } else {
       this.charPreview.setContainer(container);
     }
-    if (previewKey) this.charPreview.setVisualKey(previewKey);
-    else this.charPreview.setClass(cls);
+    // Show the player's currently equipped mainhand on the character sheet, so the
+    // 3D model reflects gear changes (re-runs on each renderChar after an equip).
+    const weapon = this.sim.equipment.mainhand ?? null;
+    if (previewKey) this.charPreview.setVisualKey(previewKey, weapon);
+    else this.charPreview.setClass(cls, weapon);
     this.charPreview.setSkin(skin);
   }
 
@@ -8850,7 +10043,9 @@ export class Hud {
       if (state.published) return state.published;
       if (!state.canvas) throw new Error(t('playerCard.statusStillRendering'));
       setStatus(t('playerCard.statusPublishing'));
-      const pub = await publishCard(await cardCanvasToUploadBlob(state.canvas));
+      const pub = await publishCard(await cardCanvasToUploadBlob(state.canvas), {
+        level: state.data?.level ?? this.sim.player.level,
+      });
       state.published = pub;
       linkInput.value = pub.url;
       linkRow.hidden = false;
@@ -10240,8 +11435,13 @@ export class Hud {
       item.className = `ql-item${qp.questId === this.selectedQuestLogId ? ' sel' : ''}`;
       item.setAttribute('aria-pressed', qp.questId === this.selectedQuestLogId ? 'true' : 'false');
       item.setAttribute('aria-label', t('questUi.log.selectedQuestAria', { name: title, status }));
+      item.title = t('hudChrome.questShare.linkTitle');
       item.innerHTML = `${esc(title)}${qp.state === 'ready' ? ` <span class="quest-complete">(${esc(t('questUi.log.readyStatus'))})</span>` : ''}`;
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (ev) => {
+        if (ev.shiftKey) {
+          this.insertQuestChatLink(qp.questId);
+          return;
+        }
         this.selectedQuestLogId = qp.questId;
         this.renderQuestLog();
       });
@@ -10316,14 +11516,8 @@ export class Hud {
       this.lastPartySig = '';
       return;
     }
-    const p = this.sim.player;
     const myGroup = info.members.find((m) => m.pid === this.sim.playerId)?.group ?? 1;
-    const others = info.members
-      .map((m) => ({
-        ...m,
-        oor: !m.dead && Math.hypot(m.x - p.pos.x, m.z - p.pos.z) > PARTY_RANGE_YD,
-      }))
-      .filter((m) => m.pid !== this.sim.playerId && (!info.raid || m.group === myGroup));
+    const others = selectPartyFrameMembers(info, this.sim.playerId, this.sim.player.pos);
     // include combat/range state so the frames rebuild when a badge changes
     const sig = `${others.map((m) => `${m.pid}:${m.group}:${m.hp}/${m.mhp}:${m.res}:${m.dead}:${m.inCombat}:${m.oor ? 1 : 0}:${m.level}`).join('|')}L${info.leader}:R${info.raid ? 1 : 0}:G${myGroup}`;
     if (sig === this.lastPartySig) return;
@@ -12743,7 +13937,13 @@ export class Hud {
       if (code === null) {
         this.keybindNote = t('hud.options.keybindCancelled');
       } else if (this.keybinds.bind(actionId, index, code)) {
-        this.keybindNote = t('hud.options.keybindBound', { action: name, key: keyLabel(code) });
+        // Label what was actually stored: bind() strips modifiers from held
+        // (movement) actions, so a captured "Shift+KeyW" is saved bare as "KeyW".
+        // Reading it back keeps the confirmation in sync with the action-bar keycap.
+        this.keybindNote = t('hud.options.keybindBound', {
+          action: name,
+          key: keyLabel(this.keybinds.codeAt(actionId, index)),
+        });
         this.refreshKeybindLabels();
       } else if (isReservedCode(code)) {
         this.keybindNote = t('hud.options.keybindReserved', { key: keyLabel(code) });
@@ -12764,6 +13964,10 @@ export class Hud {
 
   // Closes the topmost UI. Returns true if something was closed.
   closeAll(): boolean {
+    if (this.openLootChestId !== null) {
+      this.closeLoot();
+      return true;
+    }
     if (this.cardModalEl) {
       this.closePlayerCardModal();
       return true;
@@ -12891,6 +14095,10 @@ function dungeonText(dungeonId: string, field: 'enterText' | 'leaveText'): strin
   return tEntity({ kind: 'dungeon', id: dungeonId, field });
 }
 
+function delveText(delveId: string, field: 'enterText' | 'leaveText'): string {
+  return tEntity({ kind: 'delve', id: delveId, field });
+}
+
 function dungeonDisplayNameFromSource(name: string): string {
   const dungeon = DUNGEON_LIST.find((candidate) => candidate.name === name);
   return dungeon ? dungeonDisplayName(dungeon.id) : name;
@@ -12901,6 +14109,59 @@ function entityDisplayName(entity: Entity): string {
     return entity.ownerId !== null ? entity.name : mobDisplayName(entity.templateId);
   if (entity.kind === 'npc') return npcDisplayName(entity.templateId);
   return entity.name;
+}
+
+function delveDisplayName(delveId: string): string {
+  return tEntity({ kind: 'delve', id: delveId, field: 'name' });
+}
+
+/** Render SchematicPrimitive[] onto a canvas context (shared by minimap and world-map). */
+function drawSchematicPrimitives(ctx: CanvasRenderingContext2D, prims: SchematicPrimitive[]): void {
+  for (const prim of prims) {
+    ctx.save();
+    if (prim.kind === 'circle') {
+      ctx.beginPath();
+      ctx.arc(prim.cx, prim.cy, prim.r, 0, Math.PI * 2);
+      ctx.fillStyle = prim.fill;
+      ctx.fill();
+      if (prim.stroke) {
+        ctx.strokeStyle = prim.stroke;
+        ctx.lineWidth = prim.strokeWidth ?? 1;
+        ctx.stroke();
+      }
+    } else if (prim.kind === 'rect') {
+      ctx.fillStyle = prim.fill;
+      ctx.fillRect(prim.x, prim.y, prim.w, prim.h);
+      if (prim.stroke) {
+        ctx.strokeStyle = prim.stroke;
+        ctx.lineWidth = prim.strokeWidth ?? 1;
+        ctx.strokeRect(prim.x, prim.y, prim.w, prim.h);
+      }
+    } else if (prim.kind === 'text') {
+      ctx.font = prim.font;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = prim.fill;
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.strokeText(prim.text, prim.cx, prim.cy);
+      ctx.fillText(prim.text, prim.cx, prim.cy);
+    } else if (prim.kind === 'arrow') {
+      ctx.translate(prim.cx, prim.cy);
+      ctx.rotate(prim.angle);
+      ctx.fillStyle = prim.fill;
+      ctx.strokeStyle = prim.stroke;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, -prim.size);
+      ctx.lineTo(prim.size * 0.6, prim.size * 0.8);
+      ctx.lineTo(-prim.size * 0.6, prim.size * 0.8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
 }
 
 function abilityDisplayNameFromSource(name: string): string {

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { activePvpOpponentIds, handlePickedEntity, hoverCursorKind, isAttackableEntity, isAttackHoverTarget } from '../src/game/interactions';
+import {
+  activePvpOpponentIds,
+  handlePickedEntity,
+  hoverCursorKind,
+  isAttackableEntity,
+  isAttackHoverTarget,
+} from '../src/game/interactions';
 import type { Entity } from '../src/sim/types';
 
 function stubEntity(partial: Partial<Entity> & Pick<Entity, 'id' | 'kind'>): Entity {
@@ -126,10 +132,10 @@ describe('activePvpOpponentIds', () => {
         standings: {
           '1v1': { rating: 1500, wins: 0, losses: 0 },
           '2v2': { rating: 1500, wins: 0, losses: 0 },
-          'fiesta': { rating: 1500, wins: 0, losses: 0 },
+          fiesta: { rating: 1500, wins: 0, losses: 0 },
         },
         ladder: [],
-        ladders: { '1v1': [], '2v2': [], 'fiesta': [] },
+        ladders: { '1v1': [], '2v2': [], fiesta: [] },
         match: {
           oppPid: 3,
           oppName: 'Arena Rival',
@@ -165,10 +171,10 @@ describe('activePvpOpponentIds', () => {
         standings: {
           '1v1': { rating: 1500, wins: 0, losses: 0 },
           '2v2': { rating: 1500, wins: 0, losses: 0 },
-          'fiesta': { rating: 1500, wins: 0, losses: 0 },
+          fiesta: { rating: 1500, wins: 0, losses: 0 },
         },
         ladder: [],
-        ladders: { '1v1': [], '2v2': [], 'fiesta': [] },
+        ladders: { '1v1': [], '2v2': [], fiesta: [] },
         match: {
           oppPid: 3,
           oppName: 'Arena Rival',
@@ -200,18 +206,26 @@ describe('handlePickedEntity', () => {
     const world: any = {
       playerId: 1,
       player,
-      entities: new Map([[1, player], [2, mob]]),
+      entities: new Map([
+        [1, player],
+        [2, mob],
+      ]),
       duelInfo: null,
       arenaInfo: null,
-      targetEntity: (id: number | null) => { targetId = id; },
+      targetEntity: (id: number | null) => {
+        targetId = id;
+      },
       enterDungeon: () => {},
       leaveDungeon: () => {},
       pickUpObject: () => {},
-      startAutoAttack: () => { attacks++; },
+      startAutoAttack: () => {
+        attacks++;
+      },
     };
     const hud = {
       openLoot: () => {},
       openQuestDialog: () => {},
+      openDelveBoard: () => {},
       showError: () => {},
       closeContextMenu: () => {},
     };
@@ -230,18 +244,26 @@ describe('handlePickedEntity', () => {
     const world: any = {
       playerId: 1,
       player,
-      entities: new Map([[1, player], [2, opponent]]),
+      entities: new Map([
+        [1, player],
+        [2, opponent],
+      ]),
       duelInfo: { otherPid: 2, otherName: 'Bet', state: 'active' },
       arenaInfo: null,
-      targetEntity: (id: number | null) => { targetId = id; },
+      targetEntity: (id: number | null) => {
+        targetId = id;
+      },
       enterDungeon: () => {},
       leaveDungeon: () => {},
       pickUpObject: () => {},
-      startAutoAttack: () => { attacks++; },
+      startAutoAttack: () => {
+        attacks++;
+      },
     };
     const hud = {
       openLoot: () => {},
       openQuestDialog: () => {},
+      openDelveBoard: () => {},
       showError: () => {},
       closeContextMenu: () => {},
     };

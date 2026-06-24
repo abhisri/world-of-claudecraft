@@ -37,6 +37,7 @@ export const ZONE1_ZONE: ZoneDef = {
     { x: -84, z: -64, label: 'Copper Dig' },
     { x: 76, z: -76, label: 'Bandit Camp' },
     { x: 80, z: 80, label: 'Fallen Chapel' },
+    { x: -5, z: -52, label: 'Reliquary Hill' },
     { x: 40, z: 140, label: 'Brightwood Glade' },
   ],
   welcome: 'Find Marshal Redbrook in town — he has work for you.',
@@ -1114,10 +1115,17 @@ export const ZONE1_PROPS: ZonePropsDef = {
     [-78, 54],
     [-69, 55],
   ],
-  ruinRings: [{ x: 80, z: 78, ringR: 7, columns: 7 }],
+  ruinRings: [
+    { x: 80, z: 78, ringR: 7, columns: 7 },
+    { x: -5, z: -60, ringR: 8, columns: 6 },
+  ],
   fences: [
     { x1: 16, z1: 16, x2: 22, z2: 4 },
     { x1: -16, z1: 14, x2: -20, z2: 2 },
   ],
-  graveyards: [{ x: -14, z: -14 }],
+  graveyards: [
+    { x: -14, z: -14 },
+    { x: 4, z: -56 },
+  ],
+  delveMarkers: [{ x: -5, z: -52, delveId: 'collapsed_reliquary' }],
 };

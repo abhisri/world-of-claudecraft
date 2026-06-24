@@ -426,6 +426,18 @@ export const ko_KR: EnTranslations = {
     "tips": {
       "joinChannels": "팁: /join world 또는 /join lfg를 입력하면 서버 전역의 플레이어와 대화할 수 있습니다."
     },
+    "questShare": {
+      "notShareable": "이 퀘스트는 공유할 수 없습니다.",
+      "notInSharerParty": "{name}님의 파티에 속해 있어야 이 퀘스트를 수락할 수 있습니다.",
+      "accepted": "{name}님이 당신의 공유 퀘스트를 수락했습니다.",
+      "dialogTitle": "공유 퀘스트",
+      "viewOnlyHint": "이 퀘스트를 수락하려면 공유한 사람의 파티에 참가하세요.",
+      "alreadyOn": "이미 진행 중인 퀘스트입니다.",
+      "alreadyDone": "이미 완료한 퀘스트입니다.",
+      "ineligible": "이 퀘스트의 요구 조건을 충족하지 못합니다.",
+      "noQuestSelected": "공유할 퀘스트를 기록에서 선택하세요.",
+      "linkTitle": "Shift + 클릭하면 이 퀘스트를 채팅에 연결합니다."
+    },
     "plurals": {
       "guildMembers": {
         "one": "당신은 {rank}, {count}명 회원",
@@ -1709,6 +1721,263 @@ export const ko_KR: EnTranslations = {
     "friends": "친구 및 길드",
     "chat": "채팅창 열기"
   },
+  "sim": {
+    "delve": {
+      "cannotEnterNow": "지금은 탐굴에 진입할 수 없습니다.",
+      "leaveDungeonFirst": "먼저 던전에서 나가세요.",
+      "leaveArenaFirst": "먼저 투기장에서 나가세요.",
+      "alreadyInDelve": "이미 탐굴 중입니다.",
+      "whileTrading": "거래 중에는 탐굴에 진입할 수 없습니다.",
+      "duringDuel": "결투 중에는 탐굴에 진입할 수 없습니다.",
+      "duringArena": "투기장 경기 중에는 탐굴에 진입할 수 없습니다.",
+      "unknownTier": "알 수 없는 탐굴 등급입니다.",
+      "levelRequired": "{name}에 진입하려면 레벨 {level} 이상이어야 합니다.",
+      "levelRequiredTier": "{tier} 난이도로 {name}에 진입하려면 레벨 {level}이(가) 필요합니다.",
+      "instancesBusy": "{name}의 모든 인스턴스가 사용 중입니다. 잠시 후 다시 시도하세요.",
+      "runFailed": "{name} 진행에 실패했습니다.",
+      "complete": "{name} 완료.",
+      "mechanismOpen": "근처에서 기계 장치가 철컥 열립니다. 북쪽으로 통로가 열립니다. 앞쪽의 출구 차원문을 찾으세요.",
+      "raiseDead": "{name}이(가) 죽음의 부활을 시전하기 시작합니다.",
+      "graveFalters": "무덤의 의식이 흔들립니다.",
+      "doorAlreadyOpen": "문이 이미 열려 있습니다.",
+      "companionRankUp": "{name}이(가) {rank}등급에 도달했습니다.",
+      "bossChest": "우두머리가 쓰러집니다. 봉인된 성물실 상자가 단상 위로 솟아오릅니다. 자물쇠를 따서 전리품을 차지하세요.",
+      "surfaceStairs": "지상으로 향하는 계단이 열립니다. 계단에서 F 키를 눌러 나가세요.",
+      "moduleEnter": "{name}: {objective}",
+      "objectiveClearRoom": "방을 정리하세요.",
+      "objectiveDefeatBoss": "우두머리를 처치하세요.",
+      "tombstoneHint": "방을 정리하면 북쪽으로 묘비 통로가 열립니다.",
+      "tombstoneOpen": "봉인된 묘비 통로가 북쪽으로 갈리며 열립니다. 그 안으로 걸어 들어가 계속 진행하세요.",
+      "tombstoneInto": "묘비를 통과해 {name}(으)로 들어갑니다.",
+      "chestEmpty": "상자가 비어 있습니다.",
+      "notInDelve": "탐굴 중이 아닙니다.",
+      "cannotInteract": "그것과는 상호작용할 수 없습니다.",
+      "tooFar": "너무 멀리 떨어져 있습니다.",
+      "graveSilent": "무덤은 당분간 조용합니다.",
+      "doorLocked": "문이 잠겨 있습니다.",
+      "strikeWall": "벽을 쳐서 뚫고 나가세요.",
+      "nothingHappens": "아무 일도 일어나지 않습니다.",
+      "unknownCompanion": "알 수 없는 동료입니다.",
+      "companionMaxRank": "이 동료는 이미 최대로 강화되었습니다.",
+      "companionMarksRequired": "{name}을(를) 강화하려면 탐굴 증표 {marks}개가 필요합니다.",
+      "cannotAffordCompanionUpgrade": "이 강화를 감당할 수 없습니다.",
+      "shopItemLocked": "아직 잠금 해제되지 않은 아이템입니다.",
+      "shopMarksRequired": "{name}을(를) 구매하려면 탐굴 증표 {marks}개가 필요합니다.",
+      "shopSealPremiumOnly": "이 봉인은 대가의 손에만 응합니다. 최상급 베팅만이 열 수 있습니다.",
+      "passageSealed": "통로가 봉인되어 있습니다.",
+      "moveCloserPassage": "통로에 더 가까이 다가가세요.",
+      "moveCloserChest": "상자에 더 가까이 다가가세요.",
+      "nothingToTake": "이제 가져갈 것이 없습니다.",
+      "wayOutNotOpen": "나가는 길이 아직 열리지 않았습니다.",
+      "moveCloserStairs": "계단에 더 가까이 다가가세요."
+    },
+    "lockpick": {
+      "lockYields": "자물쇠가 열립니다! {tier} 전리품.",
+      "tierPremium": "최상급",
+      "tierMedium": "중급",
+      "tierLow": "보통",
+      "alreadyInProgress": "누군가 이미 자물쇠를 따고 있습니다.",
+      "cannotPickThat": "그것은 딸 수 없습니다.",
+      "chooseAnte": "도구 1, 2, 3개 중에서 선택하세요.",
+      "noAttempt": "진행 중인 자물쇠 시도가 없습니다.",
+      "notYours": "당신의 자물쇠가 아닙니다.",
+      "toolSlips": "도구가 이 자물쇠에서 미끄러집니다.",
+      "lockJammed": "자물쇠가 더는 딸 수 없게 걸려 버렸습니다. 다시 시도하려면 탐굴을 다시 정리하세요.",
+      "lastPickSnaps": "마지막 도구가 부러집니다. 자물쇠가 걸려 버립니다. 탐굴을 다시 정리하지 않으면 상자를 잃습니다."
+    }
+  },
+  "lockpickUi": {
+    "pickTitle": "자물쇠 따기",
+    "cofferTitle": "풍요의 금고",
+    "cache": "{tier} 상자",
+    "pickBlurb": "더 풍성한 상자일수록 자물쇠가 더 많이 걸려 있습니다. 쉬운 자물쇠는 시도 횟수와 시간이 더 넉넉합니다. 시도에 실패하면 시도 횟수가 다 떨어질 때까지 자물쇠가 처음으로 돌아갑니다.",
+    "cofferBlurb": "이 봉인은 대가의 손에만 응합니다. 어려움, 최상급 경로만이 열 수 있습니다. 세 개의 자물쇠를 모두 풀어 최고의 보상을 차지하세요.",
+    "pagesAria": "자물쇠 {count}개",
+    "tries": "시도 {count}회",
+    "triesOne": "시도 1회",
+    "perMove": "이동당 {seconds}초",
+    "seconds": "{seconds}s",
+    "boardTitle": "열쇠공의 길: {tier} 상자",
+    "closeAria": "닫기",
+    "withdrawAria": "물러나기",
+    "timerAria": "남은 시간",
+    "lockOf": "자물쇠 {page}/{total}",
+    "lockOfAria": "자물쇠 {total}개 중 {page}번째",
+    "triesOf": "시도 {tries}/{total}",
+    "triesOfAria": "남은 시도 {total}회 중 {tries}회",
+    "ward": "방호 장치 {col} / {total}",
+    "depthKeys": "단축키는 방호 번호가 아니라 픽 깊이(Q/W/E/A/Z)를 정합니다.",
+    "withdraw": "물러나기 (Esc)",
+    "action": {
+      "hardSet": "강하게 고정",
+      "set": "고정",
+      "steady": "유지",
+      "ease": "풀기",
+      "drop": "내리기"
+    },
+    "feedback": {
+      "advanced": "핀이 살짝 풀립니다...",
+      "slip": "방호 장치가 물리며 도구가 미끄러집니다!",
+      "bind": "실린더가 걸립니다: 깊이가 틀렸습니다!",
+      "trap": "가짜 방호 장치가 닫히며 자물쇠가 걸려 버립니다!",
+      "retry": "자물쇠가 처음으로 돌아갑니다. 다시 한번 맞춰 보세요.",
+      "pageCleared": "실린더 한 벌이 풀립니다. 다음 자물쇠가 나타납니다.",
+      "success": "빗장이 풀립니다. 상자는 당신의 것입니다!",
+      "fail": "자물쇠가 걸려 버립니다. 더는 꿈쩍하지 않습니다."
+    },
+    "summary": {
+      "success": "자물쇠가 풀려 {tier} 상자를 차지했습니다.",
+      "successGeneric": "자물쇠가 풀려 상자를 차지했습니다.",
+      "fail": "자물쇠가 망가졌습니다. 다시 시도하려면 탐굴을 다시 정리하세요.",
+      "abandoned": "도구를 도로 빼냅니다. 자물쇠가 기다립니다."
+    }
+  },
+  "delveUi": {
+    "board": {
+      "title": "탐굴 게시판",
+      "enter": "탐굴 진입",
+      "enterAria": "{tier} 난이도로 {delve} 진입",
+      "openDelve": "무너진 성물실",
+      "openDelveAria": "{name}에서 탐굴 게시판 열기",
+      "marks": "탐굴 증표: {count}",
+      "minLevel": "필요 레벨 {level}",
+      "tier": {
+        "normal": "일반",
+        "heroic": "영웅"
+      },
+      "companion": {
+        "pick": "동료 선택",
+        "tessa": "수련사제 테사",
+        "rank": "{rank}등급",
+        "boon": "전투 사이에 파티를 치유합니다. 3랭크에서는 탐굴마다 한 번 쓰러진 아군을 부활시킵니다.",
+        "upgrade": "{rank}랭크로 강화 (증표 {marks}개)",
+        "upgradeAria": "탐굴 증표 {marks}개로 {name}을(를) {rank}랭크로 강화",
+        "maxRank": "최대 강화"
+      },
+      "tabDelve": "탐굴",
+      "tabShop": "상점"
+    },
+    "shop": {
+      "price": "증표 {marks}개",
+      "buy": "구매",
+      "buyAria": "탐굴 증표 {marks}개로 {item} 구매",
+      "reqHeroic": "영웅 난이도 클리어 필요",
+      "reqClears": "{count}회 클리어 필요",
+      "empty": "재고가 없습니다."
+    },
+    "tracker": {
+      "title": "탐굴",
+      "objective": "목표",
+      "module": "구역 {current}/{total}",
+      "affix": "고난 요소",
+      "complete": "완료",
+      "marks": "탐굴 증표: {count}",
+      "exitHintOpen": "묘비 통로로 걸어 들어가세요 (북쪽)",
+      "exitHintLocked": "북쪽 통로를 열려면 잡몹을 정리하세요"
+    },
+    "objective": {
+      "kill_boss": "{boss} 처치",
+      "recover_artifact": "매장 명부 회수",
+      "clear_room": "방 정리"
+    },
+    "summary": {
+      "title": "탐굴 완료",
+      "marks": "탐굴 증표 {count}개 획득",
+      "loreUnlock": "비화 해금: {title}"
+    },
+    "death": {
+      "warning": "한 번 더 죽으면 이번 탐굴이 끝납니다."
+    },
+    "run": {
+      "failed": "탐굴에 실패했습니다. 브라더 할벤에게로 돌아갑니다."
+    },
+    "npc": {
+      "halven": {
+        "greeting": "아래의 성물실이 또 움직였소. 자정이 지나면 바닥 너머로 영창 소리가 들리고, 수련사제 테사는 매장 명부가 스스로 잉크를 바꾼다고 단언하오. 용기가 있다면, {playerName}, 촛불을 들고 아래로 내려가시오. 거기서 들리는 모든 목소리를 믿지는 마시오. 그중 몇은 그대가 태어나기도 전에 그대의 이름을 알고 있었으니."
+      }
+    },
+    "intro": {
+      "normal": "계단은 차갑고 어둡습니다. 부서진 성인석이 내려가는 길에 흩어져 있고, 부드러운 종소리가 축축한 공기 속에 맴돕니다. 수련사제 테사가 속삭입니다. \"성물실이 이렇게까지 열려 있어선 안 돼요. 가까이 붙어 있어요, {playerName}.\"",
+      "heroic": "문이 당신 뒤로 신음하며 닫힙니다. 이름들이 손톱처럼 돌을 긁어 댑니다. 테사의 촛불이 푸르게 타오릅니다. \"이제 저들은 죽은 자를 부르는 게 아니에요, {playerName}. 무언가에 응답하고 있어요.\""
+    },
+    "module": {
+      "reliquary_sunken_ossuary": "물이 매장 선반 사이로 스며들며 은빛 검은 줄기로 오래된 재를 실어 나릅니다.",
+      "reliquary_bell_niche": "수십 개의 손종이 침묵 속에 매달려 있고, 저마다 장례 천으로 묶여 있습니다.",
+      "reliquary_saintless_hall": "정성스러운 증오로 얼굴이 깎여 나간 조각상들.",
+      "reliquary_finale": "묻혀 있던 종이 당신의 발밑에서 한 번 울립니다."
+    },
+    "moduleName": {
+      "reliquary_sunken_ossuary": "물에 잠긴 납골당",
+      "reliquary_bell_niche": "종의 감실",
+      "reliquary_saintless_hall": "성인 없는 회랑",
+      "reliquary_finale": "종이 묻힌 방"
+    },
+    "companion": {
+      "barkLine": "{name}: {line}",
+      "tessa": {
+        "combat_start": "발을 단단히 디뎌요, {playerName}. 이곳의 죽은 자들은 잠들지 못했어요.",
+        "low_hp": "숨을 고르세요. 당신을 위한 기도가 아직 남아 있어요.",
+        "trap_spotted": "멈춰요, 바닥에 있는 무언가가 발소리를 기억하고 있어요.",
+        "boss_pull": "저 종이 당신의 무게를 알고 있어요, {playerName}. 무릎 꿇지 마세요.",
+        "completion": "명부도 하룻밤은 쉴 수 있겠군요. 잘하셨어요.",
+        "rank": {
+          "1": "예배당 수련생",
+          "2": "촛불지기",
+          "3": "성물실 수련사제",
+          "4": "무덤부름의 목격자",
+          "5": "예배당 수호자"
+        }
+      }
+    },
+    "boss": {
+      "varric": {
+        "bell": {
+          "emote": "부제 바릭이 두 손으로 묻혀 있던 종을 움켜쥡니다!",
+          "log": "부제 바릭이 매장의 종을 울리기 시작합니다.",
+          "warning": "부제 바릭에게서 떨어지세요!",
+          "impact": "종소리가 방의 바닥을 갈라놓습니다!",
+          "lesson": "종울림: 12초마다 땅을 내리치는 공격. 떨어지기 전에 벗어나세요."
+        },
+        "raise": {
+          "emote": "부제 바릭이 부서진 무덤에서 이름을 불러냅니다!",
+          "log": "부제 바릭이 죽음의 부활을 시전하기 시작합니다.",
+          "warning": "무덤의 의식을 멈추세요!",
+          "object": "갈라진 무덤이 훔쳐 온 숨결로 떨립니다.",
+          "interrupt_ok": "무덤의 의식이 흔들립니다.",
+          "interrupt_fail": "죽은 자들이 부제 바릭의 부름에 응답합니다!",
+          "lesson": "5초 안에 갈라진 무덤을 방해하지 않으면 죽은 자들이 그의 부름에 일어납니다."
+        },
+        "pull": "그대는 부정한 의도로 신성한 흙을 밟았다. 무릎 꿇고, 명부에 오르라.",
+        "intro": "잃어버린 영혼은 없다. 단지 자리를 잘못 둔 것뿐.",
+        "mid60": "부제 바릭이 떨리는 환희로 명부에서 이름을 읽어 내립니다.",
+        "mid30": "매장의 종이 그가 부르는 모든 이름에 응답합니다.",
+        "defeat": "안 돼... 이름들을... 모두 가지고 있었는데..."
+      }
+    },
+    "lore": {
+      "eastbrook_ledger": "이스트브룩 매장 명부에서 떨어져 나온 물에 얼룩진 한 장. 이름들이 지워졌다가 인간의 것이 아닌 필체로 다시 쓰여 있습니다.",
+      "first_collapse": "예배당 기록에 첫 침하가 적혀 있습니다. 성인석이 갈라지고, 선반이 기울고, 땅 밑에서 종소리가 들려왔다.",
+      "gravecaller_mark": "관 나무에 새겨진 인장. 모르덴의 봉인이 아니라, 텅 빈 묘실보다 오래된 무덤부름꾼의 표식입니다.",
+      "bell_below": "테사의 여백 메모: \"성물실 아래에 두 번째 종이 있다. 그것은 죽은 자가 아니라 자리를 잃은 자를 위해 울린다.\"",
+      "tessa_note": "테사의 필체로 접힌 쪽지: \"아래에 있는 동안 명부가 바뀌거든, 목소리가 아니라 촛불을 믿어라.\""
+    },
+    "affix": {
+      "restless_graves": "잠들지 못한 무덤",
+      "bad_air": "탁한 공기",
+      "candleblind": "촛불 실명",
+      "old_mechanisms": "낡은 기계 장치",
+      "flooded_paths": "침수된 길",
+      "grave_tax": "무덤의 대가",
+      "unstable_roof": "불안정한 천장",
+      "cult_remnants": "교단의 잔당"
+    },
+    "blessing": {
+      "chapel_candle": "예배당 촛불: 더 안전한 진행, 완료 시 탐굴 증표 1개 감소."
+    },
+    "chest": {
+      "flavor": "죽은 자들이 내어줄 수 있는 것을 내놓았습니다."
+    }
+  },
   "fiesta": {
     "bracket": "Fiesta",
     "enterQueue": "Fiesta에 참가하세요!",
@@ -1981,7 +2250,14 @@ export const ko_KR: EnTranslations = {
     "portraitAlt": "{name}의 초상화",
     "viewProfile": "프로필 보기",
     "profile": "프로필",
-    "closeProfile": "프로필 닫기"
+    "closeProfile": "프로필 닫기",
+    "sortBy": "정렬",
+    "sortByLabel": "캐릭터 정렬",
+    "sortMenuLabel": "정렬 옵션",
+    "sortLevel": "레벨",
+    "sortName": "이름",
+    "sortRecent": "최근 플레이",
+    "sortPlaytime": "플레이 시간"
   },
   "deleteCharacter": {
     "title": "캐릭터 삭제",
@@ -2459,6 +2735,8 @@ export const ko_KR: EnTranslations = {
       "lootReceiveMoney": "{money}을(를) 받았습니다.",
       "lootMoney": "{money}을(를) 전리품으로 획득했습니다.",
       "soldItem": "{item}을(를) {money}에 팔았습니다.",
+      "soldJunkOne": "잡동사니 아이템 {count}개를 {money}에 팔았습니다.",
+      "soldJunkMany": "잡동사니 아이템 {count}개를 {money}에 팔았습니다.",
       "friendOnline": "{name}님이 접속했습니다.",
       "friendOffline": "{name}님이 접속을 종료했습니다."
     },
@@ -2862,7 +3140,10 @@ export const ko_KR: EnTranslations = {
       "sellQuantityTitle": "{item} 판매",
       "sellQuantityInput": "판매할 수량",
       "sellQuantityConfirm": "판매",
-      "sellQuantityCancel": "취소"
+      "sellQuantityCancel": "취소",
+      "sellJunk": "잡동사니 판매",
+      "sellJunkAria": "모든 잡동사니를 {price}에 판매",
+      "sellJunkHint": "퀘스트 아이템을 제외한 가방의 모든 회색 아이템을 판매합니다."
     },
     "market": {
       "title": "세계 시장",
@@ -3874,8 +4155,8 @@ export const ko_KR: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "산등성이 추적자 가죽"
       },
-      "pristine_ridge_stalker_pelt": {
-        "name": "온전한 산등성이 추적자 가죽"
+      "old_cragmaws_pelt": {
+        "name": "늙은 크래그모의 가죽"
       },
       "glowing_wax": {
         "name": "빛나는 밀랍"
@@ -4450,6 +4731,33 @@ export const ko_KR: EnTranslations = {
       "wyrmshadow_talongrips": {
         "name": "고룡그림자 갈퀴손아귀"
       },
+      "reliquary_plate_chest": {
+        "name": "성물실 수호 갑옷"
+      },
+      "reliquary_leather_chest": {
+        "name": "먼지수호자의 웃옷"
+      },
+      "reliquary_cloth_chest": {
+        "name": "성물실 수의"
+      },
+      "reliquary_legs": {
+        "name": "묘실 다리보호구"
+      },
+      "reliquary_helm": {
+        "name": "납골당 경비 투구"
+      },
+      "reliquary_shoulder": {
+        "name": "부서진 어깨보호구"
+      },
+      "reliquary_gloves_rog": {
+        "name": "뼈수호 손보호구"
+      },
+      "deacon_reliquary_helm": {
+        "name": "부제의 성물실 투구"
+      },
+      "varric_shadow_cowl": {
+        "name": "바릭의 그림자 두건"
+      },
       "the_codfather": {
         "name": "대구 대부"
       },
@@ -4740,6 +5048,27 @@ export const ko_KR: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "나이트락시스, 손피크의 재앙"
       },
+      "reliquary_ledger_wraith": {
+        "name": "명부의 망령"
+      },
+      "reliquary_funeral_ringer": {
+        "name": "장례 종지기"
+      },
+      "reliquary_gravecall_acolyte": {
+        "name": "무덤부름 수련사제"
+      },
+      "reliquary_bonewalker": {
+        "name": "되살아난 해골보행자"
+      },
+      "reliquary_saintless_effigy": {
+        "name": "성인 잃은 조상"
+      },
+      "deacon_varric": {
+        "name": "부제 바릭"
+      },
+      "acolyte_tessa": {
+        "name": "수련사제 테사"
+      },
       "ironvein_foreman": {
         "name": "철맥 감독관"
       },
@@ -4949,6 +5278,11 @@ export const ko_KR: EnTranslations = {
         "name": "알드릭 수사",
         "title": "계곡의 사제",
         "greeting": "예배당 묘지에서 세상의 지붕까지... 흔적은 여기서 끝납니다. 산이 듣고 있음을 느낍니다."
+      },
+      "brother_halven": {
+        "name": "브라더 할벤",
+        "title": "성물실 관리인",
+        "greeting": "아래의 성물실이 또 움직였소."
       },
       "tidewatcher_ondrel": {
         "name": "온드렐 베인",
@@ -5804,6 +6138,9 @@ export const ko_KR: EnTranslations = {
           },
           "8": {
             "label": "브라이트우드 숲"
+          },
+          "9": {
+            "label": "브라이트우드 숲"
           }
         }
       },
@@ -5905,12 +6242,22 @@ export const ko_KR: EnTranslations = {
         "enterText": "당신은 달의 관문을 지나갑니다 — 공기가 차가운 물과 창백한 빛으로 변하고, 노랫소리가 당신의 머리 위로 닫혀 옵니다.",
         "leaveText": "당신은 달의 관문을 통해 산속의 밤으로 떠오릅니다."
       }
+    },
+    "delves": {
+      "collapsed_reliquary": {
+        "name": "무너진 성물실",
+        "enterText": "무너진 성물실로 내려갑니다.",
+        "leaveText": "성물실 폐허의 브라더 할벤에게로 다시 올라갑니다."
+      }
     }
   },
   "worldContent": {
     "corpseName": "{name} (시체)",
     "dungeonExitName": "{name} 출구",
     "dungeonPartyWarning": "{name}은 {count}명의 완전한 파티를 위해 마련된 곳입니다. 조심해서 나아가십시오.",
-    "dungeonInstanceBusy": "{name}의 모든 인스턴스가 사용 중입니다. 잠시 후 다시 시도하십시오."
+    "dungeonInstanceBusy": "{name}의 모든 인스턴스가 사용 중입니다. 잠시 후 다시 시도하십시오.",
+    "delveLockedChestInteract": "F를 눌러 자물쇠 따기",
+    "delveRewardChestInteract": "F를 눌러 전리품 받기",
+    "delveSurfaceExitInteract": "F를 눌러 지상으로 오르기"
   }
 };

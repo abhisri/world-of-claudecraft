@@ -1,4 +1,4 @@
-import { DUNGEONS, MOBS, NPCS, QUESTS, ZONES } from '../sim/data';
+import { DELVES, DUNGEONS, MOBS, NPCS, QUESTS, ZONES } from '../sim/data';
 
 // English world-entity names + narratives (mobs, NPCs, quests, zones, dungeons).
 //
@@ -73,6 +73,14 @@ const MOB_IDS = [
   'bound_guardian',
   'nythraxis_skeleton_warrior',
   'nythraxis_scourge_of_thornpeak',
+  // Collapsed Reliquary delve mobs
+  'reliquary_ledger_wraith',
+  'reliquary_funeral_ringer',
+  'reliquary_gravecall_acolyte',
+  'reliquary_bonewalker',
+  'reliquary_saintless_effigy',
+  'deacon_varric',
+  'acolyte_tessa',
 ] as const;
 
 const NPC_IDS = [
@@ -96,6 +104,7 @@ const NPC_IDS = [
   'armorer_hode',
   'loremaster_caddis',
   'brother_aldric_raid', // dynamically-spawned raid turn-in NPC (Crypt of Nythraxis)
+  'brother_halven', // Collapsed Reliquary delve board NPC
 ] as const;
 
 const QUEST_IDS = [
@@ -180,12 +189,14 @@ const DUNGEON_IDS = [
   'nythraxis_crypt',
   'nythraxis_boss_arena',
 ] as const;
+const DELVE_IDS = ['collapsed_reliquary'] as const;
 
 type MobId = (typeof MOB_IDS)[number];
 type NpcId = (typeof NPC_IDS)[number];
 type QuestId = (typeof QUEST_IDS)[number];
 type ZoneId = (typeof ZONE_IDS)[number];
 type DungeonId = (typeof DUNGEON_IDS)[number];
+type DelveId = (typeof DELVE_IDS)[number];
 
 type MobTranslations = Record<MobId, { name: string }>;
 type NpcTranslations = Record<NpcId, { name: string; title: string; greeting: string }>;
@@ -204,6 +215,7 @@ type DungeonTranslations = Record<
   DungeonId,
   { name: string; enterText: string; leaveText: string }
 >;
+type DelveTranslations = Record<DelveId, { name: string; enterText: string; leaveText: string }>;
 
 type WorldEntityTranslations = {
   worldContent: {
@@ -211,6 +223,9 @@ type WorldEntityTranslations = {
     dungeonExitName: string;
     dungeonPartyWarning: string;
     dungeonInstanceBusy: string;
+    delveLockedChestInteract: string;
+    delveRewardChestInteract: string;
+    delveSurfaceExitInteract: string;
   };
   entities: {
     mobs: MobTranslations;
@@ -218,6 +233,7 @@ type WorldEntityTranslations = {
     quests: QuestTranslations;
     zones: ZoneTranslations;
     dungeons: DungeonTranslations;
+    delves: DelveTranslations;
   };
 };
 
@@ -287,14 +303,26 @@ function makeEnglishWorldEntities(): WorldEntityTranslations {
     };
   });
 
+  const delves = {} as DelveTranslations;
+  orderedValues(DELVE_IDS, DELVES).forEach((delve) => {
+    delves[delve.id as DelveId] = {
+      name: delve.name,
+      enterText: normalizeSourceText(delve.enterText),
+      leaveText: normalizeSourceText(delve.leaveText),
+    };
+  });
+
   return {
     worldContent: {
       corpseName: '{name} (corpse)',
       dungeonExitName: '{name} Exit',
       dungeonPartyWarning: '{name} is meant for a full party of {count}. Tread carefully.',
       dungeonInstanceBusy: 'All instances of {name} are busy. Try again soon.',
+      delveLockedChestInteract: 'Press F to pick the lock',
+      delveRewardChestInteract: 'Press F to claim spoils',
+      delveSurfaceExitInteract: 'Press F to climb',
     },
-    entities: { mobs, npcs, quests, zones, dungeons },
+    entities: { mobs, npcs, quests, zones, dungeons, delves },
   };
 }
 

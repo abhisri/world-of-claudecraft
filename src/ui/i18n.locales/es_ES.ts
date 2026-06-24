@@ -119,4 +119,107 @@ export const es_ES: Partial<Record<TranslationKey, string>> = {
     'Informe de error enviado, pero la captura de pantalla era demasiado grande para incluirla.',
   'hudChrome.bugReport.tooLarge':
     'Ese informe es demasiado grande para enviarlo. Inténtalo de nuevo sin la captura de pantalla.',
+  'delveUi.affix.bad_air': 'Aire viciado',
+  'delveUi.affix.candleblind': 'Cegavelas',
+  'delveUi.affix.cult_remnants': 'Vestigios del culto',
+  'delveUi.affix.flooded_paths': 'Senderos inundados',
+  'delveUi.affix.grave_tax': 'Tributo sepulcral',
+  'delveUi.affix.old_mechanisms': 'Mecanismos viejos',
+  'delveUi.affix.restless_graves': 'Tumbas inquietas',
+  'delveUi.affix.unstable_roof': 'Techo inestable',
+  'delveUi.blessing.chapel_candle':
+    'Vela de capilla: incursión más segura, una Marca menos al completarla.',
+  'delveUi.board.enter': 'Entrar en la Profundidad',
+  'delveUi.board.enterAria': 'Entrar en {delve} en dificultad {tier}',
+  'delveUi.board.marks': 'Marcas de Profundidad: {count}',
+  'delveUi.board.openDelveAria': 'Abrir el Tablón de Profundidades desde {name}',
+  'delveUi.board.title': 'Tablón de Profundidades',
+  'delveUi.boss.varric.bell.log': 'El Diácono Varric empieza a tañer la campana funeraria.',
+  'delveUi.boss.varric.bell.warning': '¡Apártate del Diácono Varric!',
+  'delveUi.boss.varric.mid30': 'La campana funeraria responde a cada nombre que pronuncia.',
+  'delveUi.boss.varric.mid60':
+    'El Diácono Varric lee nombres del registro con un júbilo tembloroso.',
+  'delveUi.boss.varric.pull':
+    'Pisas el polvo sagrado con un propósito impuro. Arrodíllate y deja que te cuenten.',
+  'delveUi.boss.varric.raise.emote': '¡El Diácono Varric invoca nombres desde las tumbas rotas!',
+  'delveUi.boss.varric.raise.interrupt_ok': 'El rito sepulcral vacila.',
+  'delveUi.boss.varric.raise.log': 'El Diácono Varric empieza a alzar a los muertos.',
+  'delveUi.boss.varric.raise.object': 'La tumba agrietada se estremece con un aliento robado.',
+  'delveUi.boss.varric.raise.warning': '¡Detén el rito sepulcral!',
+  'delveUi.companion.tessa.combat_start':
+    'Afírmate, {playerName}. Aquí los muertos están inquietos.',
+  'delveUi.companion.tessa.low_hp': 'Respira. Aún me quedan oraciones para ti.',
+  'delveUi.companion.tessa.rank.1': 'Novicia de la capilla',
+  'delveUi.companion.tessa.rank.2': 'Portavelas',
+  'delveUi.companion.tessa.rank.4': 'Testigo del clamor sepulcral',
+  'delveUi.companion.tessa.rank.5': 'Custodia de la capilla',
+  'delveUi.companion.tessa.trap_spotted': 'Espera... algo en el suelo recuerda las pisadas.',
+  'delveUi.death.warning': 'Una muerte más acabará con esta incursión a la Profundidad.',
+  'delveUi.intro.heroic':
+    'Las puertas se cierran con un quejido a tu espalda. Los nombres rascan la piedra como uñas. La vela de Tessa arde azul. "Ya no están llamando a los muertos, {playerName}. Están respondiendo a algo."',
+  'delveUi.intro.normal':
+    'La escalera es fría y oscura. Piedras sagradas rotas cubren el descenso, y una suave nota de campana flota en el aire húmedo. La Acólita Tessa susurra: "El relicario no debería estar abierto tan abajo. No te alejes, {playerName}."',
+  'delveUi.lore.bell_below':
+    'Nota al margen de Tessa: "Hay una segunda campana bajo el relicario. Tañe por los traspapelados, no por los muertos."',
+  'delveUi.lore.first_collapse':
+    'Los registros de la capilla anotan el primer hundimiento: piedras sagradas resquebrajadas, estantes inclinados y una nota de campana oída desde bajo tierra.',
+  'delveUi.lore.gravecaller_mark':
+    'Un sigilo raspado en la madera de un ataúd, no el sello de Morthen, sino una marca de invocasepulcros más antigua, anterior a la Cripta Hueca.',
+  'delveUi.lore.tessa_note':
+    'Un retazo doblado con la letra de Tessa: "Si los registros cambian mientras estamos abajo, fíate de la vela, no de las voces."',
+  'delveUi.module.reliquary_saintless_hall':
+    'Estatuas con los rostros cincelados con un odio meticuloso.',
+  'delveUi.module.reliquary_sunken_ossuary':
+    'El agua se filtra por los estantes funerarios, arrastrando vieja ceniza en arroyos de plata y negro.',
+  'delveUi.npc.halven.greeting':
+    'El relicario de abajo ha vuelto a moverse. Oímos cánticos a través del suelo pasada la medianoche, y la Acólita Tessa jura que los registros funerarios cambian su propia tinta. Si tienes valor suficiente, {playerName}, coge una vela y baja. No confíes en cada voz que oigas ahí abajo. Algunas conocían tu nombre antes de que nacieras.',
+  'delveUi.run.failed':
+    'La incursión a la Profundidad ha fracasado. Vuelves con el Hermano Halven.',
+  'delveUi.summary.marks': '{count} Marcas de Profundidad obtenidas',
+  'delveUi.summary.title': 'Profundidad completada',
+  'delveUi.tracker.affix': 'Afijos',
+  'delveUi.tracker.complete': 'Completada',
+  'delveUi.tracker.marks': 'Marcas de Profundidad: {count}',
+  'delveUi.tracker.title': 'Profundidad',
+  'entities.delves.collapsed_reliquary.leaveText':
+    'Trepas de vuelta hasta el Hermano Halven, en la ruina del relicario.',
+  'entities.mobs.reliquary_bonewalker.name': 'Caminahuesos alzado',
+  'entities.mobs.reliquary_gravecall_acolyte.name': 'Acólito invocasepulcros',
+  'entities.npcs.brother_halven.greeting': 'El relicario de abajo ha vuelto a moverse.',
+  'sim.delve.alreadyInDelve': 'Ya estás en una Profundidad.',
+  'sim.delve.bossChest':
+    'El jefe cae. Un cofre de relicario protegido se alza en el estrado. Fuerza su cerradura para reclamar tu botín.',
+  'sim.delve.cannotAffordCompanionUpgrade': 'No puedes permitirte esta mejora.',
+  'sim.delve.cannotEnterNow': 'No puedes entrar en una Profundidad ahora mismo.',
+  'sim.delve.companionMarksRequired':
+    'Necesitas {marks} Marcas de Profundidad para mejorar a {name}.',
+  'sim.delve.complete': '{name} completada.',
+  'sim.delve.duringArena': 'No puedes entrar en una Profundidad durante un combate de arena.',
+  'sim.delve.duringDuel': 'No puedes entrar en una Profundidad durante un duelo.',
+  'sim.delve.graveFalters': 'El rito sepulcral vacila.',
+  'sim.delve.levelRequired': 'Debes ser nivel {level} para entrar en {name}.',
+  'sim.delve.mechanismOpen':
+    'Un mecanismo se abre con un chasquido cerca. Se abre un pasaje hacia el norte. Busca el portal de salida más adelante.',
+  'sim.delve.moveCloserChest': 'Acércate más al cofre.',
+  'sim.delve.moveCloserPassage': 'Acércate más al pasaje.',
+  'sim.delve.moveCloserStairs': 'Acércate más a las escaleras.',
+  'sim.delve.notInDelve': 'No estás en una Profundidad.',
+  'sim.delve.nothingHappens': 'No pasa nada.',
+  'sim.delve.raiseDead': '{name} empieza a alzar a los muertos.',
+  'sim.delve.runFailed': 'La incursión a {name} ha fracasado.',
+  'sim.delve.strikeWall': 'Golpea el muro para abrirte paso.',
+  'sim.delve.tombstoneHint':
+    'Un pasaje de lápida se abre hacia el norte cuando la sala queda despejada.',
+  'sim.delve.tombstoneOpen':
+    'Un pasaje de lápida sellado se abre con un chirrido hacia el norte. Entra en él para continuar.',
+  'sim.delve.unknownTier': 'Nivel de Profundidad desconocido.',
+  'sim.delve.whileTrading': 'No puedes entrar en una Profundidad mientras comercias.',
+  'sim.lockpick.alreadyInProgress': 'Alguien ya está forzando la cerradura.',
+  'sim.lockpick.lastPickSnaps':
+    'La última ganzúa se parte. La cerradura se atasca: el cofre se pierde a menos que vuelvas a superar la Profundidad.',
+  'sim.lockpick.lockJammed':
+    'La cerradura está demasiado atascada para forzarla. Vuelve a superar la Profundidad para otro intento.',
+  'sim.lockpick.noAttempt': 'No hay ningún intento de forzar la cerradura en curso.',
+  'sim.lockpick.tierPremium': 'Premium',
+  'sim.lockpick.toolSlips': 'Esa herramienta resbala en esta cerradura.',
 };

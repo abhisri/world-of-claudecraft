@@ -3,6 +3,7 @@
 // locale lazy-loads here before the first localized paint (mirrors src/main.ts).
 
 import './styles.css';
+import { startSitePresence } from '../site_presence';
 import { ensureLocaleLoaded, getLanguage } from '../ui/i18n';
 import { GuideApp } from './app';
 
@@ -17,4 +18,5 @@ async function boot(): Promise<void> {
   new GuideApp(mount).start();
 }
 
+startSitePresence('guide');
 void boot();

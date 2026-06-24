@@ -426,6 +426,18 @@ export const zh_TW: EnTranslations = {
     "tips": {
       "joinChannels": "提示：輸入 /join world 或 /join lfg 可與全伺服器的玩家聊天。"
     },
+    "questShare": {
+      "notShareable": "該任務無法分享。",
+      "notInSharerParty": "你必須在 {name} 的隊伍中才能接受該任務。",
+      "accepted": "{name} 接受了你分享的任務。",
+      "dialogTitle": "分享的任務",
+      "viewOnlyHint": "加入分享者的隊伍才能接受該任務。",
+      "alreadyOn": "你已經接受了該任務。",
+      "alreadyDone": "你已經完成了該任務。",
+      "ineligible": "你不符合該任務的要求。",
+      "noQuestSelected": "在任務日誌中選擇一個任務進行分享。",
+      "linkTitle": "Shift + 點擊可在聊天中連結該任務。"
+    },
     "plurals": {
       "guildMembers": {
         "one": "你是{rank}，{count}名成員",
@@ -1709,6 +1721,263 @@ export const zh_TW: EnTranslations = {
     "friends": "好友與公會",
     "chat": "開啟對話框"
   },
+  "sim": {
+    "delve": {
+      "cannotEnterNow": "你現在無法進入秘探。",
+      "leaveDungeonFirst": "請先離開地下城。",
+      "leaveArenaFirst": "請先離開競技場。",
+      "alreadyInDelve": "你已經身處一場秘探之中。",
+      "whileTrading": "交易期間無法進入秘探。",
+      "duringDuel": "決鬥期間無法進入秘探。",
+      "duringArena": "競技場對戰期間無法進入秘探。",
+      "unknownTier": "未知的秘探難度。",
+      "levelRequired": "你必須達到等級 {level} 才能進入 {name}。",
+      "levelRequiredTier": "你必須達到 {level} 級才能以{tier}難度進入{name}。",
+      "instancesBusy": "所有 {name} 的副本都正忙碌中。請稍後再試。",
+      "runFailed": "{name} 旅程失敗。",
+      "complete": "{name} 完成。",
+      "mechanismOpen": "附近有一處機關喀噠開啟。一條通往北方的通道開啟了，往前找到出口傳送門。",
+      "raiseDead": "{name} 開始施放喚醒亡者。",
+      "graveFalters": "葬墓儀式中斷了。",
+      "doorAlreadyOpen": "門已經開了。",
+      "companionRankUp": "{name} 達到第 {rank} 階。",
+      "bossChest": "首領倒下了。一只受守護的聖物庫寶箱自祭壇升起，撬開它的鎖以取得你的戰利品。",
+      "surfaceStairs": "一道通往地面的階梯開啟了。在階梯處按 F 離開。",
+      "moduleEnter": "{name}：{objective}",
+      "objectiveClearRoom": "清空房間。",
+      "objectiveDefeatBoss": "擊敗首領。",
+      "tombstoneHint": "房間清空後，一條墓碑通道會在北方開啟。",
+      "tombstoneOpen": "一條被封的墓碑通道在北方軋軋開啟。走進其中以繼續前進。",
+      "tombstoneInto": "你穿過墓碑進入 {name}。",
+      "chestEmpty": "寶箱是空的。",
+      "notInDelve": "你並不在秘探之中。",
+      "cannotInteract": "你無法與其互動。",
+      "tooFar": "你距離太遠了。",
+      "graveSilent": "墳墓暫時靜默了。",
+      "doorLocked": "門被鎖住了。",
+      "strikeWall": "攻擊牆面以破牆而過。",
+      "nothingHappens": "沒有任何事發生。",
+      "unknownCompanion": "未知的同伴。",
+      "companionMaxRank": "這名同伴已完全升級。",
+      "companionMarksRequired": "升級 {name} 需要 {marks} 枚秘探印記。",
+      "cannotAffordCompanionUpgrade": "你無法負擔這次升級。",
+      "shopItemLocked": "你尚未解鎖該物品。",
+      "shopMarksRequired": "購買 {name} 需要 {marks} 枚秘探印記。",
+      "shopSealPremiumOnly": "此封印只向大師之手屈服，唯有上等投入方能開啟。",
+      "passageSealed": "通道被封住了。",
+      "moveCloserPassage": "再靠近通道一些。",
+      "moveCloserChest": "再靠近寶箱一些。",
+      "nothingToTake": "這裡已沒有任何可拿取之物了。",
+      "wayOutNotOpen": "出路尚未開啟。",
+      "moveCloserStairs": "再靠近階梯一些。"
+    },
+    "lockpick": {
+      "lockYields": "鎖開了！{tier}戰利品。",
+      "tierPremium": "上等",
+      "tierMedium": "中等",
+      "tierLow": "微薄",
+      "alreadyInProgress": "已經有人在開這道鎖了。",
+      "cannotPickThat": "你無法撬開那個。",
+      "chooseAnte": "選擇 1、2 或 3 根撬棒。",
+      "noAttempt": "目前沒有進行中的開鎖嘗試。",
+      "notYours": "那不是你的鎖。",
+      "toolSlips": "那件工具從這道鎖上滑開了。",
+      "lockJammed": "這道鎖已卡死到無法撬開，再次通關秘探以獲得另一次嘗試。",
+      "lastPickSnaps": "最後一根撬棒折斷了。鎖卡死了，除非你再次通關這場秘探，否則寶箱將就此失去。"
+    }
+  },
+  "lockpickUi": {
+    "pickTitle": "撬開鎖具",
+    "cofferTitle": "豐饒寶櫃",
+    "cache": "{tier}戰利品",
+    "pickBlurb": "更豐厚的戰利品封在更多道鎖之後。較簡單的鎖給你更多嘗試次數與時間；一次失敗會重置該鎖，直到你的嘗試次數用盡。",
+    "cofferBlurb": "這道封印只屈服於大師之手：唯有困難的上等路線才能開啟。解開全部三道鎖，奪取招牌大獎。",
+    "pagesAria": "{count}道鎖",
+    "tries": "{count}次嘗試",
+    "triesOne": "1次嘗試",
+    "perMove": "每步 {seconds} 秒",
+    "seconds": "{seconds}s",
+    "boardTitle": "轉珠之路：{tier}戰利品",
+    "closeAria": "關閉",
+    "withdrawAria": "收手",
+    "timerAria": "剩餘時間",
+    "lockOf": "鎖 {page}/{total}",
+    "lockOfAria": "第 {page} 道鎖，共 {total} 道",
+    "triesOf": "嘗試 {tries}/{total}",
+    "triesOfAria": "剩餘 {tries}/{total} 次嘗試",
+    "ward": "鎖簧 {col}/{total}",
+    "depthKeys": "快捷鍵會設定撬鎖深度（Q/W/E/A/Z），不是鎖簧編號。",
+    "withdraw": "收手 (Esc)",
+    "action": {
+      "hardSet": "重壓",
+      "set": "頂起",
+      "steady": "穩住",
+      "ease": "鬆放",
+      "drop": "放下"
+    },
+    "feedback": {
+      "advanced": "鎖銷鬆動了……",
+      "slip": "鎖簧一咬，撬棒滑脫了！",
+      "bind": "轉珠卡住了：深度不對！",
+      "trap": "一道假鎖簧突然閉合，鎖卡死了！",
+      "retry": "鎖已重置。重新對準，再試一次。",
+      "pageCleared": "一排轉珠落定。下一道鎖現身了。",
+      "success": "鎖閂彈開，戰利品歸你了！",
+      "fail": "鎖卡死了，再也撬不動。"
+    },
+    "summary": {
+      "success": "鎖已開啟，{tier}戰利品已入手。",
+      "successGeneric": "鎖已開啟，戰利品已入手。",
+      "fail": "鎖已毀壞。再次通關這場秘探以獲得另一次嘗試。",
+      "abandoned": "你把撬棒輕輕抽了回來。鎖仍在等待。"
+    }
+  },
+  "delveUi": {
+    "board": {
+      "title": "秘探看板",
+      "enter": "進入秘探",
+      "enterAria": "以 {tier} 難度進入 {delve}",
+      "openDelve": "崩塌的聖物庫",
+      "openDelveAria": "從 {name} 開啟秘探看板",
+      "marks": "秘探印記：{count}",
+      "minLevel": "需要等級 {level}",
+      "tier": {
+        "normal": "普通",
+        "heroic": "英雄"
+      },
+      "companion": {
+        "pick": "選擇一名同伴",
+        "tessa": "侍僧泰莎",
+        "rank": "第 {rank} 階",
+        "boon": "在戰鬥間隙治療隊伍。3級時每次秘探可復活一名倒下的隊友一次。",
+        "upgrade": "升級到 {rank} 級（{marks} 印記）",
+        "upgradeAria": "用 {marks} 枚秘探印記將 {name} 升級到 {rank} 級",
+        "maxRank": "已滿級"
+      },
+      "tabDelve": "秘探",
+      "tabShop": "商店"
+    },
+    "shop": {
+      "price": "{marks} 印記",
+      "buy": "購買",
+      "buyAria": "用 {marks} 枚秘探印記購買 {item}",
+      "reqHeroic": "需要英雄難度通關",
+      "reqClears": "需要通關 {count} 次",
+      "empty": "暫無存貨。"
+    },
+    "tracker": {
+      "title": "秘探",
+      "objective": "目標",
+      "module": "第 {current} 區，共 {total} 區",
+      "affix": "詞綴",
+      "complete": "完成",
+      "marks": "秘探印記：{count}",
+      "exitHintOpen": "走進墓碑通道（北方）",
+      "exitHintLocked": "清除雜兵以開啟北方通道"
+    },
+    "objective": {
+      "kill_boss": "擊殺 {boss}",
+      "recover_artifact": "尋回葬儀名冊",
+      "clear_room": "清空房間"
+    },
+    "summary": {
+      "title": "秘探完成",
+      "marks": "獲得 {count} 枚秘探印記",
+      "loreUnlock": "解鎖傳說：{title}"
+    },
+    "death": {
+      "warning": "再死一次就會結束這趟秘探旅程。"
+    },
+    "run": {
+      "failed": "秘探旅程失敗。你被送回哈爾文修士身邊。"
+    },
+    "npc": {
+      "halven": {
+        "greeting": "下方的聖物庫又移位了。午夜過後我們會聽見地板底下傳來吟誦聲，而侍僧泰莎敢發誓那些葬儀名冊正自行改寫墨跡。若你有足夠的勇氣，{playerName}，就拿上一根蠟燭下去吧。別輕信你在下面聽見的每一個聲音。其中有些在你出生之前就知道你的名字了。"
+      }
+    },
+    "intro": {
+      "normal": "樓梯間又冷又暗。碎裂的聖徒石散落在下行的階梯上，一絲柔和的鐘音懸在潮濕的空氣中。侍僧泰莎低語：「聖物庫不該開到這麼深處。靠緊我，{playerName}。」",
+      "heroic": "大門在你身後呻吟著緊閉。一個個名字如指甲般刮過石面。泰莎的燭火燃起藍光。「他們現在召喚的不是亡者，{playerName}。他們是在回應某種存在。」"
+    },
+    "module": {
+      "reliquary_sunken_ossuary": "水滲過葬骨架，以銀黑相間的細流帶走陳年的灰燼。",
+      "reliquary_bell_niche": "數十口手鈴靜默地懸掛著，每一口都繫著喪葬之布。",
+      "reliquary_saintless_hall": "一尊尊雕像，面容被以細心的憎恨鑿去。",
+      "reliquary_finale": "那口埋藏的鐘在你的靴底之下鳴響了一聲。"
+    },
+    "moduleName": {
+      "reliquary_sunken_ossuary": "沉沒葬骨堂",
+      "reliquary_bell_niche": "鳴鐘壁龕",
+      "reliquary_saintless_hall": "無聖之廳",
+      "reliquary_finale": "埋鐘之室"
+    },
+    "companion": {
+      "barkLine": "{name}：{line}",
+      "tessa": {
+        "combat_start": "站穩，{playerName}。此處的亡者並不安寧。",
+        "low_hp": "深呼吸。我還留有為你準備的禱詞。",
+        "trap_spotted": "停下，地板裡有東西記得腳步聲。",
+        "boss_pull": "那口鐘認得你的重量，{playerName}。別跪下。",
+        "completion": "這冊名簿今夜可以歇息了。做得好。",
+        "rank": {
+          "1": "禮拜堂見習者",
+          "2": "持燭者",
+          "3": "聖物庫侍僧",
+          "4": "喚墓見證者",
+          "5": "禮拜堂守護者"
+        }
+      }
+    },
+    "boss": {
+      "varric": {
+        "bell": {
+          "emote": "執事瓦瑞克雙手緊握那口埋藏的喪鐘！",
+          "log": "執事瓦瑞克開始敲響葬鐘。",
+          "warning": "遠離執事瓦瑞克！",
+          "impact": "喪鐘的鳴響震裂了墓室地面！",
+          "lesson": "喪鐘鳴響：每十二秒一次的地面重擊。在它落下前移開。"
+        },
+        "raise": {
+          "emote": "執事瓦瑞克從破裂的墳墓中呼喚名字！",
+          "log": "執事瓦瑞克開始施放喚醒亡者。",
+          "warning": "阻止葬墓儀式！",
+          "object": "裂開的墳墓隨著被竊取的氣息顫動。",
+          "interrupt_ok": "葬墓儀式中斷了。",
+          "interrupt_fail": "亡者回應了執事瓦瑞克的呼喚！",
+          "lesson": "在五秒內打斷那座裂開的墳墓，否則亡者將回應他的呼喚而起。"
+        },
+        "pull": "你以不潔之意踏上聖塵之地。跪下，接受清點。",
+        "intro": "沒有靈魂會遺失，只是被錯置了。",
+        "mid60": "執事瓦瑞克以顫抖的得意從名冊中誦讀名字。",
+        "mid30": "葬鐘回應著他唸出的每一個名字。",
+        "defeat": "不……我握有那些名字……我全都握有……"
+      }
+    },
+    "lore": {
+      "eastbrook_ledger": "一頁被水漬染汙的東溪谷葬儀名冊。名字被劃去，又以某種並非人類的筆跡重新寫上。",
+      "first_collapse": "禮拜堂記錄載有首次塌陷：聖徒石裂開、架子傾斜，並從地底傳來一聲鐘音。",
+      "gravecaller_mark": "刻劃在棺木上的一枚符記，並非莫森的封印，而是更古老、早於空洞墓穴的喚墓者印記。",
+      "bell_below": "泰莎的旁註：「聖物庫底下還有第二口鐘。它為被錯置者而鳴，而非為亡者。」",
+      "tessa_note": "一張以泰莎筆跡寫成的折疊碎紙：「若我們在地底時名冊有所變動，請相信燭火，而非那些聲音。」"
+    },
+    "affix": {
+      "restless_graves": "不安之墓",
+      "bad_air": "濁氣",
+      "candleblind": "燭盲",
+      "old_mechanisms": "古舊機關",
+      "flooded_paths": "淹水通道",
+      "grave_tax": "墓稅",
+      "unstable_roof": "不穩屋頂",
+      "cult_remnants": "邪教殘黨"
+    },
+    "blessing": {
+      "chapel_candle": "禮拜堂之燭：旅程更安全，完成時少獲得一枚秘探印記。"
+    },
+    "chest": {
+      "flavor": "亡者已交出他們所能割捨之物。"
+    }
+  },
   "fiesta": {
     "bracket": "Fiesta",
     "enterQueue": "加入Fiesta！",
@@ -1981,7 +2250,14 @@ export const zh_TW: EnTranslations = {
     "portraitAlt": "{name}的頭像",
     "viewProfile": "查看資料",
     "profile": "角色資料",
-    "closeProfile": "關閉資料"
+    "closeProfile": "關閉資料",
+    "sortBy": "排序",
+    "sortByLabel": "排序角色",
+    "sortMenuLabel": "排序選項",
+    "sortLevel": "等級",
+    "sortName": "名稱",
+    "sortRecent": "最近遊玩",
+    "sortPlaytime": "遊戲時間"
   },
   "deleteCharacter": {
     "title": "刪除角色",
@@ -2459,6 +2735,8 @@ export const zh_TW: EnTranslations = {
       "lootReceiveMoney": "你獲得 {money}。",
       "lootMoney": "你拾取 {money}。",
       "soldItem": "你以 {money} 賣出 {item}。",
+      "soldJunkOne": "你以 {money} 賣出 {count} 件雜物。",
+      "soldJunkMany": "你以 {money} 賣出 {count} 件雜物。",
       "friendOnline": "{name} 上線了。",
       "friendOffline": "{name} 下線了。"
     },
@@ -2862,7 +3140,10 @@ export const zh_TW: EnTranslations = {
       "sellQuantityTitle": "出售 {item}",
       "sellQuantityInput": "要出售的數量",
       "sellQuantityConfirm": "出售",
-      "sellQuantityCancel": "取消"
+      "sellQuantityCancel": "取消",
+      "sellJunk": "出售雜物",
+      "sellJunkAria": "以 {price} 出售所有雜物",
+      "sellJunkHint": "出售背包中除任務物品外的所有灰色物品。"
     },
     "market": {
       "title": "世界市場",
@@ -3874,8 +4155,8 @@ export const zh_TW: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "山脊潛伏者毛皮"
       },
-      "pristine_ridge_stalker_pelt": {
-        "name": "無瑕的山脊潛伏者毛皮"
+      "old_cragmaws_pelt": {
+        "name": "老裂顎的毛皮"
       },
       "glowing_wax": {
         "name": "發光蠟塊"
@@ -4450,6 +4731,33 @@ export const zh_TW: EnTranslations = {
       "wyrmshadow_talongrips": {
         "name": "龍影利爪握套"
       },
+      "reliquary_plate_chest": {
+        "name": "聖物庫守衛鎖甲"
+      },
+      "reliquary_leather_chest": {
+        "name": "守塵者皮甲"
+      },
+      "reliquary_cloth_chest": {
+        "name": "聖物庫殮衣"
+      },
+      "reliquary_legs": {
+        "name": "縛穴護腿"
+      },
+      "reliquary_helm": {
+        "name": "藏骨守衛頭盔"
+      },
+      "reliquary_shoulder": {
+        "name": "碎裂的肩甲"
+      },
+      "reliquary_gloves_rog": {
+        "name": "護骨者護手"
+      },
+      "deacon_reliquary_helm": {
+        "name": "執事的聖物庫頭盔"
+      },
+      "varric_shadow_cowl": {
+        "name": "瓦瑞克的暗影兜帽"
+      },
       "the_codfather": {
         "name": "鱈魚教父"
       },
@@ -4740,6 +5048,27 @@ export const zh_TW: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "尼思拉克西斯，荊峰之災"
       },
+      "reliquary_ledger_wraith": {
+        "name": "名冊幽靈"
+      },
+      "reliquary_funeral_ringer": {
+        "name": "喪儀鳴鐘者"
+      },
+      "reliquary_gravecall_acolyte": {
+        "name": "喚墓侍僧"
+      },
+      "reliquary_bonewalker": {
+        "name": "復起的骨行者"
+      },
+      "reliquary_saintless_effigy": {
+        "name": "無聖肖像"
+      },
+      "deacon_varric": {
+        "name": "執事瓦瑞克"
+      },
+      "acolyte_tessa": {
+        "name": "侍僧泰莎"
+      },
       "ironvein_foreman": {
         "name": "鐵脈工頭"
       },
@@ -4949,6 +5278,11 @@ export const zh_TW: EnTranslations = {
         "name": "奧德里克修士",
         "title": "山谷牧師",
         "greeting": "從禮拜堂墓地到世界屋脊... 線索到這裡結束。我感覺山正在聆聽。"
+      },
+      "brother_halven": {
+        "name": "哈爾文修士",
+        "title": "聖物庫守護人",
+        "greeting": "下方的聖物庫又移位了。"
       },
       "tidewatcher_ondrel": {
         "name": "翁德瑞爾·韋恩",
@@ -5804,6 +6138,9 @@ export const zh_TW: EnTranslations = {
           },
           "8": {
             "label": "明木林地"
+          },
+          "9": {
+            "label": "明木林地"
           }
         }
       },
@@ -5905,12 +6242,22 @@ export const zh_TW: EnTranslations = {
         "enterText": "你踏過月門——空氣化作冰冷的水與蒼白的光，歌聲在你頭頂之上闔攏。",
         "leaveText": "你穿過月門浮出水面，回到山間的夜色之中。"
       }
+    },
+    "delves": {
+      "collapsed_reliquary": {
+        "name": "崩塌的聖物庫",
+        "enterText": "你向下深入崩塌的聖物庫。",
+        "leaveText": "你爬回聖物庫遺墟處的哈爾文修士身邊。"
+      }
     }
   },
   "worldContent": {
     "corpseName": "{name}（屍體）",
     "dungeonExitName": "{name}出口",
     "dungeonPartyWarning": "{name}適合{count}人完整隊伍挑戰。請謹慎前進。",
-    "dungeonInstanceBusy": "{name}的所有副本都已被佔用。請稍後再試。"
+    "dungeonInstanceBusy": "{name}的所有副本都已被佔用。請稍後再試。",
+    "delveLockedChestInteract": "按 F 撬鎖",
+    "delveRewardChestInteract": "按 F 領取戰利品",
+    "delveSurfaceExitInteract": "按 F 攀回地表"
   }
 };

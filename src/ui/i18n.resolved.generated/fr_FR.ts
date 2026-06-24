@@ -426,6 +426,18 @@ export const fr_FR: EnTranslations = {
     "tips": {
       "joinChannels": "Conseil : tapez /join world ou /join lfg pour discuter avec les joueurs de tout le royaume."
     },
+    "questShare": {
+      "notShareable": "Cette quête ne peut pas être partagée.",
+      "notInSharerParty": "Vous devez être dans le groupe de {name} pour accepter cette quête.",
+      "accepted": "{name} a accepté votre quête partagée.",
+      "dialogTitle": "Quête partagée",
+      "viewOnlyHint": "Rejoignez le groupe de la personne qui la partage pour accepter cette quête.",
+      "alreadyOn": "Vous avez déjà cette quête.",
+      "alreadyDone": "Vous avez déjà terminé cette quête.",
+      "ineligible": "Vous ne remplissez pas les conditions de cette quête.",
+      "noQuestSelected": "Sélectionnez une quête dans votre journal à partager.",
+      "linkTitle": "Maj + clic pour insérer le lien de cette quête dans le chat."
+    },
     "plurals": {
       "guildMembers": {
         "one": "vous êtes {rank}, {count} membre",
@@ -1709,6 +1721,263 @@ export const fr_FR: EnTranslations = {
     "friends": "Amis et guilde",
     "chat": "Ouvrir le chat"
   },
+  "sim": {
+    "delve": {
+      "cannotEnterNow": "Vous ne pouvez pas entrer dans une plongée pour le moment.",
+      "leaveDungeonFirst": "Quittez d'abord le donjon.",
+      "leaveArenaFirst": "Quittez d'abord l'arène.",
+      "alreadyInDelve": "Vous êtes déjà dans une plongée.",
+      "whileTrading": "Vous ne pouvez pas entrer dans une plongée pendant un échange.",
+      "duringDuel": "Vous ne pouvez pas entrer dans une plongée pendant un duel.",
+      "duringArena": "Vous ne pouvez pas entrer dans une plongée pendant un match d'arène.",
+      "unknownTier": "Palier de plongée inconnu.",
+      "levelRequired": "Vous devez être niveau {level} pour entrer dans {name}.",
+      "levelRequiredTier": "Vous devez être niveau {level} pour entrer dans {name} en {tier}.",
+      "instancesBusy": "Toutes les instances de {name} sont occupées. Réessayez bientôt.",
+      "runFailed": "Plongée {name} échouée.",
+      "complete": "{name} terminée.",
+      "mechanismOpen": "Un mécanisme s'ouvre avec un déclic à proximité. Un passage s'ouvre au nord : trouvez le portail de sortie devant vous.",
+      "raiseDead": "{name} commence à incanter Réveil des morts.",
+      "graveFalters": "Le rite funéraire vacille.",
+      "doorAlreadyOpen": "La porte est déjà ouverte.",
+      "companionRankUp": "{name} atteint le rang {rank}.",
+      "bossChest": "Le boss tombe. Un coffre-reliquaire scellé s'élève sur l'estrade : crochetez sa serrure pour réclamer votre butin.",
+      "surfaceStairs": "Un escalier vers la surface s'ouvre. Appuyez sur F près de l'escalier pour partir.",
+      "moduleEnter": "{name} : {objective}",
+      "objectiveClearRoom": "Nettoyez la salle.",
+      "objectiveDefeatBoss": "Vainquez le boss.",
+      "tombstoneHint": "Un passage en pierre tombale s'ouvre au nord une fois la salle nettoyée.",
+      "tombstoneOpen": "Un passage scellé en pierre tombale s'ouvre en grinçant au nord. Avancez dedans pour continuer.",
+      "tombstoneInto": "Vous franchissez la pierre tombale pour entrer dans {name}.",
+      "chestEmpty": "Le coffre est vide.",
+      "notInDelve": "Vous n'êtes pas dans une plongée.",
+      "cannotInteract": "Vous ne pouvez pas interagir avec cela.",
+      "tooFar": "Vous êtes trop loin.",
+      "graveSilent": "La tombe est silencieuse pour l'instant.",
+      "doorLocked": "La porte est verrouillée.",
+      "strikeWall": "Frappez le mur pour percer une ouverture.",
+      "nothingHappens": "Rien ne se produit.",
+      "unknownCompanion": "Compagnon inconnu.",
+      "companionMaxRank": "Ce compagnon est déjà entièrement amélioré.",
+      "companionMarksRequired": "Il vous faut {marks} Marques de plongée pour améliorer {name}.",
+      "cannotAffordCompanionUpgrade": "Vous ne pouvez pas vous offrir cette amélioration.",
+      "shopItemLocked": "Vous n'avez pas encore débloqué cet objet.",
+      "shopMarksRequired": "Il vous faut {marks} Marques de plongée pour acheter {name}.",
+      "shopSealPremiumOnly": "Ce sceau ne cède qu'à la main d'un maître : seule la mise Supérieure peut l'ouvrir.",
+      "passageSealed": "Le passage est scellé.",
+      "moveCloserPassage": "Rapprochez-vous du passage.",
+      "moveCloserChest": "Rapprochez-vous du coffre.",
+      "nothingToTake": "Il ne reste plus rien à prendre.",
+      "wayOutNotOpen": "La sortie n'est pas encore ouverte.",
+      "moveCloserStairs": "Rapprochez-vous de l'escalier."
+    },
+    "lockpick": {
+      "lockYields": "La serrure cède ! Butin {tier}.",
+      "tierPremium": "Supérieur",
+      "tierMedium": "Moyen",
+      "tierLow": "Modeste",
+      "alreadyInProgress": "Quelqu'un travaille déjà la serrure.",
+      "cannotPickThat": "Vous ne pouvez pas crocheter cela.",
+      "chooseAnte": "Choisissez 1, 2 ou 3 crochets.",
+      "noAttempt": "Aucune tentative de crochetage en cours.",
+      "notYours": "Ce n'est pas votre serrure.",
+      "toolSlips": "Cet outil glisse sur cette serrure.",
+      "lockJammed": "La serrure est bloquée, impossible à crocheter : terminez à nouveau la plongée pour un nouvel essai.",
+      "lastPickSnaps": "Le dernier crochet se brise. La serrure se bloque : le coffre est perdu, à moins de terminer à nouveau la plongée."
+    }
+  },
+  "lockpickUi": {
+    "pickTitle": "Crocheter la serrure",
+    "cofferTitle": "Coffre opulent",
+    "cache": "Cachette {tier}",
+    "pickBlurb": "Une cachette plus riche est scellée derrière davantage de serrures. Les serrures plus faciles vous donnent plus d'essais et plus de temps ; un essai raté réinitialise la serrure jusqu'à épuisement de vos essais.",
+    "cofferBlurb": "Ce sceau ne cède qu'à la main d'un maître : seule la voie Difficile, Supérieure peut l'ouvrir. Crochetez les trois serrures pour la récompense d'exception.",
+    "pagesAria": "{count} serrures",
+    "tries": "{count} essais",
+    "triesOne": "1 essai",
+    "perMove": "{seconds} s par mouvement",
+    "seconds": "{seconds}s",
+    "boardTitle": "Voie du crocheteur : cachette {tier}",
+    "closeAria": "Fermer",
+    "withdrawAria": "Se retirer",
+    "timerAria": "Temps restant",
+    "lockOf": "Serrure {page}/{total}",
+    "lockOfAria": "Serrure {page} sur {total}",
+    "triesOf": "Essais {tries}/{total}",
+    "triesOfAria": "{tries} essais restants sur {total}",
+    "ward": "Garde {col} / {total}",
+    "depthKeys": "Les raccourcis définissent la profondeur du crochet (Q/W/E/A/Z), pas le numéro de garde.",
+    "withdraw": "Se retirer (Esc)",
+    "action": {
+      "hardSet": "Forcer fort",
+      "set": "Forcer",
+      "steady": "Stabiliser",
+      "ease": "Relâcher",
+      "drop": "Lâcher"
+    },
+    "feedback": {
+      "advanced": "La goupille cède...",
+      "slip": "Une garde mord, le crochet glisse !",
+      "bind": "Le mécanisme se coince : mauvaise profondeur !",
+      "trap": "Une fausse garde se referme, la serrure se bloque !",
+      "retry": "La serrure se réinitialise. Préparez une nouvelle tentative.",
+      "pageCleared": "Une rangée de goupilles cède. La serrure suivante se présente.",
+      "success": "Le pêne se débloque, la cachette est à vous !",
+      "fail": "La serrure se grippe. Elle ne bougera plus."
+    },
+    "summary": {
+      "success": "Serrure forcée, cachette {tier} récupérée.",
+      "successGeneric": "Serrure forcée, la cachette est récupérée.",
+      "fail": "La serrure est détruite. Terminez à nouveau la plongée pour un autre essai.",
+      "abandoned": "Vous retirez doucement les crochets. La serrure attend."
+    }
+  },
+  "delveUi": {
+    "board": {
+      "title": "Tableau des plongées",
+      "enter": "Entrer dans la plongée",
+      "enterAria": "Entrer dans {delve} en difficulté {tier}",
+      "openDelve": "Reliquaire effondré",
+      "openDelveAria": "Ouvrir le tableau des plongées depuis {name}",
+      "marks": "Marques de plongée : {count}",
+      "minLevel": "Niveau {level} requis",
+      "tier": {
+        "normal": "Normal",
+        "heroic": "Héroïque"
+      },
+      "companion": {
+        "pick": "Choisir un compagnon",
+        "tessa": "Acolyte Tessa",
+        "rank": "Rang {rank}",
+        "boon": "Soigne le groupe entre les combats. Le rang 3 ressuscite un allié tombé une fois par plongée.",
+        "upgrade": "Améliorer au rang {rank} ({marks} Marques)",
+        "upgradeAria": "Améliorer {name} au rang {rank} pour {marks} Marques de plongée",
+        "maxRank": "Entièrement amélioré"
+      },
+      "tabDelve": "Plongée",
+      "tabShop": "Boutique"
+    },
+    "shop": {
+      "price": "{marks} Marques",
+      "buy": "Acheter",
+      "buyAria": "Acheter {item} pour {marks} Marques de plongée",
+      "reqHeroic": "Nécessite une plongée héroïque réussie",
+      "reqClears": "Nécessite {count} plongées réussies",
+      "empty": "Rien en stock."
+    },
+    "tracker": {
+      "title": "Plongée",
+      "objective": "Objectif",
+      "module": "Module {current} sur {total}",
+      "affix": "Affixes",
+      "complete": "Terminé",
+      "marks": "Marques de plongée : {count}",
+      "exitHintOpen": "Avancez dans le passage en pierre tombale (nord)",
+      "exitHintLocked": "Éliminez les sbires pour ouvrir le passage au nord"
+    },
+    "objective": {
+      "kill_boss": "Tuer {boss}",
+      "recover_artifact": "Récupérer le registre funéraire",
+      "clear_room": "Nettoyer la salle"
+    },
+    "summary": {
+      "title": "Plongée terminée",
+      "marks": "{count} Marques de plongée gagnées",
+      "loreUnlock": "Savoir débloqué : {title}"
+    },
+    "death": {
+      "warning": "Une mort de plus mettra fin à cette plongée."
+    },
+    "run": {
+      "failed": "La plongée a échoué. Vous êtes renvoyé auprès du frère Halven."
+    },
+    "npc": {
+      "halven": {
+        "greeting": "Le reliquaire d'en bas a de nouveau bougé. Nous entendons des chants à travers le sol après minuit, et l'acolyte Tessa jure que l'encre des registres funéraires change d'elle-même. Si tu as assez de courage, {playerName}, prends une chandelle et descends. Ne te fie pas à toutes les voix que tu entendras là en bas. Certaines connaissaient ton nom avant ta naissance."
+      }
+    },
+    "intro": {
+      "normal": "La cage d'escalier est froide et sombre. Des pierres de saint brisées jonchent la descente, et une douce note de cloche flotte dans l'air humide. L'acolyte Tessa murmure : « Le reliquaire ne devrait pas être ouvert aussi profond. Reste près de moi, {playerName}. »",
+      "heroic": "Les portes se referment en gémissant derrière toi. Des noms raclent la pierre comme des ongles. La chandelle de Tessa brûle bleue. « Ils n'appellent plus les morts à présent, {playerName}. Ils répondent à quelque chose. »"
+    },
+    "module": {
+      "reliquary_sunken_ossuary": "L'eau suinte à travers les étagères funéraires, charriant de vieilles cendres en filets d'argent et de noir.",
+      "reliquary_bell_niche": "Des dizaines de clochettes pendent en silence, chacune nouée d'un linceul funéraire.",
+      "reliquary_saintless_hall": "Des statues aux visages burinés par une haine méticuleuse.",
+      "reliquary_finale": "La cloche enfouie sonne une fois sous tes bottes."
+    },
+    "moduleName": {
+      "reliquary_sunken_ossuary": "L'Ossuaire englouti",
+      "reliquary_bell_niche": "La Niche de la cloche",
+      "reliquary_saintless_hall": "La Salle sans saints",
+      "reliquary_finale": "La Chambre de la cloche enfouie"
+    },
+    "companion": {
+      "barkLine": "{name} : {line}",
+      "tessa": {
+        "combat_start": "Garde ton équilibre, {playerName}. Les morts sont agités ici.",
+        "low_hp": "Respire. Il me reste encore des prières pour toi.",
+        "trap_spotted": "Halte : quelque chose dans le sol se souvient des pas.",
+        "boss_pull": "Cette cloche connaît ton poids, {playerName}. Ne t'agenouille pas.",
+        "completion": "Le registre peut reposer une nuit de plus. Bien joué.",
+        "rank": {
+          "1": "Novice de la chapelle",
+          "2": "Porte-chandelle",
+          "3": "Acolyte du reliquaire",
+          "4": "Témoin de l'appel funèbre",
+          "5": "Gardienne de la chapelle"
+        }
+      }
+    },
+    "boss": {
+      "varric": {
+        "bell": {
+          "emote": "Le diacre Varric empoigne la cloche enfouie des deux mains !",
+          "log": "Le diacre Varric commence à faire sonner la cloche funéraire.",
+          "warning": "Éloignez-vous du diacre Varric !",
+          "impact": "Le glas de la cloche fend le sol de la chambre !",
+          "lesson": "Glas funèbre : un choc au sol toutes les douze secondes. Écartez-vous avant qu'il ne frappe."
+        },
+        "raise": {
+          "emote": "Le diacre Varric appelle des noms depuis les tombes brisées !",
+          "log": "Le diacre Varric commence à incanter Réveil des morts.",
+          "warning": "Arrêtez le rite funéraire !",
+          "object": "La tombe fissurée frémit d'un souffle dérobé.",
+          "interrupt_ok": "Le rite funéraire vacille.",
+          "interrupt_fail": "Les morts répondent à l'appel du diacre Varric !",
+          "lesson": "Interrompez la tombe fissurée en cinq secondes, sinon les morts se lèveront à son appel."
+        },
+        "pull": "Tu foules une poussière sacrée avec un dessein impur. Agenouille-toi, et sois compté.",
+        "intro": "Aucune âme n'est perdue. Seulement égarée.",
+        "mid60": "Le diacre Varric lit les noms du registre avec un triomphe tremblant.",
+        "mid30": "La cloche funéraire répond à chaque nom qu'il prononce.",
+        "defeat": "Non... j'avais les noms... je les avais tous..."
+      }
+    },
+    "lore": {
+      "eastbrook_ledger": "Une page tachée d'eau du registre funéraire d'Eastbrook. Des noms rayés et réécrits d'une main qui n'est pas humaine.",
+      "first_collapse": "Les archives de la chapelle mentionnent le premier affaissement : pierres de saint fendues, étagères inclinées, et une note de cloche entendue depuis le sous-sol.",
+      "gravecaller_mark": "Un sceau gravé dans le bois d'un cercueil : non le sceau de Morthen, mais une marque d'appel funèbre plus ancienne, antérieure à la Crypte creuse.",
+      "bell_below": "Note en marge de Tessa : « Il y a une seconde cloche sous le reliquaire. Elle sonne pour les égarés, non pour les morts. »",
+      "tessa_note": "Bout de papier plié de la main de Tessa : « Si les registres changent pendant que nous sommes en bas, fie-toi à la chandelle, non aux voix. »"
+    },
+    "affix": {
+      "restless_graves": "Tombes agitées",
+      "bad_air": "Air vicié",
+      "candleblind": "Aveugle-chandelle",
+      "old_mechanisms": "Vieux mécanismes",
+      "flooded_paths": "Chemins inondés",
+      "grave_tax": "Tribut funèbre",
+      "unstable_roof": "Plafond instable",
+      "cult_remnants": "Vestiges du culte"
+    },
+    "blessing": {
+      "chapel_candle": "Chandelle de chapelle : une plongée plus sûre, une Marque de moins à la fin."
+    },
+    "chest": {
+      "flavor": "Les morts ont cédé ce dont ils pouvaient se passer."
+    }
+  },
   "fiesta": {
     "bracket": "Fiesta",
     "enterQueue": "Rejoignez la Fiesta !",
@@ -1981,7 +2250,14 @@ export const fr_FR: EnTranslations = {
     "portraitAlt": "Portrait de {name}",
     "viewProfile": "Voir le profil",
     "profile": "Profil",
-    "closeProfile": "Fermer le profil"
+    "closeProfile": "Fermer le profil",
+    "sortBy": "Trier",
+    "sortByLabel": "Trier les personnages",
+    "sortMenuLabel": "Options de tri",
+    "sortLevel": "Niveau",
+    "sortName": "Nom",
+    "sortRecent": "Joués récemment",
+    "sortPlaytime": "Temps de jeu"
   },
   "deleteCharacter": {
     "title": "Supprimer le personnage",
@@ -2459,6 +2735,8 @@ export const fr_FR: EnTranslations = {
       "lootReceiveMoney": "Vous recevez {money}.",
       "lootMoney": "Vous ramassez {money}.",
       "soldItem": "Vous avez vendu {item} pour {money}.",
+      "soldJunkOne": "Vous avez vendu {count} objet gris pour {money}.",
+      "soldJunkMany": "Vous avez vendu {count} objets gris pour {money}.",
       "friendOnline": "{name} vient de se connecter.",
       "friendOffline": "{name} vient de se déconnecter."
     },
@@ -2862,7 +3140,10 @@ export const fr_FR: EnTranslations = {
       "sellQuantityTitle": "Vendre {item}",
       "sellQuantityInput": "Quantité à vendre",
       "sellQuantityConfirm": "Vendre",
-      "sellQuantityCancel": "Annuler"
+      "sellQuantityCancel": "Annuler",
+      "sellJunk": "Vendre les rebuts",
+      "sellJunkAria": "Vendre tous les rebuts pour {price}",
+      "sellJunkHint": "Vend tous les objets gris dans vos sacs, sauf les objets de quête."
     },
     "market": {
       "title": "Marché mondial",
@@ -3874,8 +4155,8 @@ export const fr_FR: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "Peau de rôdeur de la crête"
       },
-      "pristine_ridge_stalker_pelt": {
-        "name": "Peau immaculée de rôdeur de la crête"
+      "old_cragmaws_pelt": {
+        "name": "Peau du vieux Cragmaw"
       },
       "glowing_wax": {
         "name": "Cire luisante"
@@ -4450,6 +4731,33 @@ export const fr_FR: EnTranslations = {
       "wyrmshadow_talongrips": {
         "name": "Poignes Serre Ombrewyrm"
       },
+      "reliquary_plate_chest": {
+        "name": "Haubert de la garde du reliquaire"
+      },
+      "reliquary_leather_chest": {
+        "name": "Pourpoint du gardien de la poussière"
+      },
+      "reliquary_cloth_chest": {
+        "name": "Linceul du reliquaire"
+      },
+      "reliquary_legs": {
+        "name": "Jambières du caveau"
+      },
+      "reliquary_helm": {
+        "name": "Heaume du guet de l'ossuaire"
+      },
+      "reliquary_shoulder": {
+        "name": "Spallières effritées"
+      },
+      "reliquary_gloves_rog": {
+        "name": "Gantelets du gardien des os"
+      },
+      "deacon_reliquary_helm": {
+        "name": "Heaume du reliquaire du diacre"
+      },
+      "varric_shadow_cowl": {
+        "name": "Cagoule d'ombre de Varric"
+      },
       "the_codfather": {
         "name": "Capitaine brochet"
       },
@@ -4740,6 +5048,27 @@ export const fr_FR: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Fléau de Thornpeak"
       },
+      "reliquary_ledger_wraith": {
+        "name": "Spectre du registre"
+      },
+      "reliquary_funeral_ringer": {
+        "name": "Sonneur funéraire"
+      },
+      "reliquary_gravecall_acolyte": {
+        "name": "Acolyte de l'appel funèbre"
+      },
+      "reliquary_bonewalker": {
+        "name": "Marche-os relevé"
+      },
+      "reliquary_saintless_effigy": {
+        "name": "Effigie sans saint"
+      },
+      "deacon_varric": {
+        "name": "Diacre Varric"
+      },
+      "acolyte_tessa": {
+        "name": "Acolyte Tessa"
+      },
       "ironvein_foreman": {
         "name": "Contremaître Veinefer"
       },
@@ -4949,6 +5278,11 @@ export const fr_FR: EnTranslations = {
         "name": "Frère Aldric",
         "title": "Prêtre du Val",
         "greeting": "D'un cimetière de chapelle au toit du monde... la piste s'achève ici. Je sens la montagne écouter."
+      },
+      "brother_halven": {
+        "name": "Frère Halven",
+        "title": "Gardien du reliquaire",
+        "greeting": "Le reliquaire d'en bas a de nouveau bougé."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",
@@ -5804,6 +6138,9 @@ export const fr_FR: EnTranslations = {
           },
           "8": {
             "label": "Clairière de Brightwood"
+          },
+          "9": {
+            "label": "Clairière de Brightwood"
           }
         }
       },
@@ -5905,12 +6242,22 @@ export const fr_FR: EnTranslations = {
         "enterText": "Tu franchis la porte de lune — l'air se mue en eau froide et en lumière blafarde, et le chant se referme au-dessus de ta tête.",
         "leaveText": "Tu refais surface par la porte de lune dans la nuit de la montagne."
       }
+    },
+    "delves": {
+      "collapsed_reliquary": {
+        "name": "Le Reliquaire effondré",
+        "enterText": "Vous descendez dans le reliquaire effondré.",
+        "leaveText": "Vous remontez auprès du frère Halven, à la ruine du reliquaire."
+      }
     }
   },
   "worldContent": {
     "corpseName": "{name} (cadavre)",
     "dungeonExitName": "Sortie de {name}",
     "dungeonPartyWarning": "{name} est prévu pour un groupe complet de {count}. Avancez prudemment.",
-    "dungeonInstanceBusy": "Toutes les instances de {name} sont occupées. Réessayez bientôt."
+    "dungeonInstanceBusy": "Toutes les instances de {name} sont occupées. Réessayez bientôt.",
+    "delveLockedChestInteract": "Appuyez sur F pour crocheter la serrure",
+    "delveRewardChestInteract": "Appuyez sur F pour récupérer le butin",
+    "delveSurfaceExitInteract": "Appuyez sur F pour remonter"
   }
 };

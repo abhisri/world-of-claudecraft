@@ -25,8 +25,16 @@ export interface EmailSender {
 export class ConsoleSender implements EmailSender {
   readonly name = 'console';
   async send(msg: OutboundEmail): Promise<void> {
-    console.log(`[email:console] to=${msg.to} subject=${JSON.stringify(msg.subject)}`);
+    console.log(`[email:console] to=${redactEmail(msg.to)} subject=${JSON.stringify(msg.subject)}`);
   }
+}
+
+function redactEmail(email: string): string {
+  const trimmed = email.trim();
+  const at = trimmed.indexOf('@');
+  if (at <= 0) return '[redacted]';
+  const domain = trimmed.slice(at + 1);
+  return `${trimmed[0]}***@${domain || '[redacted]'}`;
 }
 
 // Provider-agnostic HTTP transport. POSTs a JSON envelope to EMAIL_API_URL with

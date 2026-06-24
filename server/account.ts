@@ -6,51 +6,49 @@
 // no module-private seam. main.ts resolves the bearer account once and then
 // delegates here. All four routes are bearer-auth + account-scoped.
 import type http from 'node:http';
-import { json, readBody } from './http_util';
-import { rateLimited, recordAuthFailure, clearAuthFailures } from './ratelimit';
-import { hashPassword, verifyPassword, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH } from './auth';
+import { hashPassword, MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH, verifyPassword } from './auth';
 import {
+  type AccountRow,
   accountById,
+  accountByUnsubscribeToken,
+  accountTwoFactorEnabled,
   characterCountForAccount,
-  updatePasswordHash,
-  revokeTokensExcept,
+  claimTotpWindow,
+  consumeEmailChangeRequest,
+  consumeRecoveryCode,
+  createEmailChangeRequest,
+  disableTotp,
+  enableTotp,
+  ensureUnsubscribeToken,
+  exportAccountData,
+  getTotpState,
+  listCharacters,
   revokeToken,
-  setAccountEmail,
+  revokeTokensExcept,
   setAccountDeactivated,
   setAccountMarketingOptIn,
-  ensureUnsubscribeToken,
-  accountByUnsubscribeToken,
-  createEmailChangeRequest,
-  consumeEmailChangeRequest,
-  exportAccountData,
-  listCharacters,
-  accountTwoFactorEnabled,
-  getTotpState,
   setTotpPending,
-  enableTotp,
-  disableTotp,
-  claimTotpWindow,
-  consumeRecoveryCode,
-  type AccountRow,
+  updatePasswordHash,
 } from './db';
 import {
-  emailAccountCreated,
-  emailPasswordChanged,
   emailAccountDeleted,
+  emailChangeVerifyUrl,
   emailDataExport,
   emailEmailChangeRequested,
-  emailChangeVerifyUrl,
-  emailTwoFactorEnabled,
+  emailPasswordChanged,
   emailTwoFactorDisabled,
-  makeEmailToken,
+  emailTwoFactorEnabled,
   hashEmailToken,
+  makeEmailToken,
 } from './email';
+import { json, readBody } from './http_util';
+import { clearAuthFailures, rateLimited, recordAuthFailure } from './ratelimit';
 import {
+  generateRecoveryCodes,
   generateSecret,
+  hashRecoveryCode,
   otpauthUri,
   verifyTotp,
-  generateRecoveryCodes,
-  hashRecoveryCode,
 } from './totp';
 
 // Issuer label shown in the user's authenticator app next to the 6-digit code.
@@ -138,27 +136,15 @@ export async function handleAccountLogout(
   return json(res, 200, { ok: true });
 }
 
-// POST /api/account/email: optional account email; settings-only, lenient. Empty
-// clears the stored address. When this sets the FIRST email on an account that
-// signed up without one, it fires the welcome mail, so account_created reaches
-// every account that ever provides an email, not only those who gave one at
-// signup.
+// POST /api/account/email: legacy email setter. Recovery email is a security
+// address now, so it can only change through /api/account/email/change with a
+// password re-check and verification link.
 export async function handleAccountSetEmail(
-  req: http.IncomingMessage,
+  _req: http.IncomingMessage,
   res: http.ServerResponse,
-  accountId: number,
+  _accountId: number,
 ): Promise<void> {
-  const body = await readBody(req);
-  const raw = typeof body.email === 'string' ? body.email.trim() : '';
-  if (raw.length > EMAIL_MAX_LENGTH || (raw !== '' && !EMAIL_SHAPE.test(raw))) {
-    return json(res, 400, { error: 'enter a valid email address' });
-  }
-  const prior = await accountById(accountId);
-  await setAccountEmail(accountId, raw === '' ? null : raw);
-  if (raw !== '' && prior && !prior.email) {
-    emailAccountCreated({ ...prior, email: raw });
-  }
-  return json(res, 200, { email: raw });
+  return json(res, 410, { error: 'use verified email change' });
 }
 
 // POST /api/account/deactivate — re-confirm password + username, require all

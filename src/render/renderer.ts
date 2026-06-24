@@ -1,61 +1,105 @@
 import * as THREE from 'three';
-import { ALL_CLASSES, isQuestTurnInNpc, type Entity, type SimEvent } from '../sim/types';
-import { OVERHEAD_EMOTES, type IWorld } from '../world_api';
-import { groundHeight, WATER_LEVEL, zoneBiomeAt } from '../sim/world';
-import { drapeRingLocalY } from './selection_ring';
-import { trackWebGLContext } from './context_release';
-import { buildFlaredConeFan, buildRingXZ, drapeConeWorld } from './target_cone_debug';
-import {
-  CLASSES, MOBS, NPCS, ABILITIES, DUNGEON_X_THRESHOLD, DUNGEON_LIST, QUESTS,
-  instanceOrigin, INSTANCE_SLOT_COUNT, ARENA_SLOT_COUNT, arenaOrigin, isArenaPos, dungeonAt,
-  WORLD_MAX_Z, WORLD_MIN_Z, ZONES,
-} from '../sim/data';
 import { cameraOcclusion } from '../sim/colliders';
-import type { BiomeId } from '../sim/types';
-import { AnimState, CharacterVisual, createCharacterVisual } from './characters';
-import { skinCount, visualKeyFor } from './characters/manifest';
-import { mechAssetsReady, preloadMechAssets } from './characters/assets';
-import { isVisuallyDead } from './anim_state';
-import { clickMarkerAnim, clickMarkerColor, CLICK_MARKER_LIFETIME } from './click_marker';
-import { LocoTrack, newLocoTrack, updateLocomotion } from './locomotion';
-import { stepSelfFacing, releaseSelfFacing } from './facing_smooth';
-import type { SpatialAudioSink, Surface } from './audio_sink';
-import { buildPropMaterialPrewarmGroup, buildProps } from './props';
-import { plankTexture, sparkleTexture } from './textures';
-import { DungeonInteriors, ensureDungeonAssets } from './dungeon';
-import { buildGroundQuestObject } from './quest_objects';
-import { Vfx } from './vfx';
-import { Weather } from './weather';
 import {
-  GFX, initGfxTier, sharedUniforms, SUN_ANCHOR, SUN_DIR, surfaceMat, urlForcedTier,
-  type GfxBucketBands, type GfxBucketLevels,
-} from './gfx';
-import { buildComposer, PostPipeline } from './post';
-import { buildTerrain, TerrainView } from './terrain';
-import { buildWater, WaterView } from './water';
-import { buildClouds, buildSky, SkyView } from './sky';
-import { buildFoliage, type FoliagePerfStats, type FoliageView } from './foliage';
-import { buildFish, FishView } from './fish';
-import { buildCritters, CritterField } from './critters';
-import { buildMotes, MotesView } from './motes';
-import { buildBirds, BirdsView } from './birds';
-import { buildImpactSite, type ImpactSiteView } from './impact_site';
-import { shouldRenderStealthGhost } from './stealth';
-import { downscaleDims } from './screenshot';
-import { RenderBudgetGovernor, type RenderBudgetState } from './render_budget';
-import { t } from '../ui/i18n';
+  ABILITIES,
+  ARENA_SLOT_COUNT,
+  arenaOrigin,
+  CLASSES,
+  DELVE_MODULE_Z_START,
+  DUNGEON_LIST,
+  DUNGEON_X_THRESHOLD,
+  defaultDelveModules,
+  delveAt,
+  delveModuleStackEndRelZ,
+  delveModuleZOffset,
+  delveOrigin,
+  delveSlotAt,
+  dungeonAt,
+  INSTANCE_SLOT_COUNT,
+  instanceOrigin,
+  isArenaPos,
+  isDelvePos,
+  MOBS,
+  NPCS,
+  QUESTS,
+  WORLD_MAX_Z,
+  WORLD_MIN_Z,
+  ZONES,
+} from '../sim/data';
+import type { DelveModuleId } from '../sim/delve_layout';
+import type { BiomeId } from '../sim/types';
+import {
+  ALL_CLASSES,
+  type Entity,
+  INTERACT_RANGE,
+  isQuestTurnInNpc,
+  type SimEvent,
+} from '../sim/types';
+import { groundHeight, WATER_LEVEL, zoneBiomeAt } from '../sim/world';
 import { tEntity } from '../ui/entity_i18n';
+import {
+  holderTierBadgeDataUrl,
+  holderTierByIndex,
+  holderTierDisplayName,
+} from '../ui/holder_tier';
+import { t } from '../ui/i18n';
 import { raidMarkerDataUrl } from '../ui/icons';
-import { holderTierByIndex, holderTierBadgeDataUrl, holderTierDisplayName } from '../ui/holder_tier';
-import { isProjectedNameplateAnchorVisible, nameplateScreenTransform } from './nameplate_projection';
+import { type IWorld, OVERHEAD_EMOTES } from '../world_api';
+import { isVisuallyDead } from './anim_state';
+import type { SpatialAudioSink, Surface } from './audio_sink';
+import { type BirdsView, buildBirds } from './birds';
+import { type CameraOcclusionState, stepCameraOcclusion } from './camera_collision';
+import { castBarState } from './cast_bar';
+import { characterSoulRendActive } from './character_effects';
+import { type AnimState, type CharacterVisual, createCharacterVisual } from './characters';
+import { mechAssetsReady, preloadMechAssets } from './characters/assets';
+import { skinCount, visualKeyFor } from './characters/manifest';
+import { CLICK_MARKER_LIFETIME, clickMarkerAnim, clickMarkerColor } from './click_marker';
+import { trackWebGLContext } from './context_release';
+import { buildCritters, type CritterField } from './critters';
+import { buildDelveModule } from './delve_interiors';
+import { buildDelveInteractable } from './delve_props';
+import { DungeonInteriors, ensureDungeonAssets } from './dungeon';
+import { releaseSelfFacing, stepSelfFacing } from './facing_smooth';
+import { buildFish, type FishView } from './fish';
+import { buildFoliage, type FoliagePerfStats, type FoliageView } from './foliage';
+import {
+  GFX,
+  type GfxBucketBands,
+  type GfxBucketLevels,
+  initGfxTier,
+  SUN_ANCHOR,
+  SUN_DIR,
+  sharedUniforms,
+  urlForcedTier,
+} from './gfx';
+import { buildImpactSite, type ImpactSiteView } from './impact_site';
+import { ensureDelveInteriorKit } from './interior_kit';
+import { type LocoTrack, newLocoTrack, updateLocomotion } from './locomotion';
+import { buildMotes, type MotesView } from './motes';
+import { COMBO_PIP_MAX, comboPipsFor } from './nameplate_combo';
+import {
+  isProjectedNameplateAnchorVisible,
+  nameplateScreenTransform,
+} from './nameplate_projection';
+import { isMobThreateningViewer } from './nameplate_threat';
+import { buildComposer, type PostPipeline } from './post';
+import { buildPropMaterialPrewarmGroup, buildProps } from './props';
+import { buildGroundQuestObject } from './quest_objects';
+import { FRIENDLY, isFriendlyPet, isOwnedPetHostile, mobNameColor } from './reaction';
+import { RenderBudgetGovernor, type RenderBudgetState } from './render_budget';
+import { downscaleDims } from './screenshot';
+import { drapeRingLocalY } from './selection_ring';
+import { buildClouds, buildSky, type SkyView } from './sky';
+import { shouldRenderStealthGhost } from './stealth';
+import { buildFlaredConeFan, buildRingXZ, drapeConeWorld } from './target_cone_debug';
+import { buildTerrain, type TerrainView } from './terrain';
+import { sparkleTexture } from './textures';
 import { targetIntensity } from './travel_speed_fx';
 import { TravelSpeedFxPainter } from './travel_speed_fx_painter';
-import { comboPipsFor, COMBO_PIP_MAX } from './nameplate_combo';
-import { stepCameraOcclusion, type CameraOcclusionState } from './camera_collision';
-import { castBarState } from './cast_bar';
-import { isMobThreateningViewer } from './nameplate_threat';
-import { characterSoulRendActive } from './character_effects';
-import { FRIENDLY, isFriendlyPet, isOwnedPetHostile, mobNameColor } from './reaction';
+import { Vfx } from './vfx';
+import { buildWater, type WaterView } from './water';
+import { Weather } from './weather';
 
 const NAMEPLATE_RANGE = 55;
 const NAMEPLATE_RANGE_SQ = NAMEPLATE_RANGE * NAMEPLATE_RANGE;
@@ -214,7 +258,10 @@ type RendererWorldPhase =
   | 'sky'
   | 'sunSprites'
   | 'godRays';
-type RendererPhaseStats = Record<RendererPhase, { count: number; avg: number; p95: number; max: number }>;
+type RendererPhaseStats = Record<
+  RendererPhase,
+  { count: number; avg: number; p95: number; max: number }
+>;
 type RendererFramePhaseMs = Record<RendererPhase, number>;
 type RendererWorldPhaseMs = Record<RendererWorldPhase, number>;
 type RenderDiagnosticsCategory = string;
@@ -303,7 +350,16 @@ interface RendererQualityChangeStats {
   levels: RenderBudgetState['levels'];
 }
 
-type RendererPrewarmCategory = 'views' | 'world' | 'sky' | 'props' | 'entities' | 'objects' | 'vfx' | 'post' | 'diagnostics';
+type RendererPrewarmCategory =
+  | 'views'
+  | 'world'
+  | 'sky'
+  | 'props'
+  | 'entities'
+  | 'objects'
+  | 'vfx'
+  | 'post'
+  | 'diagnostics';
 
 interface RendererPrewarmManifestEntryStats {
   id: string;
@@ -389,6 +445,7 @@ interface EntityView {
   catVisual: CharacterVisual | null; // druid cat form, built lazily
   travelVisual: CharacterVisual | null; // druid travel form (chicken-cow), built lazily
   skin: number; // last-rendered appearance skin — diffed each frame for live swaps
+  mainhandItemId: string | null; // last-rendered equipped weapon — diffed for live held-weapon swaps
   /** unscaled height — nameplate/vfx anchor reads height * e.scale */
   height: number;
   /** last-applied entity scale (group.scale); diffed each frame for live size buffs */
@@ -540,7 +597,12 @@ function emptyRenderDiagnosticsSnapshot(): RenderDiagnosticsSnapshot {
 }
 
 function loopbackHostname(hostname: string): boolean {
-  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]';
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1' ||
+    hostname === '[::1]'
+  );
 }
 
 function localRenderDiagnosticsEnabled(): boolean {
@@ -548,7 +610,11 @@ function localRenderDiagnosticsEnabled(): boolean {
   if (typeof location === 'undefined') return false;
   if (!loopbackHostname(location.hostname)) return false;
   const params = new URLSearchParams(location.search);
-  return params.get('perfTrace') === '1' || params.get('perf_trace') === '1' || params.get('renderTrace') === '1';
+  return (
+    params.get('perfTrace') === '1' ||
+    params.get('perf_trace') === '1' ||
+    params.get('renderTrace') === '1'
+  );
 }
 
 function setRenderCategory(obj: THREE.Object3D, category: RenderDiagnosticsCategory): void {
@@ -556,7 +622,9 @@ function setRenderCategory(obj: THREE.Object3D, category: RenderDiagnosticsCateg
 }
 
 function isPersistentPortalObject(e: Entity): boolean {
-  return e.kind === 'object' && (e.templateId === 'dungeon_door' || e.templateId === 'dungeon_exit');
+  return (
+    e.kind === 'object' && (e.templateId === 'dungeon_door' || e.templateId === 'dungeon_exit')
+  );
 }
 
 function markSharedGeometry<T extends THREE.BufferGeometry>(geometry: T): T {
@@ -594,7 +662,19 @@ function dungeonDisplayName(dungeonId: string): string {
 }
 
 function objectDisplayName(entity: Entity): string {
-  if ((entity.templateId === 'dungeon_door' || entity.templateId === 'dungeon_exit') && entity.dungeonId) {
+  if (entity.templateId === 'delve_locked_chest') {
+    return t('worldContent.delveLockedChestInteract');
+  }
+  if (entity.templateId === 'delve_reward_chest') {
+    return t('worldContent.delveRewardChestInteract');
+  }
+  if (entity.templateId === 'delve_surface_exit') {
+    return t('worldContent.delveSurfaceExitInteract');
+  }
+  if (
+    (entity.templateId === 'dungeon_door' || entity.templateId === 'dungeon_exit') &&
+    entity.dungeonId
+  ) {
     const dungeonName = dungeonDisplayName(entity.dungeonId);
     return entity.templateId === 'dungeon_exit'
       ? t('worldContent.dungeonExitName', { name: dungeonName })
@@ -664,8 +744,8 @@ export class Renderer {
   private frameMsEma = 16.7;
   private adaptiveGrace = 2.0;
   private adaptiveCooldown = 0;
-  private viewCreateBackoff = 0;
   private stableFrameTime = 0;
+  private viewCreateBackoff = 0;
   private renderBudgetGovernor!: RenderBudgetGovernor;
   private baseExposure = 1.12; // tone-mapping exposure at brightness 1.0
   private tmpV = new THREE.Vector3();
@@ -714,8 +794,12 @@ export class Renderer {
   private effectivePointLights = 0;
   private propsView!: {
     update(
-      camX: number, camY: number, camZ: number,
-      eyeX: number, eyeY: number, eyeZ: number,
+      camX: number,
+      camY: number,
+      camZ: number,
+      eyeX: number,
+      eyeY: number,
+      eyeZ: number,
       fogFar: number,
     ): void;
   };
@@ -789,19 +873,29 @@ export class Renderer {
   private visualPool = new Map<string, CharacterVisual[]>();
   private objectPool = new Map<string, PooledObjectView[]>();
 
-  constructor(private sim: IWorld, canvas: HTMLCanvasElement, nameplateLayer: HTMLDivElement) {
+  constructor(
+    private sim: IWorld,
+    canvas: HTMLCanvasElement,
+    nameplateLayer: HTMLDivElement,
+  ) {
     this.nameplateLayer = nameplateLayer;
     this.travelSpeedFx = new TravelSpeedFxPainter(nameplateLayer);
     // No default-framebuffer MSAA on any tier: high/ultra get AA from the
     // composer's MSAA HalfFloat target, low is meant to run without AA — and
     // requesting it here would hit software GL (the autodetect can only run
     // after the context exists) with the most expensive setting there is.
-    this.webgl = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+    this.webgl = new THREE.WebGLRenderer({
+      canvas,
+      antialias: false,
+      powerPreference: 'high-performance',
+    });
     // Release this context promptly on page teardown so repeated logout/login
     // reloads (location.reload) don't exhaust the browser's WebGL context pool.
     trackWebGLContext(this.webgl);
     this.captureGlIdentity();
-    canvas.addEventListener('webglcontextlost', () => { this.contextLostCount++; });
+    canvas.addEventListener('webglcontextlost', () => {
+      this.contextLostCount++;
+    });
     canvas.addEventListener('webglcontextrestored', () => {
       this.contextRestoredCount++;
       this.captureGlIdentity();
@@ -810,8 +904,16 @@ export class Renderer {
     // The lightweight material path does not preload HDR sky/water assets.
     // Keep the renderer's HDR/IBL branch aligned with that preload decision.
     this.lowGfx = !GFX.standardMaterials;
-    this.renderBudgetGovernor = new RenderBudgetGovernor({ tier: GFX.tier, budget: GFX.budget, enabled: GFX.autoGovernor });
-    this.renderBudgetGovernor.reset(this.effectiveRenderScale, this.renderBudgetMinScale(), this.renderBudgetMaxScale());
+    this.renderBudgetGovernor = new RenderBudgetGovernor({
+      tier: GFX.tier,
+      budget: GFX.budget,
+      enabled: GFX.autoGovernor,
+    });
+    this.renderBudgetGovernor.reset(
+      this.effectiveRenderScale,
+      this.renderBudgetMinScale(),
+      this.renderBudgetMaxScale(),
+    );
     const LOW_GFX = this.lowGfx;
     this.viewport = this.measureViewport();
     this.webgl.setPixelRatio(Math.min(window.devicePixelRatio, GFX.pixelRatioCap));
@@ -820,9 +922,18 @@ export class Renderer {
     this.webgl.shadowMap.type = THREE.PCFSoftShadowMap;
     this.webgl.toneMapping = THREE.ACESFilmicToneMapping; // OutputPass reads this on the composer path
     this.webgl.toneMappingExposure = this.baseExposure;
-    this.camera = new THREE.PerspectiveCamera(CAMERA_BASE_FOV, this.viewport.width / this.viewport.height, 0.1, 950);
+    this.camera = new THREE.PerspectiveCamera(
+      CAMERA_BASE_FOV,
+      this.viewport.width / this.viewport.height,
+      0.1,
+      950,
+    );
 
-    this.scene.fog = new THREE.Fog(LOW_GFX ? 0xb6cddd : 0xa6c6e0, LOW_GFX ? 150 : 130, LOW_GFX ? 520 : 470);
+    this.scene.fog = new THREE.Fog(
+      LOW_GFX ? 0xb6cddd : 0xa6c6e0,
+      LOW_GFX ? 150 : 130,
+      LOW_GFX ? 520 : 470,
+    );
 
     // sky dome — follows the camera so the world strip never outruns it.
     // High tier: shader gradient + sun glow with biome-aware horizon tints;
@@ -845,7 +956,7 @@ export class Renderer {
       }
       if (this.envRTs.size > 0) {
         this.envOutdoorIntensity = ENV_INTENSITY * IBL_RAW_SCALE;
-        this.scene.environment = this.envRTs.get('vale')!.texture;
+        this.scene.environment = this.envRTs.get('vale')?.texture ?? null;
         this.scene.environmentRotation.y = this.skyView.envRotationY('vale');
       } else {
         // fallback: prefilter the dome itself (gain/clamp already applied)
@@ -861,7 +972,10 @@ export class Renderer {
     const hemi = new THREE.HemisphereLight(0xdcefff, 0x465f39, LOW_GFX ? 0.98 : HEMI_INTENSITY);
     this.scene.add(hemi);
     this.hemi = hemi;
-    const sun = new THREE.DirectionalLight(LOW_GFX ? 0xfff0d0 : 0xffedd0, LOW_GFX ? 2.65 : SUN_INTENSITY);
+    const sun = new THREE.DirectionalLight(
+      LOW_GFX ? 0xfff0d0 : 0xffedd0,
+      LOW_GFX ? 2.65 : SUN_INTENSITY,
+    );
     sun.position.copy(SUN_ANCHOR);
     sun.castShadow = !LOW_GFX;
     sun.shadow.mapSize.set(GFX.shadowMap, GFX.shadowMap);
@@ -902,14 +1016,23 @@ export class Renderer {
       ctx.fillRect(0, 0, 128, 128);
       return new THREE.CanvasTexture(c);
     };
-    for (const [tex, scale] of [[sunCanvas(true), 60], [sunCanvas(false), 190]] as const) {
-      const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: tex, transparent: true, fog: false, depthWrite: false, depthTest: false,
-        blending: THREE.AdditiveBlending,
-        // bloom supplies the big halo on the composer path; the painted one
-        // would double up and wash out the sky
-        opacity: scale === 190 && !LOW_GFX ? SUN_HALO_OPACITY : 1,
-      }));
+    for (const [tex, scale] of [
+      [sunCanvas(true), 60],
+      [sunCanvas(false), 190],
+    ] as const) {
+      const sp = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: tex,
+          transparent: true,
+          fog: false,
+          depthWrite: false,
+          depthTest: false,
+          blending: THREE.AdditiveBlending,
+          // bloom supplies the big halo on the composer path; the painted one
+          // would double up and wash out the sky
+          opacity: scale === 190 && !LOW_GFX ? SUN_HALO_OPACITY : 1,
+        }),
+      );
       setRenderCategory(sp, 'sky');
       sp.scale.set(scale, scale, 1);
       sp.renderOrder = -9;
@@ -940,11 +1063,18 @@ export class Renderer {
       sctx.fillRect(0, 0, 64, 256);
       const shaftTex = new THREE.CanvasTexture(shaft);
       for (let i = 0; i < 3; i++) {
-        const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-          map: shaftTex, transparent: true, opacity: 0, fog: false,
-          depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
-          rotation: 0.42 + i * 0.13,
-        }));
+        const sp = new THREE.Sprite(
+          new THREE.SpriteMaterial({
+            map: shaftTex,
+            transparent: true,
+            opacity: 0,
+            fog: false,
+            depthWrite: false,
+            depthTest: false,
+            blending: THREE.AdditiveBlending,
+            rotation: 0.42 + i * 0.13,
+          }),
+        );
         setRenderCategory(sp, 'sky');
         sp.scale.set(26 + i * 16, 150 + i * 35, 1);
         sp.renderOrder = -8;
@@ -984,7 +1114,9 @@ export class Renderer {
     this.scene.add(this.birds.group);
     this.impactSite = buildImpactSite(this.sim.cfg.seed);
     this.scene.add(this.impactSite.group);
-    const props = buildProps(this.sim.cfg.seed);
+    const props = buildProps(this.sim.cfg.seed, (delveId) =>
+      tEntity({ kind: 'delve', id: delveId, field: 'name' }),
+    );
     setRenderCategory(props.group, 'props');
     this.scene.add(props.group);
     this.flames = props.flames;
@@ -998,7 +1130,12 @@ export class Renderer {
     // separate pivot. The ring is radially symmetric, so only the ticks read spin.
     const ringGeo = new THREE.RingGeometry(0.9, 1.15, 48);
     ringGeo.rotateX(-Math.PI / 2);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.9, depthWrite: false });
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xd4af37,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false,
+    });
     this.selectionRingMat = ringMat;
     this.selectionRing = new THREE.Group();
     this.selectionRingMesh = new THREE.Mesh(ringGeo, ringMat);
@@ -1018,11 +1155,23 @@ export class Renderer {
     // per-frame hostile/friendly recolour carries over for free.
     this.selectionRingTicks = new THREE.Group();
     const tickGeo = new THREE.BufferGeometry();
-    tickGeo.setAttribute('position', new THREE.Float32BufferAttribute([
-      0.72, 0, 0,     // inner tip (points toward the unit)
-      1.2, 0, 0.16,   // outer corners
-      1.2, 0, -0.16,
-    ], 3));
+    tickGeo.setAttribute(
+      'position',
+      new THREE.Float32BufferAttribute(
+        [
+          0.72,
+          0,
+          0, // inner tip (points toward the unit)
+          1.2,
+          0,
+          0.16, // outer corners
+          1.2,
+          0,
+          -0.16,
+        ],
+        3,
+      ),
+    );
     for (let i = 0; i < 4; i++) {
       const t = new THREE.Mesh(tickGeo, ringMat);
       t.rotation.y = (i * Math.PI) / 2;
@@ -1045,9 +1194,17 @@ export class Renderer {
     cmBarGeo.rotateX(-Math.PI / 2);
     for (let i = 0; i < CLICK_MARKER_POOL; i++) {
       const group = new THREE.Group();
-      const ringMat = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, depthTest: false });
+      const ringMat = new THREE.MeshBasicMaterial({
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+      });
       const ring = new THREE.Mesh(cmRingGeo, ringMat);
-      const crossMat = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, depthTest: false });
+      const crossMat = new THREE.MeshBasicMaterial({
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+      });
       const cross = new THREE.Group();
       for (const rot of [Math.PI / 4, -Math.PI / 4]) {
         const bar = new THREE.Mesh(cmBarGeo, crossMat);
@@ -1059,7 +1216,14 @@ export class Renderer {
       group.renderOrder = 3; // draw over terrain decals (depthTest off above)
       setRenderCategory(group, 'ui3d');
       this.scene.add(group);
-      this.clickMarkers.push({ group, ring, cross, ringMat, crossMat, elapsed: CLICK_MARKER_LIFETIME });
+      this.clickMarkers.push({
+        group,
+        ring,
+        cross,
+        ringMat,
+        crossMat,
+        elapsed: CLICK_MARKER_LIFETIME,
+      });
     }
 
     // particle system: projectiles, impacts, heal glows, ambience
@@ -1076,7 +1240,14 @@ export class Renderer {
     this.weather = new Weather(this.scene, this.lowGfx);
 
     // post chain (bloom + grade, GTAO on ultra); low renders direct
-    if (GFX.composer) this.post = buildComposer(this.webgl, this.scene, this.camera, this.viewport.width, this.viewport.height);
+    if (GFX.composer)
+      this.post = buildComposer(
+        this.webgl,
+        this.scene,
+        this.camera,
+        this.viewport.width,
+        this.viewport.height,
+      );
 
     const resize = () => this.resizeViewport();
     window.addEventListener('resize', resize);
@@ -1092,10 +1263,20 @@ export class Renderer {
 
   private measureViewport(): { width: number; height: number } {
     const rect = this.webgl.domElement.getBoundingClientRect();
-    const stableMobileGameViewport = document.body.classList.contains('game-active') && document.body.classList.contains('mobile-touch');
+    const stableMobileGameViewport =
+      document.body.classList.contains('game-active') &&
+      document.body.classList.contains('mobile-touch');
     const vv = stableMobileGameViewport ? null : window.visualViewport;
-    const width = Math.round(stableMobileGameViewport ? (rect.width || window.innerWidth) : (vv?.width ?? (rect.width || window.innerWidth)));
-    const height = Math.round(stableMobileGameViewport ? (rect.height || window.innerHeight) : (vv?.height ?? (rect.height || window.innerHeight)));
+    const width = Math.round(
+      stableMobileGameViewport
+        ? rect.width || window.innerWidth
+        : (vv?.width ?? (rect.width || window.innerWidth)),
+    );
+    const height = Math.round(
+      stableMobileGameViewport
+        ? rect.height || window.innerHeight
+        : (vv?.height ?? (rect.height || window.innerHeight)),
+    );
     return { width: Math.max(1, width), height: Math.max(1, height) };
   }
 
@@ -1103,8 +1284,12 @@ export class Renderer {
     try {
       const gl = this.webgl.getContext();
       const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-      this.glVendor = String(dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR));
-      this.glRenderer = String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+      this.glVendor = String(
+        dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR),
+      );
+      this.glRenderer = String(
+        dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+      );
     } catch {
       this.glVendor = '';
       this.glRenderer = '';
@@ -1151,7 +1336,8 @@ export class Renderer {
   // Surface under (x,z) for footstep timbre. Sampled only at a footfall (cheap).
   private surfaceAt(x: number, z: number, y: number): Surface {
     if (x > DUNGEON_X_THRESHOLD) return 'stone'; // dungeon interiors are stone halls
-    if (groundHeight(x, z, this.sim.cfg.seed) < WATER_LEVEL && y <= WATER_LEVEL + 0.3) return 'water';
+    if (groundHeight(x, z, this.sim.cfg.seed) < WATER_LEVEL && y <= WATER_LEVEL + 0.3)
+      return 'water';
     const biome = zoneBiomeAt(z);
     if (biome === 'vale') return 'grass';
     if (biome === 'marsh') return 'dirt';
@@ -1172,11 +1358,13 @@ export class Renderer {
     this.adaptiveGrace = 1.0;
     this.adaptiveCooldown = 0.5;
     this.stableFrameTime = 0;
-    this.applyRenderBudgetState(this.renderBudgetGovernor.reset(
-      this.effectiveRenderScale,
-      this.renderBudgetMinScale(),
-      this.renderBudgetMaxScale(),
-    ));
+    this.applyRenderBudgetState(
+      this.renderBudgetGovernor.reset(
+        this.effectiveRenderScale,
+        this.renderBudgetMinScale(),
+        this.renderBudgetMaxScale(),
+      ),
+    );
     this.applyResolution();
   }
 
@@ -1186,7 +1374,8 @@ export class Renderer {
 
   private initialEffectiveRenderScale(scale: number): number {
     const forcedTier = urlForcedTier();
-    if (this.isMobileRuntime() && forcedTier !== 'high' && forcedTier !== 'ultra') return Math.min(scale, 0.85);
+    if (this.isMobileRuntime() && forcedTier !== 'high' && forcedTier !== 'ultra')
+      return Math.min(scale, 0.85);
     return scale;
   }
 
@@ -1203,7 +1392,10 @@ export class Renderer {
     const previousScale = this.effectiveRenderScale;
     const previousLevels = this.appliedBudgetLevels;
     const levelsChanged = previousLevels
-      ? Object.entries(state.levels).some(([key, value]) => Math.abs(value - previousLevels[key as keyof RenderBudgetState['levels']]) >= 0.001)
+      ? Object.entries(state.levels).some(
+          ([key, value]) =>
+            Math.abs(value - previousLevels[key as keyof RenderBudgetState['levels']]) >= 0.001,
+        )
       : true;
     if (levelsChanged) {
       this.lastQualityChange = {
@@ -1215,7 +1407,10 @@ export class Renderer {
       };
       this.appliedBudgetLevels = { ...state.levels };
     }
-    this.effectiveRenderScale = Math.min(this.renderBudgetMaxScale(), Math.max(this.renderBudgetMinScale(), state.levels.resolution));
+    this.effectiveRenderScale = Math.min(
+      this.renderBudgetMaxScale(),
+      Math.max(this.renderBudgetMinScale(), state.levels.resolution),
+    );
     this.foliage.setGrassQuality(state.levels.grass);
     this.foliage.setModelQuality(state.levels.foliage);
     this.vfx.setQuality(state.levels.vfx);
@@ -1336,7 +1531,8 @@ export class Renderer {
     if (!Number.isFinite(ms) || ms < 0) return;
     const samples = this.phaseSamples[phase];
     samples.push(Math.min(250, ms));
-    if (samples.length > RENDERER_PHASE_SAMPLE_LIMIT) samples.splice(0, samples.length - RENDERER_PHASE_SAMPLE_LIMIT);
+    if (samples.length > RENDERER_PHASE_SAMPLE_LIMIT)
+      samples.splice(0, samples.length - RENDERER_PHASE_SAMPLE_LIMIT);
   }
 
   private rendererPhaseStats(): RendererPhaseStats {
@@ -1355,10 +1551,16 @@ export class Renderer {
     return mats.map((mat) => `${mat.name || mat.type}:${mat.uuid.slice(0, 8)}`);
   }
 
-  private drawCountFor(material: THREE.Material | THREE.Material[] | undefined, geometry?: THREE.BufferGeometry): number {
+  private drawCountFor(
+    material: THREE.Material | THREE.Material[] | undefined,
+    geometry?: THREE.BufferGeometry,
+  ): number {
     if (!material) return 1;
     if (Array.isArray(material)) return Math.max(1, geometry?.groups.length || material.length);
-    return Math.max(1, geometry?.groups.length && geometry.groups.length > 0 ? geometry.groups.length : 1);
+    return Math.max(
+      1,
+      geometry?.groups.length && geometry.groups.length > 0 ? geometry.groups.length : 1,
+    );
   }
 
   private triangleCountFor(geometry?: THREE.BufferGeometry): number {
@@ -1367,7 +1569,11 @@ export class Renderer {
     return Math.max(0, Math.floor(drawCount / 3));
   }
 
-  private objectDiagnosticLabel(obj: THREE.Object3D, category: string, materialLabels: string[]): string {
+  private objectDiagnosticLabel(
+    obj: THREE.Object3D,
+    category: string,
+    materialLabels: string[],
+  ): string {
     const name = obj.name || obj.type;
     const material = materialLabels[0] ?? 'no-material';
     return `${category}:${name}:${material}`.slice(0, 140);
@@ -1400,14 +1606,21 @@ export class Renderer {
       };
       return categories[category];
     };
-    const visit = (obj: THREE.Object3D, inheritedCategory: string, inheritedVisible: boolean): void => {
+    const visit = (
+      obj: THREE.Object3D,
+      inheritedCategory: string,
+      inheritedVisible: boolean,
+    ): void => {
       const visible = inheritedVisible && obj.visible;
-      const category = typeof obj.userData.renderCategory === 'string'
-        ? obj.userData.renderCategory as string
-        : inheritedCategory;
+      const category =
+        typeof obj.userData.renderCategory === 'string'
+          ? (obj.userData.renderCategory as string)
+          : inheritedCategory;
       if (visible) {
         const renderable = obj as RenderableDiagnosticObject;
-        const hasMesh = Boolean(renderable.isMesh || renderable.isInstancedMesh || renderable.isSkinnedMesh);
+        const hasMesh = Boolean(
+          renderable.isMesh || renderable.isInstancedMesh || renderable.isSkinnedMesh,
+        );
         const hasPoints = Boolean(renderable.isPoints);
         const hasSprite = Boolean(renderable.isSprite);
         const hasLine = Boolean(renderable.isLine || renderable.isLineSegments);
@@ -1420,7 +1633,9 @@ export class Renderer {
           let triangles = 0;
           let pointCount = 0;
           if (hasMesh) {
-            const instanceCount = renderable.isInstancedMesh ? Math.max(0, renderable.count ?? 0) : 1;
+            const instanceCount = renderable.isInstancedMesh
+              ? Math.max(0, renderable.count ?? 0)
+              : 1;
             triangles = this.triangleCountFor(geometry) * instanceCount;
           } else if (hasSprite) {
             triangles = 2;
@@ -1448,7 +1663,8 @@ export class Renderer {
           const visibleKey = `${category}|${obj.uuid}|${geometry?.uuid ?? ''}|${labels.join('|')}`;
           if (!this.renderDiagnosticsKnownVisibleObjects.has(visibleKey)) {
             this.renderDiagnosticsKnownVisibleObjects.add(visibleKey);
-            if (firstVisibleObjects.length < 16) firstVisibleObjects.push(this.objectDiagnosticLabel(obj, category, labels));
+            if (firstVisibleObjects.length < 16)
+              firstVisibleObjects.push(this.objectDiagnosticLabel(obj, category, labels));
           }
         }
       }
@@ -1503,7 +1719,8 @@ export class Renderer {
       const win = window as Window & {
         requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
       };
-      if (win.requestIdleCallback) win.requestIdleCallback(run, { timeout: RENDER_DIAGNOSTICS_IDLE_TIMEOUT_MS });
+      if (win.requestIdleCallback)
+        win.requestIdleCallback(run, { timeout: RENDER_DIAGNOSTICS_IDLE_TIMEOUT_MS });
       else window.setTimeout(run, 100);
     }
     return this.renderDiagnosticsSnapshot;
@@ -1571,7 +1788,11 @@ export class Renderer {
     return 9;
   }
 
-  private collectMissingViewCandidates(center: Entity, rangeSq: number, includeRequired: boolean): void {
+  private collectMissingViewCandidates(
+    center: Entity,
+    rangeSq: number,
+    includeRequired: boolean,
+  ): void {
     this.viewCandidates.length = 0;
     for (const e of this.sim.entities.values()) {
       if (this.views.has(e.id)) continue;
@@ -1620,7 +1841,11 @@ export class Renderer {
     return created;
   }
 
-  private createCandidateViews(limit: number, createdViewTypes: string[], deadlineMs = Infinity): number {
+  private createCandidateViews(
+    limit: number,
+    createdViewTypes: string[],
+    deadlineMs = Infinity,
+  ): number {
     const max = Math.max(0, Math.floor(limit));
     let created = 0;
     for (const candidate of this.viewCandidates) {
@@ -1645,14 +1870,23 @@ export class Renderer {
     const fogFar = (this.scene.fog as THREE.Fog).far;
     this.terrainView.update(this.camera.position.x, this.camera.position.z, fogFar);
     this.propsView.update(
-      this.camera.position.x, this.camera.position.y, this.camera.position.z,
-      this.cameraLookAt.x, this.cameraLookAt.y, this.cameraLookAt.z,
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.position.z,
+      this.cameraLookAt.x,
+      this.cameraLookAt.y,
+      this.cameraLookAt.z,
       fogFar,
     );
     this.foliage.update(
-      p.pos.x, p.pos.z,
-      this.camera.position.x, this.camera.position.y, this.camera.position.z,
-      this.cameraLookAt.x, this.cameraLookAt.y, this.cameraLookAt.z,
+      p.pos.x,
+      p.pos.z,
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.position.z,
+      this.cameraLookAt.x,
+      this.cameraLookAt.y,
+      this.cameraLookAt.z,
       fogFar,
     );
     this.fish.update(p.pos.x, p.pos.z, dt);
@@ -1678,7 +1912,14 @@ export class Renderer {
     this.updateChatBubbles();
   }
 
-  private prewarmEntity(kind: 'player' | 'mob' | 'npc', templateId: string, color: number, scale: number, skin = 0, id = -10_000): Entity {
+  private prewarmEntity(
+    kind: 'player' | 'mob' | 'npc',
+    templateId: string,
+    color: number,
+    scale: number,
+    skin = 0,
+    id = -10_000,
+  ): Entity {
     const p = this.sim.player;
     return {
       ...p,
@@ -1812,7 +2053,9 @@ export class Renderer {
       if (performance.now() >= deadline) break;
       const template = MOBS[templateId];
       if (!template) continue;
-      const modelKey = visualKeyFor(this.prewarmEntity('mob', template.id, template.color, template.scale));
+      const modelKey = visualKeyFor(
+        this.prewarmEntity('mob', template.id, template.color, template.scale),
+      );
       if (builtModels.has(modelKey)) continue;
       build(templateId, 1);
     }
@@ -2007,9 +2250,7 @@ export class Renderer {
       detail?: () => string;
     };
 
-    const runEntry = async (
-      entry: PrewarmManifestEntry,
-    ): Promise<void> => {
+    const runEntry = async (entry: PrewarmManifestEntry): Promise<void> => {
       const before = this.prewarmCounts();
       const entryStarted = performance.now();
       if (entryStarted >= deadline) {
@@ -2067,8 +2308,8 @@ export class Renderer {
         priority: 10,
         required: true,
         run: () => {
-        createdViews += this.createRequiredViews(p, createdViewTypes);
-        createdViews += this.createPersistentPortalViews(createdViewTypes, deadline);
+          createdViews += this.createRequiredViews(p, createdViewTypes);
+          createdViews += this.createPersistentPortalViews(createdViewTypes, deadline);
         },
         detail: () => `created=${createdViews}`,
       },
@@ -2078,10 +2319,14 @@ export class Renderer {
         priority: 20,
         required: true,
         run: () => {
-        this.collectMissingViewCandidates(p, VIEW_PREWARM_RANGE_SQ, false);
-        candidateViews = this.viewCandidates.length;
-        const maxViews = this.lowGfx ? VIEW_PREWARM_MAX_VIEWS_LOW : VIEW_PREWARM_MAX_VIEWS_HIGH;
-        createdViews += this.createCandidateViews(Math.max(0, maxViews - createdViews), createdViewTypes, deadline);
+          this.collectMissingViewCandidates(p, VIEW_PREWARM_RANGE_SQ, false);
+          candidateViews = this.viewCandidates.length;
+          const maxViews = this.lowGfx ? VIEW_PREWARM_MAX_VIEWS_LOW : VIEW_PREWARM_MAX_VIEWS_HIGH;
+          createdViews += this.createCandidateViews(
+            Math.max(0, maxViews - createdViews),
+            createdViewTypes,
+            deadline,
+          );
         },
         detail: () => `created=${createdViews};candidates=${candidateViews}`,
       },
@@ -2091,7 +2336,7 @@ export class Renderer {
         priority: 30,
         required: true,
         run: () => {
-        doorPrewarmGroup = this.buildDoorPrewarmGroup();
+          doorPrewarmGroup = this.buildDoorPrewarmGroup();
           this.scene.add(doorPrewarmGroup);
         },
       },
@@ -2108,7 +2353,8 @@ export class Renderer {
           playerPrewarmVisuals = built.visualCount;
           this.scene.add(playerPrewarmGroup);
         },
-        detail: () => `classes=${ALL_CLASSES.length};skins=${prewarmPlayerSkinVariantCount()};visuals=${playerPrewarmVisuals}`,
+        detail: () =>
+          `classes=${ALL_CLASSES.length};skins=${prewarmPlayerSkinVariantCount()};visuals=${playerPrewarmVisuals}`,
       },
       {
         id: 'entities.mob-archetypes',
@@ -2119,7 +2365,8 @@ export class Renderer {
           entityPrewarmGroup = this.buildEntityPrewarmGroup(buildDeadline);
           this.scene.add(entityPrewarmGroup);
         },
-        detail: () => `mobs=${Object.keys(MOBS).length};common=${PREWARM_MOB_TEMPLATE_IDS.length};copies=${PREWARM_MOB_POOL_COPIES}`,
+        detail: () =>
+          `mobs=${Object.keys(MOBS).length};common=${PREWARM_MOB_TEMPLATE_IDS.length};copies=${PREWARM_MOB_POOL_COPIES}`,
       },
       {
         id: 'entities.npc-archetypes',
@@ -2141,7 +2388,8 @@ export class Renderer {
           objectPrewarmGroup = this.buildObjectPrewarmGroup();
           this.scene.add(objectPrewarmGroup);
         },
-        detail: () => `items=${PREWARM_OBJECT_ITEM_IDS.length};copies=${PREWARM_OBJECT_POOL_COPIES}`,
+        detail: () =>
+          `items=${PREWARM_OBJECT_ITEM_IDS.length};copies=${PREWARM_OBJECT_POOL_COPIES}`,
       },
       {
         id: 'props.material-variants',
@@ -2149,10 +2397,10 @@ export class Renderer {
         priority: 45,
         required: true,
         run: () => {
-        propMaterialPrewarmGroup = buildPropMaterialPrewarmGroup();
-        propMaterialPrewarmGroup.position.set(p.pos.x, p.pos.y, p.pos.z - 18);
-        setRenderCategory(propMaterialPrewarmGroup, 'prewarm');
-        this.scene.add(propMaterialPrewarmGroup);
+          propMaterialPrewarmGroup = buildPropMaterialPrewarmGroup();
+          propMaterialPrewarmGroup.position.set(p.pos.x, p.pos.y, p.pos.z - 18);
+          setRenderCategory(propMaterialPrewarmGroup, 'prewarm');
+          this.scene.add(propMaterialPrewarmGroup);
         },
         detail: () => `objects=${propMaterialPrewarmGroup?.children.length ?? 0}`,
       },
@@ -2162,7 +2410,7 @@ export class Renderer {
         priority: 50,
         required: true,
         run: () => {
-        textureUploads = this.prewarmObjectTextures(this.scene);
+          textureUploads = this.prewarmObjectTextures(this.scene);
         },
         detail: () => `uploaded=${textureUploads}`,
       },
@@ -2172,17 +2420,17 @@ export class Renderer {
         priority: 60,
         required: false,
         run: () => {
-        const offsets = [
-          [0, -4],
-          [-3, -5],
-          [3, -5],
-          [0, -7],
-        ] as const;
-        for (const [dx, dz] of offsets) {
-          if (performance.now() >= deadline) break;
-          this.vfx.prewarm(new THREE.Vector3(p.pos.x + dx, p.pos.y + 1, p.pos.z + dz));
-          vfxPrewarmBursts++;
-        }
+          const offsets = [
+            [0, -4],
+            [-3, -5],
+            [3, -5],
+            [0, -7],
+          ] as const;
+          for (const [dx, dz] of offsets) {
+            if (performance.now() >= deadline) break;
+            this.vfx.prewarm(new THREE.Vector3(p.pos.x + dx, p.pos.y + 1, p.pos.z + dz));
+            vfxPrewarmBursts++;
+          }
         },
         detail: () => `bursts=${vfxPrewarmBursts}`,
       },
@@ -2192,8 +2440,8 @@ export class Renderer {
         priority: 70,
         required: true,
         run: () => {
-        this.renderPrewarmPass(1 / 60);
-        renderPasses++;
+          this.renderPrewarmPass(1 / 60);
+          renderPasses++;
         },
       },
       {
@@ -2202,28 +2450,31 @@ export class Renderer {
         priority: 80,
         required: true,
         run: async () => {
-        const compileStart = performance.now();
-        // Use a dedicated budget, not `deadline - now`: linking every program now is
-        // exactly what prevents the in-world freeze, so a near-empty leftover budget
-        // must not cut it short (the old bug — the async compile timed out and the
-        // programs linked synchronously on first sight instead).
-        if (this.webgl.compileAsync) {
-          compileMode = 'async';
-          let settled = false;
-          const compilePromise = this.webgl.compileAsync(this.scene, this.camera)
-            .then(() => { settled = true; })
-            .catch((err: unknown) => {
-              settled = true;
-              console.warn('Renderer async prewarm compile failed', err);
-            });
-          await Promise.race([compilePromise, sleep(PREWARM_COMPILE_MAX_MS)]);
-          compileTimedOut = !settled;
-          compileMs = roundMs(performance.now() - compileStart);
-        } else {
-          compileMode = 'sync';
-          this.webgl.compile(this.scene, this.camera);
-          compileMs = roundMs(performance.now() - compileStart);
-        }
+          const compileStart = performance.now();
+          // Use a dedicated budget, not `deadline - now`: linking every program now is
+          // exactly what prevents the in-world freeze, so a near-empty leftover budget
+          // must not cut it short (the old bug — the async compile timed out and the
+          // programs linked synchronously on first sight instead).
+          if (this.webgl.compileAsync) {
+            compileMode = 'async';
+            let settled = false;
+            const compilePromise = this.webgl
+              .compileAsync(this.scene, this.camera)
+              .then(() => {
+                settled = true;
+              })
+              .catch((err: unknown) => {
+                settled = true;
+                console.warn('Renderer async prewarm compile failed', err);
+              });
+            await Promise.race([compilePromise, sleep(PREWARM_COMPILE_MAX_MS)]);
+            compileTimedOut = !settled;
+            compileMs = roundMs(performance.now() - compileStart);
+          } else {
+            compileMode = 'sync';
+            this.webgl.compile(this.scene, this.camera);
+            compileMs = roundMs(performance.now() - compileStart);
+          }
         },
         detail: () => `mode=${compileMode};timedOut=${compileTimedOut}`,
       },
@@ -2233,15 +2484,15 @@ export class Renderer {
         priority: 90,
         required: false,
         run: () => {
-        const zs = [p.pos.z, ...ZONES.map((z) => z.zMax - 8), ...ZONES.map((z) => z.zMax + 8)]
-          .filter((z) => Number.isFinite(z) && z > WORLD_MIN_Z && z < WORLD_MAX_Z)
-          .slice(0, this.lowGfx ? 3 : 8);
-        for (const z of zs) {
-          if (performance.now() >= deadline) break;
-          this.skyView.setCameraZ(z, 1 / 20);
-          this.renderPrewarmPass(1 / 60);
-          renderPasses++;
-        }
+          const zs = [p.pos.z, ...ZONES.map((z) => z.zMax - 8), ...ZONES.map((z) => z.zMax + 8)]
+            .filter((z) => Number.isFinite(z) && z > WORLD_MIN_Z && z < WORLD_MAX_Z)
+            .slice(0, this.lowGfx ? 3 : 8);
+          for (const z of zs) {
+            if (performance.now() >= deadline) break;
+            this.skyView.setCameraZ(z, 1 / 20);
+            this.renderPrewarmPass(1 / 60);
+            renderPasses++;
+          }
         },
       },
       {
@@ -2250,11 +2501,11 @@ export class Renderer {
         priority: 100,
         required: false,
         run: () => {
-        const minPasses = this.lowGfx ? 8 : 10;
-        while (renderPasses < minPasses && performance.now() < deadline) {
-          this.renderPrewarmPass(1 / 60);
-          renderPasses++;
-        }
+          const minPasses = this.lowGfx ? 8 : 10;
+          while (renderPasses < minPasses && performance.now() < deadline) {
+            this.renderPrewarmPass(1 / 60);
+            renderPasses++;
+          }
         },
         detail: () => `passes=${renderPasses}`,
       },
@@ -2264,7 +2515,7 @@ export class Renderer {
         priority: 110,
         required: false,
         run: () => {
-        diagnosticsBaseline = this.diagnosticsBaselineForPrewarm();
+          diagnosticsBaseline = this.diagnosticsBaselineForPrewarm();
         },
       },
     ];
@@ -2348,11 +2599,18 @@ export class Renderer {
       case 'levelup':
         this.vfx.levelUpPillar(this.sim.playerId);
         break;
+      case 'delveEntered':
+        this.prebuildDelveInteriors(ev.delveId);
+        break;
       case 'fiestaPowerup':
         // Big celebratory pop on grab, plus a lingering coloured glow.
         this.vfx.levelUpPillar(ev.entityId);
         this.vfx.nova(ev.entityId, 'nature');
-        this.fiestaGlows.set(ev.entityId, { color: ev.glow, until: this.time + ev.duration, nextSwirl: 0 });
+        this.fiestaGlows.set(ev.entityId, {
+          color: ev.glow,
+          until: this.time + ev.duration,
+          nextSwirl: 0,
+        });
         if (ev.entityId === this.sim.playerId) this.addShake(0.5);
         break;
     }
@@ -2388,8 +2646,12 @@ export class Renderer {
     if (!this.fiestaRing) {
       const geo = new THREE.CylinderGeometry(1, 1, 8, 48, 1, true);
       const mat = new THREE.MeshBasicMaterial({
-        color: 0xff3df0, transparent: true, opacity: 0.3, side: THREE.DoubleSide,
-        depthWrite: false, blending: THREE.AdditiveBlending,
+        color: 0xff3df0,
+        transparent: true,
+        opacity: 0.3,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
       });
       this.fiestaRing = new THREE.Mesh(geo, mat);
       this.scene.add(this.fiestaRing);
@@ -2407,14 +2669,19 @@ export class Renderer {
   // then a bright bobbing orb once 'ready'. Pooled by power-up id.
   private updateFiestaPowerups(dt: number): void {
     const match = this.sim.arenaInfo?.match;
-    const list = (match?.fiesta && match.state === 'active') ? match.fiesta.powerups : [];
+    const list = match?.fiesta && match.state === 'active' ? match.fiesta.powerups : [];
     const seen = new Set<number>();
     for (const p of list) {
       seen.add(p.id);
       let m = this.fiestaPowerupMeshes.get(p.id);
       if (!m) {
         const geo = new THREE.OctahedronGeometry(0.8, 0);
-        const mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.9, depthWrite: false, blending: THREE.AdditiveBlending });
+        const mat = new THREE.MeshBasicMaterial({
+          transparent: true,
+          opacity: 0.9,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+        });
         m = new THREE.Mesh(geo, mat);
         this.fiestaPowerupMeshes.set(p.id, m);
         this.scene.add(m);
@@ -2445,9 +2712,15 @@ export class Renderer {
   private tickFiestaGlows(dt: number): void {
     if (this.fiestaGlows.size === 0) return;
     for (const [id, g] of this.fiestaGlows) {
-      if (this.time >= g.until || !this.views.has(id)) { this.fiestaGlows.delete(id); continue; }
+      if (this.time >= g.until || !this.views.has(id)) {
+        this.fiestaGlows.delete(id);
+        continue;
+      }
       g.nextSwirl -= dt;
-      if (g.nextSwirl <= 0) { g.nextSwirl = 0.22; this.vfx.buffSwirl(id, g.color); }
+      if (g.nextSwirl <= 0) {
+        g.nextSwirl = 0.22;
+        this.vfx.buffSwirl(id, g.color);
+      }
     }
   }
 
@@ -2491,7 +2764,11 @@ export class Renderer {
       inner.closePath();
       outer.holes.push(inner);
       const archGeo = new THREE.ExtrudeGeometry(outer, {
-        depth: 0.7, bevelEnabled: true, bevelThickness: 0.07, bevelSize: 0.07, bevelSegments: 1,
+        depth: 0.7,
+        bevelEnabled: true,
+        bevelThickness: 0.07,
+        bevelSize: 0.07,
+        bevelSegments: 1,
       });
       archGeo.translate(0, 0, -0.35);
       this.doorArchGeo = markSharedGeometry(archGeo);
@@ -2520,9 +2797,14 @@ export class Renderer {
   }
 
   private doorNythraxisClickMaterial(): THREE.MeshBasicMaterial {
-    this.doorNythraxisClickMat ??= markSharedMaterial(new THREE.MeshBasicMaterial({
-      color: 0x000000, transparent: true, opacity: 0.001, depthWrite: false,
-    }));
+    this.doorNythraxisClickMat ??= markSharedMaterial(
+      new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.001,
+        depthWrite: false,
+      }),
+    );
     return this.doorNythraxisClickMat;
   }
 
@@ -2530,20 +2812,32 @@ export class Renderer {
     const tint = entering ? 0x9a5df0 : 0x6ab8ff;
     const existing = entering ? this.doorEntrancePortalMat : this.doorExitPortalMat;
     if (existing) return existing;
-    const material = markSharedMaterial(new THREE.MeshBasicMaterial({
-      color: tint, transparent: true, opacity: 0.55, side: THREE.DoubleSide,
-      blending: THREE.AdditiveBlending, depthWrite: false,
-    }));
+    const material = markSharedMaterial(
+      new THREE.MeshBasicMaterial({
+        color: tint,
+        transparent: true,
+        opacity: 0.55,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      }),
+    );
     if (!this.lowGfx) material.color.multiplyScalar(PORTAL_BOOST);
     if (entering) this.doorEntrancePortalMat = material;
     else this.doorExitPortalMat = material;
     return material;
   }
 
-  private buildDoorBody(entering: boolean, dungeonId?: string | null): { body: THREE.Group; portal?: THREE.Mesh } {
+  private buildDoorBody(
+    entering: boolean,
+    dungeonId?: string | null,
+  ): { body: THREE.Group; portal?: THREE.Mesh } {
     const body = new THREE.Group();
     if (entering && dungeonId === 'nythraxis_crypt') {
-      const clickBox = new THREE.Mesh(this.doorNythraxisClickGeometry(), this.doorNythraxisClickMaterial());
+      const clickBox = new THREE.Mesh(
+        this.doorNythraxisClickGeometry(),
+        this.doorNythraxisClickMaterial(),
+      );
       clickBox.position.y = 2.1;
       body.add(clickBox);
       return { body };
@@ -2597,13 +2891,44 @@ export class Renderer {
     const isQuestVision = e.kind === 'mob' && e.templateId.startsWith('vision_');
 
     let portal: THREE.Mesh | undefined;
-    if (e.kind === 'object' && (e.templateId === 'dungeon_door' || e.templateId === 'dungeon_exit')) {
+    if (
+      e.kind === 'object' &&
+      (e.templateId === 'dungeon_door' || e.templateId === 'dungeon_exit')
+    ) {
       const entering = e.templateId === 'dungeon_door';
       const built = this.buildDoorBody(entering, e.dungeonId);
       body = built.body;
       portal = built.portal;
       height = 4.6;
       objectMesh = body!;
+    } else if (e.kind === 'object' && e.templateId?.startsWith('delve_')) {
+      // Delve interactables: skip the object pool (each is unique/stateful) and
+      // build a dedicated procedural mesh that matches the crypt aesthetic.
+      objectPoolKey = null;
+      const built = buildDelveInteractable(e.templateId, e.id);
+      body = built.group;
+      height = built.height;
+      objectMesh = body!;
+      // Pressure plates are flush to the floor, no sparkle clutter overhead.
+      if (
+        e.templateId !== 'delve_pressure_plate' &&
+        e.templateId !== 'delve_pressure_plate_triggered' &&
+        e.templateId !== 'delve_locked_door' &&
+        e.templateId !== 'delve_destructible_wall'
+      ) {
+        if (!this.sparkleMat) {
+          this.sparkleMat = new THREE.SpriteMaterial({
+            map: sparkleTexture(),
+            transparent: true,
+            depthWrite: false,
+          });
+          if (!this.lowGfx) this.sparkleMat.color.setScalar(SPARKLE_BOOST);
+        }
+        sparkle = new THREE.Sprite(this.sparkleMat);
+        sparkle.scale.set(0.9, 0.9, 1);
+        sparkle.position.y = 1.35;
+        group.add(sparkle);
+      }
     } else if (e.kind === 'object') {
       objectPoolKey = this.objectPoolKeyFor(e);
       const pooled = objectPoolKey ? this.takePooledObject(objectPoolKey) : null;
@@ -2619,7 +2944,11 @@ export class Renderer {
       }
       objectMesh = body!;
       if (!this.sparkleMat) {
-        this.sparkleMat = new THREE.SpriteMaterial({ map: sparkleTexture(), transparent: true, depthWrite: false });
+        this.sparkleMat = new THREE.SpriteMaterial({
+          map: sparkleTexture(),
+          transparent: true,
+          depthWrite: false,
+        });
         if (!this.lowGfx) this.sparkleMat.color.setScalar(SPARKLE_BOOST); // gold glint via bloom
       }
       sparkle = new THREE.Sprite(this.sparkleMat);
@@ -2629,7 +2958,9 @@ export class Renderer {
     } else {
       const visualKey = visualKeyFor(e);
       if (visualKey === 'player_mech' && !mechAssetsReady()) {
-        void preloadMechAssets().catch((err) => console.error('Failed to preload live mech cosmetic:', err));
+        void preloadMechAssets().catch((err) =>
+          console.error('Failed to preload live mech cosmetic:', err),
+        );
         return;
       }
       visualPoolKey = this.visualPoolKeyFor(e);
@@ -2652,7 +2983,9 @@ export class Renderer {
       clickTarget = visual.clickProxy;
     } else {
       group.add(body!);
-      body!.traverse((o) => { o.userData.entityId = e.id; });
+      body?.traverse((o) => {
+        o.userData.entityId = e.id;
+      });
       clickTarget = body!;
     }
     group.scale.setScalar(e.scale);
@@ -2723,13 +3056,55 @@ export class Renderer {
     const objectCasters: THREE.Object3D[] = [];
     if (!visual) collectCasters(group, objectCasters);
     this.views.set(e.id, {
-      group, visual, visualKey: visual ? visualKeyFor(e) : null, visualPoolKey, sheepVisual: null, bearVisual: null, catVisual: null, travelVisual: null, height, clickTarget,
-      nameplate: np, nameEl, guildEl, hpBar, hpFill, emoteEl, emoteIconEl, emoteLabelEl, markerEl: marker, raidMarkEl: raidMark, comboRow, comboPips, castBar, castFill, castLabel, tierEl, sparkle, objectMesh, objectPoolKey, portal,
-      nameplateDisplay: 'none', nameplateTransform: '', nameplateSig: '', nameplateHpWidth: '', comboSig: '', tierValue: 0,
-      objectCasters, shadowOn: true, isFar: false, lastOverheadEmoteKey: null,
-      lastX: e.pos.x, lastZ: e.pos.z, skin: e.skin, liveScale: e.scale,
+      group,
+      visual,
+      visualKey: visual ? visualKeyFor(e) : null,
+      visualPoolKey,
+      sheepVisual: null,
+      bearVisual: null,
+      catVisual: null,
+      travelVisual: null,
+      height,
+      clickTarget,
+      nameplate: np,
+      nameEl,
+      guildEl,
+      hpBar,
+      hpFill,
+      emoteEl,
+      emoteIconEl,
+      emoteLabelEl,
+      markerEl: marker,
+      raidMarkEl: raidMark,
+      comboRow,
+      comboPips,
+      castBar,
+      castFill,
+      castLabel,
+      tierEl,
+      sparkle,
+      objectMesh,
+      objectPoolKey,
+      portal,
+      nameplateDisplay: 'none',
+      nameplateTransform: '',
+      nameplateSig: '',
+      nameplateHpWidth: '',
+      comboSig: '',
+      tierValue: 0,
+      objectCasters,
+      shadowOn: true,
+      isFar: false,
+      lastOverheadEmoteKey: null,
+      lastX: e.pos.x,
+      lastZ: e.pos.z,
+      skin: e.skin,
+      mainhandItemId: e.mainhandItemId,
+      liveScale: e.scale,
       loco: newLocoTrack(),
-      stepAccum: 0, wasAirborne: false, wasSwimming: false,
+      stepAccum: 0,
+      wasAirborne: false,
+      wasSwimming: false,
     });
   }
 
@@ -2747,7 +3122,9 @@ export class Renderer {
     const nextKey = visualKeyFor(e);
     if (nextKey === v.visualKey) return;
     if (nextKey === 'player_mech' && !mechAssetsReady()) {
-      void preloadMechAssets().catch((err) => console.error('Failed to preload live mech cosmetic:', err));
+      void preloadMechAssets().catch((err) =>
+        console.error('Failed to preload live mech cosmetic:', err),
+      );
       return;
     }
     const next = createCharacterVisual(e);
@@ -2765,6 +3142,7 @@ export class Renderer {
     v.clickTarget = next.clickProxy;
     v.height = next.height;
     v.skin = e.skin;
+    v.mainhandItemId = e.mainhandItemId; // next was built holding the current weapon
     v.group.add(next.root);
   }
 
@@ -2792,9 +3170,13 @@ export class Renderer {
 
   private isHostilePlayer(target: Entity): boolean {
     if (target.kind !== 'player' || target.dead || target.id === this.sim.playerId) return false;
-    if (this.sim.duelInfo?.state === 'active' && this.sim.duelInfo.otherPid === target.id) return true;
+    if (this.sim.duelInfo?.state === 'active' && this.sim.duelInfo.otherPid === target.id)
+      return true;
     const match = this.sim.arenaInfo?.match;
-    return match?.state === 'active' && (match.oppPid === target.id || match.enemies.some((e) => e.pid === target.id));
+    return (
+      match?.state === 'active' &&
+      (match.oppPid === target.id || match.enemies.some((e) => e.pid === target.id))
+    );
   }
 
   // -------------------------------------------------------------------------
@@ -2806,7 +3188,11 @@ export class Renderer {
   // ---------------------------------------------------------------------
 
   private builtInteriors = new Set<string>();
-  private fogState: 'outdoor' | 'dungeon' | 'temple' | 'nythraxis' | 'underwater' = 'outdoor';
+  // Delve module interiors build asynchronously; track in-flight keys so a
+  // per-frame ensureDelveInteriorsNear does not re-schedule a build mid-load.
+  private pendingInteriors = new Set<string>();
+  private fogState: 'outdoor' | 'dungeon' | 'temple' | 'nythraxis' | 'delve' | 'underwater' =
+    'outdoor';
 
   private buildInterior(interior: string, ox: number, oz: number): void {
     this.dungeons ??= new DungeonInteriors(this.scene, this.lowGfx, this.flames, this.fireLights);
@@ -2829,12 +3215,77 @@ export class Renderer {
     return Renderer.BIOME_FOG[zoneBiomeAt(this.sim.player.pos.z)];
   }
 
+  private scheduleDelveModuleBuild(
+    key: string,
+    moduleId: DelveModuleId,
+    ox: number,
+    oz: number,
+  ): void {
+    if (this.builtInteriors.has(key) || this.pendingInteriors.has(key)) return;
+    this.pendingInteriors.add(key);
+    this.dungeons ??= new DungeonInteriors(this.scene, this.lowGfx, this.flames, this.fireLights);
+    void buildDelveModule(this.dungeons, moduleId, ox, oz)
+      .then(() => {
+        this.builtInteriors.add(key);
+        this.pendingInteriors.delete(key);
+      })
+      .catch((err) => {
+        this.pendingInteriors.delete(key);
+        if (import.meta.env?.DEV) {
+          console.warn('Failed to build delve interior:', moduleId, 'at', ox, oz, err);
+        }
+      });
+  }
+
+  /** Build every module in a delve run at its stacked z offset (parallel async). */
+  private buildAllDelveModules(
+    delveId: string,
+    slot: number,
+    origin: { x: number; z: number },
+    modules: readonly DelveModuleId[],
+  ): void {
+    void ensureDelveInteriorKit().catch(() => undefined);
+    for (let mi = 0; mi < modules.length; mi++) {
+      const moduleId = modules[mi];
+      const key = `delve:${delveId}:${slot}:${moduleId}`;
+      if (this.builtInteriors.has(key) || this.pendingInteriors.has(key)) continue;
+      const zOff = delveModuleZOffset(modules, mi);
+      this.scheduleDelveModuleBuild(key, moduleId, origin.x, origin.z + zOff);
+    }
+  }
+
+  /** Prebuild the full module stack when a delve run starts (offline + online). */
+  private prebuildDelveInteriors(delveId: string): void {
+    const run = this.sim.delveRun;
+    if (!run || run.delveId !== delveId || !run.modules.length) return;
+    this.buildAllDelveModules(delveId, run.slot, run.origin, run.modules as DelveModuleId[]);
+  }
+
+  private ensureDelveInteriorsNear(px: number, pz: number): void {
+    const delve = delveAt(px);
+    if (!delve) return;
+    const run = this.sim.delveRun;
+    const modules = (
+      run?.delveId === delve.id && run.modules.length ? run.modules : defaultDelveModules(delve.id)
+    ) as DelveModuleId[];
+    const slot = run?.delveId === delve.id ? run.slot : delveSlotAt(delve.index, pz, modules);
+    const origin = run?.delveId === delve.id ? run.origin : delveOrigin(delve.index, slot);
+    // Slot origins are 500u apart on z; nearest-slot heuristics mis-pick slot 1+
+    // once the player advances past module 1 (interiors build at the wrong oz).
+    if (Math.abs(px - origin.x) >= 120) return;
+    const stackEndZ = origin.z + delveModuleStackEndRelZ(modules);
+    if (pz < origin.z + DELVE_MODULE_Z_START - 30 || pz > stackEndZ) return;
+    this.buildAllDelveModules(delve.id, slot, origin, modules);
+  }
+
   private updateAmbience(px: number, camY: number, dt: number): void {
     const inside = px > DUNGEON_X_THRESHOLD;
-    if (inside && isArenaPos(px)) {
+    const pz = this.sim.player.pos.z;
+    if (isDelvePos(px)) {
+      this.ensureDelveInteriorsNear(px, pz);
+    } else if (inside && isArenaPos(px)) {
       void ensureDungeonAssets().catch(() => undefined);
       // build the Ashen Coliseum copy the player was matched into
-      const pz = this.sim.player.pos.z;
       for (let i = 0; i < ARENA_SLOT_COUNT; i++) {
         const key = `arena:${i}`;
         if (this.builtInteriors.has(key)) continue;
@@ -2861,13 +3312,21 @@ export class Renderer {
     }
     // the Drowned Temple reads as submerged: a teal murk instead of the
     // crypt's near-black, so its flooded halls feel underwater, not just dark
-    const interior = inside && !isArenaPos(px) ? dungeonAt(px)?.interior : null;
+    const inDelve = inside && isDelvePos(px);
+    const interior = inside && !inDelve && !isArenaPos(px) ? dungeonAt(px)?.interior : null;
     const inTemple = interior === 'temple';
     const inNythraxis = interior === 'nythraxis';
-    const desired = inTemple ? 'temple'
-      : inNythraxis ? 'nythraxis'
-        : inside ? 'dungeon'
-        : camY < WATER_LEVEL - 0.05 ? 'underwater' : 'outdoor';
+    const desired = inDelve
+      ? 'delve'
+      : inTemple
+        ? 'temple'
+        : inNythraxis
+          ? 'nythraxis'
+          : inside
+            ? 'dungeon'
+            : camY < WATER_LEVEL - 0.05
+              ? 'underwater'
+              : 'outdoor';
     const fog = this.scene.fog as THREE.Fog;
     if (desired !== this.fogState) {
       this.fogState = desired;
@@ -2885,6 +3344,13 @@ export class Renderer {
         fog.color.setHex(0x020106);
         fog.near = 20;
         fog.far = 80;
+      } else if (desired === 'delve') {
+        // the collapsed reliquary breathes a warm ember murk, dried-blood
+        // charcoal, tighter than the overworld crypt's cold near-black, so the
+        // delve reads as its own claustrophobic place under the red torches
+        fog.color.setHex(0x0e0705);
+        fog.near = 14;
+        fog.far = 74;
       } else if (desired === 'underwater') {
         fog.color.setHex(0x17506e);
         fog.near = 2;
@@ -2899,10 +3365,16 @@ export class Renderer {
       // underground so the torch point lights own the scene; restore outside.
       // The rim glow cranks up instead — silhouettes must split from the murk.
       if (!this.lowGfx) {
-        const underground = desired === 'dungeon' || desired === 'temple' || desired === 'nythraxis';
+        const underground =
+          desired === 'dungeon' ||
+          desired === 'temple' ||
+          desired === 'nythraxis' ||
+          desired === 'delve';
         this.sun.intensity = underground ? DUNGEON_SUN_INTENSITY : SUN_INTENSITY;
         this.hemi.intensity = underground ? DUNGEON_HEMI_INTENSITY : HEMI_INTENSITY;
-        this.scene.environmentIntensity = underground ? DUNGEON_ENV_INTENSITY : this.envOutdoorIntensity;
+        this.scene.environmentIntensity = underground
+          ? DUNGEON_ENV_INTENSITY
+          : this.envOutdoorIntensity;
         sharedUniforms.uRimBoost.value = underground ? DUNGEON_RIM_BOOST : 1;
       }
       return;
@@ -2926,12 +3398,13 @@ export class Renderer {
     const dominant = blend.t < 0.5 ? blend.from : blend.to;
     if (dominant !== this.envBiome && this.envRTs.has(dominant)) {
       this.envBiome = dominant;
-      this.scene.environment = this.envRTs.get(dominant)!.texture;
+      this.scene.environment = this.envRTs.get(dominant)?.texture ?? null;
       this.scene.environmentRotation.y = this.skyView.envRotationY(dominant);
       this.scene.environmentIntensity = this.envOutdoorIntensity * 0.4;
     }
     const k = 1 - Math.exp(-dt * 1.5);
-    this.scene.environmentIntensity += (this.envOutdoorIntensity - this.scene.environmentIntensity) * k;
+    this.scene.environmentIntensity +=
+      (this.envOutdoorIntensity - this.scene.environmentIntensity) * k;
   }
 
   // Drop the view of an entity that left the world / our interest area.
@@ -2961,7 +3434,8 @@ export class Renderer {
           const mesh = o as THREE.Mesh;
           if (mesh.isMesh && !isSharedGeometry(mesh.geometry)) mesh.geometry.dispose();
         });
-        if (v.portal && !isSharedMaterial(v.portal.material as THREE.Material)) (v.portal.material as THREE.Material).dispose();
+        if (v.portal && !isSharedMaterial(v.portal.material as THREE.Material))
+          (v.portal.material as THREE.Material).dispose();
       }
     }
     this.views.delete(id);
@@ -2973,7 +3447,11 @@ export class Renderer {
   // code. Idempotent. Draws a filled flared near-radius cone (idle cluster), its
   // outline, and a full query-radius rim (absolute Tab range; engaged enemies
   // inside the cone reach out to here).
-  enableTargetConeDebug(halfAt: (d: number) => number, nearRadius: number, queryRadius: number): void {
+  enableTargetConeDebug(
+    halfAt: (d: number) => number,
+    nearRadius: number,
+    queryRadius: number,
+  ): void {
     if (this.targetCone) return;
     const fan = buildFlaredConeFan(nearRadius, halfAt, 16, 48);
     const worldXYZ = new Float32Array(fan.vertexCount * 3);
@@ -2984,7 +3462,11 @@ export class Renderer {
     fillGeo.setAttribute('position', pos);
     fillGeo.setIndex(new THREE.BufferAttribute(fan.index, 1));
     const fillMat = new THREE.MeshBasicMaterial({
-      color: 0x49c0ff, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide,
+      color: 0x49c0ff,
+      transparent: true,
+      opacity: 0.16,
+      depthWrite: false,
+      side: THREE.DoubleSide,
     });
     const fill = new THREE.Mesh(fillGeo, fillMat);
     fill.frustumCulled = false; // re-draped every frame; its bounds go stale
@@ -2993,7 +3475,12 @@ export class Renderer {
     const lineGeo = new THREE.BufferGeometry();
     lineGeo.setAttribute('position', pos);
     lineGeo.setIndex(new THREE.BufferAttribute(fan.outline, 1));
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x9be0ff, transparent: true, opacity: 0.85, depthWrite: false });
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0x9be0ff,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false,
+    });
     const outline = new THREE.LineLoop(lineGeo, lineMat);
     outline.frustumCulled = false;
     // Query-radius rim: a full circle at max Tab range, in a contrasting amber so
@@ -3003,7 +3490,12 @@ export class Renderer {
     const ringPos = new THREE.BufferAttribute(ringWorldXYZ, 3);
     const ringGeo = new THREE.BufferGeometry();
     ringGeo.setAttribute('position', ringPos);
-    const ringMat = new THREE.LineBasicMaterial({ color: 0xffb24d, transparent: true, opacity: 0.55, depthWrite: false });
+    const ringMat = new THREE.LineBasicMaterial({
+      color: 0xffb24d,
+      transparent: true,
+      opacity: 0.55,
+      depthWrite: false,
+    });
     const ring = new THREE.LineLoop(ringGeo, ringMat);
     ring.frustumCulled = false;
     const group = new THREE.Group();
@@ -3063,7 +3555,13 @@ export class Renderer {
     this.doomedIds.length = 0;
     for (const id of this.views.keys()) {
       const e = sim.entities.get(id);
-      if (!e || (!isPersistentPortalObject(e) && id !== p.id && id !== p.targetId && distSqXZ(e, p) > ENTITY_VIEW_DESTROY_RANGE_SQ)) {
+      if (
+        !e ||
+        (!isPersistentPortalObject(e) &&
+          id !== p.id &&
+          id !== p.targetId &&
+          distSqXZ(e, p) > ENTITY_VIEW_DESTROY_RANGE_SQ)
+      ) {
         this.doomedIds.push(id);
       }
     }
@@ -3079,7 +3577,10 @@ export class Renderer {
     // frame's camera (it's repositioned after this loop); the one-frame lag is
     // absorbed by the generous per-rig cull radius.
     if (this.cullCharacters) {
-      this.cullViewProj.multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse);
+      this.cullViewProj.multiplyMatrices(
+        this.camera.projectionMatrix,
+        this.camera.matrixWorldInverse,
+      );
       this.cullFrustum.setFromProjectionMatrix(this.cullViewProj);
     }
 
@@ -3093,9 +3594,10 @@ export class Renderer {
       const ghostWolf = !polyed && !bear && e.auras.some((a) => a.id === 'ghost_wolf');
       const cat = !polyed && !bear && (ghostWolf || e.auras.some((a) => a.kind === 'form_cat'));
       const travel = !polyed && !bear && !cat && e.auras.some((a) => a.kind === 'form_travel');
-      const stealthed = e.auras.some((a) => a.kind === 'stealth');
+      const _stealthed = e.auras.some((a) => a.kind === 'stealth');
       // distance cull: far rigs are invisible specks but cost real draw calls
-      const cdx = e.pos.x - p.pos.x, cdz = e.pos.z - p.pos.z;
+      const cdx = e.pos.x - p.pos.x,
+        cdz = e.pos.z - p.pos.z;
       const d2 = cdx * cdx + cdz * cdz;
       if (id !== p.id) {
         // Per-frame visibility uses the SAME 80/96 hysteresis as view
@@ -3104,7 +3606,9 @@ export class Renderer {
         // actual on-screen boundary flicker. group.visible carries last frame's
         // state: once shown, keep it until past the 96yd destroy radius (where
         // the view is torn down anyway); while hidden, show only within 80yd.
-        const showCutoff = v.group.visible ? ENTITY_VIEW_DESTROY_RANGE_SQ : ENTITY_VIEW_CREATE_RANGE_SQ;
+        const showCutoff = v.group.visible
+          ? ENTITY_VIEW_DESTROY_RANGE_SQ
+          : ENTITY_VIEW_CREATE_RANGE_SQ;
         if (d2 > showCutoff) {
           v.group.visible = false;
           continue;
@@ -3118,7 +3622,9 @@ export class Renderer {
           v.isFar = d2 > ENTITY_LOD_RANGE_SQ;
           // past the articulated gate the static-pose proxy carries the
           // shadow; an active form's own rig keeps casting instead
-          v.visual.setProxyShadow(!wantShadow && inProxyBand && !polyed && !bear && !cat && !travel);
+          v.visual.setProxyShadow(
+            !wantShadow && inProxyBand && !polyed && !bear && !cat && !travel,
+          );
           // sheep/forms keep articulated shadows through the whole proxy band —
           // a frozen humanoid proxy silhouette would be wrong under a form
           const wantFormShadow = wantShadow || inProxyBand;
@@ -3136,9 +3642,12 @@ export class Renderer {
       // freezing and dashing once per update (self keeps the global alpha
       // the camera follow uses)
       const isSelf = e.id === p.id;
-      const ea = e.id !== p.id && e.netUpdatedAt !== undefined && e.netInterval !== undefined
-        ? Math.min(1.25, (now - e.netUpdatedAt) / Math.max(20, e.netInterval))
-        : isSelf ? selfSnapshotAlpha(alpha, selfAlphaLead) : alpha;
+      const ea =
+        e.id !== p.id && e.netUpdatedAt !== undefined && e.netInterval !== undefined
+          ? Math.min(1.25, (now - e.netUpdatedAt) / Math.max(20, e.netInterval))
+          : isSelf
+            ? selfSnapshotAlpha(alpha, selfAlphaLead)
+            : alpha;
       const x = isSelf ? selfPos.x : e.prevPos.x + (e.pos.x - e.prevPos.x) * ea;
       const y = isSelf ? selfPos.y : e.prevPos.y + (e.pos.y - e.prevPos.y) * ea;
       const z = isSelf ? selfPos.z : e.prevPos.z + (e.pos.z - e.prevPos.z) * ea;
@@ -3168,20 +3677,24 @@ export class Renderer {
         v.group.visible = vis;
         if (v.sparkle && vis) {
           // sub-pixel beyond ~45u but still a full transparent draw each
-          const sdx = e.pos.x - p.pos.x, sdz = e.pos.z - p.pos.z;
+          const sdx = e.pos.x - p.pos.x,
+            sdz = e.pos.z - p.pos.z;
           v.sparkle.visible = sdx * sdx + sdz * sdz < SPARKLE_DRAW_RANGE_SQ;
           const pulse = 0.75 + Math.sin(this.time * 3 + e.id) * 0.25;
           v.sparkle.scale.set(pulse, pulse, 1);
           v.sparkle.material.rotation = this.time * 0.8;
         }
-        if (vis
-          && (e.objectItemId === 'bastion_ward_stone' || e.objectItemId === 'soulshard_pillar')
-          && e.auras.some((a) => a.id === 'nythraxis_wardstone_lit')) {
+        if (
+          vis &&
+          (e.objectItemId === 'bastion_ward_stone' || e.objectItemId === 'soulshard_pillar') &&
+          e.auras.some((a) => a.id === 'nythraxis_wardstone_lit')
+        ) {
           this.vfx.castSparkle(e.id, 'arcane', dt * 2.6);
         }
         if (v.portal && vis) {
           v.portal.rotation.z = this.time * 1.4;
-          (v.portal.material as THREE.MeshBasicMaterial).opacity = 0.45 + Math.sin(this.time * 2.2 + e.id) * 0.15;
+          (v.portal.material as THREE.MeshBasicMaterial).opacity =
+            0.45 + Math.sin(this.time * 2.2 + e.id) * 0.15;
         }
         continue;
       }
@@ -3201,19 +3714,33 @@ export class Renderer {
       }
 
       // live skin swap — appearance changed (in-game changer or a multiplayer peer)
-      if (e.skin !== v.skin) { v.skin = e.skin; v.visual.setSkin(e.skin); }
+      if (e.skin !== v.skin) {
+        v.skin = e.skin;
+        v.visual.setSkin(e.skin);
+      }
+
+      // live held-weapon swap — equipped mainhand changed (self equip or a peer's
+      // gear update); setWeapon no-ops on classes with a fixed weapon (hunter)
+      if (e.mainhandItemId !== v.mainhandItemId) {
+        v.mainhandItemId = e.mainhandItemId;
+        v.visual.setWeapon(e.mainhandItemId);
+      }
 
       // live body-size buffs (Fiesta power-ups): scale the whole group so the
       // rig, click proxy, and any form visual grow/shrink together.
-      if (e.scale !== v.liveScale) { v.liveScale = e.scale; v.group.scale.setScalar(e.scale); }
+      if (e.scale !== v.liveScale) {
+        v.liveScale = e.scale;
+        v.group.scale.setScalar(e.scale);
+      }
 
       // swimming pose: prone at the surface (derived here — the sim is unaware).
       // The cheap feet-depth test gates the expensive terrain-noise sample: an
       // entity whose feet are above the swim line can't be swimming, so the vast
       // majority (everyone on land) skip groundHeight() entirely each frame.
-      const swimming = !e.dead
-        && e.pos.y <= WATER_LEVEL - 0.5
-        && groundHeight(e.pos.x, e.pos.z, this.sim.cfg.seed) < WATER_LEVEL - 0.8;
+      const swimming =
+        !e.dead &&
+        e.pos.y <= WATER_LEVEL - 0.5 &&
+        groundHeight(e.pos.x, e.pos.z, this.sim.cfg.seed) < WATER_LEVEL - 0.8;
 
       // lazy form visuals, swapped by visibility like the old sheep/bear rigs
       if (polyed && !v.sheepVisual) {
@@ -3236,11 +3763,20 @@ export class Renderer {
       if (v.bearVisual) v.bearVisual.root.visible = bear;
       if (v.catVisual) v.catVisual.root.visible = cat;
       if (v.travelVisual) v.travelVisual.root.visible = travel;
-      const active = polyed && v.sheepVisual ? v.sheepVisual
-        : bear && v.bearVisual ? v.bearVisual
-          : cat && v.catVisual ? v.catVisual
-            : travel && v.travelVisual ? v.travelVisual : v.visual;
-      const ghost = ghostWolf || shouldRenderStealthGhost(this.sim.playerId, e) || e.templateId.startsWith('vision_');
+      const active =
+        polyed && v.sheepVisual
+          ? v.sheepVisual
+          : bear && v.bearVisual
+            ? v.bearVisual
+            : cat && v.catVisual
+              ? v.catVisual
+              : travel && v.travelVisual
+                ? v.travelVisual
+                : v.visual;
+      const ghost =
+        ghostWolf ||
+        shouldRenderStealthGhost(this.sim.playerId, e) ||
+        e.templateId.startsWith('vision_');
       active.setGhost(ghost);
       active.setSoulRend(characterSoulRendActive(e));
       v.visual.root.visible = active === v.visual;
@@ -3258,7 +3794,8 @@ export class Renderer {
       const ax = isSelf ? e.prevPos.x + (e.pos.x - e.prevPos.x) * alpha : x;
       const ay = isSelf ? e.prevPos.y + (e.pos.y - e.prevPos.y) * alpha : y;
       const az = isSelf ? e.prevPos.z + (e.pos.z - e.prevPos.z) * alpha : z;
-      const vx = ax - v.lastX, vz = az - v.lastZ;
+      const vx = ax - v.lastX,
+        vz = az - v.lastZ;
       v.lastX = ax;
       v.lastZ = az;
       const loco = updateLocomotion(v.loco, vx, vz, facing, dt);
@@ -3269,10 +3806,11 @@ export class Renderer {
       // airborne state from foot height vs terrain — keeps the jump pose working in
       // both worlds without a wire change. Gated to players (only they jump) to keep
       // the extra groundHeight sample off the hot path for mobs/NPCs.
-      const airborne = !visuallyDead && !swimming && (
-        !e.onGround
-        || (e.kind === 'player'
-          && ay - groundHeight(ax, az, this.sim.cfg.seed) > AIRBORNE_EPS));
+      const airborne =
+        !visuallyDead &&
+        !swimming &&
+        (!e.onGround ||
+          (e.kind === 'player' && ay - groundHeight(ax, az, this.sim.cfg.seed) > AIRBORNE_EPS));
       const st: AnimState = {
         speed: loco.speed,
         moving,
@@ -3290,20 +3828,32 @@ export class Renderer {
       if (sink && d2 < SFX_MOVE_RANGE_SQ) {
         // jump / land / water-entry edges
         if (airborne && !v.wasAirborne && !visuallyDead) sink.movement('jump', ax, ay, az, isSelf);
-        else if (!airborne && v.wasAirborne && !visuallyDead) sink.movement('land', ax, ay, az, isSelf);
-        if (swimming && !v.wasSwimming && !visuallyDead) sink.movement('splash', ax, ay, az, isSelf);
+        else if (!airborne && v.wasAirborne && !visuallyDead)
+          sink.movement('land', ax, ay, az, isSelf);
+        if (swimming && !v.wasSwimming && !visuallyDead)
+          sink.movement('splash', ax, ay, az, isSelf);
         // footfalls / swim strokes via a distance accumulator (no timers)
         if (visuallyDead || st.sitting) {
           v.stepAccum = 0;
         } else if (swimming) {
           v.stepAccum += loco.speed * dt;
-          if (v.stepAccum >= SWIM_STRIDE) { v.stepAccum = 0; sink.movement('swim', ax, ay, az, isSelf); }
+          if (v.stepAccum >= SWIM_STRIDE) {
+            v.stepAccum = 0;
+            sink.movement('swim', ax, ay, az, isSelf);
+          }
         } else if (moving && !airborne) {
           v.stepAccum += loco.speed * dt;
           const stride = loco.speed >= FOOT_RUN_SPEED ? FOOT_STRIDE_RUN : FOOT_STRIDE_WALK;
           if (v.stepAccum >= stride) {
             v.stepAccum = 0;
-            sink.footstep(ax, ay, az, this.surfaceAt(ax, az, ay), loco.speed >= FOOT_RUN_SPEED, isSelf);
+            sink.footstep(
+              ax,
+              ay,
+              az,
+              this.surfaceAt(ax, az, ay),
+              loco.speed >= FOOT_RUN_SPEED,
+              isSelf,
+            );
           }
         } else {
           // standing still — prime the accumulator so the first step after moving
@@ -3317,15 +3867,17 @@ export class Renderer {
       // far (static LOD mesh visible) = every 6th; edges latch regardless
       let animate = true;
       if (id !== p.id) {
-        if (v.isFar) animate = ((this.frameIdx + e.id) % 6) === 0;
+        if (v.isFar) animate = (this.frameIdx + e.id) % 6 === 0;
         else if (d2 > ENTITY_SHADOW_RANGE_SQ) animate = ((this.frameIdx + e.id) & 1) === 0;
       }
       active.update(dt, st, animate);
 
-      const emoteId = e.kind === 'player' && e.overheadEmoteId && !e.dead ? e.overheadEmoteId : null;
+      const emoteId =
+        e.kind === 'player' && e.overheadEmoteId && !e.dead ? e.overheadEmoteId : null;
       const emoteKey = emoteId ? `${emoteId}:${e.overheadEmoteSeq}` : null;
       if (emoteKey !== v.lastOverheadEmoteKey) {
-        const canPlayEmote = emoteId && !moving && !st.airborne && !st.swimming && !st.casting && !st.sitting;
+        const canPlayEmote =
+          emoteId && !moving && !st.airborne && !st.swimming && !st.casting && !st.sitting;
         if (canPlayEmote) {
           active.playEmote(emoteId);
           v.lastOverheadEmoteKey = emoteKey;
@@ -3335,7 +3887,13 @@ export class Renderer {
       }
 
       if (st.casting) {
-        this.vfx.castSparkle(e.id, e.castingAbility === 'demon_heal' ? 'shadow' : ABILITIES[e.castingAbility!]?.school ?? 'arcane', dt);
+        this.vfx.castSparkle(
+          e.id,
+          e.castingAbility === 'demon_heal'
+            ? 'shadow'
+            : (ABILITIES[e.castingAbility!]?.school ?? 'arcane'),
+          dt,
+        );
       }
       if (e.auras.some((a) => a.id === 'nythraxis_soul_rend')) {
         this.vfx.castSparkle(e.id, 'shadow', dt * 3.2);
@@ -3360,11 +3918,18 @@ export class Renderer {
         this.selectionRing.position.set(cx, gy, cz);
         this.selectionRing.scale.setScalar(target.scale);
         const drape = drapeRingLocalY(
-          this.selectionRingLocalXZ, cx, cz, gy, target.scale, 0.08,
+          this.selectionRingLocalXZ,
+          cx,
+          cz,
+          gy,
+          target.scale,
+          0.08,
           (sx, sz) => groundHeight(sx, sz, seed),
           this.selectionRingDrapeY,
         );
-        const ringPos = this.selectionRingMesh.geometry.getAttribute('position') as THREE.BufferAttribute;
+        const ringPos = this.selectionRingMesh.geometry.getAttribute(
+          'position',
+        ) as THREE.BufferAttribute;
         for (let i = 0; i < drape.length; i++) ringPos.setY(i, drape[i]);
         ringPos.needsUpdate = true;
         this.selectionRingTicks.position.y = 0.08; // ticks float just above the footing
@@ -3391,10 +3956,26 @@ export class Renderer {
         const lv = this.views.get(p.id);
         const facing = lv ? lv.group.rotation.y : p.facing;
         const sample = (sx: number, sz: number): number => groundHeight(sx, sz, seed);
-        drapeConeWorld(this.targetCone.localXZ, selfPos.x, selfPos.z, facing, 0.07, sample, this.targetCone.worldXYZ);
+        drapeConeWorld(
+          this.targetCone.localXZ,
+          selfPos.x,
+          selfPos.z,
+          facing,
+          0.07,
+          sample,
+          this.targetCone.worldXYZ,
+        );
         this.targetCone.pos.needsUpdate = true;
         // The rim is a full circle, so facing is irrelevant: drape it with 0.
-        drapeConeWorld(this.targetCone.ringXZ, selfPos.x, selfPos.z, 0, 0.07, sample, this.targetCone.ringWorldXYZ);
+        drapeConeWorld(
+          this.targetCone.ringXZ,
+          selfPos.x,
+          selfPos.z,
+          0,
+          0.07,
+          sample,
+          this.targetCone.ringWorldXYZ,
+        );
         this.targetCone.ringPos.needsUpdate = true;
         this.targetCone.group.visible = true;
       }
@@ -3406,7 +3987,8 @@ export class Renderer {
     // fire flicker + rising embers
     for (let i = 0; i < this.flames.length; i++) {
       const f = this.flames[i];
-      const fl = 0.85 + Math.sin(this.time * 9 + i * 2.4) * 0.12 + Math.sin(this.time * 23 + i) * 0.06;
+      const fl =
+        0.85 + Math.sin(this.time * 9 + i * 2.4) * 0.12 + Math.sin(this.time * 23 + i) * 0.06;
       f.scale.set(fl, fl * (1 + Math.sin(this.time * 13 + i) * 0.12), fl);
       const mat = f.material as THREE.MeshLambertMaterial;
       if (mat.color.r > mat.color.b) {
@@ -3428,11 +4010,15 @@ export class Renderer {
       cl.position.x += dt * ((cl.userData.drift as number | undefined) ?? 1.6);
       if (cl.position.x > 320) cl.position.x = -320;
       if (!this.lowGfx) {
-        const along = ((cl.position.x - this.camera.position.x) * this.sunAzimuth.x
-          + (cl.position.z - this.camera.position.z) * this.sunAzimuth.z) / 320;
+        const along =
+          ((cl.position.x - this.camera.position.x) * this.sunAzimuth.x +
+            (cl.position.z - this.camera.position.z) * this.sunAzimuth.z) /
+          320;
         const t = Math.max(-1, Math.min(1, along)) * 0.5 + 0.5;
         (cl.material as THREE.SpriteMaterial).color.setRGB(
-          0.86 + 0.14 * t, 0.90 + 0.05 * t, 1.0 - 0.13 * t,
+          0.86 + 0.14 * t,
+          0.9 + 0.05 * t,
+          1.0 - 0.13 * t,
         );
       }
     }
@@ -3455,19 +4041,32 @@ export class Renderer {
     this.terrainView.update(this.camera.position.x, this.camera.position.z, fogFar);
     worldStart = markWorldPhase('terrain', worldStart);
     this.propsView.update(
-      this.camera.position.x, this.camera.position.y, this.camera.position.z,
-      this.cameraLookAt.x, this.cameraLookAt.y, this.cameraLookAt.z,
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.position.z,
+      this.cameraLookAt.x,
+      this.cameraLookAt.y,
+      this.cameraLookAt.z,
       fogFar,
     );
     this.dungeons?.update(
-      this.camera.position.x, this.camera.position.y, this.camera.position.z,
-      this.cameraLookAt.x, this.cameraLookAt.y, this.cameraLookAt.z,
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.position.z,
+      this.cameraLookAt.x,
+      this.cameraLookAt.y,
+      this.cameraLookAt.z,
     );
     worldStart = markWorldPhase('props', worldStart);
     this.foliage.update(
-      p.pos.x, p.pos.z,
-      this.camera.position.x, this.camera.position.y, this.camera.position.z,
-      this.cameraLookAt.x, this.cameraLookAt.y, this.cameraLookAt.z,
+      p.pos.x,
+      p.pos.z,
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.position.z,
+      this.cameraLookAt.x,
+      this.cameraLookAt.y,
+      this.cameraLookAt.z,
       fogFar,
     );
     worldStart = markWorldPhase('foliage', worldStart);
@@ -3519,7 +4118,8 @@ export class Renderer {
     markPhase('nameplates');
     this.updateTravelSpeedFx(p, selfPos, dt);
     // Fiesta screen shake: trauma^2 jitter offsets the camera for the draw only.
-    let shakeX = 0, shakeY = 0;
+    let shakeX = 0,
+      shakeY = 0;
     if (this.shakeTrauma > 0) {
       this.shakeElapsed += dt;
       const intensity = this.shakeTrauma * this.shakeTrauma;
@@ -3532,7 +4132,10 @@ export class Renderer {
     }
     if (this.post) this.post.render();
     else this.webgl.render(this.scene, this.camera);
-    if (shakeX !== 0 || shakeY !== 0) { this.camera.position.x -= shakeX; this.camera.position.y -= shakeY; }
+    if (shakeX !== 0 || shakeY !== 0) {
+      this.camera.position.x -= shakeX;
+      this.camera.position.y -= shakeY;
+    }
     markPhase('submit');
     const totalMs = performance.now() - totalStart;
     framePhaseMs.total = roundMs(totalMs);
@@ -3548,9 +4151,9 @@ export class Renderer {
     );
     const qualityChange = this.lastQualityChange
       ? {
-        ...this.lastQualityChange,
-        ageMs: roundMs(afterSubmit - this.lastQualityChange.atMs),
-      }
+          ...this.lastQualityChange,
+          ageMs: roundMs(afterSubmit - this.lastQualityChange.atMs),
+        }
       : null;
     this.lastFrameStats = {
       phaseMs: framePhaseMs,
@@ -3644,7 +4247,8 @@ export class Renderer {
       ranked.push({ light, d2: 0, worldPos: light.getWorldPosition(new THREE.Vector3()) });
     }
     for (const entry of ranked) {
-      const dx = entry.worldPos.x - px, dz = entry.worldPos.z - pz;
+      const dx = entry.worldPos.x - px,
+        dz = entry.worldPos.z - pz;
       entry.d2 = dx * dx + dz * dz;
     }
     const lightBudget = this.effectivePointLights || GFX.maxPointLights;
@@ -3673,15 +4277,20 @@ export class Renderer {
       const sway = Math.sin(this.time * 0.13 + i * 2.1) * 10;
       // hang the shafts sunward of the camera but near eye height so they
       // cross a third-person frame instead of floating 150u overhead
-      sp.position.copy(this.camera.position)
+      sp.position
+        .copy(this.camera.position)
         .addScaledVector(sunAzimuth, 48 + i * 26)
         .addScaledVector(side, (i - 1) * 30 + sway);
       sp.position.y = this.camera.position.y + 16 + i * 7;
-      sp.material.opacity = facing * facing * facing * (0.30 - i * 0.05);
+      sp.material.opacity = facing * facing * facing * (0.3 - i * 0.05);
     }
   }
 
-  private updateSelfRenderPosition(alpha: number, dt: number, selfAlphaLead: number): THREE.Vector3 {
+  private updateSelfRenderPosition(
+    alpha: number,
+    dt: number,
+    selfAlphaLead: number,
+  ): THREE.Vector3 {
     const p = this.sim.player;
     const playerAlpha = selfSnapshotAlpha(alpha, selfAlphaLead);
     const px = p.prevPos.x + (p.pos.x - p.prevPos.x) * playerAlpha;
@@ -3726,8 +4335,21 @@ export class Renderer {
     } else {
       // Camera collision for non-hideable blockers. Camera-ghost props are left
       // at the requested zoom and hidden in props.ts while keeping their shadows.
-      let hardT = cameraOcclusion(seed, px, eyeY, pz, cx, cy, cz, CAMERA_COLLIDER_PAD);
-      let softT = cameraOcclusion(seed, px, eyeY, pz, cx, cy, cz, CAMERA_SOFT_COLLIDER_PAD);
+      // Thread the active run's module chain so camera collision matches the
+      // delve's actual (possibly Heroic/varied) layout, not just the default.
+      const delveMods = this.sim.delveRun?.modules;
+      let hardT = cameraOcclusion(seed, px, eyeY, pz, cx, cy, cz, CAMERA_COLLIDER_PAD, delveMods);
+      let softT = cameraOcclusion(
+        seed,
+        px,
+        eyeY,
+        pz,
+        cx,
+        cy,
+        cz,
+        CAMERA_SOFT_COLLIDER_PAD,
+        delveMods,
+      );
       const segLen = Math.hypot(cx - px, cy - eyeY, cz - pz);
       if (segLen > 1e-3) {
         const minT = CAMERA_MIN_DIST / segLen;
@@ -3763,13 +4385,24 @@ export class Renderer {
     // Spatial-audio listener (at the camera, facing the player) + ambience state.
     const sink = this.audioSink;
     if (sink) {
-      const cpx = this.camera.position.x, cpy = this.camera.position.y, cpz = this.camera.position.z;
-      let fx = px - cpx, fy = eyeY - cpy, fz = pz - cpz;
+      const cpx = this.camera.position.x,
+        cpy = this.camera.position.y,
+        cpz = this.camera.position.z;
+      const fx = px - cpx,
+        fy = eyeY - cpy,
+        fz = pz - cpz;
       const fl = Math.hypot(fx, fy, fz) || 1;
       sink.setListener(cpx, cpy, cpz, fx / fl, fy / fl, fz / fl);
       const inDungeon = px > DUNGEON_X_THRESHOLD;
       const biome = zoneBiomeAt(pz);
-      const precip = !this.weatherOn || inDungeon ? null : biome === 'peaks' ? 'snow' : biome === 'marsh' ? 'rain' : null;
+      const precip =
+        !this.weatherOn || inDungeon
+          ? null
+          : biome === 'peaks'
+            ? 'snow'
+            : biome === 'marsh'
+              ? 'rain'
+              : null;
       // Only at the water's edge / in it — sampled at the player, so a loose
       // threshold made the loop bleed across the low marsh from far off.
       const nearWater = !inDungeon && groundHeight(px, pz, seed) < WATER_LEVEL + 0.4;
@@ -3784,19 +4417,28 @@ export class Renderer {
     for (const [id, v] of this.views) {
       const e = sim.entities.get(id);
       if (!e) continue;
-      const dx = e.pos.x - p.pos.x, dz = e.pos.z - p.pos.z;
+      const dx = e.pos.x - p.pos.x,
+        dz = e.pos.z - p.pos.z;
       const d2 = dx * dx + dz * dz;
       const urgent = id === p.targetId || d2 < 14 * 14 || e.castingAbility !== null;
       const isSelf = id === p.id;
       const hasOverheadEmote = !!(e.kind === 'player' && e.overheadEmoteId && !e.dead);
       const isDoor = e.templateId === 'dungeon_door' || e.templateId === 'dungeon_exit';
-      const hidden = (isSelf && !hasOverheadEmote) || d2 > NAMEPLATE_RANGE_SQ
-        || (e.dead && !e.lootable && e.kind === 'mob')
-        || (e.kind === 'object' && !isDoor)
+      const isDelveInteract =
+        e.templateId === 'delve_locked_chest' ||
+        e.templateId === 'delve_reward_chest' ||
+        e.templateId === 'delve_surface_exit';
+      const delveInteractNear =
+        isDelveInteract && d2 <= (INTERACT_RANGE + 1) * (INTERACT_RANGE + 1);
+      const hidden =
+        (isSelf && !hasOverheadEmote) ||
+        d2 > NAMEPLATE_RANGE_SQ ||
+        (e.dead && !e.lootable && e.kind === 'mob') ||
+        (e.kind === 'object' && !isDoor && !delveInteractNear) ||
         // the sealed royal door inside the crypt carries no floating label —
         // it reads as part of the back wall, not a portal billboard
-        || (isDoor && e.dungeonId === 'nythraxis_boss_arena')
-        || (!this.showNameplates && e.kind === 'mob' && !e.dead);
+        (isDoor && e.dungeonId === 'nythraxis_boss_arena') ||
+        (!this.showNameplates && e.kind === 'mob' && !e.dead);
       if (hidden) {
         if (v.nameplateDisplay !== 'none') {
           v.nameplate.style.display = 'none';
@@ -3837,7 +4479,9 @@ export class Renderer {
       v.nameplate.classList.toggle('has-emote', hasOverheadEmote);
 
       // party raid/target marker (only mobs are markable, so this is null elsewhere)
-      const emote = e.overheadEmoteId ? OVERHEAD_EMOTES.find((x) => x.id === e.overheadEmoteId) : null;
+      const emote = e.overheadEmoteId
+        ? OVERHEAD_EMOTES.find((x) => x.id === e.overheadEmoteId)
+        : null;
       if (emote && e.kind === 'player' && !e.dead) {
         v.emoteIconEl.src = emoteIconUrl(emote.id);
         const emoteLabel = t(`hudChrome.emotes.${emote.id}`);
@@ -3863,7 +4507,16 @@ export class Renderer {
       if (e.kind === 'object') {
         // dungeon doorways announce themselves
         const objName = objectDisplayName(e);
-        this.setNameplateStatic(v, `object|${objName}`, objName, '#c084ff', 'none', '', 'np-marker', '1');
+        this.setNameplateStatic(
+          v,
+          `object|${objName}`,
+          objName,
+          '#c084ff',
+          'none',
+          '',
+          'np-marker',
+          '1',
+        );
       } else if (e.kind === 'player') {
         // other players: friendly blue with an hp bar; <Guild> tag under the name.
         // Self has no overhead nameplate, so its guild line stays hidden too.
@@ -3871,15 +4524,27 @@ export class Renderer {
         const nameDisplay = isSelf ? 'none' : '';
         const hpDisplay = e.dead || isSelf ? 'none' : '';
         const guild = isSelf ? '' : e.guild;
-        this.setNameplateStatic(v, `player|${e.name}|${guild}|${nameDisplay}|${hpDisplay}|${opacity}`, e.name, '#7fb8ff', hpDisplay, '', 'np-marker', opacity, '', guild);
+        this.setNameplateStatic(
+          v,
+          `player|${e.name}|${guild}|${nameDisplay}|${hpDisplay}|${opacity}`,
+          e.name,
+          '#7fb8ff',
+          hpDisplay,
+          '',
+          'np-marker',
+          opacity,
+          '',
+          guild,
+        );
         v.nameEl.style.display = nameDisplay;
         // $WOC holder-tier flair, shown on OTHER players (own nameplate is hidden).
         this.setNameplateTier(v, isSelf ? 0 : (e.holderTier ?? 0));
         this.setNameplateHp(v, e);
       } else if (e.kind === 'npc' || (!e.hostile && e.questIds.length > 0)) {
-        const npcName = e.kind === 'npc'
-          ? npcDisplayName(e.templateId)
-          : tEntity({ kind: 'mob', id: e.templateId, field: 'name' });
+        const npcName =
+          e.kind === 'npc'
+            ? npcDisplayName(e.templateId)
+            : tEntity({ kind: 'mob', id: e.templateId, field: 'name' });
         let marker = '';
         let cls = '';
         // role-aware: '!' only at the quest's giver, '?' only at its turn-in
@@ -3888,12 +4553,30 @@ export class Renderer {
           const quest = QUESTS[qid];
           if (!quest) continue;
           const st = sim.questState(qid);
-          if (st === 'ready' && isQuestTurnInNpc(quest, e.templateId)) { marker = '?'; cls = 'ready'; break; }
-          if (st === 'available' && quest.giverNpcId === e.templateId) { marker = '!'; cls = 'avail'; }
-          else if (st === 'active' && isQuestTurnInNpc(quest, e.templateId) && !marker) { marker = '?'; cls = 'active'; }
+          if (st === 'ready' && isQuestTurnInNpc(quest, e.templateId)) {
+            marker = '?';
+            cls = 'ready';
+            break;
+          }
+          if (st === 'available' && quest.giverNpcId === e.templateId) {
+            marker = '!';
+            cls = 'avail';
+          } else if (st === 'active' && isQuestTurnInNpc(quest, e.templateId) && !marker) {
+            marker = '?';
+            cls = 'active';
+          }
         }
         const markerClass = cls ? `np-marker ${cls}` : 'np-marker';
-        this.setNameplateStatic(v, `npc|${npcName}|${marker}|${markerClass}`, npcName, FRIENDLY, 'none', marker, markerClass, '1');
+        this.setNameplateStatic(
+          v,
+          `npc|${npcName}|${marker}|${markerClass}`,
+          npcName,
+          FRIENDLY,
+          'none',
+          marker,
+          markerClass,
+          '1',
+        );
       } else {
         const diff = e.level - p.level;
         const template = MOBS[e.templateId];
@@ -3904,12 +4587,24 @@ export class Renderer {
         const friendlyPet = isFriendlyPet(e, this.sim.entities, (pl) => this.isHostilePlayer(pl));
         const color = mobNameColor(diff, e.dead, friendlyPet);
         const mobName = e.ownerId !== null ? e.name : mobDisplayName(e.templateId);
-        const name = e.dead ? t('worldContent.corpseName', { name: mobName }) : `[${e.level}${elite ? '+' : ''}] ${mobName}`;
+        const name = e.dead
+          ? t('worldContent.corpseName', { name: mobName })
+          : `[${e.level}${elite ? '+' : ''}] ${mobName}`;
         const hpDisplay = e.dead ? 'none' : '';
         const marker = e.lootable ? '$' : elite && !e.dead ? '◆' : '';
         // classic "dragon frame" cue: gold bar frame for elites, red for bosses (live mobs only)
         const frame = e.dead ? '' : boss ? 'boss' : elite ? 'elite' : '';
-        this.setNameplateStatic(v, `mob|${name}|${color}|${hpDisplay}|${marker}|${frame}`, name, color, hpDisplay, marker, 'np-marker loot', '1', frame);
+        this.setNameplateStatic(
+          v,
+          `mob|${name}|${color}|${hpDisplay}|${marker}|${frame}`,
+          name,
+          color,
+          hpDisplay,
+          marker,
+          'np-marker loot',
+          '1',
+          frame,
+        );
         this.setNameplateHp(v, e);
         // threat plate: tint the bar red when this mob is aggroed on me
         v.nameplate.classList.toggle('np-threat', isMobThreateningViewer(e, this.sim.playerId));
@@ -3967,7 +4662,7 @@ export class Renderer {
   }
 
   private setNameplateHp(v: EntityView, e: Entity): void {
-    const width = `${(100 * e.hp / Math.max(1, e.maxHp)).toFixed(1)}%`;
+    const width = `${((100 * e.hp) / Math.max(1, e.maxHp)).toFixed(1)}%`;
     if (width === v.nameplateHpWidth) return;
     v.nameplateHpWidth = width;
     v.hpFill.style.width = width;
@@ -4002,7 +4697,9 @@ export class Renderer {
     // cast_bar.ts keeps st.label as a stable id (DOM/i18n-free); localize here.
     v.castLabel.textContent = st.fishing
       ? t('abilityUi.cast.fishing')
-      : (ABILITIES[st.label] ? tEntity({ kind: 'ability', id: st.label, field: 'name' }) : st.label);
+      : ABILITIES[st.label]
+        ? tEntity({ kind: 'ability', id: st.label, field: 'name' })
+        : st.label;
   }
 
   // Hang a speech bubble over an entity's head; it follows the entity and
@@ -4046,7 +4743,10 @@ export class Renderer {
         continue;
       }
       this.tmpV.project(this.camera);
-      if (this.tmpV.z < -1 || this.tmpV.z > 1) { b.el.style.display = 'none'; continue; }
+      if (this.tmpV.z < -1 || this.tmpV.z > 1) {
+        b.el.style.display = 'none';
+        continue;
+      }
       b.el.style.display = '';
       const sx = (this.tmpV.x * 0.5 + 0.5) * w;
       const sy = (-this.tmpV.y * 0.5 + 0.5) * h;
@@ -4139,7 +4839,10 @@ export class Renderer {
       if (slot.elapsed >= CLICK_MARKER_LIFETIME) continue;
       slot.elapsed += dt;
       const a = clickMarkerAnim(slot.elapsed);
-      if (!a.active) { slot.group.visible = false; continue; }
+      if (!a.active) {
+        slot.group.visible = false;
+        continue;
+      }
       slot.ring.scale.setScalar(a.ringScale);
       slot.ringMat.opacity = a.ringAlpha;
       slot.cross.scale.setScalar(a.crossScale);

@@ -426,6 +426,18 @@ export const de_DE: EnTranslations = {
     "tips": {
       "joinChannels": "Tipp: Gebt /join world oder /join lfg ein, um mit Spielern im ganzen Realm zu chatten."
     },
+    "questShare": {
+      "notShareable": "Diese Quest kann nicht geteilt werden.",
+      "notInSharerParty": "Ihr müsst in der Gruppe von {name} sein, um diese Quest anzunehmen.",
+      "accepted": "{name} hat Eure geteilte Quest angenommen.",
+      "dialogTitle": "Geteilte Quest",
+      "viewOnlyHint": "Tretet der Gruppe des Teilenden bei, um diese Quest anzunehmen.",
+      "alreadyOn": "Ihr habt diese Quest bereits.",
+      "alreadyDone": "Ihr habt diese Quest bereits abgeschlossen.",
+      "ineligible": "Ihr erfüllt die Voraussetzungen für diese Quest nicht.",
+      "noQuestSelected": "Wählt eine Quest in Eurem Questlog zum Teilen aus.",
+      "linkTitle": "Umschalt + Klick, um diese Quest im Chat zu verlinken."
+    },
     "plurals": {
       "guildMembers": {
         "one": "Ihr seid {rank}, {count} Mitglied",
@@ -1709,6 +1721,263 @@ export const de_DE: EnTranslations = {
     "friends": "Freunde und Gilde",
     "chat": "Chat öffnen"
   },
+  "sim": {
+    "delve": {
+      "cannotEnterNow": "Du kannst jetzt keinen Tiefgang betreten.",
+      "leaveDungeonFirst": "Verlasse zuerst den Dungeon.",
+      "leaveArenaFirst": "Verlasse zuerst die Arena.",
+      "alreadyInDelve": "Du bist bereits in einem Tiefgang.",
+      "whileTrading": "Du kannst während eines Handels keinen Tiefgang betreten.",
+      "duringDuel": "Du kannst während eines Duells keinen Tiefgang betreten.",
+      "duringArena": "Du kannst während eines Arenakampfes keinen Tiefgang betreten.",
+      "unknownTier": "Unbekannte Tiefgang-Stufe.",
+      "levelRequired": "Du musst Stufe {level} sein, um {name} zu betreten.",
+      "levelRequiredTier": "Du musst Stufe {level} sein, um {name} auf {tier} zu betreten.",
+      "instancesBusy": "Alle Instanzen von {name} sind belegt. Versuche es bald erneut.",
+      "runFailed": "Lauf von {name} gescheitert.",
+      "complete": "{name} abgeschlossen.",
+      "mechanismOpen": "Ein Mechanismus klickt in der Nähe auf. Ein Durchgang öffnet sich nach Norden. Finde das Ausgangsportal vor dir.",
+      "raiseDead": "{name} beginnt mit Tote erwecken.",
+      "graveFalters": "Der Grabritus gerät ins Stocken.",
+      "doorAlreadyOpen": "Die Tür ist bereits offen.",
+      "companionRankUp": "{name} erreicht Rang {rank}.",
+      "bossChest": "Der Boss fällt. Eine gebannte Reliquiartruhe erhebt sich auf dem Podest. Knacke ihr Schloss, um deine Beute zu beanspruchen.",
+      "surfaceStairs": "Eine Treppe zur Oberfläche öffnet sich. Drücke F an der Treppe, um zu gehen.",
+      "moduleEnter": "{name}: {objective}",
+      "objectiveClearRoom": "Den Raum räumen.",
+      "objectiveDefeatBoss": "Den Boss erschlagen.",
+      "tombstoneHint": "Ein Grabstein-Durchgang öffnet sich nach Norden, wenn der Raum geräumt ist.",
+      "tombstoneOpen": "Ein versiegelter Grabstein-Durchgang schiebt sich knirschend nach Norden auf. Geh hinein, um fortzufahren.",
+      "tombstoneInto": "Du schreitest durch den Grabstein nach {name}.",
+      "chestEmpty": "Die Truhe ist leer.",
+      "notInDelve": "Du bist in keinem Tiefgang.",
+      "cannotInteract": "Damit kannst du nicht interagieren.",
+      "tooFar": "Du bist zu weit entfernt.",
+      "graveSilent": "Das Grab ist vorerst still.",
+      "doorLocked": "Die Tür ist verschlossen.",
+      "strikeWall": "Schlage gegen die Wand, um durchzubrechen.",
+      "nothingHappens": "Nichts geschieht.",
+      "unknownCompanion": "Unbekannter Gefährte.",
+      "companionMaxRank": "Dieser Gefährte ist bereits vollständig verbessert.",
+      "companionMarksRequired": "Du benötigst {marks} Tiefgang-Marken, um {name} zu verbessern.",
+      "cannotAffordCompanionUpgrade": "Du kannst dir diese Verbesserung nicht leisten.",
+      "shopItemLocked": "Du hast diesen Gegenstand noch nicht freigeschaltet.",
+      "shopMarksRequired": "Du benötigst {marks} Tiefgang-Marken, um {name} zu kaufen.",
+      "shopSealPremiumOnly": "Dieses Siegel weicht nur der Hand eines Meisters: Nur der Erlesene Einsatz kann es öffnen.",
+      "passageSealed": "Der Durchgang ist versiegelt.",
+      "moveCloserPassage": "Geh näher an den Durchgang heran.",
+      "moveCloserChest": "Geh näher an die Truhe heran.",
+      "nothingToTake": "Es ist nichts mehr zum Mitnehmen da.",
+      "wayOutNotOpen": "Der Ausweg ist noch nicht offen.",
+      "moveCloserStairs": "Geh näher an die Treppe heran."
+    },
+    "lockpick": {
+      "lockYields": "Das Schloss gibt nach! {tier} Beute.",
+      "tierPremium": "Erlesen",
+      "tierMedium": "Mittel",
+      "tierLow": "Bescheiden",
+      "alreadyInProgress": "Jemand arbeitet bereits am Schloss.",
+      "cannotPickThat": "Das kannst du nicht knacken.",
+      "chooseAnte": "Wähle 1, 2 oder 3 Dietriche.",
+      "noAttempt": "Kein Schlossversuch im Gange.",
+      "notYours": "Das ist nicht dein Schloss.",
+      "toolSlips": "Dieses Werkzeug rutscht von diesem Schloss ab.",
+      "lockJammed": "Das Schloss ist so verklemmt, dass es sich nicht mehr knacken lässt. Schließe den Tiefgang erneut ab für einen weiteren Versuch.",
+      "lastPickSnaps": "Der letzte Dietrich bricht ab. Das Schloss klemmt. Die Truhe ist verloren, es sei denn, du schließt den Tiefgang erneut ab."
+    }
+  },
+  "lockpickUi": {
+    "pickTitle": "Knacke das Schloss",
+    "cofferTitle": "Reich gefüllte Truhe",
+    "cache": "{tier} Hort",
+    "pickBlurb": "Ein reicherer Hort ist hinter mehr Schlössern versiegelt. Leichtere Schlösser geben dir mehr Versuche und mehr Zeit; ein fehlgeschlagener Versuch setzt das Schloss zurück, bis deine Versuche aufgebraucht sind.",
+    "cofferBlurb": "Dieses Siegel weicht nur einer Meisterhand: allein der schwere, erlesene Weg kann es öffnen. Knacke alle drei Schlösser für den besonderen Preis.",
+    "pagesAria": "{count} Schlösser",
+    "tries": "{count} Versuche",
+    "triesOne": "1 Versuch",
+    "perMove": "{seconds} s pro Zug",
+    "seconds": "{seconds}s",
+    "boardTitle": "Pfad der Stifte: {tier} Hort",
+    "closeAria": "Schließen",
+    "withdrawAria": "Zurückziehen",
+    "timerAria": "Verbleibende Zeit",
+    "lockOf": "Schloss {page}/{total}",
+    "lockOfAria": "Schloss {page} von {total}",
+    "triesOf": "Versuche {tries}/{total}",
+    "triesOfAria": "{tries} von {total} Versuchen übrig",
+    "ward": "Sperre {col} / {total}",
+    "depthKeys": "Schnelltasten setzen die Dietrichtiefe (Q/W/E/A/Z), nicht die Sperrennummer.",
+    "withdraw": "Zurückziehen (Esc)",
+    "action": {
+      "hardSet": "Fest setzen",
+      "set": "Setzen",
+      "steady": "Halten",
+      "ease": "Lockern",
+      "drop": "Lösen"
+    },
+    "feedback": {
+      "advanced": "Der Stift gibt nach...",
+      "slip": "Eine Sperre greift, der Dietrich rutscht ab!",
+      "bind": "Der Stift verklemmt: falsche Tiefe!",
+      "trap": "Eine falsche Sperre schnappt zu, das Schloss klemmt!",
+      "retry": "Das Schloss setzt sich zurück. Setze zu einem neuen Versuch an.",
+      "pageCleared": "Eine Stiftreihe fällt. Das nächste Schloss taucht auf.",
+      "success": "Der Riegel springt auf, der Hort gehört dir!",
+      "fail": "Das Schloss klemmt. Es rührt sich nicht mehr."
+    },
+    "summary": {
+      "success": "Schloss geknackt, {tier} Hort beansprucht.",
+      "successGeneric": "Schloss geknackt, der Hort ist beansprucht.",
+      "fail": "Das Schloss ist ruiniert. Schließe den Tiefgang erneut ab für einen weiteren Versuch.",
+      "abandoned": "Du ziehst die Dietriche wieder heraus. Das Schloss wartet."
+    }
+  },
+  "delveUi": {
+    "board": {
+      "title": "Tiefgang-Tafel",
+      "enter": "Tiefgang betreten",
+      "enterAria": "{delve} auf Schwierigkeit {tier} betreten",
+      "openDelve": "Eingestürztes Reliquiar",
+      "openDelveAria": "Tiefgang-Tafel bei {name} öffnen",
+      "marks": "Tiefgang-Marken: {count}",
+      "minLevel": "Erfordert Stufe {level}",
+      "tier": {
+        "normal": "Normal",
+        "heroic": "Heroisch"
+      },
+      "companion": {
+        "pick": "Wähle einen Gefährten",
+        "tessa": "Akolythin Tessa",
+        "rank": "Rang {rank}",
+        "boon": "Heilt die Gruppe zwischen den Kämpfen. Rang 3 belebt einen gefallenen Verbündeten einmal pro Lauf wieder.",
+        "upgrade": "Auf Rang {rank} verbessern ({marks} Marken)",
+        "upgradeAria": "{name} für {marks} Tiefgang-Marken auf Rang {rank} verbessern",
+        "maxRank": "Vollständig verbessert"
+      },
+      "tabDelve": "Tiefgang",
+      "tabShop": "Laden"
+    },
+    "shop": {
+      "price": "{marks} Marken",
+      "buy": "Kaufen",
+      "buyAria": "{item} für {marks} Tiefgang-Marken kaufen",
+      "reqHeroic": "Erfordert einen heroischen Abschluss",
+      "reqClears": "Erfordert {count} Abschlüsse",
+      "empty": "Nichts vorrätig."
+    },
+    "tracker": {
+      "title": "Tiefgang",
+      "objective": "Ziel",
+      "module": "Modul {current} von {total}",
+      "affix": "Affixe",
+      "complete": "Abgeschlossen",
+      "marks": "Tiefgang-Marken: {count}",
+      "exitHintOpen": "Geh in den Grabstein-Durchgang (Norden)",
+      "exitHintLocked": "Räume die Gegner, um den Durchgang nach Norden zu öffnen"
+    },
+    "objective": {
+      "kill_boss": "{boss} erschlagen",
+      "recover_artifact": "Bestattungsverzeichnis bergen",
+      "clear_room": "Den Raum räumen"
+    },
+    "summary": {
+      "title": "Tiefgang abgeschlossen",
+      "marks": "{count} Tiefgang-Marken verdient",
+      "loreUnlock": "Wissen freigeschaltet: {title}"
+    },
+    "death": {
+      "warning": "Ein weiterer Tod beendet diesen Tiefgang-Lauf."
+    },
+    "run": {
+      "failed": "Der Tiefgang-Lauf ist gescheitert. Du kehrst zu Bruder Halven zurück."
+    },
+    "npc": {
+      "halven": {
+        "greeting": "Das Reliquiar unten hat sich erneut verschoben. Nach Mitternacht hören wir Gesänge durch den Boden, und Akolythin Tessa schwört, die Bestattungsverzeichnisse änderten ihre eigene Tinte. Wenn du mutig genug bist, {playerName}, nimm eine Kerze und steig hinab. Vertraue nicht jeder Stimme, die du dort unten hörst. Manche kannten deinen Namen, bevor du geboren wurdest."
+      }
+    },
+    "intro": {
+      "normal": "Das Treppenhaus ist kalt und dunkel. Zerbrochene Heiligensteine säumen den Abstieg, und ein leiser Glockenton hängt in der feuchten Luft. Akolythin Tessa flüstert: \"Das Reliquiar sollte nicht so weit offen sein. Bleib dicht bei mir, {playerName}.\"",
+      "heroic": "Die Türen ächzen hinter dir zu. Namen kratzen über den Stein wie Fingernägel. Tessas Kerze brennt blau. \"Sie rufen jetzt nicht die Toten, {playerName}. Sie antworten auf etwas.\""
+    },
+    "module": {
+      "reliquary_sunken_ossuary": "Wasser sickert durch die Grabregale und führt alte Asche in silberschwarzen Rinnsalen mit sich.",
+      "reliquary_bell_niche": "Dutzende Handglocken hängen schweigend da, jede mit Leichentuch umwickelt.",
+      "reliquary_saintless_hall": "Statuen, deren Gesichter mit sorgfältigem Hass weggemeißelt wurden.",
+      "reliquary_finale": "Die vergrabene Glocke läutet einmal unter deinen Stiefeln."
+    },
+    "moduleName": {
+      "reliquary_sunken_ossuary": "Das versunkene Beinhaus",
+      "reliquary_bell_niche": "Die Glockennische",
+      "reliquary_saintless_hall": "Die heiligenlose Halle",
+      "reliquary_finale": "Die glockenvergrabene Kammer"
+    },
+    "companion": {
+      "barkLine": "{name}: {line}",
+      "tessa": {
+        "combat_start": "Achte auf deinen Stand, {playerName}. Die Toten sind hier ruhelos.",
+        "low_hp": "Atme. Ich habe noch Gebete für dich übrig.",
+        "trap_spotted": "Halt: etwas im Boden erinnert sich an Schritte.",
+        "boss_pull": "Diese Glocke kennt dein Gewicht, {playerName}. Knie nicht nieder.",
+        "completion": "Das Verzeichnis kann eine weitere Nacht ruhen. Gut gemacht.",
+        "rank": {
+          "1": "Kapellennovizin",
+          "2": "Kerzenträgerin",
+          "3": "Reliquiar-Akolythin",
+          "4": "Grabruf-Zeugin",
+          "5": "Kapellenwächterin"
+        }
+      }
+    },
+    "boss": {
+      "varric": {
+        "bell": {
+          "emote": "Diakon Varric umfasst die vergrabene Glocke mit beiden Händen!",
+          "log": "Diakon Varric beginnt, die Totenglocke zu läuten.",
+          "warning": "Geh weg von Diakon Varric!",
+          "impact": "Der Klang der Glocke spaltet den Kammerboden!",
+          "lesson": "Glockenschlag: ein Bodenstoß alle zwölf Sekunden. Geh weg, bevor er einschlägt."
+        },
+        "raise": {
+          "emote": "Diakon Varric ruft Namen aus den aufgebrochenen Gräbern!",
+          "log": "Diakon Varric beginnt mit Tote erwecken.",
+          "warning": "Beende den Grabritus!",
+          "object": "Das geborstene Grab erbebt unter gestohlenem Atem.",
+          "interrupt_ok": "Der Grabritus gerät ins Stocken.",
+          "interrupt_fail": "Die Toten antworten auf Diakon Varrics Ruf!",
+          "lesson": "Unterbrich das geborstene Grab innerhalb von fünf Sekunden, sonst erheben sich die Toten auf seinen Ruf."
+        },
+        "pull": "Du trittst mit unreiner Absicht auf geweihten Staub. Knie nieder und lass dich zählen.",
+        "intro": "Keine Seele ist verloren. Nur verlegt.",
+        "mid60": "Diakon Varric liest mit zitterndem Triumph Namen aus dem Verzeichnis.",
+        "mid30": "Die Totenglocke antwortet auf jeden Namen, den er spricht.",
+        "defeat": "Nein... Ich hatte die Namen... Ich hatte sie alle..."
+      }
+    },
+    "lore": {
+      "eastbrook_ledger": "Eine wasserfleckige Seite aus Eastbrooks Bestattungsverzeichnis. Namen sind durchgestrichen und in einer Handschrift neu geschrieben, die nicht menschlich ist.",
+      "first_collapse": "Kapellenaufzeichnungen vermerken die erste Senkung: Heiligensteine geborsten, Regale geneigt, und ein Glockenton, gehört aus dem Untergrund.",
+      "gravecaller_mark": "Ein in Sargholz geritztes Siegel, nicht Morthens Zeichen, sondern ein älteres Grabrufer-Mal aus der Zeit vor der Hohlen Gruft.",
+      "bell_below": "Tessas Randnotiz: \"Unter dem Reliquiar liegt eine zweite Glocke. Sie läutet für die Verlegten, nicht für die Toten.\"",
+      "tessa_note": "Ein gefalteter Zettel in Tessas Schrift: \"Wenn sich die Verzeichnisse ändern, während wir unten sind, vertraue der Kerze, nicht den Stimmen.\""
+    },
+    "affix": {
+      "restless_graves": "Ruhelose Gräber",
+      "bad_air": "Schlechte Luft",
+      "candleblind": "Kerzenblind",
+      "old_mechanisms": "Alte Mechanismen",
+      "flooded_paths": "Überflutete Pfade",
+      "grave_tax": "Gräbertribut",
+      "unstable_roof": "Instabiles Dach",
+      "cult_remnants": "Kultüberreste"
+    },
+    "blessing": {
+      "chapel_candle": "Kapellenkerze: sicherer Lauf, eine Tiefgang-Marke weniger beim Abschluss."
+    },
+    "chest": {
+      "flavor": "Die Toten haben hergegeben, was sie entbehren können."
+    }
+  },
   "fiesta": {
     "bracket": "Fiesta",
     "enterQueue": "Tretet der Fiesta bei!",
@@ -1981,7 +2250,14 @@ export const de_DE: EnTranslations = {
     "portraitAlt": "Porträt von {name}",
     "viewProfile": "Profil ansehen",
     "profile": "Profil",
-    "closeProfile": "Profil schließen"
+    "closeProfile": "Profil schließen",
+    "sortBy": "Sortieren",
+    "sortByLabel": "Charaktere sortieren",
+    "sortMenuLabel": "Sortieroptionen",
+    "sortLevel": "Stufe",
+    "sortName": "Name",
+    "sortRecent": "Zuletzt gespielt",
+    "sortPlaytime": "Spielzeit"
   },
   "deleteCharacter": {
     "title": "Charakter löschen",
@@ -2459,6 +2735,8 @@ export const de_DE: EnTranslations = {
       "lootReceiveMoney": "Ihr erhaltet {money}.",
       "lootMoney": "Ihr plündert {money}.",
       "soldItem": "Ihr habt {item} für {money} verkauft.",
+      "soldJunkOne": "Ihr habt {count} grauen Gegenstand für {money} verkauft.",
+      "soldJunkMany": "Ihr habt {count} graue Gegenstände für {money} verkauft.",
       "friendOnline": "{name} ist online gekommen.",
       "friendOffline": "{name} ist offline gegangen."
     },
@@ -2862,7 +3140,10 @@ export const de_DE: EnTranslations = {
       "sellQuantityTitle": "{item} verkaufen",
       "sellQuantityInput": "Zu verkaufende Menge",
       "sellQuantityConfirm": "Verkaufen",
-      "sellQuantityCancel": "Abbrechen"
+      "sellQuantityCancel": "Abbrechen",
+      "sellJunk": "Graues verkaufen",
+      "sellJunkAria": "Alle grauen Gegenstände für {price} verkaufen",
+      "sellJunkHint": "Verkauft alle grauen Gegenstände in euren Taschen außer Questgegenständen."
     },
     "market": {
       "title": "Weltmarkt",
@@ -3874,8 +4155,8 @@ export const de_DE: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "Balg eines Gratpirschers"
       },
-      "pristine_ridge_stalker_pelt": {
-        "name": "Makelloser Balg eines Gratpirschers"
+      "old_cragmaws_pelt": {
+        "name": "Balg des alten Cragmaw"
       },
       "glowing_wax": {
         "name": "Glühendes Wachs"
@@ -4450,6 +4731,33 @@ export const de_DE: EnTranslations = {
       "wyrmshadow_talongrips": {
         "name": "Wyrmschatten-Krallengriffe"
       },
+      "reliquary_plate_chest": {
+        "name": "Halsberge der Reliquiarwache"
+      },
+      "reliquary_leather_chest": {
+        "name": "Wams des Staubwächters"
+      },
+      "reliquary_cloth_chest": {
+        "name": "Leichentuch des Reliquiars"
+      },
+      "reliquary_legs": {
+        "name": "Gruftgebundene Beinwickel"
+      },
+      "reliquary_helm": {
+        "name": "Helm der Beinhauswache"
+      },
+      "reliquary_shoulder": {
+        "name": "Zerbröckelte Schulterstücke"
+      },
+      "reliquary_gloves_rog": {
+        "name": "Knochenwächter-Griffe"
+      },
+      "deacon_reliquary_helm": {
+        "name": "Reliquiarhelm des Diakons"
+      },
+      "varric_shadow_cowl": {
+        "name": "Varrics Schattenkapuze"
+      },
       "the_codfather": {
         "name": "Der Kabeljaupate"
       },
@@ -4740,6 +5048,27 @@ export const de_DE: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Geißel von Thornpeak"
       },
+      "reliquary_ledger_wraith": {
+        "name": "Verzeichnisgespenst"
+      },
+      "reliquary_funeral_ringer": {
+        "name": "Begräbnisläuter"
+      },
+      "reliquary_gravecall_acolyte": {
+        "name": "Grabruf-Akolyth"
+      },
+      "reliquary_bonewalker": {
+        "name": "Erweckter Knochengänger"
+      },
+      "reliquary_saintless_effigy": {
+        "name": "Heiligenloses Abbild"
+      },
+      "deacon_varric": {
+        "name": "Diakon Varric"
+      },
+      "acolyte_tessa": {
+        "name": "Akolythin Tessa"
+      },
       "ironvein_foreman": {
         "name": "Eisenader-Vorarbeiter"
       },
@@ -4949,6 +5278,11 @@ export const de_DE: EnTranslations = {
         "name": "Bruder Aldric",
         "title": "Priester des Tals",
         "greeting": "Vom Kapellenhof im Tal bis zum Dach der Welt... die Spur endet hier. Ich spüre, wie der Berg lauscht."
+      },
+      "brother_halven": {
+        "name": "Bruder Halven",
+        "title": "Reliquiarhüter",
+        "greeting": "Das Reliquiar unten hat sich erneut verschoben."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",
@@ -5804,6 +6138,9 @@ export const de_DE: EnTranslations = {
           },
           "8": {
             "label": "Hellholz-Lichtung"
+          },
+          "9": {
+            "label": "Hellholz-Lichtung"
           }
         }
       },
@@ -5905,12 +6242,22 @@ export const de_DE: EnTranslations = {
         "enterText": "Du trittst durch das Mondtor — die Luft wird zu kaltem Wasser und bleichem Licht, und der Gesang schließt sich über deinem Haupt.",
         "leaveText": "Du tauchst durch das Mondtor empor in die Bergnacht."
       }
+    },
+    "delves": {
+      "collapsed_reliquary": {
+        "name": "Das Eingestürzte Reliquiar",
+        "enterText": "Du steigst hinab in das eingestürzte Reliquiar.",
+        "leaveText": "Du kletterst zurück zu Bruder Halven bei der Reliquiarruine."
+      }
     }
   },
   "worldContent": {
     "corpseName": "{name} (Leichnam)",
     "dungeonExitName": "Ausgang von {name}",
     "dungeonPartyWarning": "{name} ist für eine vollständige Gruppe von {count} gedacht. Geh vorsichtig vor.",
-    "dungeonInstanceBusy": "Alle Instanzen von {name} sind belegt. Versuch es bald erneut."
+    "dungeonInstanceBusy": "Alle Instanzen von {name} sind belegt. Versuch es bald erneut.",
+    "delveLockedChestInteract": "Drücke F, um das Schloss zu knacken",
+    "delveRewardChestInteract": "Drücke F, um Beute zu beanspruchen",
+    "delveSurfaceExitInteract": "Drücke F, um hinaufzuklettern"
   }
 };

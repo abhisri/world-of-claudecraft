@@ -2,7 +2,7 @@ import type { WebSocket } from 'ws';
 import { createBotDetector } from '#bot-detector';
 import { verifyChallenge } from '../src/sim/client_challenge';
 import { MECH_CHROMAS, mechChromaItemId, mechChromaSkinIndex } from '../src/sim/content/skins';
-import { DUNGEONS, zoneAt } from '../src/sim/data';
+import { DELVES, DUNGEONS, zoneAt } from '../src/sim/data';
 import { parseMoveInputFrame } from '../src/sim/move_input';
 import type { PlayerMeta } from '../src/sim/sim';
 import { MAX_CHAT_MESSAGE_LEN, Sim } from '../src/sim/sim';
@@ -18,6 +18,7 @@ import {
   type SimEvent,
 } from '../src/sim/types';
 import { isOverheadEmoteId } from '../src/world_api';
+import { recordOnlineSample } from './admin_db';
 import { offensiveName } from './auth';
 import type { BotDetector, BotTrackingContext } from './bot_detector/contract';
 import { ChatFilter } from './chat_filter';
@@ -71,6 +72,9 @@ const WIRE_CACHE_SWEEP_TICKS = 1200;
 const EVENT_RADIUS = 90;
 const AUTOSAVE_SECONDS = 30;
 const SAVE_CONCURRENCY = 4;
+// Valid lockpicking action enums accepted from the client (anti-cheat: reject
+// anything else before it reaches the Sim).
+const LOCKPICK_ACTIONS = new Set(['hardSet', 'set', 'steady', 'ease', 'drop', 'abort']);
 const LEAVE_SAVE_MAX_ATTEMPTS = 5;
 const LEAVE_SAVE_RETRY_BASE_MS = 250;
 const LEAVE_SAVE_RETRY_MAX_MS = 4000;
@@ -172,6 +176,7 @@ interface SentEntityVersions {
 
 export interface AdminServerStats {
   online: number;
+  onlineAccounts: number;
   peakOnline: number;
   uptimeSeconds: number;
   tickMsAvg: number;
@@ -222,6 +227,7 @@ interface WireAura {
   kind: string;
   rem: number;
   dur: number;
+  stacks?: number;
 }
 
 interface WhoRosterRow {
@@ -243,6 +249,7 @@ function identityFields(e: Entity): Record<string, unknown> {
   const out: Record<string, unknown> = { k: e.kind, tid: e.templateId, nm: e.name, lv: e.level };
   if (e.skinCatalog === 'mech') out.cat = 'mech';
   if (e.skin) out.sk = e.skin;
+  if (e.mainhandItemId) out.mh = e.mainhandItemId; // equipped mainhand → held weapon model (render-only)
   if (e.holderTier) out.ht = e.holderTier; // $WOC holder-tier flair (cosmetic)
   if (e.holderBalance) out.hb = Math.round(e.holderBalance); // exact $WOC, for inspect
   if (e.guild) out.gd = e.guild;
@@ -284,6 +291,7 @@ function dynamicFields(e: Entity): Record<string, unknown> {
   if (e.ownerId !== null) {
     out.pm = e.petMode;
     out.pt = round2(e.petTauntTimer);
+    if (e.petAutoTaunt) out.pa = 1;
   }
   // top hate-table entries so the party threat meter shows real numbers
   if (e.kind === 'mob' && !e.dead && e.threat.size > 0) out.thr = threatEntries(e, 8);
@@ -295,6 +303,7 @@ function dynamicFields(e: Entity): Record<string, unknown> {
         kind: a.kind,
         rem: round2(a.remaining),
         dur: a.duration,
+        ...(a.stacks && a.stacks > 1 ? { stacks: a.stacks } : {}),
       }),
     );
   }
@@ -562,6 +571,9 @@ export class GameServer {
       last = now;
       if (dt > 0.5) dt = 0.5;
       acc += dt;
+      // Feed the authoritative UTC day to the sim so the delve daily reset (FR-5.1)
+      // works without the sim reading the wall clock itself (determinism invariant).
+      this.sim.utcDay = new Date().toISOString().slice(0, 10);
       while (acc >= DT) {
         this.clearStaleInputs();
         const events = this.sim.tick();
@@ -794,7 +806,7 @@ export class GameServer {
         return { error: 'too many characters on this account are already in the world' };
       }
     }
-    const pid = this.sim.addPlayer(cls, name, { state: state ?? undefined });
+    const pid = this.sim.addPlayer(cls, name, { state: state ?? undefined, characterId });
     if (isGm) {
       // GM characters: invulnerable, and always at the level cap (the row is
       // created without state, so the first join levels them up)
@@ -849,6 +861,7 @@ export class GameServer {
     this.clients.set(pid, session);
     this.sessionsByCharacterId.set(characterId, session);
     this.peakOnline = Math.max(this.peakOnline, this.clients.size);
+    void this.recordOnlineSnapshot();
     openPlaySession(accountId, characterId, name, meta)
       .then((id) => {
         session.dbSessionId = id;
@@ -938,6 +951,7 @@ export class GameServer {
       if (prev <= 1) this.ipSessionCounts.delete(session.ip);
       else this.ipSessionCounts.set(session.ip, prev - 1);
     }
+    void this.recordOnlineSnapshot();
     this.devTierPids.delete(session.pid);
     this.social.forget(session.characterId);
     // delete from clients first so friends see them as offline in the notice
@@ -1046,6 +1060,10 @@ export class GameServer {
     }
   }
 
+  rekeyMarketSeller(characterId: number, oldName: string, newName: string): boolean {
+    return this.sim.rekeyMarketSeller(characterId, oldName, newName);
+  }
+
   // Close every open play_sessions row; called on graceful shutdown so the
   // sessions of currently-online players keep their real duration.
   async endAllPlaySessions(): Promise<void> {
@@ -1065,6 +1083,7 @@ export class GameServer {
     const mem = process.memoryUsage();
     return {
       online: this.clients.size,
+      onlineAccounts: this.liveAccountIds().size,
       peakOnline: this.peakOnline,
       uptimeSeconds: Math.round((Date.now() - this.startedAt) / 1000),
       tickMsAvg: Math.round(this.tickMsAvg * 100) / 100,
@@ -1119,6 +1138,12 @@ export class GameServer {
     return new Set([...this.clients.values()].map((s) => s.accountId));
   }
 
+  async recordOnlineSnapshot(): Promise<void> {
+    await recordOnlineSample(this.clients.size, this.liveAccountIds().size).catch((err) =>
+      console.error('failed to record online sample:', err),
+    );
+  }
+
   reportTargetForPid(
     pid: number,
   ): { accountId: number; characterId: number; characterName: string } | null {
@@ -1130,6 +1155,17 @@ export class GameServer {
           characterName: session.name,
         }
       : null;
+  }
+
+  // Live authoritative level for a currently-online character. This uses the
+  // serialized character state rather than entity.level so temporary event
+  // scaling does not leak into shared-card metadata. Callers must verify
+  // ownership before reading by raw character id.
+  liveLevelForCharacter(characterId: number): number | null {
+    const session = this.sessionsByCharacterId.get(characterId);
+    if (!session) return null;
+    const state = this.sim.serializeCharacter(session.pid);
+    return state ? state.level : null;
   }
 
   disconnectAccount(accountId: number, reason: string): void {
@@ -1431,6 +1467,12 @@ export class GameServer {
           this.resyncQuests(session);
         }
         break;
+      case 'qlinkaccept':
+        if (typeof msg.quest === 'string' && typeof msg.from === 'number') {
+          sim.acceptLinkedQuest(msg.quest, msg.from, pid);
+          this.resyncQuests(session);
+        }
+        break;
       case 'equip':
         if (typeof msg.item === 'string') sim.equipItem(msg.item, pid);
         break;
@@ -1461,6 +1503,9 @@ export class GameServer {
         break;
       case 'buyback':
         if (typeof msg.item === 'string') sim.buyBackItem(msg.item, pid);
+        break;
+      case 'sell_all_junk':
+        sim.sellAllJunk(pid);
         break;
       case 'change_skin':
         if (typeof msg.skin === 'number') {
@@ -1612,6 +1657,9 @@ export class GameServer {
         break;
       case 'pet_taunt':
         sim.petTaunt(pid);
+        break;
+      case 'pet_auto_taunt':
+        if (typeof msg.enabled === 'boolean') sim.setPetAutoTaunt(msg.enabled, pid);
         break;
       case 'pet_feed':
         if (typeof msg.item === 'string') sim.feedPet(msg.item, pid);
@@ -1851,6 +1899,72 @@ export class GameServer {
         if (exit) sim.leaveDungeon(pid);
         break;
       }
+      case 'enter_delve': {
+        if (typeof msg.delveId !== 'string' || typeof msg.tierId !== 'string') break;
+        const e = sim.entities.get(pid);
+        const delve = DELVES[msg.delveId];
+        if (!e || !delve || e.dead) break;
+        if (Math.hypot(e.pos.x - delve.doorPos.x, e.pos.z - delve.doorPos.z) > 12) break;
+        sim.enterDelve(msg.delveId, msg.tierId, pid);
+        this.resyncDelves(session);
+        break;
+      }
+      case 'leave_delve': {
+        const e = sim.entities.get(pid);
+        if (!e || !sim.delveRunForPlayer(pid)) break;
+        sim.leaveDelve(pid);
+        this.resyncDelves(session);
+        break;
+      }
+      case 'delve_interact': {
+        if (typeof msg.objectId !== 'number') break;
+        sim.delveInteract(msg.objectId, pid);
+        break;
+      }
+      case 'companion_upgrade': {
+        if (typeof msg.companionId !== 'string') break;
+        const e = sim.entities.get(pid);
+        if (!e || e.dead) break;
+        // Geo-gate to the board NPC (at the delve door), like enter_delve / delve_buy:
+        // the companion is ranked up at Brother Halven, not from anywhere in the world.
+        const delve = Object.values(DELVES).find((d) => d.autoCompanionId === msg.companionId);
+        if (!delve || Math.hypot(e.pos.x - delve.doorPos.x, e.pos.z - delve.doorPos.z) > 12) break;
+        sim.companionUpgrade(msg.companionId, pid);
+        break;
+      }
+      case 'delve_buy': {
+        if (typeof msg.delveId !== 'string' || typeof msg.itemId !== 'string') break;
+        const e = sim.entities.get(pid);
+        const delve = DELVES[msg.delveId];
+        if (!e || !delve || e.dead) break;
+        // Geo-gate to the board NPC (at the delve door), like enter_delve.
+        if (Math.hypot(e.pos.x - delve.doorPos.x, e.pos.z - delve.doorPos.z) > 12) break;
+        sim.delveBuyShopItem(msg.delveId, msg.itemId, pid);
+        this.resyncDelves(session);
+        break;
+      }
+      case 'lockpick_engage': {
+        if (typeof msg.objectId !== 'number') break;
+        if (msg.ante !== 1 && msg.ante !== 2 && msg.ante !== 3) break;
+        sim.lockpickEngage(msg.objectId, msg.ante, pid);
+        break;
+      }
+      case 'lockpick_action': {
+        if (!LOCKPICK_ACTIONS.has(msg.action)) break;
+        const sid = typeof msg.sid === 'string' ? msg.sid : undefined;
+        sim.lockpickAction(msg.action, pid, sid);
+        break;
+      }
+      case 'lockpick_abort': {
+        const sid = typeof msg.sid === 'string' ? msg.sid : undefined;
+        sim.lockpickAbort(pid, sid);
+        break;
+      }
+      case 'collect_delve_chest_loot': {
+        if (typeof msg.objectId !== 'number') break;
+        sim.collectDelveChestLoot(msg.objectId, pid);
+        break;
+      }
       // client telemetry should not be considered as unknown command. Used for offline stats computing.
       case 'telemetry':
         break;
@@ -2068,6 +2182,12 @@ export class GameServer {
     // open need-greed rolls this player can still answer, so a client that
     // missed the transient lootRoll event re-shows the prompt from state
     maybe('lroll', this.sim.activeLootRolls(session.pid));
+    maybe('drun', this.sim.delveRunWire(session.pid));
+    maybe('dcompanion', this.sim.delveCompanionWire(session.pid));
+    maybe('dmarks', this.sim.delveMarksFor(session.pid));
+    maybe('dcomp', this.sim.companionUpgradesFor(session.pid));
+    maybe('dclears', this.sim.delveClearsFor(session.pid));
+    maybe('delveDaily', this.sim.delveDailyWire(session.pid));
     // talents/spec/loadouts ride the wire only when they change (PR-5: never
     // every snapshot). The client recomputes its known abilities from this.
     maybe('tal', {
@@ -2510,6 +2630,15 @@ export class GameServer {
   private resyncQuests(session: ClientSession): void {
     delete session.lastSent.qlog;
     delete session.lastSent.qdone;
+  }
+
+  private resyncDelves(session: ClientSession): void {
+    delete session.lastSent.drun;
+    delete session.lastSent.dcompanion;
+    delete session.lastSent.dmarks;
+    delete session.lastSent.dcomp;
+    delete session.lastSent.dclears;
+    delete session.lastSent.delveDaily;
   }
 
   private send(session: ClientSession, obj: unknown): void {

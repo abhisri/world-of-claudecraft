@@ -3,6 +3,7 @@
 
 export interface ServerStats {
   online: number;
+  onlineAccounts: number;
   peakOnline: number;
   uptimeSeconds: number;
   tickMsAvg: number;
@@ -51,8 +52,16 @@ export interface Overview {
   characters: number;
   accountsToday: number;
   accountsWeek: number;
+  accountsMonth: number;
   sessionsToday: number;
   activeAccountsToday: number;
+  activeAccountsWeek: number;
+  activeAccountsMonth: number;
+  returningAccountsToday: number;
+  avgPlaytimeSeconds: number;
+  peakOnlineToday: number;
+  peakOnlineAllTime: number;
+  siteUsersNow: number;
   server: ServerStats;
   usage: ProviderUsageSnapshot;
 }
@@ -90,6 +99,22 @@ export interface Activity {
   sessions: { day: string; sessions: number; uniqueAccounts: number; playtimeSeconds: number }[];
   classes: { key: string; count: number }[];
   levels: { key: string; count: number }[];
+}
+
+export type OnlineHistoryRange = '24h' | '7d' | '30d';
+
+export interface OnlineHistory {
+  range: OnlineHistoryRange;
+  bucket: 'hour' | 'day';
+  points: {
+    bucketStart: string;
+    avgPlayers: number;
+    peakPlayers: number;
+    avgAccounts: number;
+    peakAccounts: number;
+    avgSiteUsers: number;
+    peakSiteUsers: number;
+  }[];
 }
 
 export interface AccountRow {

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { CharacterVisual } from './visual';
-import { PlayerClass } from '../../sim/types';
+import { CLASSES } from '../../sim/data';
+import type { PlayerClass } from '../../sim/types';
 import { trackWebGLContext } from '../context_release';
+import { CharacterVisual } from './visual';
 
 const PREVIEW_ANIM_STATE = {
   speed: 0,
@@ -52,15 +53,11 @@ export class CharacterPreview {
     this.scene = new THREE.Scene();
 
     // 3. Initialize Camera
-    const aspect = this.container.clientHeight > 0
-      ? this.container.clientWidth / this.container.clientHeight
-      : 1;
-    this.camera = new THREE.PerspectiveCamera(
-      45,
-      aspect,
-      0.1,
-      100
-    );
+    const aspect =
+      this.container.clientHeight > 0
+        ? this.container.clientWidth / this.container.clientHeight
+        : 1;
+    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
     this.camera.position.set(-0.15, 1.45, 5.1);
     this.camera.lookAt(new THREE.Vector3(-0.15, 1.3, 0));
 
@@ -90,14 +87,18 @@ export class CharacterPreview {
     this.animate();
   }
 
-  /** Set the active character model by player class. */
-  setClass(cls: PlayerClass): void {
-    this.setVisualKey(`player_${cls}`);
+  /** Set the active character model by player class. Pass `weaponItemId` to hold a
+   *  specific weapon (e.g. the character sheet shows the equipped mainhand); omit it
+   *  to default to the class start weapon (so the creation turntable matches the
+   *  freshly created character in-world). */
+  setClass(cls: PlayerClass, weaponItemId?: string | null): void {
+    const weapon = weaponItemId !== undefined ? weaponItemId : (CLASSES[cls].startWeapon ?? null);
+    this.setVisualKey(`player_${cls}`, weapon);
   }
 
   /** Set the active model by raw visual key (e.g. `player_mech` for the cosmetic
    *  turntable). The asset must already be loaded — callers preload first. */
-  setVisualKey(visualKey: string): void {
+  setVisualKey(visualKey: string, weaponItemId: string | null = null): void {
     // Clean up current visual if it exists
     if (this.currentVisual) {
       this.characterGroup.remove(this.currentVisual.root);
@@ -106,7 +107,7 @@ export class CharacterPreview {
     }
 
     try {
-      this.currentVisual = new CharacterVisual(visualKey, 0xffffff, this.currentSkin);
+      this.currentVisual = new CharacterVisual(visualKey, 0xffffff, this.currentSkin, weaponItemId);
       this.characterGroup.add(this.currentVisual.root);
 
       // Reset rotation of group so new character faces forward but holds any user offset if preferred.
@@ -234,7 +235,13 @@ export class CharacterPreview {
    * restore, the browser never paints the intermediate frame.
    */
   captureCloseup(
-    opts: { width?: number; height?: number; angle?: number; poseClips?: readonly string[]; poseFraction?: number } = {},
+    opts: {
+      width?: number;
+      height?: number;
+      angle?: number;
+      poseClips?: readonly string[];
+      poseFraction?: number;
+    } = {},
   ): string {
     const width = Math.max(1, Math.round(opts.width ?? 540));
     const height = Math.max(1, Math.round(opts.height ?? 720));
@@ -249,9 +256,10 @@ export class CharacterPreview {
 
     // Optionally lock a deliberate pose for the shot (e.g. a hero/cast/cheer
     // stance) instead of whatever idle frame is up. Restored via clearPose below.
-    const posed = opts.poseClips && opts.poseClips.length > 0
-      ? this.currentVisual?.poseFreeze(opts.poseClips, opts.poseFraction ?? 0.5) ?? null
-      : null;
+    const posed =
+      opts.poseClips && opts.poseClips.length > 0
+        ? (this.currentVisual?.poseFreeze(opts.poseClips, opts.poseFraction ?? 0.5) ?? null)
+        : null;
 
     // Pixel-exact buffer (ratio 1 → drawingBuffer is exactly width×height).
     this.renderer.setPixelRatio(1);

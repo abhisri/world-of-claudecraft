@@ -36,6 +36,8 @@ __pycache__/
 .env
 .env.*
 !.env.example
+# Meshy asset-gen tooling embeds an API key, never commit it
+scripts/generate_treasure_chest.mjs
 
 # editor & OS noise
 .DS_Store
@@ -46,6 +48,11 @@ Thumbs.db
 .claude/*
 !.claude/skills/
 !.claude/agents/
+.cursor/
+
+# local SDK/tooling dump (extracted command-line tools, not project source)
+postgres/
+
 pr-assets-2fa
 
 .vite/

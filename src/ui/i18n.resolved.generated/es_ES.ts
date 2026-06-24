@@ -426,6 +426,18 @@ export const es_ES: EnTranslations = {
     "tips": {
       "joinChannels": "Consejo: escribe /join world o /join lfg para chatear con jugadores de todas partes del reino."
     },
+    "questShare": {
+      "notShareable": "Esta misión no se puede compartir.",
+      "notInSharerParty": "Debes estar en el grupo de {name} para aceptar esa misión.",
+      "accepted": "{name} aceptó tu misión compartida.",
+      "dialogTitle": "Misión compartida",
+      "viewOnlyHint": "Únete al grupo de quien la comparte para aceptar esta misión.",
+      "alreadyOn": "Ya tienes esta misión.",
+      "alreadyDone": "Ya has completado esta misión.",
+      "ineligible": "No cumples los requisitos de esta misión.",
+      "noQuestSelected": "Selecciona una misión en tu diario para compartirla.",
+      "linkTitle": "Mayús + clic para enlazar esta misión en el chat."
+    },
     "plurals": {
       "guildMembers": {
         "one": "eres {rank}, {count} miembro",
@@ -1709,6 +1721,263 @@ export const es_ES: EnTranslations = {
     "friends": "Amigos y hermandad",
     "chat": "Abrir chat"
   },
+  "sim": {
+    "delve": {
+      "cannotEnterNow": "No puedes entrar en una Profundidad ahora mismo.",
+      "leaveDungeonFirst": "Sal primero de la mazmorra.",
+      "leaveArenaFirst": "Sal primero de la arena.",
+      "alreadyInDelve": "Ya estás en una Profundidad.",
+      "whileTrading": "No puedes entrar en una Profundidad mientras comercias.",
+      "duringDuel": "No puedes entrar en una Profundidad durante un duelo.",
+      "duringArena": "No puedes entrar en una Profundidad durante un combate de arena.",
+      "unknownTier": "Nivel de Profundidad desconocido.",
+      "levelRequired": "Debes ser nivel {level} para entrar en {name}.",
+      "levelRequiredTier": "Debes ser nivel {level} para entrar a {name} en {tier}.",
+      "instancesBusy": "Todas las instancias de {name} están ocupadas. Inténtalo de nuevo pronto.",
+      "runFailed": "La incursión a {name} ha fracasado.",
+      "complete": "{name} completada.",
+      "mechanismOpen": "Un mecanismo se abre con un chasquido cerca. Se abre un pasaje hacia el norte. Busca el portal de salida más adelante.",
+      "raiseDead": "{name} empieza a alzar a los muertos.",
+      "graveFalters": "El rito sepulcral vacila.",
+      "doorAlreadyOpen": "La puerta ya está abierta.",
+      "companionRankUp": "{name} alcanza el rango {rank}.",
+      "bossChest": "El jefe cae. Un cofre de relicario protegido se alza en el estrado. Fuerza su cerradura para reclamar tu botín.",
+      "surfaceStairs": "Se abre una escalera hacia la superficie. Pulsa F en las escaleras para salir.",
+      "moduleEnter": "{name}: {objective}",
+      "objectiveClearRoom": "Despeja la sala.",
+      "objectiveDefeatBoss": "Derrota al jefe.",
+      "tombstoneHint": "Un pasaje de lápida se abre hacia el norte cuando la sala queda despejada.",
+      "tombstoneOpen": "Un pasaje de lápida sellado se abre con un chirrido hacia el norte. Entra en él para continuar.",
+      "tombstoneInto": "Atraviesas la lápida hacia {name}.",
+      "chestEmpty": "El cofre está vacío.",
+      "notInDelve": "No estás en una Profundidad.",
+      "cannotInteract": "No puedes interactuar con eso.",
+      "tooFar": "Estás demasiado lejos.",
+      "graveSilent": "La tumba guarda silencio por ahora.",
+      "doorLocked": "La puerta está cerrada con llave.",
+      "strikeWall": "Golpea el muro para abrirte paso.",
+      "nothingHappens": "No pasa nada.",
+      "unknownCompanion": "Compañero desconocido.",
+      "companionMaxRank": "Este compañero ya está completamente mejorado.",
+      "companionMarksRequired": "Necesitas {marks} Marcas de Profundidad para mejorar a {name}.",
+      "cannotAffordCompanionUpgrade": "No puedes permitirte esta mejora.",
+      "shopItemLocked": "Aún no has desbloqueado ese objeto.",
+      "shopMarksRequired": "Necesitas {marks} Marcas de Expedición para comprar {name}.",
+      "shopSealPremiumOnly": "Este sello solo cede a la mano de un maestro: solo la apuesta Selecta puede abrirlo.",
+      "passageSealed": "El pasaje está sellado.",
+      "moveCloserPassage": "Acércate más al pasaje.",
+      "moveCloserChest": "Acércate más al cofre.",
+      "nothingToTake": "Ya no queda nada que llevarse.",
+      "wayOutNotOpen": "La salida aún no está abierta.",
+      "moveCloserStairs": "Acércate más a las escaleras."
+    },
+    "lockpick": {
+      "lockYields": "¡La cerradura cede! Botín {tier}.",
+      "tierPremium": "Premium",
+      "tierMedium": "Medio",
+      "tierLow": "Modesto",
+      "alreadyInProgress": "Alguien ya está forzando la cerradura.",
+      "cannotPickThat": "No puedes forzar eso.",
+      "chooseAnte": "Elige 1, 2 o 3 ganzúas.",
+      "noAttempt": "No hay ningún intento de forzar la cerradura en curso.",
+      "notYours": "Esa no es tu cerradura.",
+      "toolSlips": "Esa herramienta resbala en esta cerradura.",
+      "lockJammed": "La cerradura está demasiado atascada para forzarla. Vuelve a superar la Profundidad para otro intento.",
+      "lastPickSnaps": "La última ganzúa se parte. La cerradura se atasca: el cofre se pierde a menos que vuelvas a superar la Profundidad."
+    }
+  },
+  "lockpickUi": {
+    "pickTitle": "Fuerza la cerradura",
+    "cofferTitle": "Cofre Pródigo",
+    "cache": "Botín {tier}",
+    "pickBlurb": "Un botín más rico está sellado tras más cerraduras. Las cerraduras fáciles te dan más intentos y más tiempo; un intento fallido reinicia la cerradura hasta que agotes los intentos.",
+    "cofferBlurb": "Este sello solo cede ante la mano de un maestro: únicamente la senda Difícil, Selecta puede abrirlo. Resuelve las tres cerraduras para obtener el premio insignia.",
+    "pagesAria": "{count} cerraduras",
+    "tries": "{count} intentos",
+    "triesOne": "1 intento",
+    "perMove": "{seconds} s por movimiento",
+    "seconds": "{seconds}s",
+    "boardTitle": "Senda del Tambor: botín {tier}",
+    "closeAria": "Cerrar",
+    "withdrawAria": "Retirarse",
+    "timerAria": "Tiempo restante",
+    "lockOf": "Cerradura {page}/{total}",
+    "lockOfAria": "Cerradura {page} de {total}",
+    "triesOf": "Intentos {tries}/{total}",
+    "triesOfAria": "{tries} de {total} intentos restantes",
+    "ward": "Guarda {col} / {total}",
+    "depthKeys": "Las teclas rápidas fijan la profundidad de ganzúa (Q/W/E/A/Z), no el número de guarda.",
+    "withdraw": "Retirarse (Esc)",
+    "action": {
+      "hardSet": "Fijar a fondo",
+      "set": "Fijar",
+      "steady": "Sostener",
+      "ease": "Aflojar",
+      "drop": "Soltar"
+    },
+    "feedback": {
+      "advanced": "El pasador cede...",
+      "slip": "¡Una guarda muerde y la ganzúa resbala!",
+      "bind": "El tambor se traba: ¡profundidad incorrecta!",
+      "trap": "¡Una guarda falsa se cierra de golpe y la cerradura se atasca!",
+      "retry": "La cerradura se reinicia. Prepara un nuevo intento.",
+      "pageCleared": "Cae un banco de tambores. La siguiente cerradura aparece.",
+      "success": "¡El cerrojo salta y el botín es tuyo!",
+      "fail": "La cerradura se traba. No volverá a moverse."
+    },
+    "summary": {
+      "success": "Cerradura abierta, botín {tier} reclamado.",
+      "successGeneric": "Cerradura abierta, el botín queda reclamado.",
+      "fail": "La cerradura está arruinada. Vuelve a superar la expedición para otro intento.",
+      "abandoned": "Sacas las ganzúas con cuidado. La cerradura aguarda."
+    }
+  },
+  "delveUi": {
+    "board": {
+      "title": "Tablón de Profundidades",
+      "enter": "Entrar en la Profundidad",
+      "enterAria": "Entrar en {delve} en dificultad {tier}",
+      "openDelve": "Relicario Hundido",
+      "openDelveAria": "Abrir el Tablón de Profundidades desde {name}",
+      "marks": "Marcas de Profundidad: {count}",
+      "minLevel": "Requiere nivel {level}",
+      "tier": {
+        "normal": "Normal",
+        "heroic": "Heroico"
+      },
+      "companion": {
+        "pick": "Elige un compañero",
+        "tessa": "Acólita Tessa",
+        "rank": "Rango {rank}",
+        "boon": "Cura al grupo entre combates. El rango 3 revive a un aliado caído una vez por incursión.",
+        "upgrade": "Mejorar al rango {rank} ({marks} Marcas)",
+        "upgradeAria": "Mejorar a {name} al rango {rank} por {marks} Marcas de Expedición",
+        "maxRank": "Mejorado al máximo"
+      },
+      "tabDelve": "Expedición",
+      "tabShop": "Tienda"
+    },
+    "shop": {
+      "price": "{marks} Marcas",
+      "buy": "Comprar",
+      "buyAria": "Comprar {item} por {marks} Marcas de Expedición",
+      "reqHeroic": "Requiere una incursión heroica completada",
+      "reqClears": "Requiere {count} incursiones completadas",
+      "empty": "No hay nada en existencias."
+    },
+    "tracker": {
+      "title": "Profundidad",
+      "objective": "Objetivo",
+      "module": "Módulo {current} de {total}",
+      "affix": "Afijos",
+      "complete": "Completada",
+      "marks": "Marcas de Profundidad: {count}",
+      "exitHintOpen": "Entra al pasaje de lápida (norte)",
+      "exitHintLocked": "Despeja a los enemigos para abrir el pasaje al norte"
+    },
+    "objective": {
+      "kill_boss": "Da muerte a {boss}",
+      "recover_artifact": "Recupera el registro funerario",
+      "clear_room": "Despeja la sala"
+    },
+    "summary": {
+      "title": "Profundidad completada",
+      "marks": "{count} Marcas de Profundidad obtenidas",
+      "loreUnlock": "Trasfondo desbloqueado: {title}"
+    },
+    "death": {
+      "warning": "Una muerte más acabará con esta incursión a la Profundidad."
+    },
+    "run": {
+      "failed": "La incursión a la Profundidad ha fracasado. Vuelves con el Hermano Halven."
+    },
+    "npc": {
+      "halven": {
+        "greeting": "El relicario de abajo ha vuelto a moverse. Oímos cánticos a través del suelo pasada la medianoche, y la Acólita Tessa jura que los registros funerarios cambian su propia tinta. Si tienes valor suficiente, {playerName}, coge una vela y baja. No confíes en cada voz que oigas ahí abajo. Algunas conocían tu nombre antes de que nacieras."
+      }
+    },
+    "intro": {
+      "normal": "La escalera es fría y oscura. Piedras sagradas rotas cubren el descenso, y una suave nota de campana flota en el aire húmedo. La Acólita Tessa susurra: \"El relicario no debería estar abierto tan abajo. No te alejes, {playerName}.\"",
+      "heroic": "Las puertas se cierran con un quejido a tu espalda. Los nombres rascan la piedra como uñas. La vela de Tessa arde azul. \"Ya no están llamando a los muertos, {playerName}. Están respondiendo a algo.\""
+    },
+    "module": {
+      "reliquary_sunken_ossuary": "El agua se filtra por los estantes funerarios, arrastrando vieja ceniza en arroyos de plata y negro.",
+      "reliquary_bell_niche": "Decenas de campanillas cuelgan en silencio, cada una atada con paño funerario.",
+      "reliquary_saintless_hall": "Estatuas con los rostros cincelados con un odio meticuloso.",
+      "reliquary_finale": "La campana enterrada tañe una vez bajo tus botas."
+    },
+    "moduleName": {
+      "reliquary_sunken_ossuary": "El Osario Hundido",
+      "reliquary_bell_niche": "La Hornacina de la Campana",
+      "reliquary_saintless_hall": "La Sala sin Santos",
+      "reliquary_finale": "La Cámara de la Campana Enterrada"
+    },
+    "companion": {
+      "barkLine": "{name}: {line}",
+      "tessa": {
+        "combat_start": "Afírmate, {playerName}. Aquí los muertos están inquietos.",
+        "low_hp": "Respira. Aún me quedan oraciones para ti.",
+        "trap_spotted": "Espera... algo en el suelo recuerda las pisadas.",
+        "boss_pull": "Esa campana conoce tu peso, {playerName}. No te arrodilles.",
+        "completion": "El registro puede descansar otra noche. Bien hecho.",
+        "rank": {
+          "1": "Novicia de la capilla",
+          "2": "Portavelas",
+          "3": "Acólita del Relicario",
+          "4": "Testigo del clamor sepulcral",
+          "5": "Custodia de la capilla"
+        }
+      }
+    },
+    "boss": {
+      "varric": {
+        "bell": {
+          "emote": "¡El Diácono Varric aferra la campana enterrada con ambas manos!",
+          "log": "El Diácono Varric empieza a tañer la campana funeraria.",
+          "warning": "¡Apártate del Diácono Varric!",
+          "impact": "¡El tañido de la campana resquebraja el suelo de la cámara!",
+          "lesson": "Tañido de campana: un golpe al suelo cada doce segundos. Apártate antes de que caiga."
+        },
+        "raise": {
+          "emote": "¡El Diácono Varric invoca nombres desde las tumbas rotas!",
+          "log": "El Diácono Varric empieza a alzar a los muertos.",
+          "warning": "¡Detén el rito sepulcral!",
+          "object": "La tumba agrietada se estremece con un aliento robado.",
+          "interrupt_ok": "El rito sepulcral vacila.",
+          "interrupt_fail": "¡Los muertos responden a la llamada del Diácono Varric!",
+          "lesson": "Interrumpe la tumba agrietada en cinco segundos o los muertos se alzarán a su llamada."
+        },
+        "pull": "Pisas el polvo sagrado con un propósito impuro. Arrodíllate y deja que te cuenten.",
+        "intro": "Ningún alma se pierde. Solo se traspapela.",
+        "mid60": "El Diácono Varric lee nombres del registro con un júbilo tembloroso.",
+        "mid30": "La campana funeraria responde a cada nombre que pronuncia.",
+        "defeat": "No... tenía los nombres... los tenía todos..."
+      }
+    },
+    "lore": {
+      "eastbrook_ledger": "Una página manchada de agua del registro funerario de Eastbrook. Nombres tachados y reescritos por una mano que no es humana.",
+      "first_collapse": "Los registros de la capilla anotan el primer hundimiento: piedras sagradas resquebrajadas, estantes inclinados y una nota de campana oída desde bajo tierra.",
+      "gravecaller_mark": "Un sigilo raspado en la madera de un ataúd, no el sello de Morthen, sino una marca de invocasepulcros más antigua, anterior a la Cripta Hueca.",
+      "bell_below": "Nota al margen de Tessa: \"Hay una segunda campana bajo el relicario. Tañe por los traspapelados, no por los muertos.\"",
+      "tessa_note": "Un retazo doblado con la letra de Tessa: \"Si los registros cambian mientras estamos abajo, fíate de la vela, no de las voces.\""
+    },
+    "affix": {
+      "restless_graves": "Tumbas inquietas",
+      "bad_air": "Aire viciado",
+      "candleblind": "Cegavelas",
+      "old_mechanisms": "Mecanismos viejos",
+      "flooded_paths": "Senderos inundados",
+      "grave_tax": "Tributo sepulcral",
+      "unstable_roof": "Techo inestable",
+      "cult_remnants": "Vestigios del culto"
+    },
+    "blessing": {
+      "chapel_candle": "Vela de capilla: incursión más segura, una Marca menos al completarla."
+    },
+    "chest": {
+      "flavor": "Los muertos han entregado lo que pueden ceder."
+    }
+  },
   "fiesta": {
     "bracket": "Fiesta",
     "enterQueue": "¡Únete a la Fiesta!",
@@ -1981,7 +2250,14 @@ export const es_ES: EnTranslations = {
     "portraitAlt": "Retrato de {name}",
     "viewProfile": "Ver perfil",
     "profile": "Perfil",
-    "closeProfile": "Cerrar perfil"
+    "closeProfile": "Cerrar perfil",
+    "sortBy": "Ordenar",
+    "sortByLabel": "Ordenar personajes",
+    "sortMenuLabel": "Opciones de orden",
+    "sortLevel": "Nivel",
+    "sortName": "Nombre",
+    "sortRecent": "Jugados recientemente",
+    "sortPlaytime": "Tiempo de juego"
   },
   "deleteCharacter": {
     "title": "Eliminar personaje",
@@ -2459,6 +2735,8 @@ export const es_ES: EnTranslations = {
       "lootReceiveMoney": "Recibes {money}.",
       "lootMoney": "Saqueas {money}.",
       "soldItem": "Vendiste {item} por {money}.",
+      "soldJunkOne": "Vendiste {count} objeto gris por {money}.",
+      "soldJunkMany": "Vendiste {count} objetos grises por {money}.",
       "friendOnline": "{name} se ha conectado.",
       "friendOffline": "{name} se ha desconectado."
     },
@@ -2862,7 +3140,10 @@ export const es_ES: EnTranslations = {
       "sellQuantityTitle": "Vender {item}",
       "sellQuantityInput": "Cantidad a vender",
       "sellQuantityConfirm": "Vender",
-      "sellQuantityCancel": "Cancelar"
+      "sellQuantityCancel": "Cancelar",
+      "sellJunk": "Vender basura",
+      "sellJunkAria": "Vender toda la basura por {price}",
+      "sellJunkHint": "Vende todos los objetos grises de tus bolsas excepto los objetos de misión."
     },
     "market": {
       "title": "Mercado Mundial",
@@ -3874,8 +4155,8 @@ export const es_ES: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "Piel de acechador de la cresta"
       },
-      "pristine_ridge_stalker_pelt": {
-        "name": "Piel prístina de acechador de la cresta"
+      "old_cragmaws_pelt": {
+        "name": "Piel del Viejo Cragmaw"
       },
       "glowing_wax": {
         "name": "Cera resplandeciente"
@@ -4450,6 +4731,33 @@ export const es_ES: EnTranslations = {
       "wyrmshadow_talongrips": {
         "name": "Agarraderas Garra Sombravermis"
       },
+      "reliquary_plate_chest": {
+        "name": "Loriga de la Guardia del Relicario"
+      },
+      "reliquary_leather_chest": {
+        "name": "Jubón del Guardián del Polvo"
+      },
+      "reliquary_cloth_chest": {
+        "name": "Sudario del Relicario"
+      },
+      "reliquary_legs": {
+        "name": "Polainas de la Cripta"
+      },
+      "reliquary_helm": {
+        "name": "Yelmo de la Guardia del Osario"
+      },
+      "reliquary_shoulder": {
+        "name": "Hombreras desmoronadas"
+      },
+      "reliquary_gloves_rog": {
+        "name": "Manoplas del Guardián de Huesos"
+      },
+      "deacon_reliquary_helm": {
+        "name": "Yelmo del Relicario del Diácono"
+      },
+      "varric_shadow_cowl": {
+        "name": "Capucha sombría de Varric"
+      },
       "the_codfather": {
         "name": "El Bacaladrino"
       },
@@ -4740,6 +5048,27 @@ export const es_ES: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Azote de Thornpeak"
       },
+      "reliquary_ledger_wraith": {
+        "name": "Espectro del registro"
+      },
+      "reliquary_funeral_ringer": {
+        "name": "Campanero funerario"
+      },
+      "reliquary_gravecall_acolyte": {
+        "name": "Acólito invocasepulcros"
+      },
+      "reliquary_bonewalker": {
+        "name": "Caminahuesos alzado"
+      },
+      "reliquary_saintless_effigy": {
+        "name": "Efigie sin santo"
+      },
+      "deacon_varric": {
+        "name": "Diácono Varric"
+      },
+      "acolyte_tessa": {
+        "name": "Acólita Tessa"
+      },
       "ironvein_foreman": {
         "name": "Capataz Vena de Hierro"
       },
@@ -4949,6 +5278,11 @@ export const es_ES: EnTranslations = {
         "name": "Hermano Aldric",
         "title": "Sacerdote del Valle",
         "greeting": "De un patio de capilla al techo del mundo... el rastro termina aquí. Siento que la montaña escucha."
+      },
+      "brother_halven": {
+        "name": "Hermano Halven",
+        "title": "Guardián del Relicario",
+        "greeting": "El relicario de abajo ha vuelto a moverse."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",
@@ -5804,6 +6138,9 @@ export const es_ES: EnTranslations = {
           },
           "8": {
             "label": "Claro de Brightwood"
+          },
+          "9": {
+            "label": "Claro de Brightwood"
           }
         }
       },
@@ -5905,12 +6242,22 @@ export const es_ES: EnTranslations = {
         "enterText": "Atraviesas la puerta lunar: el aire se vuelve agua fría y luz pálida, y el canto se cierra sobre tu cabeza.",
         "leaveText": "Emerges a través de la puerta lunar a la noche de la montaña."
       }
+    },
+    "delves": {
+      "collapsed_reliquary": {
+        "name": "El Relicario Hundido",
+        "enterText": "Desciendes al relicario hundido.",
+        "leaveText": "Trepas de vuelta hasta el Hermano Halven, en la ruina del relicario."
+      }
     }
   },
   "worldContent": {
     "corpseName": "{name} (cadáver)",
     "dungeonExitName": "Salida de {name}",
     "dungeonPartyWarning": "{name} está pensado para un grupo completo de {count}. Avanza con cuidado.",
-    "dungeonInstanceBusy": "Todas las instancias de {name} están ocupadas. Inténtalo de nuevo pronto."
+    "dungeonInstanceBusy": "Todas las instancias de {name} están ocupadas. Inténtalo de nuevo pronto.",
+    "delveLockedChestInteract": "Pulsa F para forzar la cerradura",
+    "delveRewardChestInteract": "Pulsa F para reclamar el botín",
+    "delveSurfaceExitInteract": "Pulsa F para trepar"
   }
 };

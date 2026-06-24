@@ -426,6 +426,18 @@ export const it_IT: EnTranslations = {
     "tips": {
       "joinChannels": "Suggerimento: digita /join world o /join lfg per chattare con i giocatori di tutto il reame."
     },
+    "questShare": {
+      "notShareable": "Questa missione non può essere condivisa.",
+      "notInSharerParty": "Devi essere nel gruppo di {name} per accettare quella missione.",
+      "accepted": "{name} ha accettato la tua missione condivisa.",
+      "dialogTitle": "Missione condivisa",
+      "viewOnlyHint": "Unisciti al gruppo di chi la condivide per accettare questa missione.",
+      "alreadyOn": "Hai già questa missione.",
+      "alreadyDone": "Hai già completato questa missione.",
+      "ineligible": "Non soddisfi i requisiti di questa missione.",
+      "noQuestSelected": "Seleziona una missione nel registro da condividere.",
+      "linkTitle": "Maiusc + clic per collegare questa missione in chat."
+    },
     "plurals": {
       "guildMembers": {
         "one": "sei {rank}, {count} membro",
@@ -1709,6 +1721,263 @@ export const it_IT: EnTranslations = {
     "friends": "Amici e gilda",
     "chat": "Apri chat"
   },
+  "sim": {
+    "delve": {
+      "cannotEnterNow": "Non puoi entrare in un'incursione in questo momento.",
+      "leaveDungeonFirst": "Esci prima dal dungeon.",
+      "leaveArenaFirst": "Esci prima dall'arena.",
+      "alreadyInDelve": "Sei già in un'incursione.",
+      "whileTrading": "Non puoi entrare in un'incursione mentre commerci.",
+      "duringDuel": "Non puoi entrare in un'incursione durante un duello.",
+      "duringArena": "Non puoi entrare in un'incursione durante una partita d'arena.",
+      "unknownTier": "Difficoltà d'incursione sconosciuta.",
+      "levelRequired": "Devi essere di livello {level} per entrare in {name}.",
+      "levelRequiredTier": "Devi essere di livello {level} per entrare in {name} a {tier}.",
+      "instancesBusy": "Tutte le istanze di {name} sono occupate. Riprova tra poco.",
+      "runFailed": "Incursione di {name} fallita.",
+      "complete": "{name} completata.",
+      "mechanismOpen": "Un meccanismo scatta aprendosi nelle vicinanze. Un passaggio si apre a nord: trova il portale d'uscita più avanti.",
+      "raiseDead": "{name} inizia a evocare i morti.",
+      "graveFalters": "Il rito sepolcrale vacilla.",
+      "doorAlreadyOpen": "La porta è già aperta.",
+      "companionRankUp": "{name} raggiunge il grado {rank}.",
+      "bossChest": "Il boss cade. Sul piedistallo si leva uno scrigno reliquiario protetto da incantesimi: scassinane la serratura per reclamare il bottino.",
+      "surfaceStairs": "Si apre una scalinata verso la superficie. Premi F alle scale per uscire.",
+      "moduleEnter": "{name}: {objective}",
+      "objectiveClearRoom": "Ripulisci la stanza.",
+      "objectiveDefeatBoss": "Sconfiggi il boss.",
+      "tombstoneHint": "Un passaggio attraverso una lapide si apre a nord quando la stanza è ripulita.",
+      "tombstoneOpen": "Un passaggio sigillato attraverso una lapide si apre stridendo a nord. Entraci per proseguire.",
+      "tombstoneInto": "Attraversi la lapide ed entri in {name}.",
+      "chestEmpty": "Lo scrigno è vuoto.",
+      "notInDelve": "Non sei in un'incursione.",
+      "cannotInteract": "Non puoi interagire con questo.",
+      "tooFar": "Sei troppo lontano.",
+      "graveSilent": "La tomba è silenziosa per ora.",
+      "doorLocked": "La porta è chiusa a chiave.",
+      "strikeWall": "Colpisci il muro per sfondarlo.",
+      "nothingHappens": "Non succede nulla.",
+      "unknownCompanion": "Compagno sconosciuto.",
+      "companionMaxRank": "Questo compagno è già completamente potenziato.",
+      "companionMarksRequired": "Ti servono {marks} Sigilli d'Incursione per potenziare {name}.",
+      "cannotAffordCompanionUpgrade": "Non puoi permetterti questo potenziamento.",
+      "shopItemLocked": "Non hai ancora sbloccato quell'oggetto.",
+      "shopMarksRequired": "Ti servono {marks} Sigilli d'Incursione per comprare {name}.",
+      "shopSealPremiumOnly": "Questo sigillo cede solo alla mano di un maestro: solo la puntata Pregiata può aprirlo.",
+      "passageSealed": "Il passaggio è sigillato.",
+      "moveCloserPassage": "Avvicinati al passaggio.",
+      "moveCloserChest": "Avvicinati allo scrigno.",
+      "nothingToTake": "Non è rimasto nulla da prendere.",
+      "wayOutNotOpen": "La via d'uscita non è ancora aperta.",
+      "moveCloserStairs": "Avvicinati alle scale."
+    },
+    "lockpick": {
+      "lockYields": "La serratura cede! Bottino {tier}.",
+      "tierPremium": "Pregiato",
+      "tierMedium": "Medio",
+      "tierLow": "Modesto",
+      "alreadyInProgress": "Qualcuno sta già lavorando alla serratura.",
+      "cannotPickThat": "Non puoi scassinare quello.",
+      "chooseAnte": "Scegli 1, 2 o 3 grimaldelli.",
+      "noAttempt": "Nessun tentativo di scasso in corso.",
+      "notYours": "Quella non è la tua serratura.",
+      "toolSlips": "Quello strumento scivola via da questa serratura.",
+      "lockJammed": "La serratura è inceppata oltre ogni possibilità di scasso: completa di nuovo l'incursione per un altro tentativo.",
+      "lastPickSnaps": "L'ultimo grimaldello si spezza. La serratura si inceppa: lo scrigno è perduto, a meno che tu non completi di nuovo l'incursione."
+    }
+  },
+  "lockpickUi": {
+    "pickTitle": "Scassina la Serratura",
+    "cofferTitle": "Forziere Ricolmo",
+    "cache": "Scrigno {tier}",
+    "pickBlurb": "Uno scrigno più ricco è sigillato dietro più serrature. Le serrature più facili concedono più tentativi e più tempo; un tentativo fallito reimposta la serratura finché non esaurisci i tentativi.",
+    "cofferBlurb": "Questo sigillo cede solo alla mano di un maestro: solo la via Difficile, Pregiata può aprirlo. Forza tutte e tre le serrature per il premio esclusivo.",
+    "pagesAria": "{count} serrature",
+    "tries": "{count} tentativi",
+    "triesOne": "1 tentativo",
+    "perMove": "{seconds} s per mossa",
+    "seconds": "{seconds}s",
+    "boardTitle": "Via del Cilindro: scrigno {tier}",
+    "closeAria": "Chiudi",
+    "withdrawAria": "Ritirati",
+    "timerAria": "Tempo rimanente",
+    "lockOf": "Serratura {page}/{total}",
+    "lockOfAria": "Serratura {page} di {total}",
+    "triesOf": "Tentativi {tries}/{total}",
+    "triesOfAria": "{tries} di {total} tentativi rimasti",
+    "ward": "Guardia {col} / {total}",
+    "depthKeys": "Le scorciatoie impostano la profondità del grimaldello (Q/W/E/A/Z), non il numero della guardia.",
+    "withdraw": "Ritirati (Esc)",
+    "action": {
+      "hardSet": "Spinta Decisa",
+      "set": "Spingi",
+      "steady": "Mantieni",
+      "ease": "Allenta",
+      "drop": "Rilascia"
+    },
+    "feedback": {
+      "advanced": "Il perno cede...",
+      "slip": "Una guardia morde, il grimaldello scivola!",
+      "bind": "Il cilindro si blocca: profondità sbagliata!",
+      "trap": "Una falsa guardia scatta, la serratura si inceppa!",
+      "retry": "La serratura si reimposta. Prepara un nuovo tentativo.",
+      "pageCleared": "Una fila di perni cede. La serratura successiva si presenta.",
+      "success": "Il chiavistello scatta, lo scrigno è tuo!",
+      "fail": "La serratura si blocca. Non si muoverà più."
+    },
+    "summary": {
+      "success": "Serratura forzata, scrigno {tier} reclamato.",
+      "successGeneric": "Serratura forzata, lo scrigno è reclamato.",
+      "fail": "La serratura è rovinata. Completa di nuovo l'incursione per un altro tentativo.",
+      "abandoned": "Sfili di nuovo i grimaldelli. La serratura attende."
+    }
+  },
+  "delveUi": {
+    "board": {
+      "title": "Tabellone delle Incursioni",
+      "enter": "Entra nell'Incursione",
+      "enterAria": "Entra in {delve} a difficoltà {tier}",
+      "openDelve": "Reliquiario Crollato",
+      "openDelveAria": "Apri il Tabellone delle Incursioni da {name}",
+      "marks": "Sigilli d'Incursione: {count}",
+      "minLevel": "Richiede il livello {level}",
+      "tier": {
+        "normal": "Normale",
+        "heroic": "Eroica"
+      },
+      "companion": {
+        "pick": "Scegli un compagno",
+        "tessa": "Accolita Tessa",
+        "rank": "Grado {rank}",
+        "boon": "Cura il gruppo tra uno scontro e l'altro. Il grado 3 rianima un alleato caduto una volta per incursione.",
+        "upgrade": "Potenzia al grado {rank} ({marks} Sigilli)",
+        "upgradeAria": "Potenzia {name} al grado {rank} per {marks} Sigilli d'Incursione",
+        "maxRank": "Completamente potenziato"
+      },
+      "tabDelve": "Incursione",
+      "tabShop": "Negozio"
+    },
+    "shop": {
+      "price": "{marks} Sigilli",
+      "buy": "Compra",
+      "buyAria": "Compra {item} per {marks} Sigilli d'Incursione",
+      "reqHeroic": "Richiede un'incursione eroica completata",
+      "reqClears": "Richiede {count} incursioni completate",
+      "empty": "Niente in magazzino."
+    },
+    "tracker": {
+      "title": "Incursione",
+      "objective": "Obiettivo",
+      "module": "Modulo {current} di {total}",
+      "affix": "Affissi",
+      "complete": "Completata",
+      "marks": "Sigilli d'Incursione: {count}",
+      "exitHintOpen": "Entra nel passaggio della lapide (a nord)",
+      "exitHintLocked": "Ripulisci i nemici per aprire il passaggio a nord"
+    },
+    "objective": {
+      "kill_boss": "Uccidi {boss}",
+      "recover_artifact": "Recupera il registro funebre",
+      "clear_room": "Ripulisci la stanza"
+    },
+    "summary": {
+      "title": "Incursione Completata",
+      "marks": "{count} Sigilli d'Incursione ottenuti",
+      "loreUnlock": "Conoscenza sbloccata: {title}"
+    },
+    "death": {
+      "warning": "Un'altra morte porrà fine a questa incursione."
+    },
+    "run": {
+      "failed": "L'incursione è fallita. Vieni riportato da Fratello Halven."
+    },
+    "npc": {
+      "halven": {
+        "greeting": "Il reliquiario sottostante si è spostato di nuovo. Sentiamo nenie attraverso il pavimento dopo mezzanotte, e l'Accolita Tessa giura che i registri funebri stanno cambiando il proprio inchiostro. Se hai abbastanza coraggio, {playerName}, prendi una candela e scendi laggiù. Non fidarti di ogni voce che sentirai là sotto. Alcune di esse conoscevano il tuo nome prima che tu nascessi."
+      }
+    },
+    "intro": {
+      "normal": "La tromba delle scale è fredda e buia. Pietre dei santi spezzate cospargono la discesa, e una lieve nota di campana indugia nell'aria umida. L'Accolita Tessa sussurra: \"Il reliquiario non dovrebbe essere aperto fin quaggiù. Resta vicino, {playerName}.\"",
+      "heroic": "Le porte si chiudono cigolando dietro di te. I nomi raschiano sulla pietra come unghie. La candela di Tessa arde azzurra. \"Adesso non stanno chiamando i morti, {playerName}. Stanno rispondendo a qualcosa.\""
+    },
+    "module": {
+      "reliquary_sunken_ossuary": "L'acqua filtra attraverso gli scaffali sepolcrali, trascinando cenere antica in rivoli argento-neri.",
+      "reliquary_bell_niche": "Decine di campanelli pendono nel silenzio, ciascuno legato con un drappo funebre.",
+      "reliquary_saintless_hall": "Statue con i volti scalpellati via con accurato odio.",
+      "reliquary_finale": "La campana sepolta rintocca una volta sotto i tuoi stivali."
+    },
+    "moduleName": {
+      "reliquary_sunken_ossuary": "L'Ossario Sommerso",
+      "reliquary_bell_niche": "La Nicchia della Campana",
+      "reliquary_saintless_hall": "La Sala senza Santi",
+      "reliquary_finale": "La Stanza della Campana Sepolta"
+    },
+    "companion": {
+      "barkLine": "{name}: {line}",
+      "tessa": {
+        "combat_start": "Tieni saldo il passo, {playerName}. I morti sono inquieti qui.",
+        "low_hp": "Respira. Mi restano ancora preghiere per te.",
+        "trap_spotted": "Fermati: qualcosa nel pavimento ricorda i passi.",
+        "boss_pull": "Quella campana conosce il tuo peso, {playerName}. Non inginocchiarti.",
+        "completion": "Il registro può riposare un'altra notte. Ben fatto.",
+        "rank": {
+          "1": "Novizia della Cappella",
+          "2": "Portatrice di Candele",
+          "3": "Accolita del Reliquiario",
+          "4": "Testimone del Richiamo Sepolcrale",
+          "5": "Custode della Cappella"
+        }
+      }
+    },
+    "boss": {
+      "varric": {
+        "bell": {
+          "emote": "Il Diacono Varric afferra la campana sepolta con entrambe le mani!",
+          "log": "Il Diacono Varric inizia a far rintoccare la campana funebre.",
+          "warning": "Allontanati dal Diacono Varric!",
+          "impact": "Il rintocco della campana spacca il pavimento della camera!",
+          "lesson": "Rintocco della Campana: un colpo al suolo ogni dodici secondi. Allontanati prima che cada."
+        },
+        "raise": {
+          "emote": "Il Diacono Varric richiama i nomi dalle tombe spezzate!",
+          "log": "Il Diacono Varric inizia a evocare i morti.",
+          "warning": "Ferma il rito sepolcrale!",
+          "object": "La tomba incrinata freme di un respiro rubato.",
+          "interrupt_ok": "Il rito sepolcrale vacilla.",
+          "interrupt_fail": "I morti rispondono al richiamo del Diacono Varric!",
+          "lesson": "Interrompi la tomba incrinata entro cinque secondi o i morti si leveranno al suo richiamo."
+        },
+        "pull": "Calpesti la polvere consacrata con propositi immondi. Inginocchiati, e fatti contare.",
+        "intro": "Nessun'anima è perduta. Solo smarrita.",
+        "mid60": "Il Diacono Varric legge i nomi dal registro con tremante trionfo.",
+        "mid30": "La campana funebre risponde a ogni nome che pronuncia.",
+        "defeat": "No... avevo i nomi... li avevo tutti..."
+      }
+    },
+    "lore": {
+      "eastbrook_ledger": "Una pagina macchiata d'acqua dal registro funebre di Eastbrook. Nomi cancellati e riscritti da una mano che non è umana.",
+      "first_collapse": "Gli annali della cappella riportano il primo cedimento: pietre dei santi incrinate, scaffali inclinati, e una nota di campana udita dal sottosuolo.",
+      "gravecaller_mark": "Un sigillo inciso nel legno di una bara: non il marchio di Morthen, ma un più antico segno di evocatombe che precede la Cripta Vuota.",
+      "bell_below": "Nota a margine di Tessa: \"C'è una seconda campana sotto il reliquiario. Rintocca per gli smarriti, non per i morti.\"",
+      "tessa_note": "Foglietto piegato nella grafia di Tessa: \"Se i registri cambiano mentre siamo quaggiù, fidati della candela, non delle voci.\""
+    },
+    "affix": {
+      "restless_graves": "Tombe Inquiete",
+      "bad_air": "Aria Viziata",
+      "candleblind": "Cecità da Candele",
+      "old_mechanisms": "Vecchi Meccanismi",
+      "flooded_paths": "Vie Allagate",
+      "grave_tax": "Tributo delle Tombe",
+      "unstable_roof": "Volta Instabile",
+      "cult_remnants": "Resti del Culto"
+    },
+    "blessing": {
+      "chapel_candle": "Candela della Cappella: incursione più sicura, un Sigillo d'Incursione in meno al completamento."
+    },
+    "chest": {
+      "flavor": "I morti hanno ceduto ciò che potevano risparmiare."
+    }
+  },
   "fiesta": {
     "bracket": "Fiesta",
     "enterQueue": "Unisciti alla Fiesta!",
@@ -1981,7 +2250,14 @@ export const it_IT: EnTranslations = {
     "portraitAlt": "Ritratto di {name}",
     "viewProfile": "Vedi profilo",
     "profile": "Profilo",
-    "closeProfile": "Chiudi profilo"
+    "closeProfile": "Chiudi profilo",
+    "sortBy": "Ordina",
+    "sortByLabel": "Ordina personaggi",
+    "sortMenuLabel": "Opzioni di ordinamento",
+    "sortLevel": "Livello",
+    "sortName": "Nome",
+    "sortRecent": "Giocati di recente",
+    "sortPlaytime": "Tempo di gioco"
   },
   "deleteCharacter": {
     "title": "Elimina personaggio",
@@ -2459,6 +2735,8 @@ export const it_IT: EnTranslations = {
       "lootReceiveMoney": "Ricevi {money}.",
       "lootMoney": "Raccogli {money}.",
       "soldItem": "Hai venduto {item} per {money}.",
+      "soldJunkOne": "Hai venduto {count} oggetto grigio per {money}.",
+      "soldJunkMany": "Hai venduto {count} oggetti grigi per {money}.",
       "friendOnline": "{name} è entrato online.",
       "friendOffline": "{name} è uscito offline."
     },
@@ -2862,7 +3140,10 @@ export const it_IT: EnTranslations = {
       "sellQuantityTitle": "Vendi {item}",
       "sellQuantityInput": "Quantità da vendere",
       "sellQuantityConfirm": "Vendi",
-      "sellQuantityCancel": "Annulla"
+      "sellQuantityCancel": "Annulla",
+      "sellJunk": "Vendi cianfrusaglie",
+      "sellJunkAria": "Vendi tutte le cianfrusaglie per {price}",
+      "sellJunkHint": "Vende tutti gli oggetti grigi nelle borse tranne gli oggetti di missione."
     },
     "market": {
       "title": "Mercato Mondiale",
@@ -3874,8 +4155,8 @@ export const it_IT: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "Pelliccia di predatore del crinale"
       },
-      "pristine_ridge_stalker_pelt": {
-        "name": "Pelliccia immacolata di predatore del crinale"
+      "old_cragmaws_pelt": {
+        "name": "Pelliccia del Vecchio Cragmaw"
       },
       "glowing_wax": {
         "name": "Cera luminosa"
@@ -4450,6 +4731,33 @@ export const it_IT: EnTranslations = {
       "wyrmshadow_talongrips": {
         "name": "Prese Artiglio Ombrawyrm"
       },
+      "reliquary_plate_chest": {
+        "name": "Usbergo della guardia del reliquiario"
+      },
+      "reliquary_leather_chest": {
+        "name": "Giaco del guardiano della polvere"
+      },
+      "reliquary_cloth_chest": {
+        "name": "Sudario del reliquiario"
+      },
+      "reliquary_legs": {
+        "name": "Gambiere della cripta"
+      },
+      "reliquary_helm": {
+        "name": "Elmo della guardia dell'ossario"
+      },
+      "reliquary_shoulder": {
+        "name": "Spallacci sgretolati"
+      },
+      "reliquary_gloves_rog": {
+        "name": "Manopole del guardiano delle ossa"
+      },
+      "deacon_reliquary_helm": {
+        "name": "Elmo del reliquiario del diacono"
+      },
+      "varric_shadow_cowl": {
+        "name": "Cappuccio d'ombra di Varric"
+      },
       "the_codfather": {
         "name": "Il Pescadrino"
       },
@@ -4740,6 +5048,27 @@ export const it_IT: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Flagello di Thornpeak"
       },
+      "reliquary_ledger_wraith": {
+        "name": "Spettro del Registro"
+      },
+      "reliquary_funeral_ringer": {
+        "name": "Campanaro Funebre"
+      },
+      "reliquary_gravecall_acolyte": {
+        "name": "Accolito del Richiamo Sepolcrale"
+      },
+      "reliquary_bonewalker": {
+        "name": "Camminaossa Risorto"
+      },
+      "reliquary_saintless_effigy": {
+        "name": "Effigie Senza Santo"
+      },
+      "deacon_varric": {
+        "name": "Diacono Varric"
+      },
+      "acolyte_tessa": {
+        "name": "Accolita Tessa"
+      },
       "ironvein_foreman": {
         "name": "Caposquadra Venaferrata"
       },
@@ -4949,6 +5278,11 @@ export const it_IT: EnTranslations = {
         "name": "Fratello Aldric",
         "title": "Sacerdote della Valle",
         "greeting": "Dal camposanto della cappella al tetto del mondo... la pista finisce qui. Sento la montagna ascoltare."
+      },
+      "brother_halven": {
+        "name": "Fratello Halven",
+        "title": "Custode del Reliquiario",
+        "greeting": "Il reliquiario sottostante si è spostato di nuovo."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",
@@ -5804,6 +6138,9 @@ export const it_IT: EnTranslations = {
           },
           "8": {
             "label": "Radura di Brightwood"
+          },
+          "9": {
+            "label": "Radura di Brightwood"
           }
         }
       },
@@ -5905,12 +6242,22 @@ export const it_IT: EnTranslations = {
         "enterText": "Attraversi il cancello lunare — l'aria si fa acqua gelida e luce pallida, e il canto si richiude sopra la tua testa.",
         "leaveText": "Riemergi attraverso il cancello lunare nella notte della montagna."
       }
+    },
+    "delves": {
+      "collapsed_reliquary": {
+        "name": "Il Reliquiario Crollato",
+        "enterText": "Scendi nel reliquiario crollato.",
+        "leaveText": "Risali da Fratello Halven, alla rovina del reliquiario."
+      }
     }
   },
   "worldContent": {
     "corpseName": "{name} (cadavere)",
     "dungeonExitName": "Uscita da {name}",
     "dungeonPartyWarning": "{name} è pensato per un gruppo completo di {count}. Procedi con cautela.",
-    "dungeonInstanceBusy": "Tutte le istanze di {name} sono occupate. Riprova tra poco."
+    "dungeonInstanceBusy": "Tutte le istanze di {name} sono occupate. Riprova tra poco.",
+    "delveLockedChestInteract": "Premi F per scassinare la serratura",
+    "delveRewardChestInteract": "Premi F per reclamare il bottino",
+    "delveSurfaceExitInteract": "Premi F per risalire"
   }
 };

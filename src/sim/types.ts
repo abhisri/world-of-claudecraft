@@ -1,5 +1,7 @@
 // Core shared types for the simulation. The sim layer has zero DOM/rendering deps.
 
+import type { LockSession, LootTier, PickAction, StepResult, VisibleCell } from './lockpick';
+
 export const TICK_RATE = 20; // sim ticks per second
 export const DT = 1 / TICK_RATE;
 export const RUN_SPEED = 7; // yards/sec, classic run speed
@@ -1046,6 +1048,9 @@ export interface ZonePropsDef {
   ruinRings: { x: number; z: number; ringR: number; columns: number }[];
   fences: { x1: number; z1: number; x2: number; z2: number }[];
   graveyards: { x: number; z: number }[]; // 6-headstone cluster anchor
+  // delveId resolves to the delve's localized name at render time (the carved
+  // entrance sign), so the marker carries no hardcoded English label.
+  delveMarkers?: { x: number; z: number; delveId: string }[];
 }
 
 export function emptyZoneProps(): ZonePropsDef {
@@ -1092,6 +1097,7 @@ export interface QuestDef {
   // quest needs; re-granted on accept if the player no longer has them, to avoid a progression block
   minLevel?: number;
   retired?: boolean; // remains finishable if already accepted, but cannot be newly accepted
+  shareable?: boolean; // quest-link sharing allowed (default true; set false to opt out)
   suggestedPlayers?: number; // group quests ("Suggested players: 5")
 }
 
@@ -1213,6 +1219,8 @@ export interface Entity {
   ownerId: number | null; // controlled pets: owning player's entity id (null = wild)
   petMode: PetMode; // hunter pet behavior stance
   petTauntTimer: number; // controlled pet Growl cooldown
+  petAutoTaunt?: boolean; // right-click autocast toggle for controlled pet Growl
+  petManualTauntPending?: boolean; // manual Growl command waiting until the pet reaches range
   petPath: Vec3[]; // controlled pet heel route around obstacles; consumed front-to-back (like chargePath)
   petPathCooldown: number; // seconds until this pet may recompute its heel path again
   pulseTimer: number; // boss aoe pulse countdown
@@ -1261,6 +1269,10 @@ export interface Entity {
   color: number;
   skinCatalog: SkinCatalog; // player appearance catalog: class texture set or cosmetic body.
   skin: number; // player appearance: index into SKINS[visualKey]; 0 = default. synced in identity fields.
+  // Equipped mainhand item id (players only; null otherwise). Render-only: the
+  // client maps it to a held weapon model. Recomputed in recalcPlayerStats and
+  // synced in identity fields (terse `mh`). The sim never reads it for gameplay.
+  mainhandItemId: string | null;
   // $WOC holder-tier flair (cosmetic): 0/undefined = none, 1-10 = Ember…Sovereign.
   // Set server-side from the player's connected-wallet balance and synced in
   // identity fields like skin. The sim never reads it (no gameplay effect).
@@ -1355,7 +1367,9 @@ export type SimEvent = { pid?: number } & (
   | { type: 'comboPoint'; points: number }
   | { type: 'playerDeath' }
   | { type: 'respawn' }
-  | { type: 'vendor'; action: 'buy' | 'sell' | 'buyback'; itemId: string }
+  // itemId names the single item for buy/sell/buyback; it is omitted for the
+  // bulk "sell all junk" sweep, which the client treats as a plain refresh signal.
+  | { type: 'vendor'; action: 'buy' | 'sell' | 'buyback'; itemId?: string }
   // say/yell are delivered only to players in range and carry the speaker's
   // entity id so the client can hang a chat bubble over their head; whisper
   // goes to the target (and echoes to the sender with `to` set); general is
@@ -1453,6 +1467,53 @@ export type SimEvent = { pid?: number } & (
   // entityId (when set) anchors the log to that entity so the server only
   // delivers it to nearby players; anchorless logs broadcast server-wide
   | { type: 'log'; text: string; color?: string; entityId?: number }
+  | { type: 'delveEntered'; delveId: string; tierId: string }
+  | { type: 'delveComplete'; delveId: string; tierId: string }
+  | { type: 'delveFailed'; delveId: string; tierId: string }
+  | { type: 'delveLoreUnlock'; loreId: string }
+  | { type: 'companionBark'; barkId: string; pid?: number }
+  // Lockpicking minigame ("Tumbler's Path"). All personal (pid-scoped). The sim
+  // emits structured data only, the client builds every visible string. Cells
+  // are always limited to the fog window (anti-cheat: the full lock is never
+  // serialized).
+  | { type: 'lockpickOffer'; objectId: number; bountiful: boolean }
+  | {
+      type: 'lockpickSession';
+      sessionId: string;
+      objectId: number;
+      w: number;
+      h: number;
+      col: number;
+      row: number;
+      page: number;
+      pageCount: number;
+      tries: number;
+      triesTotal: number;
+      lootTier: LootTier;
+      allowed: Exclude<PickAction, 'abort'>[];
+      visible: VisibleCell[];
+      stepTimeoutMs: number | null;
+    }
+  | {
+      type: 'lockpickStep';
+      sessionId: string;
+      col: number;
+      row: number;
+      page: number;
+      pageCount: number;
+      tries: number;
+      triesTotal: number;
+      result: StepResult;
+      visible: VisibleCell[];
+    }
+  | {
+      type: 'lockpickEnd';
+      sessionId: string;
+      outcome: 'success' | 'fail' | 'abandoned';
+      lootTier?: LootTier;
+    }
+  | { type: 'lockpickBonus'; tier: LootTier; marks: number; copper: number }
+  | { type: 'delveChestLoot'; chestId: number; items: { itemId: string; count: number }[] }
   // personal cue (carries `pid`) to open the cosmetic skin-select overlay with
   // the server-rolled rank. Text-free on purpose — the client renders its own
   // localized copy, so no sim/server i18n matcher rule is needed.
@@ -1703,4 +1764,196 @@ export function meleeMissChance(attackerLevel: number, targetLevel: number): num
 export function armorReduction(armor: number, attackerLevel: number): number {
   const a = Math.max(0, armor);
   return Math.min(0.75, a / (a + 85 * attackerLevel + 400));
+}
+
+// ---------------------------------------------------------------------------
+// Delves, replayable modular instances (see docs/prd/delves.md)
+// ---------------------------------------------------------------------------
+
+export type DelveTheme = 'crypt' | 'cave' | 'mine' | 'ruin' | 'sewer' | 'vault' | 'lair';
+
+export type DelveObjectiveKind =
+  | 'kill_boss'
+  | 'recover_artifact'
+  | 'seal_portal'
+  | 'survive_ambush'
+  | 'escort_researcher'
+  | 'investigate_clues';
+
+export interface DelveRewardTable {
+  copperMin: number;
+  copperMax: number;
+  firstClearXp: number;
+  repeatClearXp: number;
+}
+
+export interface DelveTierDef {
+  id: string;
+  label: string;
+  enemyLevelBonus: number;
+  affixCount: number;
+  rewardMult: number;
+  // Minimum player level required to select this tier (the Heroic gate). Omit for
+  // an unrestricted tier. Enforced server-side in `enterDelve`.
+  minPlayerLevel?: number;
+  // Per-tier reward overrides; fall back to `delve.baseRewards` when omitted, so a
+  // tier's XP/copper lives in content data, not inline in sim logic.
+  firstClearXp?: number;
+  repeatClearXp?: number;
+  copperMin?: number;
+  copperMax?: number;
+  unlock?: { delveId: string; tierId: string; clears: number };
+}
+
+export interface DelvePatrol {
+  mobId: string;
+  from: { x: number; z: number };
+  to: { x: number; z: number };
+}
+
+export interface DelveSpawnSet {
+  id: string;
+  weight: number;
+  spawns: DungeonSpawn[];
+  patrols?: DelvePatrol[];
+}
+
+export interface DelveInteractableSlot {
+  x: number;
+  z: number;
+  variants: string[];
+}
+
+export interface DelveModuleDef {
+  id: string;
+  interior: 'crypt' | 'cave' | 'mine';
+  layout: string;
+  length: number;
+  spawnSets: DelveSpawnSet[];
+  interactableSlots: DelveInteractableSlot[];
+  sideRoom?: { chance: number; moduleId: string };
+}
+
+export interface DelveDef {
+  id: string;
+  name: string;
+  theme: DelveTheme;
+  index: number;
+  minLevel: number;
+  suggestedPlayers: number;
+  doorPos: { x: number; z: number };
+  modules: string[];
+  moduleCount: [number, number];
+  finaleModuleId: string;
+  bosses: string[];
+  objective: DelveObjectiveKind;
+  tiers: DelveTierDef[];
+  baseRewards: DelveRewardTable;
+  boardNpcId: string;
+  // Companion auto-hired for solo runs (e.g. Acolyte Tessa). Omit for delves that
+  // ship without a companion. De-hardcodes the solo-spawn branch in `enterDelve`.
+  autoCompanionId?: string;
+  enterText: string;
+  leaveText: string;
+}
+
+export interface DelveObjectiveState {
+  kind: DelveObjectiveKind;
+  counts: number[];
+  complete: boolean;
+}
+
+export interface DelveCompanionState {
+  companionId: string;
+  entityId: number;
+}
+
+export interface DelveRun {
+  delveId: string;
+  slot: number;
+  partyKey: string | null;
+  seed: number;
+  tierId: string;
+  affixes: string[];
+  modules: string[];
+  moduleIndex: number;
+  origin: { x: number; z: number };
+  mobIds: number[];
+  objectIds: number[];
+  objective: DelveObjectiveState;
+  companion?: DelveCompanionState;
+  completed: boolean;
+  emptyFor: number;
+  deathsThisRun: Record<number, number>;
+  objectState: Record<number, DelveObjectState>;
+  raiseDeadChannel: DelveRaiseDeadChannel | null;
+  restlessPending: DelveRestlessPending[];
+  badAirTimer: number;
+  companionBarks: string[];
+  /** True when the current module exit portal is active (trash cleared + plate if any). */
+  exitPortalOpen: boolean;
+  /** §7.6, this run rolled Bountiful (ultra-rare): the reward chest is a purple
+   * Coffer that only yields to a Hard-tier + Premium-ante lockpick solve and
+   * guarantees a signature rare. Rolled once at run start (Heroic 5% / Normal 2%). */
+  bountiful: boolean;
+  /** Entity id of the reward chest spawned after the finale boss dies, or null if not yet spawned. */
+  rewardChestId: number | null;
+  /** Entity id of the surface-exit portal spawned after the chest is opened, or null if not yet opened. */
+  surfaceExitId: number | null;
+  /** Active lockpicking attempt on the finale chest (single interactor, v1), or null. In-memory only. */
+  lockpick: LockSession | null;
+}
+
+export interface DelveDailyState {
+  date: string;
+  firstClearXp: string[];
+  markClears: number;
+}
+
+export interface DelveCompanionDef {
+  id: string;
+  name: string;
+  role: 'healer' | 'tank' | 'scout' | 'dps';
+  mobTemplateId: string;
+}
+
+export interface DelveAffixDef {
+  id: string;
+  name: string;
+  themes: DelveTheme[];
+  blessing?: boolean;
+}
+
+export interface DelveObjectState {
+  kind: string;
+  triggered: boolean;
+  hp: number;
+  maxHp: number;
+  linkIds: number[];
+  open: boolean;
+  // Lockpick chest gating (kind === 'locked_chest'). attemptAvailable is granted
+  // when the chest spawns (boss defeated) and consumed on a SUCCESS or FAILED
+  // attempt, a FAILED chest can only be retried by re-clearing the delve.
+  attemptAvailable?: boolean;
+  looted?: boolean;
+  lootedTier?: LootTier;
+  /** Item slots waiting on the post-unlock loot screen. */
+  pendingLoot?: { itemId: string; count: number }[];
+  /** Entity id of the player who picked the lock; only they may collect the loot. */
+  lootOwnerId?: number;
+}
+
+export interface DelveRaiseDeadChannel {
+  graveId: number;
+  bossId: number;
+  mobId: string;
+  count: number;
+  remaining: number;
+}
+
+export interface DelveRestlessPending {
+  at: number;
+  x: number;
+  z: number;
+  mobId: string;
 }

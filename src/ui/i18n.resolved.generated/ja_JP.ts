@@ -426,6 +426,18 @@ export const ja_JP: EnTranslations = {
     "tips": {
       "joinChannels": "ヒント：/join world または /join lfg と入力すると、レルム全体のプレイヤーとチャットできます。"
     },
+    "questShare": {
+      "notShareable": "このクエストは共有できません。",
+      "notInSharerParty": "{name} のパーティに参加していないと、このクエストを受諾できません。",
+      "accepted": "{name} があなたの共有クエストを受諾しました。",
+      "dialogTitle": "共有クエスト",
+      "viewOnlyHint": "このクエストを受諾するには、共有した人のパーティに参加してください。",
+      "alreadyOn": "このクエストはすでに受注しています。",
+      "alreadyDone": "このクエストはすでに完了しています。",
+      "ineligible": "このクエストの条件を満たしていません。",
+      "noQuestSelected": "共有するクエストをログから選択してください。",
+      "linkTitle": "Shift + クリックでこのクエストをチャットにリンクします。"
+    },
     "plurals": {
       "guildMembers": {
         "one": "あなたは{rank}、{count}人のメンバー",
@@ -1709,6 +1721,263 @@ export const ja_JP: EnTranslations = {
     "friends": "フレンド & ギルド",
     "chat": "チャットを開く"
   },
+  "sim": {
+    "delve": {
+      "cannotEnterNow": "今はデルヴに入れない。",
+      "leaveDungeonFirst": "まずダンジョンから出よ。",
+      "leaveArenaFirst": "まずアリーナから出よ。",
+      "alreadyInDelve": "あなたはすでにデルヴの中にいる。",
+      "whileTrading": "取引中はデルヴに入れない。",
+      "duringDuel": "決闘中はデルヴに入れない。",
+      "duringArena": "アリーナの試合中はデルヴに入れない。",
+      "unknownTier": "不明なデルヴの難易度だ。",
+      "levelRequired": "{name}に入るにはレベル{level}でなければならない。",
+      "levelRequiredTier": "{tier}で{name}に入るにはレベル{level}が必要だ。",
+      "instancesBusy": "{name}のすべてのインスタンスが使用中だ。しばらくしてからもう一度試せ。",
+      "runFailed": "{name}の攻略に失敗した。",
+      "complete": "{name}を踏破した。",
+      "mechanismOpen": "近くで機構がカチリと開く。北へ通路が開いた。先にある出口のポータルを探せ。",
+      "raiseDead": "{name}が死者蘇生を唱え始める。",
+      "graveFalters": "墓の儀式が乱れる。",
+      "doorAlreadyOpen": "扉はすでに開いている。",
+      "companionRankUp": "{name}がランク{rank}に達した。",
+      "bossChest": "ボスが倒れる。守りの聖遺物庫の宝箱が祭壇にせり上がる。錠を開けて戦利品を手に入れろ。",
+      "surfaceStairs": "地上への階段が開く。階段でFを押して出よ。",
+      "moduleEnter": "{name}: {objective}",
+      "objectiveClearRoom": "部屋を制圧せよ。",
+      "objectiveDefeatBoss": "ボスを討て。",
+      "tombstoneHint": "部屋を制圧すると、北へ墓石の通路が開く。",
+      "tombstoneOpen": "封じられた墓石の通路が北へきしみながら開く。中へ歩み入って進め。",
+      "tombstoneInto": "あなたは墓石を抜けて{name}へ入る。",
+      "chestEmpty": "宝箱は空だ。",
+      "notInDelve": "あなたはデルヴの中にいない。",
+      "cannotInteract": "それとは関われない。",
+      "tooFar": "遠すぎる。",
+      "graveSilent": "墓は今のところ静まっている。",
+      "doorLocked": "扉には錠がかかっている。",
+      "strikeWall": "壁を叩いて打ち破れ。",
+      "nothingHappens": "何も起こらない。",
+      "unknownCompanion": "不明な仲間だ。",
+      "companionMaxRank": "この仲間はすでに完全に強化されている。",
+      "companionMarksRequired": "{name}を強化するにはデルヴの刻印が{marks}個必要だ。",
+      "cannotAffordCompanionUpgrade": "この強化を行う余裕がない。",
+      "shopItemLocked": "そのアイテムはまだ解放されていない。",
+      "shopMarksRequired": "{name}を購入するにはデルヴの刻印が{marks}個必要だ。",
+      "shopSealPremiumOnly": "この封印は達人の手にのみ応じる。極上の賭けだけが開くことができる。",
+      "passageSealed": "通路は封じられている。",
+      "moveCloserPassage": "通路にもっと近づけ。",
+      "moveCloserChest": "宝箱にもっと近づけ。",
+      "nothingToTake": "もう取れるものは何も残っていない。",
+      "wayOutNotOpen": "出口はまだ開いていない。",
+      "moveCloserStairs": "階段にもっと近づけ。"
+    },
+    "lockpick": {
+      "lockYields": "錠が開いた! {tier}の戦利品だ。",
+      "tierPremium": "極上",
+      "tierMedium": "並",
+      "tierLow": "ささやか",
+      "alreadyInProgress": "すでに誰かが錠に取りかかっている。",
+      "cannotPickThat": "それの錠は開けられない。",
+      "chooseAnte": "ピックを1本、2本、または3本選べ。",
+      "noAttempt": "進行中の解錠はない。",
+      "notYours": "それはあなたの錠ではない。",
+      "toolSlips": "その道具はこの錠から滑り落ちる。",
+      "lockJammed": "錠は開けられないほど固まっている。もう一度デルヴを踏破すれば再挑戦できる。",
+      "lastPickSnaps": "最後のピックが折れる。錠が固まった。もう一度デルヴを踏破しない限り、この宝箱は失われる。"
+    }
+  },
+  "lockpickUi": {
+    "pickTitle": "錠を開ける",
+    "cofferTitle": "豊穣の宝庫",
+    "cache": "{tier}の宝庫",
+    "pickBlurb": "より豊かな宝庫ほど、多くの錠で封じられている。易しい錠ほど挑戦回数も時間も多い。失敗すると錠はリセットされ、挑戦回数が尽きるまで続く。",
+    "cofferBlurb": "この封印は達人の手にのみ応じる。難関、極上の道だけが開くことができる。3つの錠をすべて解いて至高の褒賞を手にせよ。",
+    "pagesAria": "錠{count}個",
+    "tries": "挑戦{count}回",
+    "triesOne": "挑戦1回",
+    "perMove": "1手あたり{seconds}秒",
+    "seconds": "{seconds}s",
+    "boardTitle": "錠前の道: {tier}の宝庫",
+    "closeAria": "閉じる",
+    "withdrawAria": "手を引く",
+    "timerAria": "残り時間",
+    "lockOf": "錠 {page}/{total}",
+    "lockOfAria": "錠 {page}/{total}",
+    "triesOf": "挑戦 {tries}/{total}",
+    "triesOfAria": "残り挑戦 {tries}/{total}",
+    "ward": "ウォード {col}/{total}",
+    "depthKeys": "ホットキーはピックの深さ（Q/W/E/A/Z）を設定します。ウォード番号ではありません。",
+    "withdraw": "手を引く (Esc)",
+    "action": {
+      "hardSet": "強く押し込む",
+      "set": "押し込む",
+      "steady": "保つ",
+      "ease": "緩める",
+      "drop": "離す"
+    },
+    "feedback": {
+      "advanced": "ピンが動いた……",
+      "slip": "ウォードが食い込み、ピックが滑る!",
+      "bind": "タンブラーが噛む: 深さが違う!",
+      "trap": "偽のウォードが弾けて閉じ、錠が固まる!",
+      "retry": "錠がリセットされる。改めて狙いを定めろ。",
+      "pageCleared": "タンブラー列が落ちる。次の錠が現れる。",
+      "success": "閂が外れた、宝庫はあなたのものだ!",
+      "fail": "錠が固まった。もう二度と動かない。"
+    },
+    "summary": {
+      "success": "錠が開いた。{tier}の宝庫を獲得。",
+      "successGeneric": "錠が開いた。宝庫を獲得。",
+      "fail": "錠が壊れた。もう一度デルヴを踏破すれば再挑戦できる。",
+      "abandoned": "あなたはピックをそっと引き抜く。錠は待っている。"
+    }
+  },
+  "delveUi": {
+    "board": {
+      "title": "デルヴボード",
+      "enter": "デルヴに入る",
+      "enterAria": "{tier}難易度で{delve}に入る",
+      "openDelve": "崩れた聖遺物庫",
+      "openDelveAria": "{name}からデルヴボードを開く",
+      "marks": "デルヴの刻印: {count}",
+      "minLevel": "必要レベル{level}",
+      "tier": {
+        "normal": "ノーマル",
+        "heroic": "ヒロイック"
+      },
+      "companion": {
+        "pick": "仲間を選ぶ",
+        "tessa": "侍祭テッサ",
+        "rank": "ランク{rank}",
+        "boon": "戦闘の合間にパーティを回復する。ランク3ではデルヴごとに一度、倒れた仲間を蘇生する。",
+        "upgrade": "ランク{rank}に強化（刻印{marks}個）",
+        "upgradeAria": "デルヴの刻印{marks}個で{name}をランク{rank}に強化",
+        "maxRank": "最大ランク"
+      },
+      "tabDelve": "デルヴ",
+      "tabShop": "ショップ"
+    },
+    "shop": {
+      "price": "刻印{marks}個",
+      "buy": "購入",
+      "buyAria": "デルヴの刻印{marks}個で{item}を購入",
+      "reqHeroic": "ヒロイッククリアが必要",
+      "reqClears": "{count}回のクリアが必要",
+      "empty": "在庫がありません。"
+    },
+    "tracker": {
+      "title": "デルヴ",
+      "objective": "目標",
+      "module": "モジュール {current}/{total}",
+      "affix": "アフィックス",
+      "complete": "完了",
+      "marks": "デルヴの刻印: {count}",
+      "exitHintOpen": "墓石の通路へ歩み入れ(北)",
+      "exitHintLocked": "雑魚を一掃して北の通路を開け"
+    },
+    "objective": {
+      "kill_boss": "{boss}を討て",
+      "recover_artifact": "埋葬台帳を取り戻せ",
+      "clear_room": "部屋を制圧せよ"
+    },
+    "summary": {
+      "title": "デルヴ踏破",
+      "marks": "デルヴの刻印を{count}個獲得",
+      "loreUnlock": "記録解放: {title}"
+    },
+    "death": {
+      "warning": "あと一度死ねば、このデルヴの攻略は終わりです。"
+    },
+    "run": {
+      "failed": "デルヴの攻略に失敗した。ハルヴェン修道士のもとへ戻される。"
+    },
+    "npc": {
+      "halven": {
+        "greeting": "下の聖遺物庫がまた動いた。真夜中を過ぎると床越しに詠唱が聞こえ、侍祭テッサは埋葬台帳が自らインクを書き換えていると言って譲らぬ。勇気があるなら、{playerName}、蝋燭を持って下りてくれ。そこで聞こえる声をすべて信じるな。その中には、お前が生まれる前からお前の名を知っていた者もいる。"
+      }
+    },
+    "intro": {
+      "normal": "階段は冷たく暗い。砕けた聖人の石が下りの道に散らばり、湿った空気にかすかな鐘の音が漂う。侍祭テッサがささやく。「聖遺物庫がこんな下まで開いているはずがありません。離れずに、{playerName}。」",
+      "heroic": "扉があなたの背後でうめきながら閉じる。名前が爪のように石を引っかいていく。テッサの蝋燭が青く燃える。「今、彼らが呼んでいるのは死者ではありません、{playerName}。何かに応えているのです。」"
+    },
+    "module": {
+      "reliquary_sunken_ossuary": "水が埋葬棚から染み出し、古い灰を銀黒の流れとなって運んでいく。",
+      "reliquary_bell_niche": "数十の手鐘が静寂の中に吊られ、それぞれに葬儀の布が結ばれている。",
+      "reliquary_saintless_hall": "丹念な憎しみで顔を削り取られた像の数々。",
+      "reliquary_finale": "埋もれた鐘が、あなたのブーツの下で一度だけ鳴る。"
+    },
+    "moduleName": {
+      "reliquary_sunken_ossuary": "沈んだ納骨堂",
+      "reliquary_bell_niche": "鐘の壁龕",
+      "reliquary_saintless_hall": "聖人なき広間",
+      "reliquary_finale": "鐘を埋めし聖堂"
+    },
+    "companion": {
+      "barkLine": "{name}: {line}",
+      "tessa": {
+        "combat_start": "足元に気をつけて、{playerName}。ここの死者は安らいでいません。",
+        "low_hp": "息をして。あなたのための祈りはまだ残っています。",
+        "trap_spotted": "待って。床の何かが足音を覚えています。",
+        "boss_pull": "あの鐘はあなたの重みを知っている、{playerName}。跪いてはいけません。",
+        "completion": "台帳もまた一晩は眠れるでしょう。お見事です。",
+        "rank": {
+          "1": "礼拝堂の見習い",
+          "2": "蝋燭持ち",
+          "3": "聖遺物庫の侍祭",
+          "4": "墓呼びの証人",
+          "5": "礼拝堂の守護者"
+        }
+      }
+    },
+    "boss": {
+      "varric": {
+        "bell": {
+          "emote": "助祭ヴァリックが埋もれた鐘を両手で握りしめる!",
+          "log": "助祭ヴァリックが埋葬の鐘を鳴らし始める。",
+          "warning": "助祭ヴァリックから離れろ!",
+          "impact": "鐘の音が広間の床を砕く!",
+          "lesson": "鐘の弔鐘。12秒ごとに地面を叩きつける。着弾する前に離れろ。"
+        },
+        "raise": {
+          "emote": "助祭ヴァリックが砕けた墓から名を呼ぶ!",
+          "log": "助祭ヴァリックが死者蘇生を唱え始める。",
+          "warning": "墓の儀式を止めろ!",
+          "object": "砕けた墓が奪われた息吹で震える。",
+          "interrupt_ok": "墓の儀式が乱れる。",
+          "interrupt_fail": "死者が助祭ヴァリックの呼び声に応える!",
+          "lesson": "5秒以内に砕けた墓を妨害しなければ、死者が彼の呼び声に応えて立ち上がる。"
+        },
+        "pull": "汚れた目的で聖なる塵を踏むか。跪き、名を数えられよ。",
+        "intro": "失われた魂などない。ただ置き忘れられただけだ。",
+        "mid60": "助祭ヴァリックは震える勝ち誇りとともに台帳から名を読み上げる。",
+        "mid30": "埋葬の鐘が、彼が口にするすべての名に応える。",
+        "defeat": "そんな……名簿は揃っていたのに……すべて揃っていたのに……"
+      }
+    },
+    "lore": {
+      "eastbrook_ledger": "イーストブルックの埋葬台帳の、水染みのついた一葉。人のものではない筆跡で、名が消され、書き直されている。",
+      "first_collapse": "礼拝堂の記録は最初の陥没を記す。聖人の石が砕け、棚が傾き、地の底から鐘の音が聞こえた、と。",
+      "gravecaller_mark": "棺の木に刻まれた紋章。モーセンの印ではなく、虚ろの墓所よりも古い墓呼びの印だ。",
+      "bell_below": "テッサの欄外の書き込み。「聖遺物庫の下にもう一つの鐘がある。死者のためではなく、置き忘れられた者のために鳴る。」",
+      "tessa_note": "テッサの筆跡で折りたたまれた紙片。「私たちが地下にいる間に台帳が変わったなら、声ではなく蝋燭を信じなさい。」"
+    },
+    "affix": {
+      "restless_graves": "安らげぬ墓",
+      "bad_air": "淀んだ空気",
+      "candleblind": "蝋燭の眩惑",
+      "old_mechanisms": "古びた機構",
+      "flooded_paths": "水没した通路",
+      "grave_tax": "墓の徴収",
+      "unstable_roof": "崩れかけた天井",
+      "cult_remnants": "カルトの残党"
+    },
+    "blessing": {
+      "chapel_candle": "礼拝堂の蝋燭。より安全な攻略になるが、踏破時の刻印が1つ減る。"
+    },
+    "chest": {
+      "flavor": "死者たちが、譲れるものを差し出した。"
+    }
+  },
   "fiesta": {
     "bracket": "Fiesta",
     "enterQueue": "Fiestaに参加！",
@@ -1981,7 +2250,14 @@ export const ja_JP: EnTranslations = {
     "portraitAlt": "{name}の肖像",
     "viewProfile": "プロフィールを見る",
     "profile": "プロフィール",
-    "closeProfile": "プロフィールを閉じる"
+    "closeProfile": "プロフィールを閉じる",
+    "sortBy": "並べ替え",
+    "sortByLabel": "キャラクターを並べ替え",
+    "sortMenuLabel": "並べ替えオプション",
+    "sortLevel": "レベル",
+    "sortName": "名前",
+    "sortRecent": "最近プレイ",
+    "sortPlaytime": "プレイ時間"
   },
   "deleteCharacter": {
     "title": "キャラクターを削除",
@@ -2459,6 +2735,8 @@ export const ja_JP: EnTranslations = {
       "lootReceiveMoney": "{money}を受け取りました。",
       "lootMoney": "{money}を拾いました。",
       "soldItem": "{item}を{money}で売却しました。",
+      "soldJunkOne": "不要品{count}個を{money}で売却しました。",
+      "soldJunkMany": "不要品{count}個を{money}で売却しました。",
       "friendOnline": "{name}がオンラインになりました。",
       "friendOffline": "{name}がオフラインになりました。"
     },
@@ -2862,7 +3140,10 @@ export const ja_JP: EnTranslations = {
       "sellQuantityTitle": "{item}を売却",
       "sellQuantityInput": "売却する数量",
       "sellQuantityConfirm": "売却",
-      "sellQuantityCancel": "キャンセル"
+      "sellQuantityCancel": "キャンセル",
+      "sellJunk": "不要品を売却",
+      "sellJunkAria": "{price}ですべての不要品を売却",
+      "sellJunkHint": "クエストアイテムを除くバッグ内のすべての灰色アイテムを売却します。"
     },
     "market": {
       "title": "ワールドマーケット",
@@ -3874,8 +4155,8 @@ export const ja_JP: EnTranslations = {
       "ridge_stalker_pelt": {
         "name": "尾根の追跡者の毛皮"
       },
-      "pristine_ridge_stalker_pelt": {
-        "name": "極上の尾根の追跡者の毛皮"
+      "old_cragmaws_pelt": {
+        "name": "老いたるクラッグモウの毛皮"
       },
       "glowing_wax": {
         "name": "光る蝋"
@@ -4450,6 +4731,33 @@ export const ja_JP: EnTranslations = {
       "wyrmshadow_talongrips": {
         "name": "ワーム影の鉤爪握り"
       },
+      "reliquary_plate_chest": {
+        "name": "聖遺物庫衛兵のホーバーク"
+      },
+      "reliquary_leather_chest": {
+        "name": "塵守りのジャーキン"
+      },
+      "reliquary_cloth_chest": {
+        "name": "聖遺物庫の屍衣"
+      },
+      "reliquary_legs": {
+        "name": "地下聖堂の巻脚絆"
+      },
+      "reliquary_helm": {
+        "name": "納骨堂の見張りの兜"
+      },
+      "reliquary_shoulder": {
+        "name": "崩れた肩当て"
+      },
+      "reliquary_gloves_rog": {
+        "name": "骨守りの手甲"
+      },
+      "deacon_reliquary_helm": {
+        "name": "助祭の聖遺物庫の兜"
+      },
+      "varric_shadow_cowl": {
+        "name": "ヴァリックの影のフード"
+      },
       "the_codfather": {
         "name": "タラのゴッドファーザー"
       },
@@ -4740,6 +5048,27 @@ export const ja_JP: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "ナイスラクシス、ソーンピークの災厄"
       },
+      "reliquary_ledger_wraith": {
+        "name": "台帳の亡霊"
+      },
+      "reliquary_funeral_ringer": {
+        "name": "葬儀の鐘鳴らし"
+      },
+      "reliquary_gravecall_acolyte": {
+        "name": "墓呼びの侍祭"
+      },
+      "reliquary_bonewalker": {
+        "name": "蘇りし骨歩き"
+      },
+      "reliquary_saintless_effigy": {
+        "name": "聖人なき偶像"
+      },
+      "deacon_varric": {
+        "name": "助祭ヴァリック"
+      },
+      "acolyte_tessa": {
+        "name": "侍祭テッサ"
+      },
       "ironvein_foreman": {
         "name": "鉄脈の現場監督"
       },
@@ -4949,6 +5278,11 @@ export const ja_JP: EnTranslations = {
         "name": "アルドリック修道士",
         "title": "谷の司祭",
         "greeting": "礼拝堂の墓地から世界の屋根まで... 足跡はここで終わります。山が耳を澄ませているのを感じます。"
+      },
+      "brother_halven": {
+        "name": "ハルヴェン修道士",
+        "title": "聖遺物庫の番人",
+        "greeting": "下の聖遺物庫がまた動いた。"
       },
       "tidewatcher_ondrel": {
         "name": "オンドレル・ヴェイン",
@@ -5804,6 +6138,9 @@ export const ja_JP: EnTranslations = {
           },
           "8": {
             "label": "ブライトウッドの林間"
+          },
+          "9": {
+            "label": "ブライトウッドの林間"
           }
         }
       },
@@ -5905,12 +6242,22 @@ export const ja_JP: EnTranslations = {
         "enterText": "月の門をくぐり抜けると——大気は冷たい水と蒼白の光に変わり、歌声が頭上で閉ざされていく。",
         "leaveText": "月の門を抜けて、山の夜へと浮かび上がる。"
       }
+    },
+    "delves": {
+      "collapsed_reliquary": {
+        "name": "崩れた聖遺物庫",
+        "enterText": "あなたは崩れた聖遺物庫へと降りていく。",
+        "leaveText": "あなたは聖遺物庫の廃墟にいるハルヴェン修道士のもとへ登り戻る。"
+      }
     }
   },
   "worldContent": {
     "corpseName": "{name}（死体）",
     "dungeonExitName": "{name}の出口",
     "dungeonPartyWarning": "{name}は{count}人のフルパーティ向けです。慎重に進んでください。",
-    "dungeonInstanceBusy": "{name}のインスタンスはすべて使用中です。少し待ってから再試行してください。"
+    "dungeonInstanceBusy": "{name}のインスタンスはすべて使用中です。少し待ってから再試行してください。",
+    "delveLockedChestInteract": "Fで錠を開ける",
+    "delveRewardChestInteract": "Fで戦利品を受け取る",
+    "delveSurfaceExitInteract": "Fで地上へ登る"
   }
 };

@@ -363,6 +363,20 @@ export const hudChromeStrings = {
   tips: {
     joinChannels: 'Tip: type /join world or /join lfg to chat with players across the realm.',
   },
+  // Quest-link sharing: the chat-link affordance and its sim-emitted notices
+  // (re-localized through the hud-local localizeErrorText/localizeSystemText arms).
+  questShare: {
+    notShareable: "This quest can't be shared.",
+    notInSharerParty: "You must be in {name}'s party to accept that quest.",
+    accepted: '{name} accepted your shared quest.',
+    dialogTitle: 'Shared Quest',
+    viewOnlyHint: "Join the sharer's party to accept this quest.",
+    alreadyOn: "You're already on this quest.",
+    alreadyDone: "You've already completed this quest.",
+    ineligible: "You don't meet the requirements for this quest.",
+    noQuestSelected: 'Select a quest in your log to share.',
+    linkTitle: 'Shift-click to link this quest in chat.',
+  },
   // CLDR-categorized count strings resolved through tPlural(base, count) in
   // src/ui/i18n.ts: it selects the active locale's cardinal category (one / few /
   // many / other) via Intl.PluralRules and looks up the matching leaf, so e.g.
@@ -446,7 +460,7 @@ export const hudChromeStrings = {
     errPasswordConfirm: 'New passwords do not match.',
     // Email
     emailLabel: 'Email (optional)',
-    emailHint: 'Used only for account recovery. We never send marketing email.',
+    emailHint: 'Used only for account recovery. Use Change Email below to update it.',
     saveEmail: 'Save Email',
     emailSaved: 'Email saved.',
     errEmailInvalid: 'Enter a valid email address.',
