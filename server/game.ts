@@ -243,6 +243,7 @@ function identityFields(e: Entity): Record<string, unknown> {
   const out: Record<string, unknown> = { k: e.kind, tid: e.templateId, nm: e.name, lv: e.level };
   if (e.skinCatalog === 'mech') out.cat = 'mech';
   if (e.skin) out.sk = e.skin;
+  if (e.mainhandItemId) out.mh = e.mainhandItemId; // equipped mainhand → held weapon model (render-only)
   if (e.holderTier) out.ht = e.holderTier; // $WOC holder-tier flair (cosmetic)
   if (e.holderBalance) out.hb = Math.round(e.holderBalance); // exact $WOC, for inspect
   if (e.guild) out.gd = e.guild;
@@ -1467,6 +1468,9 @@ export class GameServer {
         break;
       case 'buyback':
         if (typeof msg.item === 'string') sim.buyBackItem(msg.item, pid);
+        break;
+      case 'sell_all_junk':
+        sim.sellAllJunk(pid);
         break;
       case 'change_skin':
         if (typeof msg.skin === 'number') {

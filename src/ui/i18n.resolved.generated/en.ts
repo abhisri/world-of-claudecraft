@@ -1993,7 +1993,14 @@ export const en: EnTranslations = {
     "portraitAlt": "Portrait of {name}",
     "viewProfile": "View Profile",
     "profile": "Profile",
-    "closeProfile": "Close profile"
+    "closeProfile": "Close profile",
+    "sortBy": "Sort",
+    "sortByLabel": "Sort characters",
+    "sortMenuLabel": "Sort options",
+    "sortLevel": "Level",
+    "sortName": "Name",
+    "sortRecent": "Recently Played",
+    "sortPlaytime": "Playtime"
   },
   "deleteCharacter": {
     "title": "Delete Character",
@@ -2471,6 +2478,8 @@ export const en: EnTranslations = {
       "lootReceiveMoney": "You receive {money}.",
       "lootMoney": "You loot {money}.",
       "soldItem": "Sold {item} for {money}.",
+      "soldJunkOne": "Sold {count} junk item for {money}.",
+      "soldJunkMany": "Sold {count} junk items for {money}.",
       "friendOnline": "{name} has come online.",
       "friendOffline": "{name} has gone offline."
     },
@@ -2874,7 +2883,10 @@ export const en: EnTranslations = {
       "sellQuantityTitle": "Sell {item}",
       "sellQuantityInput": "Quantity to sell",
       "sellQuantityConfirm": "Sell",
-      "sellQuantityCancel": "Cancel"
+      "sellQuantityCancel": "Cancel",
+      "sellJunk": "Sell Junk",
+      "sellJunkAria": "Sell all junk for {price}",
+      "sellJunkHint": "Sells every gray item in your bags except quest items."
     },
     "market": {
       "title": "The World Market",

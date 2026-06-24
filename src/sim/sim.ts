@@ -9809,6 +9809,53 @@ export class Sim {
     });
   }
 
+  // Bulk-sell every gray (poor-quality) item in the bags in one action, applying the
+  // same rules as the per-item sellItem path: quest items and noVendorSell items are
+  // left untouched and each sold stack is recorded for buyback. One summary loot line
+  // is emitted instead of one per stack.
+  sellAllJunk(pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r) return;
+    const { meta, e: p } = r;
+    if (p.dead) {
+      this.error(meta.entityId, "You can't do that while dead.");
+      return;
+    }
+    if (!this.vendorInRange(p)) {
+      this.error(meta.entityId, 'There is no merchant nearby.');
+      return;
+    }
+    const junk = meta.inventory
+      .filter((s) => {
+        const def = ITEMS[s.itemId];
+        return (
+          !!def &&
+          def.quality === 'poor' &&
+          def.kind !== 'quest' &&
+          !def.noVendorSell &&
+          s.count > 0
+        );
+      })
+      .map((s) => ({ itemId: s.itemId, count: s.count }));
+    if (junk.length === 0) return; // nothing gray to sell; the vendor UI keeps the button disabled here
+    let total = 0;
+    let soldCount = 0;
+    for (const { itemId, count } of junk) {
+      const def = ITEMS[itemId]!;
+      this.removeItem(itemId, count, meta.entityId);
+      this.recordVendorBuyback(meta, itemId, count);
+      total += def.sellValue * count;
+      soldCount += count;
+    }
+    meta.copper += total;
+    this.emit({ type: 'vendor', action: 'sell', pid: meta.entityId });
+    this.emit({
+      type: 'loot',
+      text: `Sold ${soldCount} junk item${soldCount === 1 ? '' : 's'} for ${formatMoney(total)}.`,
+      pid: meta.entityId,
+    });
+  }
+
   buyBackItem(itemId: string, pid?: number): void {
     const r = this.resolve(pid);
     if (!r) return;

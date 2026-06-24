@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { ClientWorld } from '../src/net/online';
 
 // Build a ClientWorld without opening a socket (mirrors snapshots.test.ts `bareClient`).

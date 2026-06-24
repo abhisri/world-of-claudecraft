@@ -1993,7 +1993,14 @@ export const en_XA: EnTranslations = {
     "portraitAlt": "[Þóŕţŕáíţ óƒ {name}]",
     "viewProfile": "[Ʋíéŵ Þŕóƒíļé]",
     "profile": "[Þŕóƒíļé]",
-    "closeProfile": "[Çļóšé þŕóƒíļé]"
+    "closeProfile": "[Çļóšé þŕóƒíļé]",
+    "sortBy": "[Šóŕţ]",
+    "sortByLabel": "[Šóŕţ çĥáŕáçţéŕš]",
+    "sortMenuLabel": "[Šóŕţ óþţíóñš]",
+    "sortLevel": "[Ļéʋéļ]",
+    "sortName": "[Ñáɱé]",
+    "sortRecent": "[Ŕéçéñţļý Þļáýéð]",
+    "sortPlaytime": "[Þļáýţíɱé]"
   },
   "deleteCharacter": {
     "title": "[Ðéļéţé Çĥáŕáçţéŕ]",
@@ -2471,6 +2478,8 @@ export const en_XA: EnTranslations = {
       "lootReceiveMoney": "[Ýóú ŕéçéíʋé {money}.]",
       "lootMoney": "[Ýóú ļóóţ {money}.]",
       "soldItem": "[Šóļð {item} ƒóŕ {money}.]",
+      "soldJunkOne": "[Šóļð {count} ĵúñķ íţéɱ ƒóŕ {money}.]",
+      "soldJunkMany": "[Šóļð {count} ĵúñķ íţéɱš ƒóŕ {money}.]",
       "friendOnline": "[{name} ĥáš çóɱé óñļíñé.]",
       "friendOffline": "[{name} ĥáš ĝóñé óƒƒļíñé.]"
     },
@@ -2874,7 +2883,10 @@ export const en_XA: EnTranslations = {
       "sellQuantityTitle": "[Šéļļ {item}]",
       "sellQuantityInput": "[Ɋúáñţíţý ţó šéļļ]",
       "sellQuantityConfirm": "[Šéļļ]",
-      "sellQuantityCancel": "[Çáñçéļ]"
+      "sellQuantityCancel": "[Çáñçéļ]",
+      "sellJunk": "[Šéļļ Ĵúñķ]",
+      "sellJunkAria": "[Šéļļ áļļ ĵúñķ ƒóŕ {price}]",
+      "sellJunkHint": "[Šéļļš éʋéŕý ĝŕáý íţéɱ íñ ýóúŕ ƀáĝš éẋçéþţ ɋúéšţ íţéɱš.]"
     },
     "market": {
       "title": "[Ţĥé Ŵóŕļð Ɱáŕķéţ]",

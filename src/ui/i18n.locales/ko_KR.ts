@@ -18,7 +18,8 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'seo.officialBody':
     'worldofclaudecraft.com은 Claudemoon 렐름의 공식 무료 브라우저 MMO입니다. 지속 캐릭터로 온라인 플레이를 하거나, 오프라인에서 혼자 탐험하고, wiki를 읽고, 이 사이트에서 검증된 커뮤니티 링크를 확인하세요.',
   'hudChrome.questShare.notShareable': '이 퀘스트는 공유할 수 없습니다.',
-  'hudChrome.questShare.notInSharerParty': '{name}님의 파티에 속해 있어야 이 퀘스트를 수락할 수 있습니다.',
+  'hudChrome.questShare.notInSharerParty':
+    '{name}님의 파티에 속해 있어야 이 퀘스트를 수락할 수 있습니다.',
   'hudChrome.questShare.accepted': '{name}님이 당신의 공유 퀘스트를 수락했습니다.',
   'hudChrome.questShare.dialogTitle': '공유 퀘스트',
   'hudChrome.questShare.viewOnlyHint': '이 퀘스트를 수락하려면 공유한 사람의 파티에 참가하세요.',
@@ -27,6 +28,13 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.questShare.ineligible': '이 퀘스트의 요구 조건을 충족하지 못합니다.',
   'hudChrome.questShare.noQuestSelected': '공유할 퀘스트를 기록에서 선택하세요.',
   'hudChrome.questShare.linkTitle': 'Shift + 클릭하면 이 퀘스트를 채팅에 연결합니다.',
+  'character.sortBy': '정렬',
+  'character.sortByLabel': '캐릭터 정렬',
+  'character.sortMenuLabel': '정렬 옵션',
+  'character.sortLevel': '레벨',
+  'character.sortName': '이름',
+  'character.sortRecent': '최근 플레이',
+  'character.sortPlaytime': '플레이 시간',
   'hudChrome.tutorial.moveBodyTouch':
     '이동 스틱으로 이동하고 화면을 끌어 주위를 둘러보세요. 몇 걸음 움직여 시작하세요.',
   'hudChrome.tutorial.talkBodyTouch':
@@ -1104,6 +1112,8 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hud.logs.lootReceiveMoney': '{money}을(를) 받았습니다.',
   'hud.logs.lootMoney': '{money}을(를) 전리품으로 획득했습니다.',
   'hud.logs.soldItem': '{item}을(를) {money}에 팔았습니다.',
+  'hud.logs.soldJunkOne': '잡동사니 아이템 {count}개를 {money}에 팔았습니다.',
+  'hud.logs.soldJunkMany': '잡동사니 아이템 {count}개를 {money}에 팔았습니다.',
   'hud.logs.friendOnline': '{name}님이 접속했습니다.',
   'hud.logs.friendOffline': '{name}님이 접속을 종료했습니다.',
   'hud.markers.names.star': '별',
@@ -1422,6 +1432,9 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'itemUi.vendor.sellQuantityInput': '판매할 수량',
   'itemUi.vendor.sellQuantityConfirm': '판매',
   'itemUi.vendor.sellQuantityCancel': '취소',
+  'itemUi.vendor.sellJunk': '잡동사니 판매',
+  'itemUi.vendor.sellJunkAria': '모든 잡동사니를 {price}에 판매',
+  'itemUi.vendor.sellJunkHint': '퀘스트 아이템을 제외한 가방의 모든 회색 아이템을 판매합니다.',
   'itemUi.market.title': '세계 시장',
   'itemUi.market.subtitle': '상인의 거래소',
   'itemUi.market.close': '시장 닫기',

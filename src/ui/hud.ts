@@ -240,8 +240,8 @@ import {
 } from './player_card_share';
 import { chatPlayerContextActions } from './player_context_menu';
 import { hydratePortraits, portraitChipHtml } from './portrait_chip';
-import { encodeQuestLink, parseChatSegments } from './quest_link';
 import { maskProfanity } from './profanity';
+import { encodeQuestLink, parseChatSegments } from './quest_link';
 import { type QuestTrackerView, questTrackerView, type TrackedQuest } from './quest_tracker';
 import { lockoutParts, lockoutShape } from './raid_lockout';
 import { type RaidLockoutI18n, raidLockoutPanelHtml } from './raid_lockout_view';
@@ -1969,7 +1969,10 @@ export class Hud {
     this.pendingChatLinks.set(display, questId);
     input.placeholder = this.activeChatPlaceholder();
     input.style.display = 'block';
-    input.value = input.value && !input.value.endsWith(' ') ? `${input.value} ${display}` : `${input.value}${display}`;
+    input.value =
+      input.value && !input.value.endsWith(' ')
+        ? `${input.value} ${display}`
+        : `${input.value}${display}`;
     input.focus();
   }
 
@@ -1983,7 +1986,8 @@ export class Hud {
   private applyPendingQuestLinks(typed: string): string {
     if (this.pendingChatLinks.size === 0) return typed;
     let out = typed;
-    for (const [display, questId] of this.pendingChatLinks) out = out.split(display).join(encodeQuestLink(questId));
+    for (const [display, questId] of this.pendingChatLinks)
+      out = out.split(display).join(encodeQuestLink(questId));
     this.pendingChatLinks.clear();
     return out;
   }
@@ -1994,7 +1998,10 @@ export class Hud {
   maybeHandleQuestShareCommand(raw: string): boolean {
     if (!/^\/share(?:\s|$)/i.test(raw.trim())) return false;
     const id = this.selectedQuestLogId;
-    if (!id || !this.sim.questLog.has(id)) { this.showError(t('hudChrome.questShare.noQuestSelected')); return true; }
+    if (!id || !this.sim.questLog.has(id)) {
+      this.showError(t('hudChrome.questShare.noQuestSelected'));
+      return true;
+    }
     this.sim.chat(`/p ${encodeQuestLink(id)}`);
     return true;
   }
@@ -5406,10 +5413,24 @@ export class Hud {
           if (this.isChatIgnored(ev.from)) break;
           switch (ev.channel) {
             case 'party':
-              this.chatLogFrom(ev.from, ev.text, '#7fd4ff', CHAT_TEMPLATE_KEYS.party, 'party', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#7fd4ff',
+                CHAT_TEMPLATE_KEYS.party,
+                'party',
+                ev.fromPid,
+              );
               break;
             case 'yell':
-              this.chatLogFrom(ev.from, ev.text, '#ff5040', CHAT_TEMPLATE_KEYS.yell, 'yell', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff5040',
+                CHAT_TEMPLATE_KEYS.yell,
+                'yell',
+                ev.fromPid,
+              );
               break;
             case 'whisper':
               if (ev.to)
@@ -5434,28 +5455,84 @@ export class Hud {
               }
               break;
             case 'general':
-              this.chatLogFrom(ev.from, ev.text, '#ffc864', CHAT_TEMPLATE_KEYS.general, 'general', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ffc864',
+                CHAT_TEMPLATE_KEYS.general,
+                'general',
+                ev.fromPid,
+              );
               break;
             case 'world':
-              this.chatLogFrom(ev.from, ev.text, '#ff9d5c', CHAT_TEMPLATE_KEYS.world, 'world', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff9d5c',
+                CHAT_TEMPLATE_KEYS.world,
+                'world',
+                ev.fromPid,
+              );
               break;
             case 'lfg':
-              this.chatLogFrom(ev.from, ev.text, '#5cd6a0', CHAT_TEMPLATE_KEYS.lfg, 'lfg', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#5cd6a0',
+                CHAT_TEMPLATE_KEYS.lfg,
+                'lfg',
+                ev.fromPid,
+              );
               break;
             case 'guild':
-              this.chatLogFrom(ev.from, ev.text, '#40d264', CHAT_TEMPLATE_KEYS.guild, 'guild', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#40d264',
+                CHAT_TEMPLATE_KEYS.guild,
+                'guild',
+                ev.fromPid,
+              );
               break;
             case 'officer':
-              this.chatLogFrom(ev.from, ev.text, '#4ce0c0', CHAT_TEMPLATE_KEYS.officer, 'officer', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#4ce0c0',
+                CHAT_TEMPLATE_KEYS.officer,
+                'officer',
+                ev.fromPid,
+              );
               break;
             case 'emote':
-              this.chatLogFrom(ev.from, ev.text, '#ff8040', CHAT_TEMPLATE_KEYS.emote, 'emote', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff8040',
+                CHAT_TEMPLATE_KEYS.emote,
+                'emote',
+                ev.fromPid,
+              );
               break;
             case 'roll':
-              this.chatLogFrom(ev.from, ev.text, '#ffd100', CHAT_TEMPLATE_KEYS.roll, 'roll', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ffd100',
+                CHAT_TEMPLATE_KEYS.roll,
+                'roll',
+                ev.fromPid,
+              );
               break;
             default:
-              this.chatLogFrom(ev.from, ev.text, '#f0ead8', CHAT_TEMPLATE_KEYS.say, 'say', ev.fromPid);
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#f0ead8',
+                CHAT_TEMPLATE_KEYS.say,
+                'say',
+                ev.fromPid,
+              );
               break;
           }
           if (
@@ -5871,7 +5948,10 @@ export class Hud {
         continue;
       }
       const quest = QUESTS[seg.questId];
-      if (!quest) { parent.append(document.createTextNode(this.maskChat('[?]'))); continue; }
+      if (!quest) {
+        parent.append(document.createTextNode(this.maskChat('[?]')));
+        continue;
+      }
       const link = document.createElement('span');
       link.className = 'chat-quest-link';
       link.textContent = `[${questTitle(seg.questId)}]`;
@@ -5892,7 +5972,9 @@ export class Hud {
   // — used for 3D chat bubbles, which can't host interactive spans.
   private questLinkPlainText(text: string): string {
     return parseChatSegments(text)
-      .map((s) => (s.kind === 'text' ? s.value : `[${QUESTS[s.questId] ? questTitle(s.questId) : '?'}]`))
+      .map((s) =>
+        s.kind === 'text' ? s.value : `[${QUESTS[s.questId] ? questTitle(s.questId) : '?'}]`,
+      )
       .join('');
   }
 
@@ -6162,6 +6244,14 @@ export class Hud {
     match = /^Everyone passed on (.+)\.$/.exec(text);
     if (match)
       return t('itemUi.lootRoll.everyonePassed', { item: itemDisplayNameFromSource(match[1]) });
+    match = /^Sold (\d+) junk items? for (.+)\.$/.exec(text);
+    if (match) {
+      const n = Number(match[1]);
+      return t(n === 1 ? 'hud.logs.soldJunkOne' : 'hud.logs.soldJunkMany', {
+        count: formatNumber(n, { maximumFractionDigits: 0 }),
+        money: this.localizeSimMoney(match[2]),
+      });
+    }
     match = /^Sold (.+) for (.+)\.$/.exec(text);
     if (match)
       return t('hud.logs.soldItem', {
@@ -6771,20 +6861,29 @@ export class Hud {
     const quest = QUESTS[questId];
     if (!quest) return;
     this.openGossipNpcId = null;
-    if ($('#quest-dialog').style.display !== 'block') this.questDialogReturnFocus = this.currentFocusableElement();
+    if ($('#quest-dialog').style.display !== 'block')
+      this.questDialogReturnFocus = this.currentFocusableElement();
     this.closeOtherWindows('#quest-dialog');
     const el = $('#quest-dialog');
     const state = this.sim.questState(questId);
-    const inSharerParty = fromPid !== undefined && (this.sim.partyInfo?.members.some((m) => m.pid === fromPid) ?? false);
+    const inSharerParty =
+      fromPid !== undefined &&
+      (this.sim.partyInfo?.members.some((m) => m.pid === fromPid) ?? false);
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-modal', 'false');
     el.setAttribute('aria-labelledby', 'quest-dialog-title');
     el.setAttribute('tabindex', '-1');
     let html = `<div class="panel-title"><span id="quest-dialog-title">${esc(questTitle(questId))}${this.questSuggestedPlayersHtml(quest.suggestedPlayers)} <span class="quest-muted">&lt;${esc(t('hudChrome.questShare.dialogTitle'))}&gt;</span></span><button type="button" class="x-btn" data-close aria-label="${esc(t('questUi.dialog.close'))}">${svgIcon('close')}</button></div>`;
-    if (quest.minLevel) html += `<div class="qd-req">${esc(t('questUi.detail.requiresLevel', { level: this.questNumber(quest.minLevel) }))}</div>`;
+    if (quest.minLevel)
+      html += `<div class="qd-req">${esc(t('questUi.detail.requiresLevel', { level: this.questNumber(quest.minLevel) }))}</div>`;
     html += `<div class="qd-text">${esc(questNarrative(questId, 'text', this.sim.player.name))}</div>`;
     html += `<div class="qd-sub">${esc(t('questUi.detail.objectives'))}</div>`;
-    html += quest.objectives.map((o, i) => `<div class="qd-obj">${esc(this.questProgressText(questObjectiveLabel(questId, i), 0, o.count))}</div>`).join('');
+    html += quest.objectives
+      .map(
+        (o, i) =>
+          `<div class="qd-obj">${esc(this.questProgressText(questObjectiveLabel(questId, i), 0, o.count))}</div>`,
+      )
+      .join('');
     html += `<div class="qd-sub">${esc(t('questUi.detail.rewards'))}</div>`;
     html += `<div class="qd-obj">${esc(t('questUi.detail.xpReward', { xp: this.questNumber(quest.xpReward) }))} &nbsp; ${this.moneyHtml(quest.copperReward)}</div>`;
     const rewardItem = questRewardItem(quest, this.sim.cfg.playerClass);
@@ -6794,13 +6893,17 @@ export class Hud {
     }
     el.innerHTML = html;
     const rewardRow = el.querySelector('[data-reward]') as HTMLElement | null;
-    if (rewardRow && rewardItem) this.attachTooltip(rewardRow, () => this.itemTooltip(ITEMS[rewardItem]));
+    if (rewardRow && rewardItem)
+      this.attachTooltip(rewardRow, () => this.itemTooltip(ITEMS[rewardItem]));
     if (inSharerParty && state === 'available') {
       const btn = document.createElement('button');
       btn.className = 'btn';
       btn.type = 'button';
       btn.textContent = t('questUi.dialog.accept');
-      btn.addEventListener('click', () => { this.sim.acceptLinkedQuest(questId, fromPid!); this.closeQuestDialog(); });
+      btn.addEventListener('click', () => {
+        this.sim.acceptLinkedQuest(questId, fromPid!);
+        this.closeQuestDialog();
+      });
       el.appendChild(btn);
     } else {
       // View-only: explain why no Accept. Non-party -> join hint; in-party but
@@ -6811,7 +6914,7 @@ export class Hud {
         ? t('hudChrome.questShare.viewOnlyHint')
         : state === 'done'
           ? t('hudChrome.questShare.alreadyDone')
-          : (state === 'active' || state === 'ready')
+          : state === 'active' || state === 'ready'
             ? t('hudChrome.questShare.alreadyOn')
             : t('hudChrome.questShare.ineligible');
       el.appendChild(hint);
@@ -7097,6 +7200,20 @@ export class Hud {
     if (this.openVendorNpcId === null) return;
     const npc = this.sim.entities.get(this.openVendorNpcId);
     if (!npc) return;
+    const junk = this.sim.inventory.filter((slot) => {
+      const item = ITEMS[slot.itemId];
+      return (
+        !!item &&
+        item.quality === 'poor' &&
+        item.kind !== 'quest' &&
+        !item.noVendorSell &&
+        slot.count > 0
+      );
+    });
+    const junkProceeds = junk.reduce(
+      (sum, slot) => sum + ITEMS[slot.itemId]!.sellValue * slot.count,
+      0,
+    );
     const buyAndRefresh = (buy: () => void) => {
       buy();
       if ($('#bags').style.display !== 'none') this.renderBags();
@@ -7114,7 +7231,12 @@ export class Hud {
         hideTooltip: () => this.hideTooltip(),
         onBuy: (itemId) => buyAndRefresh(() => this.sim.buyItem(npc.id, itemId)),
         onBuyBack: (itemId) => buyAndRefresh(() => this.sim.buyBackItem(itemId)),
+        onSellJunk: () => buyAndRefresh(() => this.sim.sellAllJunk()),
         onClose: () => this.closeVendor(),
+        sellJunk: {
+          enabled: junk.length > 0,
+          proceeds: junkProceeds,
+        },
       },
     );
   }
@@ -8272,8 +8394,11 @@ export class Hud {
     } else {
       this.charPreview.setContainer(container);
     }
-    if (previewKey) this.charPreview.setVisualKey(previewKey);
-    else this.charPreview.setClass(cls);
+    // Show the player's currently equipped mainhand on the character sheet, so the
+    // 3D model reflects gear changes (re-runs on each renderChar after an equip).
+    const weapon = this.sim.equipment.mainhand ?? null;
+    if (previewKey) this.charPreview.setVisualKey(previewKey, weapon);
+    else this.charPreview.setClass(cls, weapon);
     this.charPreview.setSkin(skin);
   }
 
@@ -12889,7 +13014,13 @@ export class Hud {
       if (code === null) {
         this.keybindNote = t('hud.options.keybindCancelled');
       } else if (this.keybinds.bind(actionId, index, code)) {
-        this.keybindNote = t('hud.options.keybindBound', { action: name, key: keyLabel(code) });
+        // Label what was actually stored: bind() strips modifiers from held
+        // (movement) actions, so a captured "Shift+KeyW" is saved bare as "KeyW".
+        // Reading it back keeps the confirmation in sync with the action-bar keycap.
+        this.keybindNote = t('hud.options.keybindBound', {
+          action: name,
+          key: keyLabel(this.keybinds.codeAt(actionId, index)),
+        });
         this.refreshKeybindLabels();
       } else if (isReservedCode(code)) {
         this.keybindNote = t('hud.options.keybindReserved', { key: keyLabel(code) });

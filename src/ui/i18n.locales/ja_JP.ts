@@ -18,15 +18,24 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'seo.officialBody':
     'worldofclaudecraft.com は Claudemoon レルムの公式無料ブラウザMMOです。永続キャラクターでオンラインプレイし、オフラインでソロ探索し、wikiを読み、このサイトから確認済みのコミュニティリンクをたどれます。',
   'hudChrome.questShare.notShareable': 'このクエストは共有できません。',
-  'hudChrome.questShare.notInSharerParty': '{name} のパーティに参加していないと、このクエストを受諾できません。',
+  'hudChrome.questShare.notInSharerParty':
+    '{name} のパーティに参加していないと、このクエストを受諾できません。',
   'hudChrome.questShare.accepted': '{name} があなたの共有クエストを受諾しました。',
   'hudChrome.questShare.dialogTitle': '共有クエスト',
-  'hudChrome.questShare.viewOnlyHint': 'このクエストを受諾するには、共有した人のパーティに参加してください。',
+  'hudChrome.questShare.viewOnlyHint':
+    'このクエストを受諾するには、共有した人のパーティに参加してください。',
   'hudChrome.questShare.alreadyOn': 'このクエストはすでに受注しています。',
   'hudChrome.questShare.alreadyDone': 'このクエストはすでに完了しています。',
   'hudChrome.questShare.ineligible': 'このクエストの条件を満たしていません。',
   'hudChrome.questShare.noQuestSelected': '共有するクエストをログから選択してください。',
   'hudChrome.questShare.linkTitle': 'Shift + クリックでこのクエストをチャットにリンクします。',
+  'character.sortBy': '並べ替え',
+  'character.sortByLabel': 'キャラクターを並べ替え',
+  'character.sortMenuLabel': '並べ替えオプション',
+  'character.sortLevel': 'レベル',
+  'character.sortName': '名前',
+  'character.sortRecent': '最近プレイ',
+  'character.sortPlaytime': 'プレイ時間',
   'hudChrome.tutorial.moveBodyTouch':
     '移動スティックで移動し、画面をドラッグして周囲を見回します。数歩進んで始めましょう。',
   'hudChrome.tutorial.talkBodyTouch':
@@ -1113,6 +1122,8 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hud.logs.lootReceiveMoney': '{money}を受け取りました。',
   'hud.logs.lootMoney': '{money}を拾いました。',
   'hud.logs.soldItem': '{item}を{money}で売却しました。',
+  'hud.logs.soldJunkOne': '不要品{count}個を{money}で売却しました。',
+  'hud.logs.soldJunkMany': '不要品{count}個を{money}で売却しました。',
   'hud.logs.friendOnline': '{name}がオンラインになりました。',
   'hud.logs.friendOffline': '{name}がオフラインになりました。',
   'hud.markers.names.star': '星',
@@ -1433,6 +1444,10 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'itemUi.vendor.sellQuantityInput': '売却する数量',
   'itemUi.vendor.sellQuantityConfirm': '売却',
   'itemUi.vendor.sellQuantityCancel': 'キャンセル',
+  'itemUi.vendor.sellJunk': '不要品を売却',
+  'itemUi.vendor.sellJunkAria': '{price}ですべての不要品を売却',
+  'itemUi.vendor.sellJunkHint':
+    'クエストアイテムを除くバッグ内のすべての灰色アイテムを売却します。',
   'itemUi.market.title': 'ワールドマーケット',
   'itemUi.market.subtitle': '商人の取引所',
   'itemUi.market.close': '市場を閉じる',

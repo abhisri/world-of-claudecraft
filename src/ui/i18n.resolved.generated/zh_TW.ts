@@ -1993,7 +1993,14 @@ export const zh_TW: EnTranslations = {
     "portraitAlt": "{name}的頭像",
     "viewProfile": "查看資料",
     "profile": "角色資料",
-    "closeProfile": "關閉資料"
+    "closeProfile": "關閉資料",
+    "sortBy": "排序",
+    "sortByLabel": "排序角色",
+    "sortMenuLabel": "排序選項",
+    "sortLevel": "等級",
+    "sortName": "名稱",
+    "sortRecent": "最近遊玩",
+    "sortPlaytime": "遊戲時間"
   },
   "deleteCharacter": {
     "title": "刪除角色",
@@ -2471,6 +2478,8 @@ export const zh_TW: EnTranslations = {
       "lootReceiveMoney": "你獲得 {money}。",
       "lootMoney": "你拾取 {money}。",
       "soldItem": "你以 {money} 賣出 {item}。",
+      "soldJunkOne": "你以 {money} 賣出 {count} 件雜物。",
+      "soldJunkMany": "你以 {money} 賣出 {count} 件雜物。",
       "friendOnline": "{name} 上線了。",
       "friendOffline": "{name} 下線了。"
     },
@@ -2874,7 +2883,10 @@ export const zh_TW: EnTranslations = {
       "sellQuantityTitle": "出售 {item}",
       "sellQuantityInput": "要出售的數量",
       "sellQuantityConfirm": "出售",
-      "sellQuantityCancel": "取消"
+      "sellQuantityCancel": "取消",
+      "sellJunk": "出售雜物",
+      "sellJunkAria": "以 {price} 出售所有雜物",
+      "sellJunkHint": "出售背包中除任務物品外的所有灰色物品。"
     },
     "market": {
       "title": "世界市場",

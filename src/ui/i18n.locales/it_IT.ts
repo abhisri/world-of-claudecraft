@@ -18,15 +18,24 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'seo.officialBody':
     "worldofclaudecraft.com è l'MMO gratuito ufficiale da browser del reame Claudemoon. Gioca online con un personaggio persistente, esplora offline in solitaria, leggi il wiki e segui i link della community verificati da questo sito.",
   'hudChrome.questShare.notShareable': 'Questa missione non può essere condivisa.',
-  'hudChrome.questShare.notInSharerParty': 'Devi essere nel gruppo di {name} per accettare quella missione.',
+  'hudChrome.questShare.notInSharerParty':
+    'Devi essere nel gruppo di {name} per accettare quella missione.',
   'hudChrome.questShare.accepted': '{name} ha accettato la tua missione condivisa.',
   'hudChrome.questShare.dialogTitle': 'Missione condivisa',
-  'hudChrome.questShare.viewOnlyHint': 'Unisciti al gruppo di chi la condivide per accettare questa missione.',
+  'hudChrome.questShare.viewOnlyHint':
+    'Unisciti al gruppo di chi la condivide per accettare questa missione.',
   'hudChrome.questShare.alreadyOn': 'Hai già questa missione.',
   'hudChrome.questShare.alreadyDone': 'Hai già completato questa missione.',
   'hudChrome.questShare.ineligible': 'Non soddisfi i requisiti di questa missione.',
   'hudChrome.questShare.noQuestSelected': 'Seleziona una missione nel registro da condividere.',
   'hudChrome.questShare.linkTitle': 'Maiusc + clic per collegare questa missione in chat.',
+  'character.sortBy': 'Ordina',
+  'character.sortByLabel': 'Ordina personaggi',
+  'character.sortMenuLabel': 'Opzioni di ordinamento',
+  'character.sortLevel': 'Livello',
+  'character.sortName': 'Nome',
+  'character.sortRecent': 'Giocati di recente',
+  'character.sortPlaytime': 'Tempo di gioco',
   'hudChrome.tutorial.moveBodyTouch':
     'Usa il joystick di movimento per muoverti e trascina lo schermo per guardarti intorno. Fai qualche passo per iniziare.',
   'hudChrome.tutorial.talkBodyTouch':
@@ -1121,6 +1130,8 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'hud.logs.lootReceiveMoney': 'Ricevi {money}.',
   'hud.logs.lootMoney': 'Raccogli {money}.',
   'hud.logs.soldItem': 'Hai venduto {item} per {money}.',
+  'hud.logs.soldJunkOne': 'Hai venduto {count} oggetto grigio per {money}.',
+  'hud.logs.soldJunkMany': 'Hai venduto {count} oggetti grigi per {money}.',
   'hud.logs.friendOnline': '{name} è entrato online.',
   'hud.logs.friendOffline': '{name} è uscito offline.',
   'hud.markers.names.star': 'Stella',
@@ -1442,6 +1453,10 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'itemUi.vendor.sellQuantityInput': 'Quantità da vendere',
   'itemUi.vendor.sellQuantityConfirm': 'Vendi',
   'itemUi.vendor.sellQuantityCancel': 'Annulla',
+  'itemUi.vendor.sellJunk': 'Vendi cianfrusaglie',
+  'itemUi.vendor.sellJunkAria': 'Vendi tutte le cianfrusaglie per {price}',
+  'itemUi.vendor.sellJunkHint':
+    'Vende tutti gli oggetti grigi nelle borse tranne gli oggetti di missione.',
   'itemUi.market.title': 'Mercato Mondiale',
   'itemUi.market.subtitle': 'scambio del Mercante',
   'itemUi.market.close': 'Chiudi mercato',

@@ -5,6 +5,7 @@
 import { MECH_CHROMAS, type MechChroma } from '../../sim/content/skins';
 import { MOBS } from '../../sim/data';
 import type { Entity } from '../../sim/types';
+import { ITEM_WEAPON_VARIANTS } from '../../ui/weapon_variants';
 import type { OverheadEmoteId } from '../../world_api';
 
 export interface EmoteClipSpec {
@@ -61,6 +62,12 @@ export interface VisualDef {
    *  undefined = keep everything (creature GLBs have no accessories). */
   show?: string[];
   attach?: AttachDef[];
+  /** Indices into `attach` whose model is replaced by the entity's equipped mainhand
+   *  weapon (mapped via ITEM_WEAPON_VARIANTS). undefined/empty = the held weapon never
+   *  changes with gear (hunter keeps its crossbow; mobs/NPCs are fixed). Usually [0]
+   *  (the mainhand); the rogue lists [0, 1] so a dagger shows in BOTH hands. A fixed
+   *  offhand left off this list stays as authored (the warlock spellbook). */
+  weaponSlots?: number[];
   /** material tint: explicit color, 'entity' (use e.color), or none */
   tint?: number | 'entity';
   /** lerp amount toward the tint (default 0.4) */
@@ -213,6 +220,22 @@ const ENEMIES = 'models/chars/enemies';
 const CREATURES = 'models/creatures';
 const WEAPONS = 'models/weapons';
 
+/** GLB url for an equipped mainhand item's held weapon model, or null if the item
+ *  has no mapped model (then the class default attach is kept). Mirrors the bag
+ *  icon via the shared ITEM_WEAPON_VARIANTS map, so held weapon == inventory icon. */
+export function itemWeaponModelUrl(itemId: string | null | undefined): string | null {
+  if (!itemId) return null;
+  const key = ITEM_WEAPON_VARIANTS[itemId];
+  return key ? `${WEAPONS}/${key}.glb` : null;
+}
+
+/** Distinct held-weapon GLB urls (one per variant), for the boot preload sweep so
+ *  setWeapon can attach any equipped weapon synchronously (resolvedGltf throws on
+ *  an un-preloaded url). */
+export function itemWeaponModelUrls(): string[] {
+  return [...new Set(Object.values(ITEM_WEAPON_VARIANTS).map((key) => `${WEAPONS}/${key}.glb`))];
+}
+
 const LOW_URL_ALIAS: Record<string, string> = {
   'models/chars/players/rogue_hooded.glb': 'models/chars/players/rogue.glb',
 };
@@ -331,6 +354,7 @@ export const VISUALS: Record<string, VisualDef> = {
     clips: kaykit(['1H_Melee_Attack_Chop', '1H_Melee_Attack_Slice_Diagonal']),
     show: ['Knight_Helmet', 'Knight_Cape'], // v2 knight dropped the built-in Badge_Shield mesh
     attach: [{ url: `${WEAPONS}/sword_1handed.glb`, bone: 'handslot.r' }],
+    weaponSlots: [0],
   },
   player_paladin: {
     url: `${PLAYERS}/paladin.glb`,
@@ -340,6 +364,7 @@ export const VISUALS: Record<string, VisualDef> = {
     // meshes and texture, so no show-list/tint. Shield + paladin hammer arrive
     // in the weapons pass; the gripped axe holds the slot until then.
     attach: [{ url: `${WEAPONS}/axe_1handed.glb`, bone: 'handslot.r' }],
+    weaponSlots: [0],
   },
   player_hunter: {
     url: `${PLAYERS}/ranger.glb`,
@@ -358,6 +383,7 @@ export const VISUALS: Record<string, VisualDef> = {
       { url: `${WEAPONS}/dagger.glb`, bone: 'handslot.r' },
       { url: `${WEAPONS}/dagger.glb`, bone: 'handslot.l' },
     ],
+    weaponSlots: [0, 1], // dual-wield: the equipped weapon shows in BOTH hands (mostly daggers)
   },
   player_priest: {
     url: `${PLAYERS}/mage.glb`,
@@ -365,6 +391,7 @@ export const VISUALS: Record<string, VisualDef> = {
     clips: kaykit(['2H_Melee_Attack_Chop']),
     show: [],
     attach: [{ url: `${WEAPONS}/staff.glb`, bone: 'handslot.r' }],
+    weaponSlots: [0],
     tint: 0xf0e9d6,
     tintStrength: 0.5,
   },
@@ -374,6 +401,7 @@ export const VISUALS: Record<string, VisualDef> = {
     clips: kaykit(['1H_Melee_Attack_Chop', '1H_Melee_Attack_Slice_Diagonal']),
     show: ['Barbarian_BearHat'], // v2 barbarian renamed Hat→BearHat and dropped the round shield mesh
     attach: [{ url: `${WEAPONS}/axe_1handed.glb`, bone: 'handslot.r' }],
+    weaponSlots: [0],
     tint: 0x6f8fc9,
     tintStrength: 0.4,
   },
@@ -385,6 +413,7 @@ export const VISUALS: Record<string, VisualDef> = {
     // chase-camera pitch (NPC mages keep theirs — they're seen from the side)
     show: ['Mage_Cape'],
     attach: [{ url: `${WEAPONS}/staff.glb`, bone: 'handslot.r' }],
+    weaponSlots: [0],
   },
   player_warlock: {
     url: `${PLAYERS}/mage.glb`,
@@ -395,6 +424,7 @@ export const VISUALS: Record<string, VisualDef> = {
       { url: `${WEAPONS}/wand.glb`, bone: 'handslot.r' },
       { url: `${WEAPONS}/spellbook_open.glb`, bone: 'handslot.l', gripRef: 'Spellbook_open' },
     ],
+    weaponSlots: [0], // mainhand (wand) swaps; spellbook offhand stays
     tint: 0x8d5fd3,
     tintStrength: 0.45,
   },
@@ -404,6 +434,7 @@ export const VISUALS: Record<string, VisualDef> = {
     clips: kaykit(['2H_Melee_Attack_Chop']),
     // dedicated druid model (own texture, ships a Backpack mesh)
     attach: [{ url: `${WEAPONS}/staff.glb`, bone: 'handslot.r' }],
+    weaponSlots: [0],
   },
 
   // -- cosmetic body skin (class-agnostic; both the skin preview and a live
@@ -828,6 +859,9 @@ export function manifestUrls(): string[] {
     for (const url of def.animUrls ?? []) urls.add(url);
     for (const a of def.attach ?? []) urls.add(a.url);
   }
+  // Equipped-weapon models a player may swap to at runtime (any nearby player's
+  // gear), so they are resolved-and-ready when setWeapon attaches them.
+  for (const url of itemWeaponModelUrls()) urls.add(url);
   return [...urls];
 }
 

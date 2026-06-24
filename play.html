@@ -6325,8 +6325,11 @@
   }
   .cs-title { text-align: left; margin: 0; }
 
-  /* Realm dropdown — left-aligned, sits above the roster */
+  /* Realm + sort dropdowns — left-aligned, sit above the roster */
+  .cs-controls { display: flex; flex-wrap: wrap; gap: 8px; }
   .cs-realm-switch { position: relative; }
+  .cs-sort-switch { position: relative; }
+  .cs-sort-menu { min-width: 200px; }
   .cs-realm-btn {
     display: inline-flex;
     align-items: center;
@@ -7567,13 +7570,23 @@
           <header class="cs-head">
             <h2 class="auth-title cs-title"><span data-i18n="auth.characters">Characters:</span> <span id="charselect-user" class="gold"></span></h2>
             <div class="cs-head-row">
-              <div class="cs-realm-switch">
-                <button type="button" id="btn-change-realm" class="cs-realm-btn" aria-haspopup="listbox" aria-expanded="false" data-i18n-aria="auth.changeRealm" aria-label="Change Realm">
-                  <span class="cs-realm-caption" data-i18n="auth.realm">Realm</span>
-                  <span id="charselect-realm" class="cs-realm-name"></span>
-                  <svg class="cs-realm-caret" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
-                </button>
-                <div id="cs-realm-menu" class="cs-realm-menu" role="listbox" data-i18n-aria="auth.realmList" aria-label="Realm List" hidden></div>
+              <div class="cs-controls">
+                <div class="cs-realm-switch">
+                  <button type="button" id="btn-change-realm" class="cs-realm-btn" aria-haspopup="listbox" aria-expanded="false" data-i18n-aria="auth.changeRealm" aria-label="Change Realm">
+                    <span class="cs-realm-caption" data-i18n="auth.realm">Realm</span>
+                    <span id="charselect-realm" class="cs-realm-name"></span>
+                    <svg class="cs-realm-caret" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
+                  </button>
+                  <div id="cs-realm-menu" class="cs-realm-menu" role="listbox" data-i18n-aria="auth.realmList" aria-label="Realm List" hidden></div>
+                </div>
+                <div class="cs-sort-switch">
+                  <button type="button" id="cs-sort-btn" class="cs-realm-btn cs-sort-btn" aria-haspopup="listbox" aria-expanded="false" data-i18n-aria="character.sortByLabel" aria-label="Sort characters">
+                    <span class="cs-realm-caption" data-i18n="character.sortBy">Sort</span>
+                    <span id="cs-sort-current" class="cs-realm-name"></span>
+                    <svg class="cs-realm-caret" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
+                  </button>
+                  <div id="cs-sort-menu" class="cs-realm-menu cs-sort-menu" role="listbox" data-i18n-aria="character.sortMenuLabel" aria-label="Sort options" hidden></div>
+                </div>
               </div>
               <div class="cs-wallet cs-wallet-group">
                 <span class="cs-wallet-label" data-i18n="wallet.label">$WOC Wallet</span>

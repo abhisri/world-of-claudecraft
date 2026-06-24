@@ -512,6 +512,9 @@ const mergeStringsEn = {
       sellQuantityInput: 'Quantity to sell',
       sellQuantityConfirm: 'Sell',
       sellQuantityCancel: 'Cancel',
+      sellJunk: 'Sell Junk',
+      sellJunkAria: 'Sell all junk for {price}',
+      sellJunkHint: 'Sells every gray item in your bags except quest items.',
     },
     logs: {
       ...itemNames.en.itemUi.logs,

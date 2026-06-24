@@ -1993,7 +1993,14 @@ export const de_DE: EnTranslations = {
     "portraitAlt": "Porträt von {name}",
     "viewProfile": "Profil ansehen",
     "profile": "Profil",
-    "closeProfile": "Profil schließen"
+    "closeProfile": "Profil schließen",
+    "sortBy": "Sortieren",
+    "sortByLabel": "Charaktere sortieren",
+    "sortMenuLabel": "Sortieroptionen",
+    "sortLevel": "Stufe",
+    "sortName": "Name",
+    "sortRecent": "Zuletzt gespielt",
+    "sortPlaytime": "Spielzeit"
   },
   "deleteCharacter": {
     "title": "Charakter löschen",
@@ -2471,6 +2478,8 @@ export const de_DE: EnTranslations = {
       "lootReceiveMoney": "Ihr erhaltet {money}.",
       "lootMoney": "Ihr plündert {money}.",
       "soldItem": "Ihr habt {item} für {money} verkauft.",
+      "soldJunkOne": "Ihr habt {count} grauen Gegenstand für {money} verkauft.",
+      "soldJunkMany": "Ihr habt {count} graue Gegenstände für {money} verkauft.",
       "friendOnline": "{name} ist online gekommen.",
       "friendOffline": "{name} ist offline gegangen."
     },
@@ -2874,7 +2883,10 @@ export const de_DE: EnTranslations = {
       "sellQuantityTitle": "{item} verkaufen",
       "sellQuantityInput": "Zu verkaufende Menge",
       "sellQuantityConfirm": "Verkaufen",
-      "sellQuantityCancel": "Abbrechen"
+      "sellQuantityCancel": "Abbrechen",
+      "sellJunk": "Graues verkaufen",
+      "sellJunkAria": "Alle grauen Gegenstände für {price} verkaufen",
+      "sellJunkHint": "Verkauft alle grauen Gegenstände in euren Taschen außer Questgegenständen."
     },
     "market": {
       "title": "Weltmarkt",

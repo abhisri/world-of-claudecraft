@@ -950,6 +950,56 @@ describe('food, drink, vendor', () => {
     expect(sim.vendorBuyback.some((s) => s.itemId === 'wolf_fang')).toBe(false);
   });
 
+  it('Sell Junk bulk-sells only gray items, sparing quest items and better gear', () => {
+    const sim = makeSim('warrior');
+    const wilkes = [...sim.entities.values()].find((e) => e.templateId === 'trader_wilkes')!;
+    teleportTo(sim, wilkes.pos.x + 2, wilkes.pos.z);
+    sim.copper = 0;
+    sim.addItem('wolf_fang', 2);        // poor (gray), sellValue 4 -> 8
+    sim.addItem('bandit_bandana', 1);   // poor (gray), sellValue 6
+    sim.addItem('apprentice_staff', 1); // not poor -> kept
+    sim.addItem('boar_hide', 1);        // quest item -> kept
+
+    sim.sellAllJunk();
+
+    // only the gray items leave the bags
+    expect(sim.countItem('wolf_fang')).toBe(0);
+    expect(sim.countItem('bandit_bandana')).toBe(0);
+    expect(sim.countItem('apprentice_staff')).toBe(1);
+    expect(sim.countItem('boar_hide')).toBe(1);
+    // proceeds = 2*4 + 6 = 14 copper
+    expect(sim.copper).toBe(14);
+    // each sold gray stack is recorded for buyback
+    expect(sim.vendorBuyback.some((s) => s.itemId === 'wolf_fang' && s.count === 2)).toBe(true);
+    expect(sim.vendorBuyback.some((s) => s.itemId === 'bandit_bandana' && s.count === 1)).toBe(true);
+    // exactly one summary loot line (not one per stack)
+    const sold = sim.events.filter((e) => e.type === 'loot' && /^Sold /.test(e.text));
+    expect(sold).toHaveLength(1);
+    expect(sold[0]).toMatchObject({ text: 'Sold 3 junk items for 14c.' });
+  });
+
+  it('Sell Junk needs a vendor in range and no-ops cleanly with nothing to sell', () => {
+    const sim = makeSim('warrior');
+    const wilkes = [...sim.entities.values()].find((e) => e.templateId === 'trader_wilkes')!;
+
+    // far from any merchant: refuses, sells nothing
+    sim.addItem('wolf_fang', 1);
+    sim.sellAllJunk();
+    expect(sim.countItem('wolf_fang')).toBe(1);
+    expect(sim.events).toContainEqual({ type: 'error', text: 'There is no merchant nearby.', pid: sim.player.id });
+
+    // at the vendor with no gray items: silent no-op (button is disabled in the UI)
+    teleportTo(sim, wilkes.pos.x + 2, wilkes.pos.z);
+    sim.removeItem('wolf_fang', 1);
+    sim.addItem('apprentice_staff', 1); // not gray
+    sim.copper = 0;
+    const before = sim.events.length;
+    sim.sellAllJunk();
+    expect(sim.countItem('apprentice_staff')).toBe(1);
+    expect(sim.copper).toBe(0);
+    expect(sim.events.length).toBe(before); // nothing emitted
+  });
+
   it('Fisherman Brandt sells a simple fishing pole', () => {
     const sim = makeSim('warrior');
     const brandt = [...sim.entities.values()].find((e) => e.templateId === 'fisherman_brandt')!;

@@ -42,6 +42,15 @@
   },
   "overrides": [
     {
+      "includes": ["index.html", "play.html"],
+      "formatter": {
+        "enabled": false
+      },
+      "linter": {
+        "enabled": false
+      }
+    },
+    {
       "includes": ["src/sim/rng.ts"],
       "linter": {
         "rules": {

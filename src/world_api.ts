@@ -321,6 +321,9 @@ export interface IWorld {
   discardItem(itemId: string, count?: number): void;
   buyItem(npcId: number, itemId: string): void;
   sellItem(itemId: string, count?: number): void;
+  // Sell every gray (poor-quality) item in the bags at once while a vendor is open.
+  // Quest items and anything flagged noVendorSell are left untouched.
+  sellAllJunk(): void;
   buyBackItem(itemId: string): void;
   changeSkin(skin: number, catalog?: 'class' | 'mech'): void;
   // Lock in a skin from the cosmetic skin-select event overlay. The server

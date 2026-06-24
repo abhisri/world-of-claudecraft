@@ -1993,7 +1993,14 @@ export const it_IT: EnTranslations = {
     "portraitAlt": "Ritratto di {name}",
     "viewProfile": "Vedi profilo",
     "profile": "Profilo",
-    "closeProfile": "Chiudi profilo"
+    "closeProfile": "Chiudi profilo",
+    "sortBy": "Ordina",
+    "sortByLabel": "Ordina personaggi",
+    "sortMenuLabel": "Opzioni di ordinamento",
+    "sortLevel": "Livello",
+    "sortName": "Nome",
+    "sortRecent": "Giocati di recente",
+    "sortPlaytime": "Tempo di gioco"
   },
   "deleteCharacter": {
     "title": "Elimina personaggio",
@@ -2471,6 +2478,8 @@ export const it_IT: EnTranslations = {
       "lootReceiveMoney": "Ricevi {money}.",
       "lootMoney": "Raccogli {money}.",
       "soldItem": "Hai venduto {item} per {money}.",
+      "soldJunkOne": "Hai venduto {count} oggetto grigio per {money}.",
+      "soldJunkMany": "Hai venduto {count} oggetti grigi per {money}.",
       "friendOnline": "{name} è entrato online.",
       "friendOffline": "{name} è uscito offline."
     },
@@ -2874,7 +2883,10 @@ export const it_IT: EnTranslations = {
       "sellQuantityTitle": "Vendi {item}",
       "sellQuantityInput": "Quantità da vendere",
       "sellQuantityConfirm": "Vendi",
-      "sellQuantityCancel": "Annulla"
+      "sellQuantityCancel": "Annulla",
+      "sellJunk": "Vendi cianfrusaglie",
+      "sellJunkAria": "Vendi tutte le cianfrusaglie per {price}",
+      "sellJunkHint": "Vende tutti gli oggetti grigi nelle borse tranne gli oggetti di missione."
     },
     "market": {
       "title": "Mercato Mondiale",

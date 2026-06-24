@@ -18,15 +18,24 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'seo.officialBody':
     'worldofclaudecraft.com ist das offizielle kostenlose Browser-MMO für das Reich Claudemoon. Spiele online mit einem dauerhaften Charakter, erkunde solo offline, lies das Wiki und folge den verifizierten Community-Links auf dieser Website.',
   'hudChrome.questShare.notShareable': 'Diese Quest kann nicht geteilt werden.',
-  'hudChrome.questShare.notInSharerParty': 'Ihr müsst in der Gruppe von {name} sein, um diese Quest anzunehmen.',
+  'hudChrome.questShare.notInSharerParty':
+    'Ihr müsst in der Gruppe von {name} sein, um diese Quest anzunehmen.',
   'hudChrome.questShare.accepted': '{name} hat Eure geteilte Quest angenommen.',
   'hudChrome.questShare.dialogTitle': 'Geteilte Quest',
-  'hudChrome.questShare.viewOnlyHint': 'Tretet der Gruppe des Teilenden bei, um diese Quest anzunehmen.',
+  'hudChrome.questShare.viewOnlyHint':
+    'Tretet der Gruppe des Teilenden bei, um diese Quest anzunehmen.',
   'hudChrome.questShare.alreadyOn': 'Ihr habt diese Quest bereits.',
   'hudChrome.questShare.alreadyDone': 'Ihr habt diese Quest bereits abgeschlossen.',
   'hudChrome.questShare.ineligible': 'Ihr erfüllt die Voraussetzungen für diese Quest nicht.',
   'hudChrome.questShare.noQuestSelected': 'Wählt eine Quest in Eurem Questlog zum Teilen aus.',
   'hudChrome.questShare.linkTitle': 'Umschalt + Klick, um diese Quest im Chat zu verlinken.',
+  'character.sortBy': 'Sortieren',
+  'character.sortByLabel': 'Charaktere sortieren',
+  'character.sortMenuLabel': 'Sortieroptionen',
+  'character.sortLevel': 'Stufe',
+  'character.sortName': 'Name',
+  'character.sortRecent': 'Zuletzt gespielt',
+  'character.sortPlaytime': 'Spielzeit',
   'hudChrome.tutorial.moveBodyTouch':
     'Nutze den Bewegungsstick zum Bewegen und zieh über den Bildschirm, um dich umzusehen. Mach ein paar Schritte, um zu beginnen.',
   'hudChrome.tutorial.talkBodyTouch':
@@ -1123,6 +1132,8 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'hud.logs.lootReceiveMoney': 'Ihr erhaltet {money}.',
   'hud.logs.lootMoney': 'Ihr plündert {money}.',
   'hud.logs.soldItem': 'Ihr habt {item} für {money} verkauft.',
+  'hud.logs.soldJunkOne': 'Ihr habt {count} grauen Gegenstand für {money} verkauft.',
+  'hud.logs.soldJunkMany': 'Ihr habt {count} graue Gegenstände für {money} verkauft.',
   'hud.logs.friendOnline': '{name} ist online gekommen.',
   'hud.logs.friendOffline': '{name} ist offline gegangen.',
   'hud.markers.names.star': 'Stern',
@@ -1445,6 +1456,10 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'itemUi.vendor.sellQuantityInput': 'Zu verkaufende Menge',
   'itemUi.vendor.sellQuantityConfirm': 'Verkaufen',
   'itemUi.vendor.sellQuantityCancel': 'Abbrechen',
+  'itemUi.vendor.sellJunk': 'Graues verkaufen',
+  'itemUi.vendor.sellJunkAria': 'Alle grauen Gegenstände für {price} verkaufen',
+  'itemUi.vendor.sellJunkHint':
+    'Verkauft alle grauen Gegenstände in euren Taschen außer Questgegenständen.',
   'itemUi.market.title': 'Weltmarkt',
   'itemUi.market.subtitle': 'Börse des Händlers',
   'itemUi.market.close': 'Markt schließen',

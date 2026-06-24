@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { Sim } from '../src/sim/sim';
+import { describe, expect, it } from 'vitest';
 import { QUESTS } from '../src/sim/data';
+import { Sim } from '../src/sim/sim';
 
 // Two players in one party, not near any quest giver. Returns their pids + sim.
 function partyOfTwo() {
@@ -16,7 +16,9 @@ function partyOfTwo() {
 function simpleQuestId(): string {
   const id = Object.keys(QUESTS).find((q) => {
     const def = QUESTS[q];
-    return !def.requiresQuest && !def.retired && (def.minLevel ?? 1) <= 1 && def.shareable !== false;
+    return (
+      !def.requiresQuest && !def.retired && (def.minLevel ?? 1) <= 1 && def.shareable !== false
+    );
   });
   if (!id) throw new Error('no simple shareable quest found');
   return id;
@@ -37,7 +39,10 @@ describe('acceptLinkedQuest', () => {
     sim.acceptLinkedQuest(q, a, b);
     const events = sim.tick();
     const noticeToSharer = events.some(
-      (e) => e.type === 'log' && (e as any).pid === a && /accepted your shared quest/.test((e as any).text),
+      (e) =>
+        e.type === 'log' &&
+        (e as any).pid === a &&
+        /accepted your shared quest/.test((e as any).text),
     );
     expect(noticeToSharer).toBe(true);
   });
@@ -66,7 +71,8 @@ describe('acceptLinkedQuest', () => {
   it('rejects when the recipient is below minLevel', () => {
     const { sim, a, b } = partyOfTwo();
     const q = Object.keys(QUESTS).find(
-      (x) => (QUESTS[x].minLevel ?? 1) > 1 && !QUESTS[x].requiresQuest && QUESTS[x].shareable !== false,
+      (x) =>
+        (QUESTS[x].minLevel ?? 1) > 1 && !QUESTS[x].requiresQuest && QUESTS[x].shareable !== false,
     );
     if (!q) return; // no such quest in this content set; skip
     sim.acceptLinkedQuest(q, a, b); // recipient is level 1

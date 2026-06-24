@@ -1993,7 +1993,14 @@ export const ko_KR: EnTranslations = {
     "portraitAlt": "{name}의 초상화",
     "viewProfile": "프로필 보기",
     "profile": "프로필",
-    "closeProfile": "프로필 닫기"
+    "closeProfile": "프로필 닫기",
+    "sortBy": "정렬",
+    "sortByLabel": "캐릭터 정렬",
+    "sortMenuLabel": "정렬 옵션",
+    "sortLevel": "레벨",
+    "sortName": "이름",
+    "sortRecent": "최근 플레이",
+    "sortPlaytime": "플레이 시간"
   },
   "deleteCharacter": {
     "title": "캐릭터 삭제",
@@ -2471,6 +2478,8 @@ export const ko_KR: EnTranslations = {
       "lootReceiveMoney": "{money}을(를) 받았습니다.",
       "lootMoney": "{money}을(를) 전리품으로 획득했습니다.",
       "soldItem": "{item}을(를) {money}에 팔았습니다.",
+      "soldJunkOne": "잡동사니 아이템 {count}개를 {money}에 팔았습니다.",
+      "soldJunkMany": "잡동사니 아이템 {count}개를 {money}에 팔았습니다.",
       "friendOnline": "{name}님이 접속했습니다.",
       "friendOffline": "{name}님이 접속을 종료했습니다."
     },
@@ -2874,7 +2883,10 @@ export const ko_KR: EnTranslations = {
       "sellQuantityTitle": "{item} 판매",
       "sellQuantityInput": "판매할 수량",
       "sellQuantityConfirm": "판매",
-      "sellQuantityCancel": "취소"
+      "sellQuantityCancel": "취소",
+      "sellJunk": "잡동사니 판매",
+      "sellJunkAria": "모든 잡동사니를 {price}에 판매",
+      "sellJunkHint": "퀘스트 아이템을 제외한 가방의 모든 회색 아이템을 판매합니다."
     },
     "market": {
       "title": "세계 시장",

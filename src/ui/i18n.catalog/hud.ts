@@ -388,6 +388,8 @@ const hudStringsEn = {
       lootReceiveMoney: 'You receive {money}.',
       lootMoney: 'You loot {money}.',
       soldItem: 'Sold {item} for {money}.',
+      soldJunkOne: 'Sold {count} junk item for {money}.',
+      soldJunkMany: 'Sold {count} junk items for {money}.',
       friendOnline: '{name} has come online.',
       friendOffline: '{name} has gone offline.',
     },

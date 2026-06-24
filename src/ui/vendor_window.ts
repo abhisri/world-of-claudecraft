@@ -27,7 +27,12 @@ export interface VendorWindowDeps {
   hideTooltip(): void;
   onBuy(itemId: string): void;
   onBuyBack(itemId: string): void;
+  onSellJunk(): void;
   onClose(): void;
+  sellJunk: {
+    enabled: boolean;
+    proceeds: number;
+  };
 }
 
 /** Paint the vendor panel from a prepared view. */
@@ -55,6 +60,26 @@ export function renderVendorWindow(
     deps.attachTooltip(row, () => deps.itemTooltip(item) + `<div class="tt-sub">${esc(t('itemUi.tooltip.clickBuy'))}</div>`);
     el.appendChild(row);
   }
+
+  const sellJunk = document.createElement('button');
+  sellJunk.type = 'button';
+  sellJunk.className = 'vendor-sell-junk';
+  sellJunk.disabled = !deps.sellJunk.enabled;
+  sellJunk.innerHTML = `<span class="vi-name">${esc(t('itemUi.vendor.sellJunk'))}</span>${deps.sellJunk.enabled ? `<span class="vi-price">${deps.moneyHtml(deps.sellJunk.proceeds)}</span>` : ''}`;
+  sellJunk.setAttribute(
+    'aria-label',
+    deps.sellJunk.enabled
+      ? t('itemUi.vendor.sellJunkAria', {
+          price: formatLocalizedMoney(deps.sellJunk.proceeds),
+        })
+      : t('itemUi.vendor.sellJunk'),
+  );
+  sellJunk.addEventListener('click', () => deps.onSellJunk());
+  deps.attachTooltip(
+    sellJunk,
+    () => `<div class="tt-sub">${esc(t('itemUi.vendor.sellJunkHint'))}</div>`,
+  );
+  el.appendChild(sellJunk);
 
   const buybackTitle = document.createElement('div');
   buybackTitle.className = 'vendor-section-title';
