@@ -14,10 +14,17 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const pt_BR: Partial<Record<TranslationKey, string>> = {
-  'hudChrome.tutorial.moveBodyTouch': 'Use o analógico de movimento para se mover e arraste a tela para olhar ao redor. Dê alguns passos para começar.',
-  'hudChrome.tutorial.talkBodyTouch': 'Aproxime-se do marechal Redbrook e toque no botão Usar para falar, então aceite a tarefa dele.',
-  'hudChrome.tutorial.returnBodyTouch': 'Sua tarefa está concluída. Volte ao marechal Redbrook e toque no botão Usar para entregá-la.',
-  'hudChrome.tutorial.doneBodyTouch': 'Você já domina o básico, {name}. O Vale é seu para explorar. Toque em Mais e depois em Registro de missões para ver seu registro de missões a qualquer momento. Boa caçada!',
+  'seo.officialLabel': 'Site oficial de World of ClaudeCraft',
+  'seo.officialBody':
+    'worldofclaudecraft.com é o MMO de navegador gratuito oficial do reino Claudemoon. Jogue online com um personagem persistente, explore solo offline, leia a wiki e siga os links verificados da comunidade a partir deste site.',
+  'hudChrome.tutorial.moveBodyTouch':
+    'Use o analógico de movimento para se mover e arraste a tela para olhar ao redor. Dê alguns passos para começar.',
+  'hudChrome.tutorial.talkBodyTouch':
+    'Aproxime-se do marechal Redbrook e toque no botão Usar para falar, então aceite a tarefa dele.',
+  'hudChrome.tutorial.returnBodyTouch':
+    'Sua tarefa está concluída. Volte ao marechal Redbrook e toque no botão Usar para entregá-la.',
+  'hudChrome.tutorial.doneBodyTouch':
+    'Você já domina o básico, {name}. O Vale é seu para explorar. Toque em Mais e depois em Registro de missões para ver seu registro de missões a qualquer momento. Boa caçada!',
   'hudChrome.raidLockout.title': 'Bloqueios de raide',
   'hudChrome.raidLockout.allReady': 'Todas as raides prontas',
   'hudChrome.raidLockout.daysHours': '{d}d {h}h',
@@ -2273,7 +2280,6 @@ export const pt_BR: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.korgath_the_bound.name': 'Korgath o Acorrentado',
   'entities.mobs.grand_necromancer_velkhar.name': 'Grande necromante Velkhar',
   'entities.mobs.korzul_the_gravewyrm.name': 'Korzul o Gravewyrm',
-  'entities.mobs.elder_bristleback.name': 'Bristleback ancião',
   'entities.mobs.ironvein_foreman.name': 'Capataz Veio de Ferro',
   'entities.mobs.ironvein_sapper.name': 'Sapador Veio de Ferro',
   'entities.mobs.marrowlord_varkas.name': 'Senhor da Medula Varkas',
@@ -2282,8 +2288,6 @@ export const pt_BR: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.mogger.name': 'Mogger',
   'entities.mobs.mogger_lackey.name': 'Lacaio de Mogger',
   'entities.mobs.nhalia_mourner.name': 'Pranteadora de Nhalia',
-  'entities.mobs.sableweb_hatchling.name': 'Filhote Sableweb',
-  'entities.mobs.sableweb_matriarch.name': 'Matriarca Sableweb',
   'entities.mobs.sister_nhalia.name': 'Irmã Nhalia',
   'entities.mobs.varkas_boneguard.name': 'Guardião dos ossos de Varkas',
   'entities.mobs.imp.name': 'Diabrete',
@@ -3043,17 +3047,6 @@ export const pt_BR: Partial<Record<TranslationKey, string>> = {
   'hud.core.chatChannels.sendingTo': 'Mensagem para {channel}',
   'hud.options.npcVoices': 'Vozes de NPC',
   'hud.options.voiceVolume': 'Volume das Vozes',
-  'entities.mobs.bramble_lynx.name': 'Lince das Sarças',
-  'entities.mobs.brightwood_hare.name': 'Lebre de Brightwood',
-  'entities.mobs.brightwood_monarch.name': 'O Monarca de Brightwood',
-  'entities.mobs.brightwood_stag.name': 'Cervo de Brightwood',
-  'entities.mobs.dawnmane_doe.name': 'Corça Crina-da-aurora',
-  'entities.mobs.glade_fox.name': 'Raposa da Clareira',
-  'entities.mobs.grovetusk_boar.name': 'Javali Presa-do-bosque',
-  'entities.mobs.meadow_crane.name': 'Garça do Prado',
-  'entities.mobs.spotted_fawn.name': 'Cervato Malhado',
-  'entities.mobs.sunhide_bear.name': 'Urso Pelo-do-sol',
-  'entities.mobs.thornpelt_badger.name': 'Texugo Pelo-de-espinho',
   'entities.zones.eastbrook_vale.pois.8.label': 'Clareira de Brightwood',
   'fiesta.augment.aug_apex_predator.desc':
     '+40% de dano físico, +15% de crítico, cura de 12% do dano causado.',
@@ -4033,8 +4026,6 @@ export const pt_BR: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.wavesBody':
     'Cada rodada de uma Fiesta lhe dá uma nova escolha, e as escolhas ficam mais ousadas conforme a partida avança. Você constrói de uma onda para a próxima, escolhendo uma de poucas opções a cada vez e mantendo-a pelo resto da disputa.',
   'guide.arenaPage.wavesTitle': 'Os aprimoramentos chegam em ondas',
-  'guide.bestiary.flavor.brightwood_stag':
-    'Um orgulhoso cervo do bosque que baixa sua coroa de chifres e avança como um touro, ficando mais difícil de enfrentar quanto mais é pressionado.',
   'guide.bestiary.flavor.gravecaller_cultist':
     'Servos encapuzados do culto da morte cuja obra profana as sepulturas do Vale aos cumes. Onde eles se reúnem, os mortos não descansam.',
   'guide.bestiary.flavor.grubjaw':

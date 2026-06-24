@@ -973,7 +973,6 @@ export const de_DE: EnTranslations = {
       "notedLabel": "Bemerkenswert",
       "flavor": {
         "old_greyjaw": "Ein vernarbter alter Wolf, den keine Falle gehalten hat, dem drei Jagdhunde und der Arm eines Stalljungen zur Last gelegt werden. Er jagt allein in den tiefen Wäldern und wird umso wilder, je länger ein Kampf andauert.",
-        "brightwood_stag": "Ein stolzer Hain-Hirsch, der seine Krone aus Geweih senkt und vorwärts stürmt, und der schwerer zu bezwingen wird, je länger man ihn bedrängt.",
         "grubjaw": "Ein Moortroll, so gierig, dass die anderen Trolle nicht neben ihm graben wollen, von dem man sagt, er habe einem Händler die letzten zwei Packmaultiere gefressen, samt Geschirr und allem.",
         "shardlord_kazzix": "Ein Sturmelementar, dem man Schultern gegeben hat und der über die fernen Felszacken hoch über Stormcrag wandelt, mit einem Herzsplitter, für den es sich lohnt, dem Blitz zu trotzen.",
         "mirejaw_frenzy": "Ein Moor-Murloc, der sich mitten im Kampf in eine um sich schlagende Raserei steigert, das lauteste Wesen in einem lauten, territorialen Rudel.",
@@ -1883,7 +1882,9 @@ export const de_DE: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "Mehrspieler",
     "applicationCategory": "Spiel",
-    "operatingSystem": "Webbrowser"
+    "operatingSystem": "Webbrowser",
+    "officialLabel": "Offizielle Website von World of ClaudeCraft",
+    "officialBody": "worldofclaudecraft.com ist das offizielle kostenlose Browser-MMO für das Reich Claudemoon. Spiele online mit einem dauerhaften Charakter, erkunde solo offline, lies das Wiki und folge den verifizierten Community-Links auf dieser Website."
   },
   "a11y": {
     "goHome": "Zur Startseite",
@@ -4739,42 +4740,6 @@ export const de_DE: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Geißel von Thornpeak"
       },
-      "brightwood_hare": {
-        "name": "Hellholz-Hase"
-      },
-      "glade_fox": {
-        "name": "Lichtungsfuchs"
-      },
-      "spotted_fawn": {
-        "name": "Geflecktes Hirschkalb"
-      },
-      "meadow_crane": {
-        "name": "Wiesenkranich"
-      },
-      "thornpelt_badger": {
-        "name": "Dornpelz-Dachs"
-      },
-      "dawnmane_doe": {
-        "name": "Morgenmähnen-Hirschkuh"
-      },
-      "bramble_lynx": {
-        "name": "Dornenluchs"
-      },
-      "brightwood_stag": {
-        "name": "Hellholz-Hirsch"
-      },
-      "grovetusk_boar": {
-        "name": "Hainhauer-Keiler"
-      },
-      "sunhide_bear": {
-        "name": "Sonnenfell-Bär"
-      },
-      "brightwood_monarch": {
-        "name": "Der Hellholz-Monarch"
-      },
-      "elder_bristleback": {
-        "name": "Alter Bristleback"
-      },
       "ironvein_foreman": {
         "name": "Eisenader-Vorarbeiter"
       },
@@ -4798,12 +4763,6 @@ export const de_DE: EnTranslations = {
       },
       "nhalia_mourner": {
         "name": "Nhalia-Trauernde"
-      },
-      "sableweb_hatchling": {
-        "name": "Sableweb-Jungtier"
-      },
-      "sableweb_matriarch": {
-        "name": "Sableweb-Matriarchin"
       },
       "sister_nhalia": {
         "name": "Schwester Nhalia"

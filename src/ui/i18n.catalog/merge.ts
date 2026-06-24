@@ -90,7 +90,6 @@ const MERGE_ITEM_IDS = [
 ] as const;
 
 const MERGE_MOB_IDS = [
-  'elder_bristleback',
   'ironvein_foreman',
   'ironvein_sapper',
   'marrowlord_varkas',
@@ -99,8 +98,6 @@ const MERGE_MOB_IDS = [
   'mogger',
   'mogger_lackey',
   'nhalia_mourner',
-  'sableweb_hatchling',
-  'sableweb_matriarch',
   'sister_nhalia',
   'varkas_boneguard',
   'imp',
@@ -2322,7 +2319,6 @@ const mergeEntitiesEn = {
   mobs: mergeNameTranslations(
     MERGE_MOB_IDS,
     [
-      'Elder Bristleback',
       'Ironvein Foreman',
       'Ironvein Sapper',
       'Marrowlord Varkas',
@@ -2331,8 +2327,6 @@ const mergeEntitiesEn = {
       'Mogger',
       'Mogger Lackey',
       'Nhalia Mourner',
-      'Sableweb Hatchling',
-      'Sableweb Matriarch',
       'Sister Nhalia',
       'Varkas Boneguard',
       'Imp',
@@ -2455,7 +2449,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        'Viejo Bristleback',
         'Capataz Vena de Hierro',
         'Zapador Vena de Hierro',
         'Señor de Médula Varkas',
@@ -2464,8 +2457,6 @@ export const mergeEntities = {
         'Mogger',
         'Esbirro de Mogger',
         'Doliente de Nhalia',
-        'Cría Sableweb',
-        'Matriarca Sableweb',
         'Hermana Nhalia',
         'Guardahuesos de Varkas',
         'Diablillo',
@@ -2586,7 +2577,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        'Ancien Bristleback',
         'Contremaître Veinefer',
         'Sapeur Veinefer',
         'Seigneur de moelle Varkas',
@@ -2595,8 +2585,6 @@ export const mergeEntities = {
         'Mogger',
         'Laquais de Mogger',
         'Pleureuse de Nhalia',
-        'Jeune Sableweb',
-        'Matriarche Sableweb',
         'Soeur Nhalia',
         'Garde-os de Varkas',
         'Diablotin',
@@ -2718,7 +2706,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        'Bristleback anziano',
         'Caposquadra Venaferrata',
         'Zappatore Venaferrata',
         'Signore del Midollo Varkas',
@@ -2727,8 +2714,6 @@ export const mergeEntities = {
         'Mogger',
         'Lacchè di Mogger',
         'Piangente di Nhalia',
-        'Piccolo Sableweb',
-        'Matriarca Sableweb',
         'Sorella Nhalia',
         "Guardia d'ossa di Varkas",
         'Folletto',
@@ -2848,7 +2833,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        'Alter Bristleback',
         'Eisenader-Vorarbeiter',
         'Eisenader-Pionier',
         'Marklord Varkas',
@@ -2857,8 +2841,6 @@ export const mergeEntities = {
         'Mogger',
         'Moggers Lakai',
         'Nhalia-Trauernde',
-        'Sableweb-Jungtier',
-        'Sableweb-Matriarchin',
         'Schwester Nhalia',
         "Varkas' Knochenwache",
         'Wichtel',
@@ -2978,7 +2960,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        '年长硬鬃',
         '铁脉工头',
         '铁脉爆破手',
         '髓王瓦尔卡斯',
@@ -2987,8 +2968,6 @@ export const mergeEntities = {
         '莫格',
         '莫格的爪牙',
         '娜莉娅哀悼者',
-        '黑网幼蛛',
-        '黑网主母',
         '娜莉娅修女',
         '瓦尔卡斯骨卫',
         '小鬼',
@@ -3107,7 +3086,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        '年長硬鬃',
         '鐵脈工頭',
         '鐵脈爆破手',
         '髓王瓦爾卡斯',
@@ -3116,8 +3094,6 @@ export const mergeEntities = {
         '莫格',
         '莫格的爪牙',
         '娜莉亞哀悼者',
-        '黑網幼蛛',
-        '黑網主母',
         '娜莉亞修女',
         '瓦爾卡斯骨衛',
         '小鬼',
@@ -3236,7 +3212,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        '늙은 뻣센등뼈',
         '철맥 감독관',
         '철맥 폭파병',
         '골수군주 바르카스',
@@ -3245,8 +3220,6 @@ export const mergeEntities = {
         '모거',
         '모거의 졸개',
         '날리아 애도자',
-        '검은그물 새끼',
-        '검은그물 우두머리',
         '자매 날리아',
         '바르카스 뼈수호병',
         '임프',
@@ -3366,7 +3339,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        '老ブリストルバック',
         '鉄脈の現場監督',
         '鉄脈の爆破兵',
         '髄王ヴァーカス',
@@ -3375,8 +3347,6 @@ export const mergeEntities = {
         'モガー',
         'モガーの手下',
         'ナリアの嘆き手',
-        'セーブルウェブの幼体',
-        'セーブルウェブの女家長',
         'シスター・ナリア',
         'ヴァーカスの骨衛兵',
         'インプ',
@@ -3496,7 +3466,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        'Bristleback ancião',
         'Capataz Veio de Ferro',
         'Sapador Veio de Ferro',
         'Senhor da Medula Varkas',
@@ -3505,8 +3474,6 @@ export const mergeEntities = {
         'Mogger',
         'Lacaio de Mogger',
         'Pranteadora de Nhalia',
-        'Filhote Sableweb',
-        'Matriarca Sableweb',
         'Irmã Nhalia',
         'Guardião dos ossos de Varkas',
         'Diabrete',
@@ -3626,7 +3593,6 @@ export const mergeEntities = {
     mobs: mergeNameTranslations(
       MERGE_MOB_IDS,
       [
-        'Старый Щетиноспин',
         'Прораб Железной жилы',
         'Сапер Железной жилы',
         'Владыка костного мозга Варкас',
@@ -3635,8 +3601,6 @@ export const mergeEntities = {
         'Моггер',
         'Приспешник Моггера',
         'Плакальщица Налии',
-        'Детеныш Сейблвеб',
-        'Матриарх Сейблвеб',
         'Сестра Налия',
         'Костяной страж Варкаса',
         'Бес',

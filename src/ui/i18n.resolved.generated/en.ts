@@ -973,7 +973,6 @@ export const en: EnTranslations = {
       "notedLabel": "Of note",
       "flavor": {
         "old_greyjaw": "A scarred old wolf no trap has held, blamed for three hounds and a stable boy's arm. He hunts the deep woods alone, and turns savage the longer a fight wears on.",
-        "brightwood_stag": "A proud grove deer that lowers its crown of antlers and bulls forward, growing harder to face the longer it is pressed.",
         "grubjaw": "A fen troll so greedy the other trolls will not dig beside him, said to have eaten a trader's last two pack-mules, harness and all.",
         "shardlord_kazzix": "A storm elemental given shoulders, walking the far crags above Stormcrag with a heartshard worth braving the lightning for.",
         "mirejaw_frenzy": "A marsh murloc that whips itself into a thrashing frenzy mid-fight, the loudest thing in a loud, territorial pack.",
@@ -1883,7 +1882,9 @@ export const en: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "Multiplayer",
     "applicationCategory": "Game",
-    "operatingSystem": "Web browser"
+    "operatingSystem": "Web browser",
+    "officialLabel": "Official World of ClaudeCraft website",
+    "officialBody": "worldofclaudecraft.com is the official free browser MMO for the Claudemoon realm. Play online with a persistent character, explore solo offline, read the wiki, and follow verified community links from this site."
   },
   "a11y": {
     "goHome": "Go to homepage",
@@ -4739,42 +4740,6 @@ export const en: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Scourge of Thornpeak"
       },
-      "brightwood_hare": {
-        "name": "Brightwood Hare"
-      },
-      "glade_fox": {
-        "name": "Glade Fox"
-      },
-      "spotted_fawn": {
-        "name": "Spotted Fawn"
-      },
-      "meadow_crane": {
-        "name": "Meadow Crane"
-      },
-      "thornpelt_badger": {
-        "name": "Thornpelt Badger"
-      },
-      "dawnmane_doe": {
-        "name": "Dawnmane Doe"
-      },
-      "bramble_lynx": {
-        "name": "Bramble Lynx"
-      },
-      "brightwood_stag": {
-        "name": "Brightwood Stag"
-      },
-      "grovetusk_boar": {
-        "name": "Grovetusk Boar"
-      },
-      "sunhide_bear": {
-        "name": "Sunhide Bear"
-      },
-      "brightwood_monarch": {
-        "name": "The Brightwood Monarch"
-      },
-      "elder_bristleback": {
-        "name": "Elder Bristleback"
-      },
       "ironvein_foreman": {
         "name": "Ironvein Foreman"
       },
@@ -4798,12 +4763,6 @@ export const en: EnTranslations = {
       },
       "nhalia_mourner": {
         "name": "Nhalia Mourner"
-      },
-      "sableweb_hatchling": {
-        "name": "Sableweb Hatchling"
-      },
-      "sableweb_matriarch": {
-        "name": "Sableweb Matriarch"
       },
       "sister_nhalia": {
         "name": "Sister Nhalia"

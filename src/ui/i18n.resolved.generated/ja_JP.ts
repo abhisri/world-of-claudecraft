@@ -973,7 +973,6 @@ export const ja_JP: EnTranslations = {
       "notedLabel": "特筆すべき点",
       "flavor": {
         "old_greyjaw": "どんな罠にも捕らえられたことのない、傷だらけの老いた狼。猟犬三頭と厩番の少年の腕を奪った咎を負わされています。深い森を独りで狩り、戦いが長引くほどに獰猛になります。",
-        "brightwood_stag": "誇り高い林間の牡鹿。角の冠を下げて突進し、追い詰められるほどに手強くなります。",
         "grubjaw": "あまりに強欲で、他のトロルが隣で掘ろうとしないほどの沼地のトロル。交易商の最後の駄馬二頭を、馬具ごと食ったと言われています。",
         "shardlord_kazzix": "肩を得た嵐のエレメンタル。ストームクラグの上方にそびえる遥かな岩場を歩き、稲妻を冒してでも手に入れたいハートシャードを抱えています。",
         "mirejaw_frenzy": "戦いの最中に自らを暴れ狂う狂乱へと駆り立てる沼地のマーロック。騒がしく縄張り意識の強い群れの中で、最もやかましい一匹です。",
@@ -1883,7 +1882,9 @@ export const ja_JP: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "マルチプレイヤー",
     "applicationCategory": "ゲーム",
-    "operatingSystem": "Webブラウザ"
+    "operatingSystem": "Webブラウザ",
+    "officialLabel": "World of ClaudeCraft 公式サイト",
+    "officialBody": "worldofclaudecraft.com は Claudemoon レルムの公式無料ブラウザMMOです。永続キャラクターでオンラインプレイし、オフラインでソロ探索し、wikiを読み、このサイトから確認済みのコミュニティリンクをたどれます。"
   },
   "a11y": {
     "goHome": "ホームへ移動",
@@ -4739,42 +4740,6 @@ export const ja_JP: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "ナイスラクシス、ソーンピークの災厄"
       },
-      "brightwood_hare": {
-        "name": "ブライトウッドの野ウサギ"
-      },
-      "glade_fox": {
-        "name": "林間のキツネ"
-      },
-      "spotted_fawn": {
-        "name": "斑模様の子鹿"
-      },
-      "meadow_crane": {
-        "name": "草原のツル"
-      },
-      "thornpelt_badger": {
-        "name": "茨毛のアナグマ"
-      },
-      "dawnmane_doe": {
-        "name": "暁のたてがみの雌鹿"
-      },
-      "bramble_lynx": {
-        "name": "茨のオオヤマネコ"
-      },
-      "brightwood_stag": {
-        "name": "ブライトウッドの牡鹿"
-      },
-      "grovetusk_boar": {
-        "name": "木立牙の猪"
-      },
-      "sunhide_bear": {
-        "name": "陽光皮の熊"
-      },
-      "brightwood_monarch": {
-        "name": "ブライトウッドの君主"
-      },
-      "elder_bristleback": {
-        "name": "老ブリストルバック"
-      },
       "ironvein_foreman": {
         "name": "鉄脈の現場監督"
       },
@@ -4798,12 +4763,6 @@ export const ja_JP: EnTranslations = {
       },
       "nhalia_mourner": {
         "name": "ナリアの嘆き手"
-      },
-      "sableweb_hatchling": {
-        "name": "セーブルウェブの幼体"
-      },
-      "sableweb_matriarch": {
-        "name": "セーブルウェブの女家長"
       },
       "sister_nhalia": {
         "name": "シスター・ナリア"

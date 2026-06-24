@@ -39,6 +39,9 @@ jobs:
   # Biome-eligible file (docs, assets, generated i18n).
   lint:
     name: Format + lint (Biome, changed files)
+    # Release branches are already validated on push. A release-to-main PR would
+    # otherwise run this changed-file ratchet against the entire release delta.
+    if: github.event_name != 'pull_request' || github.base_ref != 'main' || !startsWith(github.head_ref, 'release/')
     runs-on: ubuntu-latest
 
     steps:

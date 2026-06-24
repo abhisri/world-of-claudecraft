@@ -27,16 +27,20 @@
      same-origin preload for the ONE stored locale - never speculative, no third-party
      origin. crossorigin matches Vite's module request so the browser dedupes to one fetch. -->
 <script>
-  (function () {
+  (() => {
+    let loc;
+    let map;
+    let href;
+    let link;
     try {
-      var loc = localStorage.getItem('locale');
+      loc = localStorage.getItem('locale');
       if (!loc) return;
-      var map = __I18N_LOCALE_CHUNKS__;
-      var href = map && map[loc];
+      map = __I18N_LOCALE_CHUNKS__;
+      href = map?.[loc];
       // Require a string so an attacker-set localStorage.locale ("__proto__" etc.) that
       // resolves a prototype key to a non-URL value cannot reach link.href.
       if (typeof href !== 'string') return;
-      var link = document.createElement('link');
+      link = document.createElement('link');
       link.rel = 'modulepreload';
       link.href = href;
       link.crossOrigin = 'anonymous';
@@ -85,24 +89,61 @@
 <meta name="twitter:description" data-i18n-content="seo.description" content="Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!" />
 <meta name="twitter:image" content="https://worldofclaudecraft.com/woc_logo_square.webp" />
 
-<!-- Structured Data (Schema.org JSON-LD VideoGame) -->
+<!-- Structured Data (Schema.org JSON-LD) -->
 <script id="structured-data" type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
-  "name": "World of ClaudeCraft",
-  "alternateName": "World of Claudecraft",
-  "genre": "MMORPG",
-  "playMode": "MultiPlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
-  "url": "https://worldofclaudecraft.com/",
-  "image": "https://worldofclaudecraft.com/woc_logo_square.webp",
-  "description": "Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!",
-  "inLanguage": "en",
-  "sameAs": [
-    "https://github.com/levy-street/world-of-claudecraft",
-    "https://discord.gg/GjhnUsBtw"
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://worldofclaudecraft.com/#website",
+      "name": "World of ClaudeCraft",
+      "alternateName": "World of Claudecraft",
+      "url": "https://worldofclaudecraft.com/",
+      "inLanguage": "en",
+      "description": "Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!",
+      "publisher": { "@id": "https://worldofclaudecraft.com/#organization" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://worldofclaudecraft.com/#organization",
+      "name": "World of ClaudeCraft",
+      "url": "https://worldofclaudecraft.com/",
+      "logo": "https://worldofclaudecraft.com/woc_logo_square.webp",
+      "sameAs": [
+        "https://github.com/levy-street/world-of-claudecraft",
+        "https://discord.gg/GjhnUsBtw",
+        "https://www.youtube.com/@WoClaudeCraft",
+        "https://x.com/WoClaudecraft",
+        "https://www.instagram.com/worldofclaudecraft/",
+        "https://www.tiktok.com/@worldofclaudecraft",
+        "https://www.reddit.com/r/WorldofClaudecraft/"
+      ]
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://worldofclaudecraft.com/#game",
+      "name": "World of ClaudeCraft",
+      "alternateName": "World of Claudecraft",
+      "genre": "MMORPG",
+      "playMode": "MultiPlayer",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web Browser",
+      "url": "https://worldofclaudecraft.com/",
+      "image": "https://worldofclaudecraft.com/woc_logo_square.webp",
+      "description": "Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://worldofclaudecraft.com/#organization" },
+      "sameAs": [
+        "https://github.com/levy-street/world-of-claudecraft",
+        "https://discord.gg/GjhnUsBtw",
+        "https://www.youtube.com/@WoClaudeCraft",
+        "https://x.com/WoClaudecraft",
+        "https://www.instagram.com/worldofclaudecraft/",
+        "https://www.tiktok.com/@worldofclaudecraft",
+        "https://www.reddit.com/r/WorldofClaudecraft/"
+      ]
+    }
   ]
 }
 </script>
@@ -135,12 +176,11 @@
 <!-- Meta Pixel Code - skipped on localhost so dev sessions don't pollute analytics -->
 <script>
   if (!['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    !((f,b,e,v,n,t,s)=> {if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)})(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1692101265042180');
     fbq('track', 'PageView');
   }
 </script>
-<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1692101265042180&ev=PageView&noscript=1" /></noscript>
 <!-- End Meta Pixel Code -->
 <style>
   :root {
@@ -1115,7 +1155,8 @@
   body.native-app #nav-btn-download,
   body.native-app .cs-wallet,
   body.native-app .cs-wallet-hidden-note,
-  body.native-app .account-wallet-card {
+  body.native-app .account-wallet-card,
+  body.native-app .official-site-copy {
     display: none !important;
   }
 
@@ -1467,7 +1508,7 @@
   .pc-share-btn { display: inline-flex; align-items: center; gap: 7px; }
   .pc-share-ico { flex: none; }
   #player-card-modal { z-index: 320; }
-  #player-card-modal .pc-modal { width: min(680px, 96vw); max-height: calc(100vh - 32px);
+  #player-card-modal .pc-modal { width: min(680px, 96vw);
     max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     padding: 16px; display: flex; flex-direction: column;
     overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
@@ -3118,6 +3159,33 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+  }
+
+  .official-site-copy {
+    width: min(620px, calc(100vw - 32px));
+    margin: 0 auto 18px;
+    text-align: center;
+    color: var(--color-text-light);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.82);
+  }
+
+  .official-site-copy__label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  .official-site-copy__body {
+    max-width: 56ch;
+    margin: 0 auto;
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--color-text-muted);
   }
 
   /* Realm stats — live counts shown in the realm dropdown (trigger sub-line +
@@ -8056,6 +8124,7 @@
 </style>
 </head>
 <body data-start-panel="mode-select">
+  <noscript><img height="1" width="1" style="display:none" alt="" aria-hidden="true" src="https://www.facebook.com/tr?id=1692101265042180&ev=PageView&noscript=1" /></noscript>
   <canvas id="game-canvas"></canvas>
   <div id="nameplates"></div>
 
@@ -8101,20 +8170,20 @@
         <button id="raid-lockout" type="button" hidden data-i18n-title="hudChrome.raidLockout.title" data-i18n-aria="hudChrome.raidLockout.title" title="Raid Lockouts" aria-label="Raid Lockouts"></button>
       </div>
       <div id="minimap-clock" data-i18n-title="hudChrome.widgets.clockTitle" title="Local time — click to toggle 12/24-hour">--:--</div>
-      <div id="minimap-coords" data-i18n-title="hudChrome.widgets.worldCoordinates" data-i18n-aria="hudChrome.widgets.coordinates" title="Your current world coordinates" aria-label="Coordinates">0, 0</div>
-      <div id="compass" data-i18n-aria="hudChrome.widgets.heading" aria-label="Heading">
+      <div id="minimap-coords" role="status" data-i18n-title="hudChrome.widgets.worldCoordinates" data-i18n-aria="hudChrome.widgets.coordinates" title="Your current world coordinates" aria-label="Coordinates">0, 0</div>
+      <div id="compass" role="img" data-i18n-aria="hudChrome.widgets.heading" aria-label="Heading">
         <div id="compass-strip"><div id="compass-track"></div></div>
         <div id="compass-center"></div>
         <div id="compass-heading">N</div>
       </div>
-      <div id="minimap-zoom" data-i18n-aria="hudChrome.widgets.minimapZoom" aria-label="Minimap zoom">
-        <button class="minimap-zoom-btn" id="minimap-zoom-out" data-i18n-title="hud.core.zoomOut" data-i18n-aria="hud.core.zoomOut" title="Zoom out" aria-label="Zoom out minimap">&minus;</button>
+      <div id="minimap-zoom">
+        <button type="button" class="minimap-zoom-btn" id="minimap-zoom-out" data-i18n-title="hud.core.zoomOut" data-i18n-aria="hud.core.zoomOut" title="Zoom out" aria-label="Zoom out minimap">&minus;</button>
         <span id="minimap-zoom-label" aria-live="polite">1×</span>
-        <button class="minimap-zoom-btn" id="minimap-zoom-in" data-i18n-title="hud.core.zoomIn" data-i18n-aria="hud.core.zoomIn" title="Zoom in" aria-label="Zoom in minimap">+</button>
+        <button type="button" class="minimap-zoom-btn" id="minimap-zoom-in" data-i18n-title="hud.core.zoomIn" data-i18n-aria="hud.core.zoomIn" title="Zoom in" aria-label="Zoom in minimap">+</button>
       </div>
     </div>
 
-    <div id="community-hud" data-i18n-aria="hud.core.communityLinks" aria-label="Community links">
+    <nav id="community-hud" data-i18n-aria="hud.core.communityLinks" aria-label="Community links">
       <details id="community-menu">
         <summary class="community-toggle" data-i18n-title="hud.core.communityLinks" data-i18n-aria="hud.core.communityLinks" title="Community links" aria-label="Community links">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7.5 11.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm9 0a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7ZM1.7 19.6c.5-3.6 2.6-5.5 5.8-5.5s5.3 1.9 5.8 5.5c.1.6-.4 1.1-1 1.1H2.7c-.6 0-1.1-.5-1-1.1Zm9.7-4.6c1.1-.7 2.8-.9 5.1-.9 3.2 0 5.3 1.9 5.8 5.5.1.6-.4 1.1-1 1.1h-6.6c-.3-2.3-1.4-4.2-3.3-5.7Z"/></svg>
@@ -8134,7 +8203,7 @@
           </a>
         </div>
       </details>
-    </div>
+    </nav>
 
     <div id="quest-tracker"></div>
 
@@ -8145,8 +8214,8 @@
             <div class="portrait-wrap">
               <div class="portrait"><canvas id="pf-portrait" width="54" height="54"></canvas></div>
               <div class="level-chip" id="pf-level">1</div>
-              <div class="combat-flash" id="pf-combat" data-i18n-title="hud.social.status.combat" data-i18n-aria="hud.social.status.combat" title="In Combat" aria-label="In Combat">⚔</div>
-              <div class="rest-indicator" id="pf-rest" data-i18n-title="hudChrome.rest.resting" data-i18n-aria="hudChrome.rest.resting" title="Resting" aria-label="Resting">z</div>
+              <div class="combat-flash" id="pf-combat" role="status" data-i18n-title="hud.social.status.combat" data-i18n-aria="hud.social.status.combat" title="In Combat" aria-label="In Combat">⚔</div>
+              <div class="rest-indicator" id="pf-rest" role="status" data-i18n-title="hudChrome.rest.resting" data-i18n-aria="hudChrome.rest.resting" title="Resting" aria-label="Resting">z</div>
             </div>
             <div class="uf-bars">
               <div class="uf-name" id="pf-name"></div>
@@ -8161,14 +8230,14 @@
         <div id="meters-window" class="panel">
           <div class="panel-title">
             <span class="mt-tabs">
-              <button class="mt-tab on" data-tab="dmg" data-i18n="hud.meters.damageShort">Dmg</button>
-              <button class="mt-tab" data-tab="heal" data-i18n="hud.meters.healingShort">Heal</button>
-              <button class="mt-tab" data-tab="threat" data-i18n="hud.meters.threat">Threat</button>
+              <button type="button" class="mt-tab on" data-tab="dmg" data-i18n="hud.meters.damageShort">Dmg</button>
+              <button type="button" class="mt-tab" data-tab="heal" data-i18n="hud.meters.healingShort">Heal</button>
+              <button type="button" class="mt-tab" data-tab="threat" data-i18n="hud.meters.threat">Threat</button>
             </span>
             <span>
-              <button class="x-btn mt-prev" data-i18n-title="hud.meters.olderSegment" title="Older segment" data-icon="prev"></button>
-              <button class="x-btn mt-next" data-i18n-title="hud.meters.newerSegment" title="Newer segment" data-icon="next"></button>
-              <button class="x-btn mt-close" data-i18n-title="hud.meters.close" data-i18n-aria="hud.meters.close" title="Close meters" aria-label="Close meters" data-icon="close"></button>
+              <button type="button" class="x-btn mt-prev" data-i18n-title="hud.meters.olderSegment" title="Older segment" data-icon="prev"></button>
+              <button type="button" class="x-btn mt-next" data-i18n-title="hud.meters.newerSegment" title="Newer segment" data-icon="next"></button>
+              <button type="button" class="x-btn mt-close" data-i18n-title="hud.meters.close" data-i18n-aria="hud.meters.close" title="Close meters" aria-label="Close meters" data-icon="close"></button>
             </span>
           </div>
           <div class="mt-view"></div>
@@ -8198,10 +8267,10 @@
     <div id="quest-log-window" class="window panel"></div>
     <div id="vendor-window" class="window panel"></div>
     <div id="map-window" class="window panel">
-      <button class="x-btn" id="map-close" data-i18n-title="hud.core.closeMap" data-i18n-aria="hud.core.closeMap" title="Close map" aria-label="Close map" data-icon="close"></button>
+      <button type="button" class="x-btn" id="map-close" data-i18n-title="hud.core.closeMap" data-i18n-aria="hud.core.closeMap" title="Close map" aria-label="Close map" data-icon="close"></button>
       <div id="map-zoom">
-        <button class="map-zoom-btn" id="map-zoom-in" data-i18n-title="hud.core.zoomIn" data-i18n-aria="hud.core.zoomIn" title="Zoom in" aria-label="Zoom in">+</button>
-        <button class="map-zoom-btn" id="map-zoom-out" data-i18n-title="hud.core.zoomOut" data-i18n-aria="hud.core.zoomOut" title="Zoom out" aria-label="Zoom out">&minus;</button>
+        <button type="button" class="map-zoom-btn" id="map-zoom-in" data-i18n-title="hud.core.zoomIn" data-i18n-aria="hud.core.zoomIn" title="Zoom in" aria-label="Zoom in">+</button>
+        <button type="button" class="map-zoom-btn" id="map-zoom-out" data-i18n-title="hud.core.zoomOut" data-i18n-aria="hud.core.zoomOut" title="Zoom out" aria-label="Zoom out">&minus;</button>
       </div>
       <canvas id="map-canvas" width="560" height="560"></canvas>
     </div>
@@ -8214,18 +8283,18 @@
     <div id="social-window" class="window panel"></div>
     <div id="report-window" class="window panel"></div>
     <div id="side-buttons">
-      <button class="micro-btn" id="mm-char" data-i18n-title="hud.keybinds.actions.char" data-i18n-aria="hud.keybinds.actions.char" title="Character" aria-label="Character" data-icon="character"><span class="keybind">c</span></button>
-      <button class="micro-btn" id="mm-spell" data-i18n-title="abilityUi.spellbook.title" data-i18n-aria="abilityUi.spellbook.title" title="Spellbook" aria-label="Spellbook" data-icon="spellbook"><span class="keybind">p</span></button>
-      <button class="micro-btn" id="mm-talents" data-i18n-title="game.talents.title" data-i18n-aria="game.talents.title" title="Talents" aria-label="Talents" data-icon="talents"><span class="keybind">n</span></button>
-      <button class="micro-btn" id="mm-quest" data-i18n-title="questUi.log.title" data-i18n-aria="questUi.log.title" title="Quest Log" aria-label="Quest Log" data-icon="questlog"><span class="keybind">l</span></button>
-      <button class="micro-btn" id="mm-map" data-i18n-title="hud.keybinds.actions.map" data-i18n-aria="hud.keybinds.actions.map" title="World Map" aria-label="World Map" data-icon="map"><span class="keybind">m</span></button>
-      <button class="micro-btn" id="mm-bag" data-i18n-title="itemUi.bags.title" data-i18n-aria="itemUi.bags.title" title="Bags" aria-label="Bags" data-icon="bags"><span class="keybind">b</span></button>
-      <button class="micro-btn" id="mm-arena" data-i18n-title="hud.keybinds.actions.arena" data-i18n-aria="hud.keybinds.actions.arena" title="Arena (Ashen Coliseum)" aria-label="Arena (Ashen Coliseum)" data-icon="arena"><span class="keybind">g</span></button>
-      <button class="micro-btn" id="mm-leaderboard" data-i18n-title="game.leaderboard.title" data-i18n-aria="game.leaderboard.title" title="Leaderboard" aria-label="Leaderboard" data-icon="leaderboard"><span class="keybind">k</span></button>
-      <button class="micro-btn" id="mm-emote" data-i18n-aria="hudChrome.emoteWheel.label" aria-label="Emotes" data-icon="emote"><span class="keybind">x</span></button>
-      <button class="micro-btn" id="mm-music" data-i18n-title="hud.options.music" data-i18n-aria="hud.options.music" title="Music" aria-label="Music" data-icon="music"></button>
-      <button class="micro-btn" id="mm-social" data-i18n-title="hud.keybinds.actions.social" data-i18n-aria="hud.keybinds.actions.social" title="Friends &amp; Guild" aria-label="Friends &amp; Guild" data-icon="social"><span class="keybind">o</span></button>
-      <button class="micro-btn" id="mm-options" data-i18n-title="hud.options.gameMenu" data-i18n-aria="hud.options.gameMenu" title="Game Menu" aria-label="Game Menu" data-icon="menu"><span class="keybind">esc</span></button>
+      <button type="button" class="micro-btn" id="mm-char" data-i18n-title="hud.keybinds.actions.char" data-i18n-aria="hud.keybinds.actions.char" title="Character" aria-label="Character" data-icon="character"><span class="keybind">c</span></button>
+      <button type="button" class="micro-btn" id="mm-spell" data-i18n-title="abilityUi.spellbook.title" data-i18n-aria="abilityUi.spellbook.title" title="Spellbook" aria-label="Spellbook" data-icon="spellbook"><span class="keybind">p</span></button>
+      <button type="button" class="micro-btn" id="mm-talents" data-i18n-title="game.talents.title" data-i18n-aria="game.talents.title" title="Talents" aria-label="Talents" data-icon="talents"><span class="keybind">n</span></button>
+      <button type="button" class="micro-btn" id="mm-quest" data-i18n-title="questUi.log.title" data-i18n-aria="questUi.log.title" title="Quest Log" aria-label="Quest Log" data-icon="questlog"><span class="keybind">l</span></button>
+      <button type="button" class="micro-btn" id="mm-map" data-i18n-title="hud.keybinds.actions.map" data-i18n-aria="hud.keybinds.actions.map" title="World Map" aria-label="World Map" data-icon="map"><span class="keybind">m</span></button>
+      <button type="button" class="micro-btn" id="mm-bag" data-i18n-title="itemUi.bags.title" data-i18n-aria="itemUi.bags.title" title="Bags" aria-label="Bags" data-icon="bags"><span class="keybind">b</span></button>
+      <button type="button" class="micro-btn" id="mm-arena" data-i18n-title="hud.keybinds.actions.arena" data-i18n-aria="hud.keybinds.actions.arena" title="Arena (Ashen Coliseum)" aria-label="Arena (Ashen Coliseum)" data-icon="arena"><span class="keybind">g</span></button>
+      <button type="button" class="micro-btn" id="mm-leaderboard" data-i18n-title="game.leaderboard.title" data-i18n-aria="game.leaderboard.title" title="Leaderboard" aria-label="Leaderboard" data-icon="leaderboard"><span class="keybind">k</span></button>
+      <button type="button" class="micro-btn" id="mm-emote" data-i18n-aria="hudChrome.emoteWheel.label" aria-label="Emotes" data-icon="emote"><span class="keybind">x</span></button>
+      <button type="button" class="micro-btn" id="mm-music" data-i18n-title="hud.options.music" data-i18n-aria="hud.options.music" title="Music" aria-label="Music" data-icon="music"></button>
+      <button type="button" class="micro-btn" id="mm-social" data-i18n-title="hud.keybinds.actions.social" data-i18n-aria="hud.keybinds.actions.social" title="Friends &amp; Guild" aria-label="Friends &amp; Guild" data-icon="social"><span class="keybind">o</span></button>
+      <button type="button" class="micro-btn" id="mm-options" data-i18n-title="hud.options.gameMenu" data-i18n-aria="hud.options.gameMenu" title="Game Menu" aria-label="Game Menu" data-icon="menu"><span class="keybind">esc</span></button>
     </div>
     <div id="tooltip" class="panel"></div>
 
@@ -8236,7 +8305,7 @@
 
     <div id="death-overlay">
       <h2 data-i18n="hud.core.deathTitle">You have died.</h2>
-      <button class="btn" id="release-btn" data-i18n="hud.core.releaseSpirit">Release Spirit</button>
+      <button type="button" class="btn" id="release-btn" data-i18n="hud.core.releaseSpirit">Release Spirit</button>
     </div>
   </div>
 
@@ -8273,30 +8342,30 @@
       
       <div class="header-menu-container" id="header-menu-container">
         <nav data-i18n-aria="a11y.mainNavigation" aria-label="Main navigation" class="homepage-nav">
-          <ul class="nav-list" role="list">
-            <li class="nav-item">
-              <button type="button" class="nav-link active" id="nav-btn-play" aria-selected="true" aria-pressed="true" data-i18n="nav.play">Play</button>
-            </li>
-            <li class="nav-item">
-              <button type="button" class="nav-link" id="nav-btn-highscores" aria-selected="false" aria-pressed="false" data-i18n="nav.highscores">High Scores</button>
-            </li>
-            <li class="nav-item">
-              <button type="button" class="nav-link" id="nav-btn-wiki" aria-selected="false" aria-pressed="false" data-i18n="nav.wiki">Wiki</button>
-            </li>
-            <li class="nav-item">
-              <button type="button" class="nav-link" id="nav-btn-news" aria-selected="false" aria-pressed="false" data-i18n="nav.news">News</button>
-            </li>
-            <li class="nav-item">
-              <button type="button" class="nav-link" id="nav-btn-download" aria-selected="false" aria-pressed="false" data-i18n="nav.download">Download</button>
-            </li>
-            <li class="nav-item">
-              <button type="button" class="nav-link" id="nav-btn-login" aria-selected="false" aria-pressed="false" data-i18n="nav.loginRegister">Login/Register</button>
-            </li>
-            <li class="nav-item" id="nav-item-account" hidden>
-              <button type="button" class="nav-link" id="nav-btn-account" aria-selected="false" aria-pressed="false" data-i18n="nav.account">Account</button>
-            </li>
-            <li class="nav-item" id="nav-item-logout" hidden>
-              <button type="button" class="nav-link" id="nav-btn-logout" aria-selected="false" aria-pressed="false" data-i18n="nav.logout">Logout</button>
+            <ul class="nav-list">
+              <li class="nav-item">
+                <button type="button" class="nav-link active" id="nav-btn-play" aria-pressed="true" data-i18n="nav.play">Play</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link" id="nav-btn-highscores" aria-pressed="false" data-i18n="nav.highscores">High Scores</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link" id="nav-btn-wiki" aria-pressed="false" data-i18n="nav.wiki">Wiki</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link" id="nav-btn-news" aria-pressed="false" data-i18n="nav.news">News</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link" id="nav-btn-download" aria-pressed="false" data-i18n="nav.download">Download</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link" id="nav-btn-login" aria-pressed="false" data-i18n="nav.loginRegister">Login/Register</button>
+              </li>
+              <li class="nav-item" id="nav-item-account" hidden>
+                <button type="button" class="nav-link" id="nav-btn-account" aria-pressed="false" data-i18n="nav.account">Account</button>
+              </li>
+              <li class="nav-item" id="nav-item-logout" hidden>
+                <button type="button" class="nav-link" id="nav-btn-logout" aria-pressed="false" data-i18n="nav.logout">Logout</button>
             </li>
           </ul>
         </nav>
@@ -8318,6 +8387,11 @@
         <!-- Main Logo -->
         <img class="main-logo" id="title-logo" src="/worldofclaudecraft-logo.png" data-i18n-alt="serverUnavailable.logoAlt" alt="World of ClaudeCraft" />
 
+        <section class="official-site-copy" aria-labelledby="official-site-copy-heading">
+          <p class="official-site-copy__label" id="official-site-copy-heading" data-i18n="seo.officialLabel">Official World of ClaudeCraft website</p>
+          <p class="official-site-copy__body" data-i18n="seo.officialBody">worldofclaudecraft.com is the official free browser MMO for the Claudemoon realm. Play online with a persistent character, explore solo offline, read the wiki, and follow verified community links from this site.</p>
+        </section>
+
         <div id="mode-select">
           <div class="play-console">
             <!-- Realm selector: a themed dropdown that defaults to Online and can switch to Offline.
@@ -8338,8 +8412,8 @@
                 </span>
                 <svg class="server-select-chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
-              <ul class="server-select-menu" id="server-select-menu" role="listbox" data-i18n-aria="mode.serverAria" aria-label="Select realm: Online or Offline" hidden>
-                <li class="server-select-option is-selected" id="server-opt-online" role="option" data-mode="online" tabindex="-1" aria-selected="true">
+              <div class="server-select-menu" id="server-select-menu" role="listbox" data-i18n-aria="mode.serverAria" aria-label="Select realm: Online or Offline" hidden>
+                <div class="server-select-option is-selected" id="server-opt-online" role="option" data-mode="online" tabindex="-1" aria-selected="true">
                   <span class="server-dot" data-mode="online" aria-hidden="true"></span>
                   <span class="server-opt-text">
                     <span class="server-opt-name" data-i18n="mode.serverOnline">Online</span>
@@ -8349,16 +8423,16 @@
                     </span>
                   </span>
                   <svg class="server-opt-check" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </li>
-                <li class="server-select-option" id="server-opt-offline" role="option" data-mode="offline" tabindex="-1" aria-selected="false">
+                </div>
+                <div class="server-select-option" id="server-opt-offline" role="option" data-mode="offline" tabindex="-1" aria-selected="false">
                   <span class="server-dot" data-mode="offline" aria-hidden="true"></span>
                   <span class="server-opt-text">
                     <span class="server-opt-name" data-i18n="mode.serverOffline">Offline</span>
                     <span class="server-opt-desc" data-i18n="mode.offlineDesc">Instant single-player world in your browser. Nothing is saved: perfect for a quick brawl or testing.</span>
                   </span>
                   <svg class="server-opt-check" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </li>
-              </ul>
+                </div>
+              </div>
             </div>
 
             <button type="button" class="btn-play" id="btn-play" data-i18n-aria="mode.playAria" aria-label="Play World of ClaudeCraft">
@@ -8377,8 +8451,8 @@
             <button type="button" id="btn-copy-ca" class="token-ca-pill" data-ca="3WjLscH2JsXLEFJZRA9z8ti8yRGxWGKbqymPd7UicRth" data-i18n-aria="mode.caCopyAria" aria-label="Copy contract address">
               <code class="token-ca-addr">3WjLscH2JsXLEFJZRA9z8ti8yRGxWGKbqymPd7UicRth</code>
               <span class="token-ca-copy" aria-hidden="true">
-                <svg class="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <svg class="icon-clipboard" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </span>
             </button>
             <p class="token-ca-note" data-i18n="mode.caNote">WOC is our community token. It is not needed to play. Join Discord to discuss the WOC utility and flywheel.</p>
@@ -8511,7 +8585,7 @@
           <div class="cs-body">
             <!-- Left: full-height character roster -->
             <div class="cs-list-col">
-              <ul id="char-list" role="list"></ul>
+              <ul id="char-list"></ul>
               <div class="cs-list-actions">
                 <button type="button" class="btn btn-secondary" id="btn-charselect-back" data-i18n="auth.back">Back</button>
                 <button type="button" class="btn btn-primary cs-new-btn" id="btn-new-character" data-i18n="auth.newCharacter">New Character</button>
@@ -8540,24 +8614,24 @@
                   <div id="charselect-error" class="auth-error" aria-live="polite"></div>
                 </div>
                 <div class="cs-section-header" data-i18n="auth.class">Class</div>
-                <ul class="mini-class-row" role="list">
-                  <li class="mini-class" data-class="warrior" role="button" tabindex="0" data-i18n-aria="classes.warriorAria" data-i18n="classes.warrior" aria-label="Warrior class" aria-pressed="false">Warrior</li>
-                  <li class="mini-class" data-class="paladin" role="button" tabindex="0" data-i18n-aria="classes.paladinAria" data-i18n="classes.paladin" aria-label="Paladin class" aria-pressed="false">Paladin</li>
-                  <li class="mini-class" data-class="hunter" role="button" tabindex="0" data-i18n-aria="classes.hunterAria" data-i18n="classes.hunter" aria-label="Hunter class" aria-pressed="false">Hunter</li>
-                  <li class="mini-class" data-class="rogue" role="button" tabindex="0" data-i18n-aria="classes.rogueAria" data-i18n="classes.rogue" aria-label="Rogue class" aria-pressed="false">Rogue</li>
-                  <li class="mini-class" data-class="priest" role="button" tabindex="0" data-i18n-aria="classes.priestAria" data-i18n="classes.priest" aria-label="Priest class" aria-pressed="false">Priest</li>
-                  <li class="mini-class" data-class="shaman" role="button" tabindex="0" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Shaman class" aria-pressed="false">Shaman</li>
-                  <li class="mini-class" data-class="mage" role="button" tabindex="0" data-i18n-aria="classes.mageAria" data-i18n="classes.mage" aria-label="Mage class" aria-pressed="false">Mage</li>
-                  <li class="mini-class" data-class="warlock" role="button" tabindex="0" data-i18n-aria="classes.warlockAria" data-i18n="classes.warlock" aria-label="Warlock class" aria-pressed="false">Warlock</li>
-                  <li class="mini-class" data-class="druid" role="button" tabindex="0" data-i18n-aria="classes.druidAria" data-i18n="classes.druid" aria-label="Druid class" aria-pressed="false">Druid</li>
-                </ul>
+                <div class="mini-class-row">
+                  <button type="button" class="mini-class" data-class="warrior" data-i18n-aria="classes.warriorAria" data-i18n="classes.warrior" aria-label="Warrior class" aria-pressed="false">Warrior</button>
+                  <button type="button" class="mini-class" data-class="paladin" data-i18n-aria="classes.paladinAria" data-i18n="classes.paladin" aria-label="Paladin class" aria-pressed="false">Paladin</button>
+                  <button type="button" class="mini-class" data-class="hunter" data-i18n-aria="classes.hunterAria" data-i18n="classes.hunter" aria-label="Hunter class" aria-pressed="false">Hunter</button>
+                  <button type="button" class="mini-class" data-class="rogue" data-i18n-aria="classes.rogueAria" data-i18n="classes.rogue" aria-label="Rogue class" aria-pressed="false">Rogue</button>
+                  <button type="button" class="mini-class" data-class="priest" data-i18n-aria="classes.priestAria" data-i18n="classes.priest" aria-label="Priest class" aria-pressed="false">Priest</button>
+                  <button type="button" class="mini-class" data-class="shaman" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Shaman class" aria-pressed="false">Shaman</button>
+                  <button type="button" class="mini-class" data-class="mage" data-i18n-aria="classes.mageAria" data-i18n="classes.mage" aria-label="Mage class" aria-pressed="false">Mage</button>
+                  <button type="button" class="mini-class" data-class="warlock" data-i18n-aria="classes.warlockAria" data-i18n="classes.warlock" aria-label="Warlock class" aria-pressed="false">Warlock</button>
+                  <button type="button" class="mini-class" data-class="druid" data-i18n-aria="classes.druidAria" data-i18n="classes.druid" aria-label="Druid class" aria-pressed="false">Druid</button>
+                </div>
                 <div class="skin-picker">
                   <div class="skin-picker-header" data-i18n="auth.appearance">Appearance</div>
-                  <div id="online-skin-row" class="skin-row" role="list" data-i18n-aria="auth.appearance" aria-label="Appearance"></div>
+                  <div id="online-skin-row" class="skin-row"></div>
                 </div>
                 <div class="auth-actions cs-form-actions">
-                  <button class="btn btn-secondary" id="btn-charcreate-back" data-i18n="auth.back">Back</button>
-                  <button class="btn btn-primary" id="btn-create-char" data-i18n="auth.create">Create</button>
+                  <button type="button" class="btn btn-secondary" id="btn-charcreate-back" data-i18n="auth.back">Back</button>
+                  <button type="button" class="btn btn-primary" id="btn-create-char" data-i18n="auth.create">Create</button>
                 </div>
               </div>
             </div>
@@ -8579,18 +8653,18 @@
                   <input id="char-name" maxlength="16" data-i18n-placeholder="auth.characterNamePlaceholder" placeholder="Character name" value="" aria-describedby="offline-error" autocomplete="off" />
                   <div id="offline-error" class="auth-error" aria-live="polite"></div>
                 </div>
-                <ul class="mini-class-row" role="list">
-                  <li class="mini-class" data-class="warrior" role="button" tabindex="0" data-i18n-aria="classes.warriorAria" data-i18n="classes.warrior" aria-label="Warrior class" aria-pressed="false">Warrior</li>
-                  <li class="mini-class" data-class="paladin" role="button" tabindex="0" data-i18n-aria="classes.paladinAria" data-i18n="classes.paladin" aria-label="Paladin class" aria-pressed="false">Paladin</li>
-                  <li class="mini-class" data-class="hunter" role="button" tabindex="0" data-i18n-aria="classes.hunterAria" data-i18n="classes.hunter" aria-label="Hunter class" aria-pressed="false">Hunter</li>
-                  <li class="mini-class" data-class="rogue" role="button" tabindex="0" data-i18n-aria="classes.rogueAria" data-i18n="classes.rogue" aria-label="Rogue class" aria-pressed="false">Rogue</li>
-                  <li class="mini-class" data-class="priest" role="button" tabindex="0" data-i18n-aria="classes.priestAria" data-i18n="classes.priest" aria-label="Priest class" aria-pressed="false">Priest</li>
-                  <li class="mini-class" data-class="shaman" role="button" tabindex="0" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Shaman class" aria-pressed="false">Shaman</li>
-                  <li class="mini-class" data-class="mage" role="button" tabindex="0" data-i18n-aria="classes.mageAria" data-i18n="classes.mage" aria-label="Mage class" aria-pressed="false">Mage</li>
-                  <li class="mini-class" data-class="warlock" role="button" tabindex="0" data-i18n-aria="classes.warlockAria" data-i18n="classes.warlock" aria-label="Warlock class" aria-pressed="false">Warlock</li>
-                  <li class="mini-class" data-class="druid" role="button" tabindex="0" data-i18n-aria="classes.druidAria" data-i18n="classes.druid" aria-label="Druid class" aria-pressed="false">Druid</li>
-                </ul>
-                <div id="offline-skin-row" class="skin-row" role="list" data-i18n-aria="auth.appearance" aria-label="Skin"></div>
+                <div class="mini-class-row">
+                  <button type="button" class="mini-class" data-class="warrior" data-i18n-aria="classes.warriorAria" data-i18n="classes.warrior" aria-label="Warrior class" aria-pressed="false">Warrior</button>
+                  <button type="button" class="mini-class" data-class="paladin" data-i18n-aria="classes.paladinAria" data-i18n="classes.paladin" aria-label="Paladin class" aria-pressed="false">Paladin</button>
+                  <button type="button" class="mini-class" data-class="hunter" data-i18n-aria="classes.hunterAria" data-i18n="classes.hunter" aria-label="Hunter class" aria-pressed="false">Hunter</button>
+                  <button type="button" class="mini-class" data-class="rogue" data-i18n-aria="classes.rogueAria" data-i18n="classes.rogue" aria-label="Rogue class" aria-pressed="false">Rogue</button>
+                  <button type="button" class="mini-class" data-class="priest" data-i18n-aria="classes.priestAria" data-i18n="classes.priest" aria-label="Priest class" aria-pressed="false">Priest</button>
+                  <button type="button" class="mini-class" data-class="shaman" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Shaman class" aria-pressed="false">Shaman</button>
+                  <button type="button" class="mini-class" data-class="mage" data-i18n-aria="classes.mageAria" data-i18n="classes.mage" aria-label="Mage class" aria-pressed="false">Mage</button>
+                  <button type="button" class="mini-class" data-class="warlock" data-i18n-aria="classes.warlockAria" data-i18n="classes.warlock" aria-label="Warlock class" aria-pressed="false">Warlock</button>
+                  <button type="button" class="mini-class" data-class="druid" data-i18n-aria="classes.druidAria" data-i18n="classes.druid" aria-label="Druid class" aria-pressed="false">Druid</button>
+                </div>
+                <div id="offline-skin-row" class="skin-row"></div>
                 <div class="auth-actions">
                   <button type="button" class="btn btn-primary" id="btn-start-offline" data-i18n="auth.enterWorld">Enter World</button>
                   <button type="button" class="btn btn-secondary" id="btn-offline-back" data-i18n="auth.back">Back</button>
@@ -8735,7 +8809,7 @@
                   <p class="account-hint" data-i18n="hudChrome.account.twoFactorScanHint">Add this key to your authenticator app, then enter the 6-digit code it shows.</p>
                   <p class="auth-label" data-i18n="hudChrome.account.twoFactorSecretLabel">Setup key</p>
                   <code id="account-2fa-secret" class="account-2fa-secret"></code>
-                  <p><a id="account-2fa-link" class="auth-link" href="#" data-i18n="hudChrome.account.twoFactorOpenApp">Open in authenticator app</a></p>
+                  <p><a id="account-2fa-link" class="auth-link" href="about:blank" data-i18n="hudChrome.account.twoFactorOpenApp">Open in authenticator app</a></p>
                   <form id="account-2fa-confirm-form" class="account-form" novalidate>
                     <div class="auth-field">
                       <label for="account-2fa-code" class="auth-label" data-i18n="hudChrome.account.twoFactorCodeLabel">6-digit code</label>
@@ -8885,24 +8959,24 @@
     </footer>
   </main>
 
-  <div id="mobile-controls" data-i18n-aria="hud.core.mobileControls" aria-label="Mobile controls">
+  <section id="mobile-controls" data-i18n-aria="hud.core.mobileControls" aria-label="Mobile controls">
     <div id="mobile-move-zone" aria-hidden="true"></div>
-    <div id="mobile-move-joystick" class="mobile-joystick" data-i18n-aria="hud.core.mobileMove" aria-label="Move">
+    <div id="mobile-move-joystick" class="mobile-joystick">
       <div id="mobile-move-stick" class="mobile-stick"></div>
       <div class="mobile-joy-label" data-i18n="hud.core.mobileMove">Move</div>
     </div>
-    <div id="mobile-camera-joystick" class="mobile-joystick" data-i18n-aria="hud.core.mobileCamera" aria-label="Camera">
+    <div id="mobile-camera-joystick" class="mobile-joystick">
       <div id="mobile-camera-stick" class="mobile-stick"></div>
       <div class="mobile-joy-label" data-i18n="hud.core.mobileCamera">Camera</div>
     </div>
     <div id="mobile-combat-controls">
-      <button class="mobile-btn" id="mobile-attack-nearest" data-i18n-title="hud.keybinds.actions.attack" data-i18n-aria="hud.keybinds.actions.attack" title="Attack" aria-label="Attack" data-icon="attack"><span class="mobile-label" data-i18n="hud.core.mobileAttack">Attack</span></button>
-      <button class="mobile-btn" id="mobile-autorun" data-i18n-title="hud.keybinds.actions.autorun" data-i18n-aria="hud.keybinds.actions.autorun" title="Toggle autorun" aria-label="Toggle autorun" data-icon="autorun"><span class="mobile-label" data-i18n="hudChrome.mobile.autorun">Autorun</span></button>
-      <button class="mobile-btn" id="mobile-jump" data-i18n-title="hud.keybinds.actions.jump" data-i18n-aria="hud.keybinds.actions.jump" title="Jump" aria-label="Jump" data-icon="jump"><span class="mobile-label" data-i18n="hudChrome.mobile.jump">Jump</span></button>
-      <button class="mobile-btn" id="mobile-target" data-i18n-title="hud.keybinds.actions.target" data-i18n-aria="hud.keybinds.actions.target" title="Target Nearest Enemy" aria-label="Target Nearest Enemy" data-icon="target"><span class="mobile-label" data-i18n="hud.core.mobileTarget">Target</span></button>
-      <button class="mobile-btn" id="mobile-interact" data-i18n-title="hud.keybinds.actions.interact" data-i18n-aria="hud.keybinds.actions.interact" title="Interact / Loot" aria-label="Interact / Loot" data-icon="interact"><span class="mobile-label" data-i18n="hud.core.mobileUse">Use</span></button>
-      <button class="mobile-btn" id="mobile-chat" data-i18n-title="hud.keybinds.actions.chat" data-i18n-aria="hud.keybinds.actions.chat" title="Open Chat" aria-label="Open Chat" data-icon="chat"><span class="mobile-label" data-i18n="hud.core.mobileChat">Chat</span></button>
-      <button class="mobile-btn" id="mobile-more" data-i18n-title="hud.core.mobileMoreAria" data-i18n-aria="hud.core.mobileMoreAria" title="Show more menus" aria-label="Show more menus" data-icon="more"><span class="mobile-label" data-i18n="hud.core.mobileMore">More</span></button>
+      <button class="mobile-btn" type="button" id="mobile-attack-nearest" data-i18n-title="hud.keybinds.actions.attack" data-i18n-aria="hud.keybinds.actions.attack" title="Attack" aria-label="Attack" data-icon="attack"><span class="mobile-label" data-i18n="hud.core.mobileAttack">Attack</span></button>
+      <button class="mobile-btn" type="button" id="mobile-autorun" data-i18n-title="hud.keybinds.actions.autorun" data-i18n-aria="hud.keybinds.actions.autorun" title="Toggle autorun" aria-label="Toggle autorun" data-icon="autorun"><span class="mobile-label" data-i18n="hudChrome.mobile.autorun">Autorun</span></button>
+      <button class="mobile-btn" type="button" id="mobile-jump" data-i18n-title="hud.keybinds.actions.jump" data-i18n-aria="hud.keybinds.actions.jump" title="Jump" aria-label="Jump" data-icon="jump"><span class="mobile-label" data-i18n="hudChrome.mobile.jump">Jump</span></button>
+      <button class="mobile-btn" type="button" id="mobile-target" data-i18n-title="hud.keybinds.actions.target" data-i18n-aria="hud.keybinds.actions.target" title="Target Nearest Enemy" aria-label="Target Nearest Enemy" data-icon="target"><span class="mobile-label" data-i18n="hud.core.mobileTarget">Target</span></button>
+      <button class="mobile-btn" type="button" id="mobile-interact" data-i18n-title="hud.keybinds.actions.interact" data-i18n-aria="hud.keybinds.actions.interact" title="Interact / Loot" aria-label="Interact / Loot" data-icon="interact"><span class="mobile-label" data-i18n="hud.core.mobileUse">Use</span></button>
+      <button class="mobile-btn" type="button" id="mobile-chat" data-i18n-title="hud.keybinds.actions.chat" data-i18n-aria="hud.keybinds.actions.chat" title="Open Chat" aria-label="Open Chat" data-icon="chat"><span class="mobile-label" data-i18n="hud.core.mobileChat">Chat</span></button>
+      <button class="mobile-btn" type="button" id="mobile-more" data-i18n-title="hud.core.mobileMoreAria" data-i18n-aria="hud.core.mobileMoreAria" title="Show more menus" aria-label="Show more menus" data-icon="more"><span class="mobile-label" data-i18n="hud.core.mobileMore">More</span></button>
     </div>
       <div id="mobile-extra-controls" class="window panel" role="dialog" aria-modal="true" aria-labelledby="mobile-more-title">
         <div class="panel-title">
@@ -8910,29 +8984,29 @@
           <button type="button" class="x-btn" id="mobile-more-close" data-i18n-title="hud.options.returnToGame" data-i18n-aria="hud.options.returnToGame" title="Return to Game" aria-label="Return to Game" data-icon="close"></button>
         </div>
         <div id="mobile-extra-grid">
-          <button class="mobile-btn" id="mobile-social" data-i18n-title="hud.keybinds.actions.social" data-i18n-aria="hud.keybinds.actions.social" title="Friends &amp; Guild" aria-label="Friends &amp; Guild" data-icon="social"><span class="mobile-label" data-i18n="hud.core.mobileSocial">Social</span></button>
-          <button class="mobile-btn" id="mobile-emote" data-i18n-title="hudChrome.emoteWheel.label" data-i18n-aria="hudChrome.emoteWheel.label" title="Emotes" aria-label="Emotes" data-icon="emote"><span class="mobile-label" data-i18n="hudChrome.emoteWheel.label">Emotes</span></button>
-          <button class="mobile-btn" id="mobile-arena" data-i18n-title="hud.keybinds.actions.arena" data-i18n-aria="hud.keybinds.actions.arena" title="Arena (Ashen Coliseum)" aria-label="Arena (Ashen Coliseum)" data-icon="arena"><span class="mobile-label" data-i18n="hud.core.mobileArena">Arena</span></button>
-          <button class="mobile-btn" id="mobile-menu" data-i18n-title="hud.options.gameMenu" data-i18n-aria="hud.options.gameMenu" title="Game Menu" aria-label="Game Menu" data-icon="menu"><span class="mobile-label" data-i18n="hud.core.mobileMenu">Menu</span></button>
-          <button class="mobile-btn" id="mobile-quest" data-i18n-title="questUi.log.title" data-i18n-aria="questUi.log.title" title="Quest Log" aria-label="Quest Log" data-icon="questlog"><span class="mobile-label" data-i18n="questUi.log.title">Quests</span></button>
-          <button class="mobile-btn" id="mobile-char" data-i18n-title="hud.keybinds.actions.char" data-i18n-aria="hud.keybinds.actions.char" title="Character" aria-label="Character" data-icon="character"><span class="mobile-label" data-i18n="hud.keybinds.actions.char">Character</span></button>
-          <button class="mobile-btn" id="mobile-bags" data-i18n-title="hud.keybinds.actions.bags" data-i18n-aria="hud.keybinds.actions.bags" title="Bags" aria-label="Bags" data-icon="bags"><span class="mobile-label" data-i18n="hud.keybinds.actions.bags">Bags</span></button>
-          <button class="mobile-btn" id="mobile-spellbook" data-i18n-title="abilityUi.spellbook.title" data-i18n-aria="abilityUi.spellbook.title" title="Spellbook" aria-label="Spellbook" data-icon="spellbook"><span class="mobile-label" data-i18n="abilityUi.spellbook.title">Spellbook</span></button>
-          <button class="mobile-btn" id="mobile-talents" data-i18n-title="game.talents.title" data-i18n-aria="game.talents.title" title="Talents" aria-label="Talents" data-icon="talents"><span class="mobile-label" data-i18n="game.talents.title">Talents</span></button>
-          <button class="mobile-btn" id="mobile-map" data-i18n-title="hud.keybinds.actions.map" data-i18n-aria="hud.keybinds.actions.map" title="World Map" aria-label="World Map" data-icon="map"><span class="mobile-label" data-i18n="hud.core.mobileMap">Map</span></button>
-          <button class="mobile-btn" id="mobile-leaderboard" data-i18n-title="game.leaderboard.title" data-i18n-aria="game.leaderboard.title" title="Leaderboard" aria-label="Leaderboard" data-icon="leaderboard"><span class="mobile-label" data-i18n="hudChrome.mobile.leaderboard">Ranks</span></button>
-          <button class="mobile-btn active" id="mobile-nameplates" data-i18n-title="hud.keybinds.actions.nameplates" data-i18n-aria="hud.keybinds.actions.nameplates" title="Toggle nameplates" aria-label="Toggle nameplates" data-icon="nameplates"><span class="mobile-label" data-i18n="hudChrome.mobile.nameplates">Names</span></button>
-          <button class="mobile-btn" id="mobile-music" data-i18n-title="hud.options.music" data-i18n-aria="hud.options.music" title="Music" aria-label="Toggle music" data-icon="music"><span class="mobile-label" data-i18n="hud.options.music">Music</span></button>
-          <button class="mobile-btn" id="mobile-haptics" data-i18n-title="hudChrome.mobile.toggleHaptics" data-i18n-aria="hudChrome.mobile.toggleHaptics" title="Toggle haptic feedback" aria-label="Toggle haptic feedback" aria-pressed="true" data-icon="vibrate"><span class="mobile-label" data-i18n="hudChrome.mobile.haptics">Haptics</span></button>
+          <button type="button" class="mobile-btn" id="mobile-social" data-i18n-title="hud.keybinds.actions.social" data-i18n-aria="hud.keybinds.actions.social" title="Friends &amp; Guild" aria-label="Friends &amp; Guild" data-icon="social"><span class="mobile-label" data-i18n="hud.core.mobileSocial">Social</span></button>
+          <button type="button" class="mobile-btn" id="mobile-emote" data-i18n-title="hudChrome.emoteWheel.label" data-i18n-aria="hudChrome.emoteWheel.label" title="Emotes" aria-label="Emotes" data-icon="emote"><span class="mobile-label" data-i18n="hudChrome.emoteWheel.label">Emotes</span></button>
+          <button type="button" class="mobile-btn" id="mobile-arena" data-i18n-title="hud.keybinds.actions.arena" data-i18n-aria="hud.keybinds.actions.arena" title="Arena (Ashen Coliseum)" aria-label="Arena (Ashen Coliseum)" data-icon="arena"><span class="mobile-label" data-i18n="hud.core.mobileArena">Arena</span></button>
+          <button type="button" class="mobile-btn" id="mobile-menu" data-i18n-title="hud.options.gameMenu" data-i18n-aria="hud.options.gameMenu" title="Game Menu" aria-label="Game Menu" data-icon="menu"><span class="mobile-label" data-i18n="hud.core.mobileMenu">Menu</span></button>
+          <button type="button" class="mobile-btn" id="mobile-quest" data-i18n-title="questUi.log.title" data-i18n-aria="questUi.log.title" title="Quest Log" aria-label="Quest Log" data-icon="questlog"><span class="mobile-label" data-i18n="questUi.log.title">Quests</span></button>
+          <button type="button" class="mobile-btn" id="mobile-char" data-i18n-title="hud.keybinds.actions.char" data-i18n-aria="hud.keybinds.actions.char" title="Character" aria-label="Character" data-icon="character"><span class="mobile-label" data-i18n="hud.keybinds.actions.char">Character</span></button>
+          <button type="button" class="mobile-btn" id="mobile-bags" data-i18n-title="hud.keybinds.actions.bags" data-i18n-aria="hud.keybinds.actions.bags" title="Bags" aria-label="Bags" data-icon="bags"><span class="mobile-label" data-i18n="hud.keybinds.actions.bags">Bags</span></button>
+          <button type="button" class="mobile-btn" id="mobile-spellbook" data-i18n-title="abilityUi.spellbook.title" data-i18n-aria="abilityUi.spellbook.title" title="Spellbook" aria-label="Spellbook" data-icon="spellbook"><span class="mobile-label" data-i18n="abilityUi.spellbook.title">Spellbook</span></button>
+          <button type="button" class="mobile-btn" id="mobile-talents" data-i18n-title="game.talents.title" data-i18n-aria="game.talents.title" title="Talents" aria-label="Talents" data-icon="talents"><span class="mobile-label" data-i18n="game.talents.title">Talents</span></button>
+          <button type="button" class="mobile-btn" id="mobile-map" data-i18n-title="hud.keybinds.actions.map" data-i18n-aria="hud.keybinds.actions.map" title="World Map" aria-label="World Map" data-icon="map"><span class="mobile-label" data-i18n="hud.core.mobileMap">Map</span></button>
+          <button type="button" class="mobile-btn" id="mobile-leaderboard" data-i18n-title="game.leaderboard.title" data-i18n-aria="game.leaderboard.title" title="Leaderboard" aria-label="Leaderboard" data-icon="leaderboard"><span class="mobile-label" data-i18n="hudChrome.mobile.leaderboard">Ranks</span></button>
+          <button type="button" class="mobile-btn active" id="mobile-nameplates" data-i18n-title="hud.keybinds.actions.nameplates" data-i18n-aria="hud.keybinds.actions.nameplates" title="Toggle nameplates" aria-label="Toggle nameplates" data-icon="nameplates"><span class="mobile-label" data-i18n="hudChrome.mobile.nameplates">Names</span></button>
+          <button type="button" class="mobile-btn" id="mobile-music" data-i18n-title="hud.options.music" data-i18n-aria="hud.options.music" title="Music" aria-label="Toggle music" data-icon="music"><span class="mobile-label" data-i18n="hud.options.music">Music</span></button>
+          <button type="button" class="mobile-btn" id="mobile-haptics" data-i18n-title="hudChrome.mobile.toggleHaptics" data-i18n-aria="hudChrome.mobile.toggleHaptics" title="Toggle haptic feedback" aria-label="Toggle haptic feedback" aria-pressed="true" data-icon="vibrate"><span class="mobile-label" data-i18n="hudChrome.mobile.haptics">Haptics</span></button>
         </div>
       </div>
-  </div>
+  </section>
   <div id="mobile-preflight" role="dialog" aria-modal="true" aria-labelledby="mobile-preflight-title">
     <div class="preflight-panel">
       <h2 id="mobile-preflight-title" data-i18n="mobilePreflight.title">Play in Landscape Fullscreen</h2>
       <p id="mobile-preflight-detail"></p>
       <ol id="mobile-preflight-steps"></ol>
-      <button class="btn" id="mobile-preflight-continue" data-i18n="mobilePreflight.continue">Continue to Game</button>
+      <button type="button" class="btn" id="mobile-preflight-continue" data-i18n="mobilePreflight.continue">Continue to Game</button>
     </div>
   </div>
   <div id="rotate-device">

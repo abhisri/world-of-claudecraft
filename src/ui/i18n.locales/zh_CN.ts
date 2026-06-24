@@ -14,10 +14,16 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const zh_CN: Partial<Record<TranslationKey, string>> = {
+  'seo.officialLabel': 'World of ClaudeCraft 官方网站',
+  'seo.officialBody':
+    'worldofclaudecraft.com 是 Claudemoon 服务器的官方免费浏览器 MMO。你可以用持久角色在线游玩，也可以离线单人探索，阅读 wiki，并从本站访问已验证的社区链接。',
   'hudChrome.tutorial.moveBodyTouch': '使用摇杆移动，拖动屏幕环顾四周。先走几步开始吧。',
-  'hudChrome.tutorial.talkBodyTouch': '靠近雷德布鲁克元帅并点击“使用”按钮与他交谈，然后接受他的任务。',
-  'hudChrome.tutorial.returnBodyTouch': '任务已完成。返回雷德布鲁克元帅处并点击“使用”按钮交付任务。',
-  'hudChrome.tutorial.doneBodyTouch': '你已掌握基础，{name}。东溪谷任你探索。点击“更多”，再点击“任务日志”，随时查看你的任务日志。祝你狩猎顺利。',
+  'hudChrome.tutorial.talkBodyTouch':
+    '靠近雷德布鲁克元帅并点击“使用”按钮与他交谈，然后接受他的任务。',
+  'hudChrome.tutorial.returnBodyTouch':
+    '任务已完成。返回雷德布鲁克元帅处并点击“使用”按钮交付任务。',
+  'hudChrome.tutorial.doneBodyTouch':
+    '你已掌握基础，{name}。东溪谷任你探索。点击“更多”，再点击“任务日志”，随时查看你的任务日志。祝你狩猎顺利。',
   'hudChrome.raidLockout.title': '团队副本锁定',
   'hudChrome.raidLockout.allReady': '所有团队副本就绪',
   'hudChrome.raidLockout.daysHours': '{d}天{h}小时',
@@ -2155,7 +2161,6 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.korgath_the_bound.name': '被缚者科加斯',
   'entities.mobs.grand_necromancer_velkhar.name': '大死灵法师维尔卡',
   'entities.mobs.korzul_the_gravewyrm.name': '墓龙科祖尔',
-  'entities.mobs.elder_bristleback.name': '年长硬鬃',
   'entities.mobs.ironvein_foreman.name': '铁脉工头',
   'entities.mobs.ironvein_sapper.name': '铁脉爆破手',
   'entities.mobs.marrowlord_varkas.name': '髓王瓦尔卡斯',
@@ -2164,8 +2169,6 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.mogger.name': '莫格',
   'entities.mobs.mogger_lackey.name': '莫格的爪牙',
   'entities.mobs.nhalia_mourner.name': '娜莉娅哀悼者',
-  'entities.mobs.sableweb_hatchling.name': '黑网幼蛛',
-  'entities.mobs.sableweb_matriarch.name': '黑网主母',
   'entities.mobs.sister_nhalia.name': '娜莉娅修女',
   'entities.mobs.varkas_boneguard.name': '瓦尔卡斯骨卫',
   'entities.mobs.imp.name': '小鬼',
@@ -2885,17 +2888,6 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'hud.core.chatChannels.sendingTo': '发送至{channel}',
   'hud.options.npcVoices': 'NPC语音',
   'hud.options.voiceVolume': '语音音量',
-  'entities.mobs.bramble_lynx.name': '棘丛猞猁',
-  'entities.mobs.brightwood_hare.name': '明木野兔',
-  'entities.mobs.brightwood_monarch.name': '明木君主',
-  'entities.mobs.brightwood_stag.name': '明木雄鹿',
-  'entities.mobs.dawnmane_doe.name': '晨鬃母鹿',
-  'entities.mobs.glade_fox.name': '林地狐狸',
-  'entities.mobs.grovetusk_boar.name': '林牙野猪',
-  'entities.mobs.meadow_crane.name': '草甸仙鹤',
-  'entities.mobs.spotted_fawn.name': '斑点幼鹿',
-  'entities.mobs.sunhide_bear.name': '阳皮熊',
-  'entities.mobs.thornpelt_badger.name': '棘毛獾',
   'entities.zones.eastbrook_vale.pois.8.label': '明木林地',
   'fiesta.augment.aug_apex_predator.desc': '+40%物理伤害，+15%暴击，并将造成伤害的12%转化为治疗。',
   'fiesta.augment.aug_apex_predator.name': '顶级掠食者',
@@ -3755,8 +3747,6 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.wavesBody':
     '嘉年华的每一回合都会递给你一次全新的选择，随着比赛推进，可选的强化也愈发大胆。你从一波构筑到下一波，每次从寥寥几个选项中挑选其一，并在余下的对局中一直保留它。',
   'guide.arenaPage.wavesTitle': '增幅分波登场',
-  'guide.bestiary.flavor.brightwood_stag':
-    '一头骄傲的林地雄鹿，会低下顶着鹿角的头颅猛冲向前，被逼得越久就越发难缠。',
   'guide.bestiary.flavor.gravecaller_cultist':
     '死亡邪教身披长袍的仆从，他们的勾当玷污了从谷地到峰巅的每一处坟墓。他们聚集之处，死者难以安息。',
   'guide.bestiary.flavor.grubjaw':

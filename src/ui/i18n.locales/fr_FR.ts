@@ -14,10 +14,17 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const fr_FR: Partial<Record<TranslationKey, string>> = {
-  'hudChrome.tutorial.moveBodyTouch': "Utilise le joystick de déplacement pour te déplacer et fais glisser l'écran pour regarder autour de toi. Fais quelques pas pour commencer.",
-  'hudChrome.tutorial.talkBodyTouch': 'Tiens-toi près du maréchal Redbrook et touche le bouton Utiliser pour lui parler, puis accepte sa mission.',
-  'hudChrome.tutorial.returnBodyTouch': 'Ta mission est accomplie. Retourne voir le maréchal Redbrook et touche le bouton Utiliser pour la rendre.',
-  'hudChrome.tutorial.doneBodyTouch': 'Tu maîtrises les bases, {name}. Le Val est à toi : touche Plus, puis Journal de quêtes, pour consulter ton journal de quêtes à tout moment. Bonne chasse !',
+  'seo.officialLabel': 'Site officiel de World of ClaudeCraft',
+  'seo.officialBody':
+    'worldofclaudecraft.com est le MMO gratuit officiel sur navigateur du royaume Claudemoon. Jouez en ligne avec un personnage persistant, explorez en solo hors ligne, lisez le wiki et suivez les liens communautaires vérifiés depuis ce site.',
+  'hudChrome.tutorial.moveBodyTouch':
+    "Utilise le joystick de déplacement pour te déplacer et fais glisser l'écran pour regarder autour de toi. Fais quelques pas pour commencer.",
+  'hudChrome.tutorial.talkBodyTouch':
+    'Tiens-toi près du maréchal Redbrook et touche le bouton Utiliser pour lui parler, puis accepte sa mission.',
+  'hudChrome.tutorial.returnBodyTouch':
+    'Ta mission est accomplie. Retourne voir le maréchal Redbrook et touche le bouton Utiliser pour la rendre.',
+  'hudChrome.tutorial.doneBodyTouch':
+    'Tu maîtrises les bases, {name}. Le Val est à toi : touche Plus, puis Journal de quêtes, pour consulter ton journal de quêtes à tout moment. Bonne chasse !',
   'hudChrome.raidLockout.title': 'Verrous de raid',
   'hudChrome.raidLockout.allReady': 'Tous les raids prêts',
   'hudChrome.raidLockout.daysHours': '{d}j {h}h',
@@ -2299,7 +2306,6 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.korgath_the_bound.name': "Korgath l'Enchaîné",
   'entities.mobs.grand_necromancer_velkhar.name': 'Grand nécromancien Velkhar',
   'entities.mobs.korzul_the_gravewyrm.name': 'Korzul le Gravewyrm',
-  'entities.mobs.elder_bristleback.name': 'Ancien Bristleback',
   'entities.mobs.ironvein_foreman.name': 'Contremaître Veinefer',
   'entities.mobs.ironvein_sapper.name': 'Sapeur Veinefer',
   'entities.mobs.marrowlord_varkas.name': 'Seigneur de moelle Varkas',
@@ -2308,8 +2314,6 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.mogger.name': 'Mogger',
   'entities.mobs.mogger_lackey.name': 'Laquais de Mogger',
   'entities.mobs.nhalia_mourner.name': 'Pleureuse de Nhalia',
-  'entities.mobs.sableweb_hatchling.name': 'Jeune Sableweb',
-  'entities.mobs.sableweb_matriarch.name': 'Matriarche Sableweb',
   'entities.mobs.sister_nhalia.name': 'Sœur Nhalia',
   'entities.mobs.varkas_boneguard.name': 'Garde-os de Varkas',
   'entities.mobs.imp.name': 'Diablotin',
@@ -3071,17 +3075,6 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   'hud.core.chatChannels.sendingTo': 'Message vers {channel}',
   'hud.options.npcVoices': 'Voix des PNJ',
   'hud.options.voiceVolume': 'Volume des voix',
-  'entities.mobs.bramble_lynx.name': 'Lynx des ronces',
-  'entities.mobs.brightwood_hare.name': 'Lièvre de Brightwood',
-  'entities.mobs.brightwood_monarch.name': 'Le Monarque de Brightwood',
-  'entities.mobs.brightwood_stag.name': 'Cerf de Brightwood',
-  'entities.mobs.dawnmane_doe.name': 'Biche Crinaube',
-  'entities.mobs.glade_fox.name': 'Renard des clairières',
-  'entities.mobs.grovetusk_boar.name': 'Sanglier Défense-des-bois',
-  'entities.mobs.meadow_crane.name': 'Grue des prés',
-  'entities.mobs.spotted_fawn.name': 'Faon tacheté',
-  'entities.mobs.sunhide_bear.name': 'Ours Peau-de-soleil',
-  'entities.mobs.thornpelt_badger.name': "Blaireau Pelage-d'épines",
   'entities.zones.eastbrook_vale.pois.8.label': 'Clairière de Brightwood',
   'fiesta.augment.aug_apex_predator.desc':
     '+40% de dégâts physiques, +15% de critique, vous soigne de 12% des dégâts infligés.',
@@ -4081,8 +4074,6 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.wavesBody':
     "Chaque manche d'une Fiesta vous offre un nouveau choix, et les choix se font plus audacieux au fil du match. Vous construisez d'une manche à l'autre, en retenant à chaque fois l'une des quelques options proposées et en la gardant pour le reste de la partie.",
   'guide.arenaPage.wavesTitle': 'Les augmentations arrivent par vagues',
-  'guide.bestiary.flavor.brightwood_stag':
-    "Un fier cerf des bosquets qui baisse sa couronne de bois et charge tête baissée, devenant d'autant plus coriace qu'on le presse longtemps.",
   'guide.bestiary.flavor.gravecaller_cultist':
     "Des serviteurs en robe du culte de la mort dont l'œuvre souille les tombes, du Val jusqu'aux sommets. Là où ils se réunissent, les morts ne reposent pas.",
   'guide.bestiary.flavor.grubjaw':

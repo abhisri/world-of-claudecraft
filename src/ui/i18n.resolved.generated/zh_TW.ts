@@ -973,7 +973,6 @@ export const zh_TW: EnTranslations = {
       "notedLabel": "值得一提",
       "flavor": {
         "old_greyjaw": "一頭傷痕累累的老狼，沒有任何陷阱困得住牠，被指控害死了三條獵犬，還咬斷一名馬廄小弟的手臂。牠獨自獵食於深林之中，戰鬥拖得愈久就愈兇殘。",
-        "brightwood_stag": "一頭高傲的林地雄鹿，會低下牠那頂鹿角王冠橫衝直撞，而且被逼得愈久就愈難對付。",
         "grubjaw": "一頭貪婪到連其他巨魔都不願在牠身旁挖掘的沼澤巨魔，據說曾把一名商人最後兩頭馱騾連同挽具一併吞下肚。",
         "shardlord_kazzix": "一具長出了肩膀的風暴元素，行走在風暴岩之上的遠處峭壁間，身上的心核碎片值得人冒著雷電去搶。",
         "mirejaw_frenzy": "一隻沼澤魚人，會在戰鬥中把自己鞭策成一陣亂揮亂打的狂亂，是一群喧鬧又護地的同類中嗓門最大的那個。",
@@ -1883,7 +1882,9 @@ export const zh_TW: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "多人遊戲",
     "applicationCategory": "遊戲",
-    "operatingSystem": "網頁瀏覽器"
+    "operatingSystem": "網頁瀏覽器",
+    "officialLabel": "World of ClaudeCraft 官方網站",
+    "officialBody": "worldofclaudecraft.com 是 Claudemoon 伺服器的官方免費瀏覽器 MMO。你可以用持久角色線上遊玩，也可以離線單人探索、閱讀 wiki，並從本站前往已驗證的社群連結。"
   },
   "a11y": {
     "goHome": "前往首頁",
@@ -4739,42 +4740,6 @@ export const zh_TW: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "尼思拉克西斯，荊峰之災"
       },
-      "brightwood_hare": {
-        "name": "明木野兔"
-      },
-      "glade_fox": {
-        "name": "林間狐狸"
-      },
-      "spotted_fawn": {
-        "name": "斑點幼鹿"
-      },
-      "meadow_crane": {
-        "name": "草甸鶴"
-      },
-      "thornpelt_badger": {
-        "name": "棘毛獾"
-      },
-      "dawnmane_doe": {
-        "name": "曦鬃母鹿"
-      },
-      "bramble_lynx": {
-        "name": "棘叢猞猁"
-      },
-      "brightwood_stag": {
-        "name": "明木雄鹿"
-      },
-      "grovetusk_boar": {
-        "name": "林牙野豬"
-      },
-      "sunhide_bear": {
-        "name": "陽皮熊"
-      },
-      "brightwood_monarch": {
-        "name": "明木君主"
-      },
-      "elder_bristleback": {
-        "name": "年長硬鬃"
-      },
       "ironvein_foreman": {
         "name": "鐵脈工頭"
       },
@@ -4798,12 +4763,6 @@ export const zh_TW: EnTranslations = {
       },
       "nhalia_mourner": {
         "name": "娜莉亞哀悼者"
-      },
-      "sableweb_hatchling": {
-        "name": "黑網幼蛛"
-      },
-      "sableweb_matriarch": {
-        "name": "黑網主母"
       },
       "sister_nhalia": {
         "name": "娜莉亞修女"

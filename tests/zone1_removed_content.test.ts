@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { ITEMS, NPCS, QUEST_ORDER, QUESTS } from '../src/sim/data';
+import { CAMPS, ITEMS, MOBS, NPCS, QUEST_ORDER, QUESTS } from '../src/sim/data';
 import {
+  REMOVED_ZONE1_MOB_IDS,
   REMOVED_ZONE1_OBJECTIVE_ITEM_IDS,
   REMOVED_ZONE1_QUEST_IDS,
   RETIRED_ZONE1_ITEM_IDS,
@@ -47,6 +48,16 @@ describe('removed Eastbrook Vale quest content', () => {
     }
     for (const itemId of REMOVED_ZONE1_OBJECTIVE_ITEM_IDS) {
       expect(ITEMS[itemId], itemId).toBeUndefined();
+    }
+  });
+
+  it('removes orphaned mobs and prevents them from spawning in live camps', () => {
+    for (const mobId of REMOVED_ZONE1_MOB_IDS) {
+      expect(MOBS[mobId], mobId).toBeUndefined();
+      expect(
+        CAMPS.some((camp) => camp.mobId === mobId),
+        mobId,
+      ).toBe(false);
     }
   });
 

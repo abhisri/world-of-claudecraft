@@ -21,6 +21,23 @@ export const RETIRED_ZONE1_ITEM_IDS = ['bramblehide_jerkin', 'monarch_crown_helm
 
 export const REMOVED_ZONE1_OBJECTIVE_ITEM_IDS = ['glade_pelt', 'monarch_heart'] as const;
 
+export const REMOVED_ZONE1_MOB_IDS = [
+  'elder_bristleback',
+  'sableweb_matriarch',
+  'sableweb_hatchling',
+  'brightwood_hare',
+  'glade_fox',
+  'spotted_fawn',
+  'meadow_crane',
+  'thornpelt_badger',
+  'dawnmane_doe',
+  'bramble_lynx',
+  'brightwood_stag',
+  'grovetusk_boar',
+  'sunhide_bear',
+  'brightwood_monarch',
+] as const;
+
 const REMOVED_QUESTS: ReadonlySet<string> = new Set(REMOVED_ZONE1_QUEST_IDS);
 const REMOVED_OBJECTIVE_ITEMS: ReadonlySet<string> = new Set(REMOVED_ZONE1_OBJECTIVE_ITEM_IDS);
 

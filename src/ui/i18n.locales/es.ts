@@ -14,10 +14,17 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const es: Partial<Record<TranslationKey, string>> = {
-  'hudChrome.tutorial.moveBodyTouch': 'Usa el joystick de movimiento para moverte y arrastra la pantalla para mirar alrededor. Da unos pasos para empezar.',
-  'hudChrome.tutorial.talkBodyTouch': 'Acércate al mariscal Redbrook y toca el botón Usar para hablar; luego acepta su tarea.',
-  'hudChrome.tutorial.returnBodyTouch': 'Tu tarea está hecha. Vuelve con el mariscal Redbrook y toca el botón Usar para entregarla.',
-  'hudChrome.tutorial.doneBodyTouch': 'Ya dominas lo básico, {name}. El Valle es tuyo para explorar: toca Más y luego Diario de misiones para revisar tu diario de misiones en cualquier momento. ¡Buena caza!',
+  'seo.officialLabel': 'Sitio web oficial de World of ClaudeCraft',
+  'seo.officialBody':
+    'worldofclaudecraft.com es el MMO de navegador gratuito oficial del reino Claudemoon. Juega en línea con un personaje persistente, explora en solitario sin conexión, lee la wiki y sigue los enlaces comunitarios verificados desde este sitio.',
+  'hudChrome.tutorial.moveBodyTouch':
+    'Usa el joystick de movimiento para moverte y arrastra la pantalla para mirar alrededor. Da unos pasos para empezar.',
+  'hudChrome.tutorial.talkBodyTouch':
+    'Acércate al mariscal Redbrook y toca el botón Usar para hablar; luego acepta su tarea.',
+  'hudChrome.tutorial.returnBodyTouch':
+    'Tu tarea está hecha. Vuelve con el mariscal Redbrook y toca el botón Usar para entregarla.',
+  'hudChrome.tutorial.doneBodyTouch':
+    'Ya dominas lo básico, {name}. El Valle es tuyo para explorar: toca Más y luego Diario de misiones para revisar tu diario de misiones en cualquier momento. ¡Buena caza!',
   'hudChrome.raidLockout.title': 'Bloqueos de banda',
   'hudChrome.raidLockout.allReady': 'Todas las bandas listas',
   'hudChrome.raidLockout.daysHours': '{d}d {h}h',
@@ -2286,7 +2293,6 @@ export const es: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.korgath_the_bound.name': 'Korgath el Encadenado',
   'entities.mobs.grand_necromancer_velkhar.name': 'Gran nigromante Velkhar',
   'entities.mobs.korzul_the_gravewyrm.name': 'Korzul el Gravewyrm',
-  'entities.mobs.elder_bristleback.name': 'Viejo Bristleback',
   'entities.mobs.ironvein_foreman.name': 'Capataz Vena de Hierro',
   'entities.mobs.ironvein_sapper.name': 'Zapador Vena de Hierro',
   'entities.mobs.marrowlord_varkas.name': 'Señor de Médula Varkas',
@@ -2295,8 +2301,6 @@ export const es: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.mogger.name': 'Mogger',
   'entities.mobs.mogger_lackey.name': 'Esbirro de Mogger',
   'entities.mobs.nhalia_mourner.name': 'Doliente de Nhalia',
-  'entities.mobs.sableweb_hatchling.name': 'Cría Sableweb',
-  'entities.mobs.sableweb_matriarch.name': 'Matriarca Sableweb',
   'entities.mobs.sister_nhalia.name': 'Hermana Nhalia',
   'entities.mobs.varkas_boneguard.name': 'Guardahuesos de Varkas',
   'entities.mobs.imp.name': 'Diablillo',
@@ -3058,17 +3062,6 @@ export const es: Partial<Record<TranslationKey, string>> = {
   'hud.core.chatChannels.sendingTo': 'Mensaje a {channel}',
   'hud.options.npcVoices': 'Voces de PNJ',
   'hud.options.voiceVolume': 'Volumen de voces',
-  'entities.mobs.bramble_lynx.name': 'Lince de zarzal',
-  'entities.mobs.brightwood_hare.name': 'Liebre de Brightwood',
-  'entities.mobs.brightwood_monarch.name': 'El Monarca de Brightwood',
-  'entities.mobs.brightwood_stag.name': 'Ciervo de Brightwood',
-  'entities.mobs.dawnmane_doe.name': 'Cierva crinalba',
-  'entities.mobs.glade_fox.name': 'Zorro del claro',
-  'entities.mobs.grovetusk_boar.name': 'Jabalí colmillarbóreo',
-  'entities.mobs.meadow_crane.name': 'Grulla de la pradera',
-  'entities.mobs.spotted_fawn.name': 'Cervatillo moteado',
-  'entities.mobs.sunhide_bear.name': 'Oso pielsolar',
-  'entities.mobs.thornpelt_badger.name': 'Tejón pielespina',
   'entities.zones.eastbrook_vale.pois.8.label': 'Claro de Brightwood',
   'fiesta.augment.aug_apex_predator.desc':
     '+40% de daño físico, +15% de crítico, sánate por el 12% del daño infligido.',
@@ -4057,8 +4050,6 @@ export const es: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.wavesBody':
     'Cada ronda de una Fiesta te ofrece una elección nueva, y las opciones se vuelven más audaces conforme avanza la partida. Construyes de una oleada a la siguiente, eligiendo una de unas pocas opciones cada vez y conservándola durante el resto del combate.',
   'guide.arenaPage.wavesTitle': 'Las mejoras llegan en oleadas',
-  'guide.bestiary.flavor.brightwood_stag':
-    'Un orgulloso ciervo de la arboleda que baja su corona de astas y embiste hacia delante, volviéndose más temible cuanto más se le presiona.',
   'guide.bestiary.flavor.gravecaller_cultist':
     'Sirvientes encapuchados del culto de la muerte cuya obra mancilla las tumbas desde el Valle hasta los picos. Donde se reúnen, los muertos no descansan.',
   'guide.bestiary.flavor.grubjaw':

@@ -23,7 +23,6 @@ import {
   zh_CN,
   zh_TW,
 } from '../src/ui/i18n';
-import { pending } from '../src/ui/i18n.resolved.generated';
 
 // Whole-catalog i18n completeness guards that the per-key sample tests in
 // localization_coverage.test.ts do not cover: full interpolation-token parity
@@ -151,14 +150,8 @@ describe('i18n whole-catalog completeness', () => {
     const leaks: string[] = [];
     for (const lang of nonLatin) {
       const flat = flatten(TABLES[lang]);
-      const pendingKeys = new Set(pending[lang] ?? []);
       for (const [key, enValue] of Object.entries(enFlat)) {
-        if (
-          wordy(enValue) &&
-          flat[key] === enValue &&
-          !BRAND_ALLOW.has(key) &&
-          !pendingKeys.has(key)
-        ) {
+        if (wordy(enValue) && flat[key] === enValue && !BRAND_ALLOW.has(key)) {
           leaks.push(`${lang} ${key}: "${enValue}"`);
         }
       }

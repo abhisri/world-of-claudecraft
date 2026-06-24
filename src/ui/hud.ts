@@ -217,8 +217,6 @@ import {
   minimapZoomValue,
   nextMinimapZoom,
 } from './minimap_zoom';
-import { lockoutParts, lockoutShape } from './raid_lockout';
-import { raidLockoutPanelHtml, type RaidLockoutI18n } from './raid_lockout_view';
 import {
   type PerfOverlayHooks,
   PerfOverlaySettingsPanel,
@@ -244,6 +242,8 @@ import { chatPlayerContextActions } from './player_context_menu';
 import { hydratePortraits, portraitChipHtml } from './portrait_chip';
 import { maskProfanity } from './profanity';
 import { type QuestTrackerView, questTrackerView, type TrackedQuest } from './quest_tracker';
+import { lockoutParts, lockoutShape } from './raid_lockout';
+import { type RaidLockoutI18n, raidLockoutPanelHtml } from './raid_lockout_view';
 import { restView } from './rest_indicator';
 import { localizeServerText, localizeZone } from './server_i18n';
 import { localizeSimAuraName, localizeSimText } from './sim_i18n';
@@ -3917,10 +3917,14 @@ export class Hud {
     const { days, hours, minutes } = lockoutParts(ms);
     const n = (v: number) => formatNumber(v, { maximumFractionDigits: 0, useGrouping: false });
     switch (lockoutShape(ms)) {
-      case 'daysHours': return t('hudChrome.raidLockout.daysHours', { d: n(days), h: n(hours) });
-      case 'hoursMinutes': return t('hudChrome.raidLockout.hoursMinutes', { h: n(hours), m: n(minutes) });
-      case 'minutes': return t('hudChrome.raidLockout.minutes', { m: n(minutes) });
-      default: return t('hudChrome.raidLockout.lessThanMinute');
+      case 'daysHours':
+        return t('hudChrome.raidLockout.daysHours', { d: n(days), h: n(hours) });
+      case 'hoursMinutes':
+        return t('hudChrome.raidLockout.hoursMinutes', { h: n(hours), m: n(minutes) });
+      case 'minutes':
+        return t('hudChrome.raidLockout.minutes', { m: n(minutes) });
+      default:
+        return t('hudChrome.raidLockout.lessThanMinute');
     }
   }
 
@@ -10998,7 +11002,7 @@ export class Hud {
     // (<= one party's worth) back into a normal party. Larger raids must shed members first.
     const canUnconvert = leader && party.members.length <= 5;
     const footer = canUnconvert
-      ? `<div class="soc-empty soc-empty-action"><button type="button" class="soc-x" data-act="convert-party">${esc(t('hud.chat.context.convertToParty'))}</button></div>`
+      ? `<div class="soc-empty-action"><button type="button" class="soc-x" data-act="convert-party">${esc(t('hud.chat.context.convertToParty'))}</button></div>`
       : '';
     return `<div class="raid-groups">${groupHtml(1)}${groupHtml(2)}</div>${footer}`;
   }

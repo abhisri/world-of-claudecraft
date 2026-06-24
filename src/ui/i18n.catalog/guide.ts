@@ -516,8 +516,6 @@ export const guideStrings = {
     flavor: {
       old_greyjaw:
         "A scarred old wolf no trap has held, blamed for three hounds and a stable boy's arm. He hunts the deep woods alone, and turns savage the longer a fight wears on.",
-      brightwood_stag:
-        'A proud grove deer that lowers its crown of antlers and bulls forward, growing harder to face the longer it is pressed.',
       grubjaw:
         "A fen troll so greedy the other trolls will not dig beside him, said to have eaten a trader's last two pack-mules, harness and all.",
       shardlord_kazzix:

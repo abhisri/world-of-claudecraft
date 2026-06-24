@@ -973,7 +973,6 @@ export const pt_BR: EnTranslations = {
       "notedLabel": "Digno de nota",
       "flavor": {
         "old_greyjaw": "Um velho lobo marcado por cicatrizes que armadilha alguma jamais prendeu, culpado por três cães e o braço de um cavalariço. Ele caça sozinho nas matas profundas e fica mais selvagem quanto mais a luta se arrasta.",
-        "brightwood_stag": "Um orgulhoso cervo do bosque que baixa sua coroa de chifres e avança como um touro, ficando mais difícil de enfrentar quanto mais é pressionado.",
         "grubjaw": "Um troll do brejo tão ganancioso que os outros trolls não cavam ao seu lado, dizem que comeu as duas últimas mulas de carga de um mercador, arreios e tudo.",
         "shardlord_kazzix": "Um elemental de tempestade ganhando ombros, caminhando pelos despenhadeiros distantes acima de Stormcrag com um fragmento-coração que vale enfrentar os raios.",
         "mirejaw_frenzy": "Um murloc do pântano que se lança num frenesi furioso no meio da luta, a coisa mais barulhenta de um bando barulhento e territorial.",
@@ -1883,7 +1882,9 @@ export const pt_BR: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "Multijogador",
     "applicationCategory": "Jogo",
-    "operatingSystem": "Navegador web"
+    "operatingSystem": "Navegador web",
+    "officialLabel": "Site oficial de World of ClaudeCraft",
+    "officialBody": "worldofclaudecraft.com é o MMO de navegador gratuito oficial do reino Claudemoon. Jogue online com um personagem persistente, explore solo offline, leia a wiki e siga os links verificados da comunidade a partir deste site."
   },
   "a11y": {
     "goHome": "Ir para a página inicial",
@@ -4739,42 +4740,6 @@ export const pt_BR: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "Nythraxis, Flagelo de Thornpeak"
       },
-      "brightwood_hare": {
-        "name": "Lebre de Brightwood"
-      },
-      "glade_fox": {
-        "name": "Raposa da Clareira"
-      },
-      "spotted_fawn": {
-        "name": "Cervato Malhado"
-      },
-      "meadow_crane": {
-        "name": "Garça do Prado"
-      },
-      "thornpelt_badger": {
-        "name": "Texugo Pelo-de-espinho"
-      },
-      "dawnmane_doe": {
-        "name": "Corça Crina-da-aurora"
-      },
-      "bramble_lynx": {
-        "name": "Lince das Sarças"
-      },
-      "brightwood_stag": {
-        "name": "Cervo de Brightwood"
-      },
-      "grovetusk_boar": {
-        "name": "Javali Presa-do-bosque"
-      },
-      "sunhide_bear": {
-        "name": "Urso Pelo-do-sol"
-      },
-      "brightwood_monarch": {
-        "name": "O Monarca de Brightwood"
-      },
-      "elder_bristleback": {
-        "name": "Bristleback ancião"
-      },
       "ironvein_foreman": {
         "name": "Capataz Veio de Ferro"
       },
@@ -4798,12 +4763,6 @@ export const pt_BR: EnTranslations = {
       },
       "nhalia_mourner": {
         "name": "Pranteadora de Nhalia"
-      },
-      "sableweb_hatchling": {
-        "name": "Filhote Sableweb"
-      },
-      "sableweb_matriarch": {
-        "name": "Matriarca Sableweb"
       },
       "sister_nhalia": {
         "name": "Irmã Nhalia"

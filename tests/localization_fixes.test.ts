@@ -338,7 +338,7 @@ describe('H1b: talent names are unique within a class tree', () => {
         if (!perClass.has(cls)) perClass.set(cls, new Map());
         const m = perClass.get(cls)!;
         if (!m.has(rendered)) m.set(rendered, new Set());
-        m.get(rendered)!.add(e.source);
+        m.get(rendered)?.add(e.source);
       }
       for (const [cls, m] of perClass) {
         for (const [rendered, sources] of m) {
@@ -369,12 +369,12 @@ describe('M1b: /who status flags localize within the row', () => {
         expect(out, `${lang}: "(${flag})" row not recognized`).not.toBeNull();
         const localized = tServer(key);
         expect(
-          out!.includes(`(${localized})`),
+          out?.includes(`(${localized})`),
           `${lang}: ${flag} -> expected "(${localized})" in "${out}"`,
         ).toBe(true);
         if (localized !== flag) {
           expect(
-            out!.includes(`(${flag})`),
+            out?.includes(`(${flag})`),
             `${lang}: English "(${flag})" leaked in "${out}"`,
           ).toBe(false);
         }
@@ -669,16 +669,6 @@ describe('A1: admin classLabel localizes the raw class id', () => {
 });
 
 type Cand = { type: 'log' | 'error' | 'loot'; tmpl: string };
-function execAll(re: RegExp, input: string): RegExpExecArray[] {
-  const matches: RegExpExecArray[] = [];
-  let match = re.exec(input);
-  while (match) {
-    matches.push(match);
-    match = re.exec(input);
-  }
-  return matches;
-}
-
 // The S3 drift-guard scanner, lifted to module scope so the hardened emit-form
 // regexes can be exercised against SYNTHETIC source (see "S3 scanner regression"
 // below) and cannot silently regress. Pure function of its two source-string
@@ -693,55 +683,55 @@ function scanEmitCandidates(simSrc: string, serverSrc: string): Cand[] {
   const unq = (s: string) => s.slice(1, -1);
   // --- src/sim/sim.ts emits ---
   const e1 = new RegExp(`emit\\(\\{[^}]*?type:\\s*'(log|loot)'[^}]*?text:\\s*${lit}`, 'gs');
-  for (const m of execAll(e1, simSrc)) cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[2]) });
+  for (const m of simSrc.matchAll(e1)) cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[2]) });
   const e2 = new RegExp(`emit\\(\\{[^}]*?text:\\s*${lit}[^}]*?type:\\s*'(log|loot)'`, 'gs');
-  for (const m of execAll(e2, simSrc)) cands.push({ type: m[2] as Cand['type'], tmpl: unq(m[1]) });
+  for (const m of simSrc.matchAll(e2)) cands.push({ type: m[2] as Cand['type'], tmpl: unq(m[1]) });
   // Ternary `text:` emits (both branches) — previously a blind spot.
   const e3 = new RegExp(
     `emit\\(\\{[^}]*?type:\\s*'(log|loot)'[^}]*?text:\\s*${cond}\\?\\s*${lit}\\s*:\\s*${lit}`,
     'gs',
   );
-  for (const m of execAll(e3, simSrc)) {
+  for (const m of simSrc.matchAll(e3)) {
     cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[2]) });
     cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[3]) });
   }
   const er = new RegExp(`this\\.error\\([^,]+,\\s*${lit}\\s*\\)`, 'g');
-  for (const m of execAll(er, simSrc)) cands.push({ type: 'error', tmpl: unq(m[1]) });
+  for (const m of simSrc.matchAll(er)) cands.push({ type: 'error', tmpl: unq(m[1]) });
   // Variable-routed sim emits: this.notice(pid, '<lit>') (emits 'log') and
   // this.stopFollow(p, '<lit>') (arg2 routes through this.error) — blind spots.
   // The first-arg class excludes ),(,newline so a single-arg call (e.g.
   // `this.stopFollow(p);`) cannot span into the NEXT call's literal.
   const nr = new RegExp(`this\\.(?:notice|stopFollow)\\([^,()\\n]+,\\s*${lit}`, 'g');
-  for (const m of execAll(nr, simSrc)) cands.push({ type: 'log', tmpl: unq(m[1]) });
+  for (const m of simSrc.matchAll(nr)) cands.push({ type: 'log', tmpl: unq(m[1]) });
   // Ternary args to error/notice/stopFollow (both branches).
   const ert = new RegExp(
     `this\\.(?:error|notice|stopFollow)\\([^,()\\n]+,\\s*${cond}\\?\\s*${lit}\\s*:\\s*${lit}`,
     'g',
   );
-  for (const m of execAll(ert, simSrc)) {
+  for (const m of simSrc.matchAll(ert)) {
     cands.push({ type: 'error', tmpl: unq(m[1]) });
     cands.push({ type: 'error', tmpl: unq(m[2]) });
   }
   const rr = new RegExp(`return\\s+${lit};`, 'g');
-  for (const m of execAll(rr, simSrc)) {
+  for (const m of simSrc.matchAll(rr)) {
     const t = unq(m[1]);
     if (/^[A-Z].* .*[.!?]$/.test(t) || /^[A-Z].*\$\{/.test(t))
       cands.push({ type: 'error', tmpl: t });
   }
   // --- server/game.ts player-facing emits (recognized via localizeServerText) ---
   const s1 = new RegExp(`type:\\s*'(log|error|loot)',\\s*text:\\s*${lit}`, 'g');
-  for (const m of execAll(s1, serverSrc))
+  for (const m of serverSrc.matchAll(s1))
     cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[2]) });
   const s1t = new RegExp(
     `type:\\s*'(log|error|loot)',\\s*text:\\s*${cond}\\?\\s*${lit}\\s*:\\s*${lit}`,
     'g',
   );
-  for (const m of execAll(s1t, serverSrc)) {
+  for (const m of serverSrc.matchAll(s1t)) {
     cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[2]) });
     cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[3]) });
   }
   const s2 = new RegExp(`sendChatNotice\\([^,]+,\\s*${lit}`, 'g');
-  for (const m of execAll(s2, serverSrc)) cands.push({ type: 'error', tmpl: unq(m[1]) });
+  for (const m of serverSrc.matchAll(s2)) cands.push({ type: 'error', tmpl: unq(m[1]) });
   const seen = new Set<string>();
   return cands.filter((c) => {
     const k = `${c.type} ${c.tmpl}`;
@@ -783,8 +773,8 @@ describe('S3: every sim.ts emit is recognized (drift guard)', () => {
   };
   const armRegexes = (body: string): RegExp[] => {
     const out: RegExp[] = [];
-    const re = /\/((?:\\.|[^/\\\n])+)\/([gimsuy]*)\.exec\(\s*text\s*,?\s*\)/g;
-    for (const m of execAll(re, body)) {
+    const re = /\/((?:\\.|[^/\\\n])+)\/([gimsuy]*)\.exec\(text\)/g;
+    for (const m of body.matchAll(re)) {
       try {
         out.push(new RegExp(m[1], m[2].replace('g', '')));
       } catch {
@@ -796,7 +786,7 @@ describe('S3: every sim.ts emit is recognized (drift guard)', () => {
   const armExactKeys = (body: string): Set<string> => {
     const keys = new Set<string>();
     const re = /(?:^|\n)\s*('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")\s*:/g;
-    for (const m of execAll(re, body)) {
+    for (const m of body.matchAll(re)) {
       try {
         keys.add(
           JSON.parse(
@@ -830,16 +820,7 @@ describe('S3: every sim.ts emit is recognized (drift guard)', () => {
     if (/money|copper|formatMoney|payout|proceeds|price|ask|sellValue/i.test(expr)) return '5s';
     return 'Aki';
   };
-  const concrete = (tmpl: string): string => {
-    const s = tmpl.replace(/\$\{([^}]*)\}/g, (_m, e) => sub(e)).replace(/\$\{[^}]*\?\s*$/, '');
-    if (/^You receive: .+[^.!?]$/.test(s)) return `${s}.`;
-    if (/^Discarded .+[^.!?]$/.test(s)) return `${s}.`;
-    if (/^Sold .+[^.!?]$/.test(s)) return `${s} for 5s.`;
-    if (/^Listed .+[^.!?]$/.test(s)) return `${s} on the World Market for 5s.`;
-    if (/^Bought .+[^.!?]$/.test(s)) return `${s} for 5s.`;
-    if (/^Reclaimed .+[^.!?]$/.test(s)) return `${s} from the market.`;
-    return s;
-  };
+  const concrete = (tmpl: string): string => tmpl.replace(/\$\{([^}]*)\}/g, (_m, e) => sub(e));
 
   // `${verb}` holds a whole clause (leaves/has left/has been removed from the party),
   // each concrete form covered by a sim_i18n RULE — not representable by one substitution.

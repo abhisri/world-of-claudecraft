@@ -1333,15 +1333,6 @@ export const GUIDE_FAMILIES: GuideFamily[] = [
     "family": "beast",
     "creatures": [
       {
-        "name": "Brightwood Hare",
-        "min": 1,
-        "max": 2,
-        "rare": false,
-        "templateId": "brightwood_hare",
-        "model": "mob_wolf",
-        "tint": "#c8a972"
-      },
-      {
         "name": "Forest Wolf",
         "min": 1,
         "max": 2,
@@ -1349,24 +1340,6 @@ export const GUIDE_FAMILIES: GuideFamily[] = [
         "templateId": "forest_wolf",
         "model": "mob_wolf",
         "tint": "#7f8c8d"
-      },
-      {
-        "name": "Glade Fox",
-        "min": 2,
-        "max": 3,
-        "rare": false,
-        "templateId": "glade_fox",
-        "model": "mob_wolf",
-        "tint": "#d2691e"
-      },
-      {
-        "name": "Spotted Fawn",
-        "min": 2,
-        "max": 3,
-        "rare": false,
-        "templateId": "spotted_fawn",
-        "model": "mob_wolf",
-        "tint": "#b5895f"
       },
       {
         "name": "Wild Boar",
@@ -1378,51 +1351,6 @@ export const GUIDE_FAMILIES: GuideFamily[] = [
         "tint": "#935116"
       },
       {
-        "name": "Dawnmane Doe",
-        "min": 3,
-        "max": 4,
-        "rare": false,
-        "templateId": "dawnmane_doe",
-        "model": "mob_wolf",
-        "tint": "#a9763f"
-      },
-      {
-        "name": "Meadow Crane",
-        "min": 3,
-        "max": 4,
-        "rare": false,
-        "templateId": "meadow_crane",
-        "model": "mob_wolf",
-        "tint": "#eaeaea"
-      },
-      {
-        "name": "Thornpelt Badger",
-        "min": 3,
-        "max": 4,
-        "rare": false,
-        "templateId": "thornpelt_badger",
-        "model": "mob_wolf",
-        "tint": "#5d5d5d"
-      },
-      {
-        "name": "Bramble Lynx",
-        "min": 4,
-        "max": 5,
-        "rare": false,
-        "templateId": "bramble_lynx",
-        "model": "mob_wolf",
-        "tint": "#8a6d3b"
-      },
-      {
-        "name": "Brightwood Stag",
-        "min": 4,
-        "max": 5,
-        "rare": false,
-        "templateId": "brightwood_stag",
-        "model": "mob_wolf",
-        "tint": "#946638"
-      },
-      {
         "name": "Old Greyjaw",
         "min": 4,
         "max": 4,
@@ -1430,24 +1358,6 @@ export const GUIDE_FAMILIES: GuideFamily[] = [
         "templateId": "old_greyjaw",
         "model": "mob_wolf",
         "tint": "#566061"
-      },
-      {
-        "name": "Grovetusk Boar",
-        "min": 5,
-        "max": 6,
-        "rare": false,
-        "templateId": "grovetusk_boar",
-        "model": "mob_wolf",
-        "tint": "#6b4423"
-      },
-      {
-        "name": "Sunhide Bear",
-        "min": 5,
-        "max": 6,
-        "rare": false,
-        "templateId": "sunhide_bear",
-        "model": "mob_wolf",
-        "tint": "#c99a4b"
       },
       {
         "name": "Mire Prowler",
@@ -1489,15 +1399,6 @@ export const GUIDE_FAMILIES: GuideFamily[] = [
         "templateId": "webwood_spider",
         "model": "mob_spider",
         "tint": "#4a235a"
-      },
-      {
-        "name": "Sableweb Hatchling",
-        "min": 5,
-        "max": 5,
-        "rare": false,
-        "templateId": "sableweb_hatchling",
-        "model": "mob_spider",
-        "tint": "#21112d"
       },
       {
         "name": "Mirefen Widow",

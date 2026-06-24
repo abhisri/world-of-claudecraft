@@ -14,10 +14,17 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const ru_RU: Partial<Record<TranslationKey, string>> = {
-  'hudChrome.tutorial.moveBodyTouch': 'Используйте джойстик передвижения, чтобы двигаться, и проведите по экрану, чтобы осмотреться. Сделайте несколько шагов, чтобы начать.',
-  'hudChrome.tutorial.talkBodyTouch': 'Подойдите к маршалу Редбруку и нажмите кнопку «Использовать», чтобы заговорить, затем примите его задание.',
-  'hudChrome.tutorial.returnBodyTouch': 'Задание выполнено. Вернитесь к маршалу Редбруку и нажмите кнопку «Использовать», чтобы сдать его.',
-  'hudChrome.tutorial.doneBodyTouch': 'Основы освоены, {name}. Долина в вашем распоряжении: исследуйте её. Нажмите «Еще», затем «Журнал заданий», чтобы просмотреть свои задания в любой момент. Удачной охоты!',
+  'seo.officialLabel': 'Официальный сайт World of ClaudeCraft',
+  'seo.officialBody':
+    'worldofclaudecraft.com - официальная бесплатная браузерная MMO для мира Claudemoon. Играйте онлайн с постоянным персонажем, исследуйте мир в одиночку офлайн, читайте wiki и переходите по проверенным ссылкам сообщества с этого сайта.',
+  'hudChrome.tutorial.moveBodyTouch':
+    'Используйте джойстик передвижения, чтобы двигаться, и проведите по экрану, чтобы осмотреться. Сделайте несколько шагов, чтобы начать.',
+  'hudChrome.tutorial.talkBodyTouch':
+    'Подойдите к маршалу Редбруку и нажмите кнопку «Использовать», чтобы заговорить, затем примите его задание.',
+  'hudChrome.tutorial.returnBodyTouch':
+    'Задание выполнено. Вернитесь к маршалу Редбруку и нажмите кнопку «Использовать», чтобы сдать его.',
+  'hudChrome.tutorial.doneBodyTouch':
+    'Основы освоены, {name}. Долина в вашем распоряжении: исследуйте её. Нажмите «Еще», затем «Журнал заданий», чтобы просмотреть свои задания в любой момент. Удачной охоты!',
   'hudChrome.raidLockout.title': 'Блокировки рейдов',
   'hudChrome.raidLockout.allReady': 'Все рейды доступны',
   'hudChrome.raidLockout.daysHours': '{d}д {h}ч',
@@ -2283,7 +2290,6 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.korgath_the_bound.name': 'Коргат Связанный',
   'entities.mobs.grand_necromancer_velkhar.name': 'Верховный некромант Велхар',
   'entities.mobs.korzul_the_gravewyrm.name': 'Корзул Могильный Вирм',
-  'entities.mobs.elder_bristleback.name': 'Старый Щетиноспин',
   'entities.mobs.ironvein_foreman.name': 'Прораб Железной жилы',
   'entities.mobs.ironvein_sapper.name': 'Сапер Железной жилы',
   'entities.mobs.marrowlord_varkas.name': 'Владыка костного мозга Варкас',
@@ -2292,8 +2298,6 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.mogger.name': 'Моггер',
   'entities.mobs.mogger_lackey.name': 'Приспешник Моггера',
   'entities.mobs.nhalia_mourner.name': 'Плакальщица Налии',
-  'entities.mobs.sableweb_hatchling.name': 'Детеныш Сейблвеб',
-  'entities.mobs.sableweb_matriarch.name': 'Матриарх Сейблвеб',
   'entities.mobs.sister_nhalia.name': 'Сестра Налия',
   'entities.mobs.varkas_boneguard.name': 'Костяной страж Варкаса',
   'entities.mobs.imp.name': 'Бес',
@@ -3049,17 +3053,6 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hud.core.chatChannels.sendingTo': 'Сообщение в {channel}',
   'hud.options.npcVoices': 'Голоса НИП',
   'hud.options.voiceVolume': 'Громкость голоса',
-  'entities.mobs.bramble_lynx.name': 'Терновая рысь',
-  'entities.mobs.brightwood_hare.name': 'Заяц Брайтвуда',
-  'entities.mobs.brightwood_monarch.name': 'Монарх Брайтвуда',
-  'entities.mobs.brightwood_stag.name': 'Олень Брайтвуда',
-  'entities.mobs.dawnmane_doe.name': 'Зарегривая лань',
-  'entities.mobs.glade_fox.name': 'Лисица поляны',
-  'entities.mobs.grovetusk_boar.name': 'Рощеклыкий кабан',
-  'entities.mobs.meadow_crane.name': 'Луговой журавль',
-  'entities.mobs.spotted_fawn.name': 'Пятнистый оленёнок',
-  'entities.mobs.sunhide_bear.name': 'Солнцешкурый медведь',
-  'entities.mobs.thornpelt_badger.name': 'Терношкурый барсук',
   'entities.zones.eastbrook_vale.pois.8.label': 'Поляна Брайтвуда',
   'fiesta.augment.aug_apex_predator.desc':
     '+40% к физическому урону, +15% к крит. удару, исцеление на 12% от нанесённого урона.',
@@ -4065,8 +4058,6 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.wavesBody':
     'Каждый раунд Фиесты предлагает вам свежий выбор, и эти варианты становятся всё смелее по ходу матча. Вы выстраиваете сборку от волны к волне, каждый раз беря один из нескольких вариантов и оставляя его до конца боя.',
   'guide.arenaPage.wavesTitle': 'Улучшения приходят волнами',
-  'guide.bestiary.flavor.brightwood_stag':
-    'Гордый олень из рощи, что пригибает свою венценосную корону рогов и прёт вперёд, становясь тем опаснее, чем дольше его теснят.',
   'guide.bestiary.flavor.gravecaller_cultist':
     'Облачённые в рясы прислужники культа смерти, чьи труды оскверняют могилы от Долины до самых вершин. Там, где они собираются, мёртвым нет покоя.',
   'guide.bestiary.flavor.grubjaw':

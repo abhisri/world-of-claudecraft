@@ -973,7 +973,6 @@ export const ko_KR: EnTranslations = {
       "notedLabel": "특기 사항",
       "flavor": {
         "old_greyjaw": "어떤 덫도 가두지 못한, 상처투성이 늙은 늑대. 사냥개 셋과 마구간 소년의 팔이 이놈 탓으로 돌려졌습니다. 깊은 숲을 홀로 사냥하며, 싸움이 길어질수록 더욱 사나워집니다.",
-        "brightwood_stag": "뿔로 된 왕관을 낮추고 밀어붙이는 당당한 숲의 사슴으로, 몰아붙일수록 상대하기 더 까다로워집니다.",
         "grubjaw": "다른 트롤들조차 곁에서 땅을 파려 하지 않을 만큼 탐욕스러운 습지 트롤로, 한 상인의 마지막 짐말 두 마리를 멍에까지 통째로 삼켰다고 전해집니다.",
         "shardlord_kazzix": "어깨를 갖춘 폭풍의 정령으로, 스톰크래그 위 먼 바위산을 거닐며 번개를 무릅쓸 만한 가치가 있는 심장 파편을 지니고 있습니다.",
         "mirejaw_frenzy": "전투 도중 스스로를 광란으로 몰아넣어 마구 날뛰는 습지 멀록으로, 시끄럽고 영역 의식 강한 무리 가운데서도 가장 요란합니다.",
@@ -1883,7 +1882,9 @@ export const ko_KR: EnTranslations = {
     "genre": "MMORPG",
     "playMode": "멀티플레이어",
     "applicationCategory": "게임",
-    "operatingSystem": "웹 브라우저"
+    "operatingSystem": "웹 브라우저",
+    "officialLabel": "World of ClaudeCraft 공식 웹사이트",
+    "officialBody": "worldofclaudecraft.com은 Claudemoon 렐름의 공식 무료 브라우저 MMO입니다. 지속 캐릭터로 온라인 플레이를 하거나, 오프라인에서 혼자 탐험하고, wiki를 읽고, 이 사이트에서 검증된 커뮤니티 링크를 확인하세요."
   },
   "a11y": {
     "goHome": "홈으로 이동",
@@ -4739,42 +4740,6 @@ export const ko_KR: EnTranslations = {
       "nythraxis_scourge_of_thornpeak": {
         "name": "나이트락시스, 손피크의 재앙"
       },
-      "brightwood_hare": {
-        "name": "브라이트우드 산토끼"
-      },
-      "glade_fox": {
-        "name": "숲속 여우"
-      },
-      "spotted_fawn": {
-        "name": "얼룩 새끼사슴"
-      },
-      "meadow_crane": {
-        "name": "초원 두루미"
-      },
-      "thornpelt_badger": {
-        "name": "가시털 오소리"
-      },
-      "dawnmane_doe": {
-        "name": "여명갈기 암사슴"
-      },
-      "bramble_lynx": {
-        "name": "가시덤불 살쾡이"
-      },
-      "brightwood_stag": {
-        "name": "브라이트우드 수사슴"
-      },
-      "grovetusk_boar": {
-        "name": "숲엄니 멧돼지"
-      },
-      "sunhide_bear": {
-        "name": "햇살가죽 곰"
-      },
-      "brightwood_monarch": {
-        "name": "브라이트우드의 군주"
-      },
-      "elder_bristleback": {
-        "name": "늙은 뻣센등뼈"
-      },
       "ironvein_foreman": {
         "name": "철맥 감독관"
       },
@@ -4798,12 +4763,6 @@ export const ko_KR: EnTranslations = {
       },
       "nhalia_mourner": {
         "name": "날리아 애도자"
-      },
-      "sableweb_hatchling": {
-        "name": "검은그물 새끼"
-      },
-      "sableweb_matriarch": {
-        "name": "검은그물 우두머리"
       },
       "sister_nhalia": {
         "name": "자매 날리아"

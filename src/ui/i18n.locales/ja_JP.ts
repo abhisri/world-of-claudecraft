@@ -14,10 +14,17 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const ja_JP: Partial<Record<TranslationKey, string>> = {
-  'hudChrome.tutorial.moveBodyTouch': '移動スティックで移動し、画面をドラッグして周囲を見回します。数歩進んで始めましょう。',
-  'hudChrome.tutorial.talkBodyTouch': 'レッドブルック元帥に近づき、「使用」ボタンをタップして話しかけ、依頼を受けましょう。',
-  'hudChrome.tutorial.returnBodyTouch': '依頼は完了しました。レッドブルック元帥のもとへ戻り、「使用」ボタンをタップして納品しましょう。',
-  'hudChrome.tutorial.doneBodyTouch': '基本は覚えましたね、{name}。イーストブルック渓谷はあなたのもの、自由に探索しましょう。いつでも「その他」から「クエストログ」をタップしてクエストログを確認できます。よい狩りを！',
+  'seo.officialLabel': 'World of ClaudeCraft 公式サイト',
+  'seo.officialBody':
+    'worldofclaudecraft.com は Claudemoon レルムの公式無料ブラウザMMOです。永続キャラクターでオンラインプレイし、オフラインでソロ探索し、wikiを読み、このサイトから確認済みのコミュニティリンクをたどれます。',
+  'hudChrome.tutorial.moveBodyTouch':
+    '移動スティックで移動し、画面をドラッグして周囲を見回します。数歩進んで始めましょう。',
+  'hudChrome.tutorial.talkBodyTouch':
+    'レッドブルック元帥に近づき、「使用」ボタンをタップして話しかけ、依頼を受けましょう。',
+  'hudChrome.tutorial.returnBodyTouch':
+    '依頼は完了しました。レッドブルック元帥のもとへ戻り、「使用」ボタンをタップして納品しましょう。',
+  'hudChrome.tutorial.doneBodyTouch':
+    '基本は覚えましたね、{name}。イーストブルック渓谷はあなたのもの、自由に探索しましょう。いつでも「その他」から「クエストログ」をタップしてクエストログを確認できます。よい狩りを！',
   'hudChrome.raidLockout.title': 'レイドロックアウト',
   'hudChrome.raidLockout.allReady': 'すべてのレイドが利用可能',
   'hudChrome.raidLockout.daysHours': '{d}日{h}時間',
@@ -2250,7 +2257,6 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.korgath_the_bound.name': '縛られしコルガス',
   'entities.mobs.grand_necromancer_velkhar.name': '大死霊術師ヴェルカー',
   'entities.mobs.korzul_the_gravewyrm.name': '墓ワームのコルズル',
-  'entities.mobs.elder_bristleback.name': '老ブリストルバック',
   'entities.mobs.ironvein_foreman.name': '鉄脈の現場監督',
   'entities.mobs.ironvein_sapper.name': '鉄脈の爆破兵',
   'entities.mobs.marrowlord_varkas.name': '髄王ヴァーカス',
@@ -2259,8 +2265,6 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.mogger.name': 'モガー',
   'entities.mobs.mogger_lackey.name': 'モガーの手下',
   'entities.mobs.nhalia_mourner.name': 'ナリアの嘆き手',
-  'entities.mobs.sableweb_hatchling.name': 'セーブルウェブの幼体',
-  'entities.mobs.sableweb_matriarch.name': 'セーブルウェブの女家長',
   'entities.mobs.sister_nhalia.name': 'シスター・ナリア',
   'entities.mobs.varkas_boneguard.name': 'ヴァーカスの骨衛兵',
   'entities.mobs.imp.name': 'インプ',
@@ -3013,17 +3017,6 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hud.core.chatChannels.sendingTo': '{channel}に送信',
   'hud.options.npcVoices': 'NPCボイス',
   'hud.options.voiceVolume': 'ボイス音量',
-  'entities.mobs.bramble_lynx.name': '茨のオオヤマネコ',
-  'entities.mobs.brightwood_hare.name': 'ブライトウッドの野ウサギ',
-  'entities.mobs.brightwood_monarch.name': 'ブライトウッドの君主',
-  'entities.mobs.brightwood_stag.name': 'ブライトウッドの牡鹿',
-  'entities.mobs.dawnmane_doe.name': '暁のたてがみの雌鹿',
-  'entities.mobs.glade_fox.name': '林間のキツネ',
-  'entities.mobs.grovetusk_boar.name': '木立牙の猪',
-  'entities.mobs.meadow_crane.name': '草原のツル',
-  'entities.mobs.spotted_fawn.name': '斑模様の子鹿',
-  'entities.mobs.sunhide_bear.name': '陽光皮の熊',
-  'entities.mobs.thornpelt_badger.name': '茨毛のアナグマ',
   'entities.zones.eastbrook_vale.pois.8.label': 'ブライトウッドの林間',
   'fiesta.augment.aug_apex_predator.desc':
     '物理ダメージ+40%、クリティカル+15%、与えたダメージの12%を回復。',
@@ -3966,8 +3959,6 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.wavesBody':
     'Fiestaの各ラウンドでは新たな一手が手に入り、試合が進むにつれてその一手は大胆になっていきます。一つのウェーブから次へとビルドを築き上げ、毎回いくつかの候補から一つを選び、残りの試合の間はそれを持ち続けます。',
   'guide.arenaPage.wavesTitle': 'オーグメントはウェーブで訪れる',
-  'guide.bestiary.flavor.brightwood_stag':
-    '誇り高い林間の牡鹿。角の冠を下げて突進し、追い詰められるほどに手強くなります。',
   'guide.bestiary.flavor.gravecaller_cultist':
     '死のカルトに仕えるローブ姿の僕たち。その業は渓谷から高地まで墓を汚し、彼らが集う場所では死者が安らぎません。',
   'guide.bestiary.flavor.grubjaw':

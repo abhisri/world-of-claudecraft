@@ -14,10 +14,17 @@
 import type { TranslationKey } from '../i18n.catalog';
 
 export const de_DE: Partial<Record<TranslationKey, string>> = {
-  'hudChrome.tutorial.moveBodyTouch': 'Nutze den Bewegungsstick zum Bewegen und zieh über den Bildschirm, um dich umzusehen. Mach ein paar Schritte, um zu beginnen.',
-  'hudChrome.tutorial.talkBodyTouch': 'Stell dich nah an Marschall Redbrook und tippe auf die Schaltfläche Benutzen, um mit ihm zu sprechen, und nimm dann seine Aufgabe an.',
-  'hudChrome.tutorial.returnBodyTouch': 'Deine Aufgabe ist erledigt. Kehre zu Marschall Redbrook zurück und tippe auf die Schaltfläche Benutzen, um sie abzugeben.',
-  'hudChrome.tutorial.doneBodyTouch': 'Du beherrschst die Grundlagen, {name}. Das Eastbrook-Tal liegt bereit, von dir erkundet zu werden. Tippe auf Mehr und dann auf Questlog, um jederzeit dein Questlog einzusehen. Gute Jagd.',
+  'seo.officialLabel': 'Offizielle Website von World of ClaudeCraft',
+  'seo.officialBody':
+    'worldofclaudecraft.com ist das offizielle kostenlose Browser-MMO für das Reich Claudemoon. Spiele online mit einem dauerhaften Charakter, erkunde solo offline, lies das Wiki und folge den verifizierten Community-Links auf dieser Website.',
+  'hudChrome.tutorial.moveBodyTouch':
+    'Nutze den Bewegungsstick zum Bewegen und zieh über den Bildschirm, um dich umzusehen. Mach ein paar Schritte, um zu beginnen.',
+  'hudChrome.tutorial.talkBodyTouch':
+    'Stell dich nah an Marschall Redbrook und tippe auf die Schaltfläche Benutzen, um mit ihm zu sprechen, und nimm dann seine Aufgabe an.',
+  'hudChrome.tutorial.returnBodyTouch':
+    'Deine Aufgabe ist erledigt. Kehre zu Marschall Redbrook zurück und tippe auf die Schaltfläche Benutzen, um sie abzugeben.',
+  'hudChrome.tutorial.doneBodyTouch':
+    'Du beherrschst die Grundlagen, {name}. Das Eastbrook-Tal liegt bereit, von dir erkundet zu werden. Tippe auf Mehr und dann auf Questlog, um jederzeit dein Questlog einzusehen. Gute Jagd.',
   'hudChrome.raidLockout.title': 'Schlachtzug-Sperren',
   'hudChrome.raidLockout.allReady': 'Alle Schlachtzüge bereit',
   'hudChrome.raidLockout.daysHours': '{d}T {h}Std',
@@ -2282,7 +2289,6 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.korgath_the_bound.name': 'Korgath der Gebundene',
   'entities.mobs.grand_necromancer_velkhar.name': 'Großnekromant Velkhar',
   'entities.mobs.korzul_the_gravewyrm.name': 'Korzul der Gravewyrm',
-  'entities.mobs.elder_bristleback.name': 'Alter Bristleback',
   'entities.mobs.ironvein_foreman.name': 'Eisenader-Vorarbeiter',
   'entities.mobs.ironvein_sapper.name': 'Eisenader-Pionier',
   'entities.mobs.marrowlord_varkas.name': 'Marklord Varkas',
@@ -2291,8 +2297,6 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.mogger.name': 'Mogger',
   'entities.mobs.mogger_lackey.name': 'Moggers Lakai',
   'entities.mobs.nhalia_mourner.name': 'Nhalia-Trauernde',
-  'entities.mobs.sableweb_hatchling.name': 'Sableweb-Jungtier',
-  'entities.mobs.sableweb_matriarch.name': 'Sableweb-Matriarchin',
   'entities.mobs.sister_nhalia.name': 'Schwester Nhalia',
   'entities.mobs.varkas_boneguard.name': "Varkas' Knochenwache",
   'entities.mobs.imp.name': 'Wichtel',
@@ -3060,17 +3064,6 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'hud.core.chatChannels.sendingTo': 'Nachricht an {channel}',
   'hud.options.npcVoices': 'NSC-Stimmen',
   'hud.options.voiceVolume': 'Stimmlautstärke',
-  'entities.mobs.bramble_lynx.name': 'Dornenluchs',
-  'entities.mobs.brightwood_hare.name': 'Hellholz-Hase',
-  'entities.mobs.brightwood_monarch.name': 'Der Hellholz-Monarch',
-  'entities.mobs.brightwood_stag.name': 'Hellholz-Hirsch',
-  'entities.mobs.dawnmane_doe.name': 'Morgenmähnen-Hirschkuh',
-  'entities.mobs.glade_fox.name': 'Lichtungsfuchs',
-  'entities.mobs.grovetusk_boar.name': 'Hainhauer-Keiler',
-  'entities.mobs.meadow_crane.name': 'Wiesenkranich',
-  'entities.mobs.spotted_fawn.name': 'Geflecktes Hirschkalb',
-  'entities.mobs.sunhide_bear.name': 'Sonnenfell-Bär',
-  'entities.mobs.thornpelt_badger.name': 'Dornpelz-Dachs',
   'entities.zones.eastbrook_vale.pois.8.label': 'Hellholz-Lichtung',
   'fiesta.augment.aug_apex_predator.desc':
     '+40% physischer Schaden, +15% krit. Trefferchance, Heilung um 12% des zugefügten Schadens.',
@@ -4064,8 +4057,6 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.wavesBody':
     'Jede Runde einer Fiesta reicht dir eine frische Auswahl, und die Auswahlmöglichkeiten werden mutiger, je länger das Match dauert. Du baust von einer Welle zur nächsten auf, wählst jedes Mal eine von wenigen Optionen und behältst sie für den Rest des Gefechts.',
   'guide.arenaPage.wavesTitle': 'Augmentierungen kommen in Wellen',
-  'guide.bestiary.flavor.brightwood_stag':
-    'Ein stolzer Hain-Hirsch, der seine Krone aus Geweih senkt und vorwärts stürmt, und der schwerer zu bezwingen wird, je länger man ihn bedrängt.',
   'guide.bestiary.flavor.gravecaller_cultist':
     'Gewandete Diener des Todeskults, deren Treiben die Gräber vom Tal bis zu den Gipfeln schändet. Wo sie sich versammeln, ruhen die Toten nicht.',
   'guide.bestiary.flavor.grubjaw':
