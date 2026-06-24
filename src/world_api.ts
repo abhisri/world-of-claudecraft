@@ -314,6 +314,7 @@ export interface IWorld {
   turnInQuest(questId: string): void;
   reportTelemetry(kind: string, data: Record<string, number>): void;
   abandonQuest(questId: string): void;
+  acceptLinkedQuest(questId: string, fromPid: number): void;
   equipItem(itemId: string): void;
   unequipItem(slot: EquipSlot): void;
   useItem(itemId: string): void;

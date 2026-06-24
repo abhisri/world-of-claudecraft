@@ -17,6 +17,18 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   'seo.officialLabel': 'Site officiel de World of ClaudeCraft',
   'seo.officialBody':
     'worldofclaudecraft.com est le MMO gratuit officiel sur navigateur du royaume Claudemoon. Jouez en ligne avec un personnage persistant, explorez en solo hors ligne, lisez le wiki et suivez les liens communautaires vérifiés depuis ce site.',
+  'hudChrome.questShare.notShareable': 'Cette quête ne peut pas être partagée.',
+  'hudChrome.questShare.notInSharerParty':
+    'Vous devez être dans le groupe de {name} pour accepter cette quête.',
+  'hudChrome.questShare.accepted': '{name} a accepté votre quête partagée.',
+  'hudChrome.questShare.dialogTitle': 'Quête partagée',
+  'hudChrome.questShare.viewOnlyHint':
+    'Rejoignez le groupe de la personne qui la partage pour accepter cette quête.',
+  'hudChrome.questShare.alreadyOn': 'Vous avez déjà cette quête.',
+  'hudChrome.questShare.alreadyDone': 'Vous avez déjà terminé cette quête.',
+  'hudChrome.questShare.ineligible': 'Vous ne remplissez pas les conditions de cette quête.',
+  'hudChrome.questShare.noQuestSelected': 'Sélectionnez une quête dans votre journal à partager.',
+  'hudChrome.questShare.linkTitle': 'Maj + clic pour insérer le lien de cette quête dans le chat.',
   'character.sortBy': 'Trier',
   'character.sortByLabel': 'Trier les personnages',
   'character.sortMenuLabel': 'Options de tri',

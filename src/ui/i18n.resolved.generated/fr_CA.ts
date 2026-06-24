@@ -426,6 +426,18 @@ export const fr_CA: EnTranslations = {
     "tips": {
       "joinChannels": "Conseil : tapez /join world ou /join lfg pour discuter avec les joueurs de tout le royaume."
     },
+    "questShare": {
+      "notShareable": "Cette quête ne peut pas être partagée.",
+      "notInSharerParty": "Vous devez être dans le groupe de {name} pour accepter cette quête.",
+      "accepted": "{name} a accepté votre quête partagée.",
+      "dialogTitle": "Quête partagée",
+      "viewOnlyHint": "Rejoignez le groupe de la personne qui la partage pour accepter cette quête.",
+      "alreadyOn": "Vous avez déjà cette quête.",
+      "alreadyDone": "Vous avez déjà terminé cette quête.",
+      "ineligible": "Vous ne remplissez pas les conditions de cette quête.",
+      "noQuestSelected": "Sélectionnez une quête dans votre journal à partager.",
+      "linkTitle": "Maj + clic pour insérer le lien de cette quête dans le chat."
+    },
     "plurals": {
       "guildMembers": {
         "one": "vous êtes {rank}, {count} membre",

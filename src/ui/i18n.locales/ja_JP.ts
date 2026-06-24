@@ -17,6 +17,18 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'seo.officialLabel': 'World of ClaudeCraft 公式サイト',
   'seo.officialBody':
     'worldofclaudecraft.com は Claudemoon レルムの公式無料ブラウザMMOです。永続キャラクターでオンラインプレイし、オフラインでソロ探索し、wikiを読み、このサイトから確認済みのコミュニティリンクをたどれます。',
+  'hudChrome.questShare.notShareable': 'このクエストは共有できません。',
+  'hudChrome.questShare.notInSharerParty':
+    '{name} のパーティに参加していないと、このクエストを受諾できません。',
+  'hudChrome.questShare.accepted': '{name} があなたの共有クエストを受諾しました。',
+  'hudChrome.questShare.dialogTitle': '共有クエスト',
+  'hudChrome.questShare.viewOnlyHint':
+    'このクエストを受諾するには、共有した人のパーティに参加してください。',
+  'hudChrome.questShare.alreadyOn': 'このクエストはすでに受注しています。',
+  'hudChrome.questShare.alreadyDone': 'このクエストはすでに完了しています。',
+  'hudChrome.questShare.ineligible': 'このクエストの条件を満たしていません。',
+  'hudChrome.questShare.noQuestSelected': '共有するクエストをログから選択してください。',
+  'hudChrome.questShare.linkTitle': 'Shift + クリックでこのクエストをチャットにリンクします。',
   'character.sortBy': '並べ替え',
   'character.sortByLabel': 'キャラクターを並べ替え',
   'character.sortMenuLabel': '並べ替えオプション',

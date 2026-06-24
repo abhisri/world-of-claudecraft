@@ -426,6 +426,18 @@ export const ko_KR: EnTranslations = {
     "tips": {
       "joinChannels": "팁: /join world 또는 /join lfg를 입력하면 서버 전역의 플레이어와 대화할 수 있습니다."
     },
+    "questShare": {
+      "notShareable": "이 퀘스트는 공유할 수 없습니다.",
+      "notInSharerParty": "{name}님의 파티에 속해 있어야 이 퀘스트를 수락할 수 있습니다.",
+      "accepted": "{name}님이 당신의 공유 퀘스트를 수락했습니다.",
+      "dialogTitle": "공유 퀘스트",
+      "viewOnlyHint": "이 퀘스트를 수락하려면 공유한 사람의 파티에 참가하세요.",
+      "alreadyOn": "이미 진행 중인 퀘스트입니다.",
+      "alreadyDone": "이미 완료한 퀘스트입니다.",
+      "ineligible": "이 퀘스트의 요구 조건을 충족하지 못합니다.",
+      "noQuestSelected": "공유할 퀘스트를 기록에서 선택하세요.",
+      "linkTitle": "Shift + 클릭하면 이 퀘스트를 채팅에 연결합니다."
+    },
     "plurals": {
       "guildMembers": {
         "one": "당신은 {rank}, {count}명 회원",

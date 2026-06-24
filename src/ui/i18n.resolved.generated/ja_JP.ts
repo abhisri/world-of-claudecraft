@@ -426,6 +426,18 @@ export const ja_JP: EnTranslations = {
     "tips": {
       "joinChannels": "ヒント：/join world または /join lfg と入力すると、レルム全体のプレイヤーとチャットできます。"
     },
+    "questShare": {
+      "notShareable": "このクエストは共有できません。",
+      "notInSharerParty": "{name} のパーティに参加していないと、このクエストを受諾できません。",
+      "accepted": "{name} があなたの共有クエストを受諾しました。",
+      "dialogTitle": "共有クエスト",
+      "viewOnlyHint": "このクエストを受諾するには、共有した人のパーティに参加してください。",
+      "alreadyOn": "このクエストはすでに受注しています。",
+      "alreadyDone": "このクエストはすでに完了しています。",
+      "ineligible": "このクエストの条件を満たしていません。",
+      "noQuestSelected": "共有するクエストをログから選択してください。",
+      "linkTitle": "Shift + クリックでこのクエストをチャットにリンクします。"
+    },
     "plurals": {
       "guildMembers": {
         "one": "あなたは{rank}、{count}人のメンバー",

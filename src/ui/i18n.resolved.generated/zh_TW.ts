@@ -426,6 +426,18 @@ export const zh_TW: EnTranslations = {
     "tips": {
       "joinChannels": "提示：輸入 /join world 或 /join lfg 可與全伺服器的玩家聊天。"
     },
+    "questShare": {
+      "notShareable": "該任務無法分享。",
+      "notInSharerParty": "你必須在 {name} 的隊伍中才能接受該任務。",
+      "accepted": "{name} 接受了你分享的任務。",
+      "dialogTitle": "分享的任務",
+      "viewOnlyHint": "加入分享者的隊伍才能接受該任務。",
+      "alreadyOn": "你已經接受了該任務。",
+      "alreadyDone": "你已經完成了該任務。",
+      "ineligible": "你不符合該任務的要求。",
+      "noQuestSelected": "在任務日誌中選擇一個任務進行分享。",
+      "linkTitle": "Shift + 點擊可在聊天中連結該任務。"
+    },
     "plurals": {
       "guildMembers": {
         "one": "你是{rank}，{count}名成員",

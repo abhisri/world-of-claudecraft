@@ -426,6 +426,18 @@ export const de_DE: EnTranslations = {
     "tips": {
       "joinChannels": "Tipp: Gebt /join world oder /join lfg ein, um mit Spielern im ganzen Realm zu chatten."
     },
+    "questShare": {
+      "notShareable": "Diese Quest kann nicht geteilt werden.",
+      "notInSharerParty": "Ihr müsst in der Gruppe von {name} sein, um diese Quest anzunehmen.",
+      "accepted": "{name} hat Eure geteilte Quest angenommen.",
+      "dialogTitle": "Geteilte Quest",
+      "viewOnlyHint": "Tretet der Gruppe des Teilenden bei, um diese Quest anzunehmen.",
+      "alreadyOn": "Ihr habt diese Quest bereits.",
+      "alreadyDone": "Ihr habt diese Quest bereits abgeschlossen.",
+      "ineligible": "Ihr erfüllt die Voraussetzungen für diese Quest nicht.",
+      "noQuestSelected": "Wählt eine Quest in Eurem Questlog zum Teilen aus.",
+      "linkTitle": "Umschalt + Klick, um diese Quest im Chat zu verlinken."
+    },
     "plurals": {
       "guildMembers": {
         "one": "Ihr seid {rank}, {count} Mitglied",

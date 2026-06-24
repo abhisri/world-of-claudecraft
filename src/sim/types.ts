@@ -1092,6 +1092,7 @@ export interface QuestDef {
   // quest needs; re-granted on accept if the player no longer has them, to avoid a progression block
   minLevel?: number;
   retired?: boolean; // remains finishable if already accepted, but cannot be newly accepted
+  shareable?: boolean; // quest-link sharing allowed (default true; set false to opt out)
   suggestedPlayers?: number; // group quests ("Suggested players: 5")
 }
 

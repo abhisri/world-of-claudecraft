@@ -17,6 +17,18 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'seo.officialLabel': 'Официальный сайт World of ClaudeCraft',
   'seo.officialBody':
     'worldofclaudecraft.com - официальная бесплатная браузерная MMO для мира Claudemoon. Играйте онлайн с постоянным персонажем, исследуйте мир в одиночку офлайн, читайте wiki и переходите по проверенным ссылкам сообщества с этого сайта.',
+  'hudChrome.questShare.notShareable': 'Этим заданием нельзя поделиться.',
+  'hudChrome.questShare.notInSharerParty':
+    'Вы должны состоять в группе игрока {name}, чтобы принять это задание.',
+  'hudChrome.questShare.accepted': '{name} принял задание, которым вы поделились.',
+  'hudChrome.questShare.dialogTitle': 'Общее задание',
+  'hudChrome.questShare.viewOnlyHint':
+    'Вступите в группу того, кто поделился, чтобы принять это задание.',
+  'hudChrome.questShare.alreadyOn': 'Вы уже выполняете это задание.',
+  'hudChrome.questShare.alreadyDone': 'Вы уже выполнили это задание.',
+  'hudChrome.questShare.ineligible': 'Вы не соответствуете требованиям этого задания.',
+  'hudChrome.questShare.noQuestSelected': 'Выберите задание в журнале, чтобы поделиться им.',
+  'hudChrome.questShare.linkTitle': 'Shift + клик, чтобы вставить ссылку на это задание в чат.',
   'character.sortBy': 'Сортировка',
   'character.sortByLabel': 'Сортировать персонажей',
   'character.sortMenuLabel': 'Параметры сортировки',

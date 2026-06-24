@@ -241,6 +241,7 @@ import {
 import { chatPlayerContextActions } from './player_context_menu';
 import { hydratePortraits, portraitChipHtml } from './portrait_chip';
 import { maskProfanity } from './profanity';
+import { encodeQuestLink, parseChatSegments } from './quest_link';
 import { type QuestTrackerView, questTrackerView, type TrackedQuest } from './quest_tracker';
 import { lockoutParts, lockoutShape } from './raid_lockout';
 import { type RaidLockoutI18n, raidLockoutPanelHtml } from './raid_lockout_view';
@@ -818,6 +819,7 @@ export class Hud {
   private openGossipNpcId: number | null = null;
   private openQuestDetailId: string | null = null;
   private selectedQuestLogId: string | null = null;
+  private pendingChatLinks = new Map<string, string>(); // display "[Name]" -> questId
   private questDialogReturnFocus: HTMLElement | null = null;
   private questDialogOpenedAtMs = 0;
   private questLogReturnFocus: HTMLElement | null = null;
@@ -1954,8 +1956,54 @@ export class Hud {
   // channel tab. main.ts calls this on Enter so a channel tab works without
   // retyping the slash command; an explicit "/..." the player typed still wins.
   composeChatSend(typed: string): string {
+    const withLinks = this.applyPendingQuestLinks(typed);
     const ch = this.chatFilterChannel();
-    return ch ? composeChatLine(ch, typed) : typed.trim();
+    return ch ? composeChatLine(ch, withLinks) : withLinks.trim();
+  }
+
+  // Shift-click a quest-log entry: open the chat input and insert a readable
+  // [Name] link. composeChatSend swaps it for the canonical [[q:id]] token on send.
+  insertQuestChatLink(questId: string): void {
+    const input = $('#chat-input') as unknown as HTMLInputElement;
+    const display = `[${questTitle(questId)}]`;
+    this.pendingChatLinks.set(display, questId);
+    input.placeholder = this.activeChatPlaceholder();
+    input.style.display = 'block';
+    input.value =
+      input.value && !input.value.endsWith(' ')
+        ? `${input.value} ${display}`
+        : `${input.value}${display}`;
+    input.focus();
+  }
+
+  // Drop any shift-click-inserted links that were never sent (chat closed/cleared),
+  // so a stale [Name] entry can't silently rewrite a later message.
+  clearPendingQuestLinks(): void {
+    this.pendingChatLinks.clear();
+  }
+
+  // Replace any inserted readable [Name] with its [[q:id]] token, then forget them.
+  private applyPendingQuestLinks(typed: string): string {
+    if (this.pendingChatLinks.size === 0) return typed;
+    let out = typed;
+    for (const [display, questId] of this.pendingChatLinks)
+      out = out.split(display).join(encodeQuestLink(questId));
+    this.pendingChatLinks.clear();
+    return out;
+  }
+
+  // Intercept "/share": link the selected quest into party chat. Returns true when
+  // handled (the caller then skips normal send). Not-in-a-party is left to the sim's
+  // existing "You are not in a party." error from the /p path.
+  maybeHandleQuestShareCommand(raw: string): boolean {
+    if (!/^\/share(?:\s|$)/i.test(raw.trim())) return false;
+    const id = this.selectedQuestLogId;
+    if (!id || !this.sim.questLog.has(id)) {
+      this.showError(t('hudChrome.questShare.noQuestSelected'));
+      return true;
+    }
+    this.sim.chat(`/p ${encodeQuestLink(id)}`);
+    return true;
   }
 
   // Placeholder for the chat input reflecting the active channel tab.
@@ -5375,10 +5423,24 @@ export class Hud {
           if (this.isChatIgnored(ev.from)) break;
           switch (ev.channel) {
             case 'party':
-              this.chatLogFrom(ev.from, ev.text, '#7fd4ff', CHAT_TEMPLATE_KEYS.party, 'party');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#7fd4ff',
+                CHAT_TEMPLATE_KEYS.party,
+                'party',
+                ev.fromPid,
+              );
               break;
             case 'yell':
-              this.chatLogFrom(ev.from, ev.text, '#ff5040', CHAT_TEMPLATE_KEYS.yell, 'yell');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff5040',
+                CHAT_TEMPLATE_KEYS.yell,
+                'yell',
+                ev.fromPid,
+              );
               break;
             case 'whisper':
               if (ev.to)
@@ -5388,6 +5450,7 @@ export class Hud {
                   '#ff80ff',
                   CHAT_TEMPLATE_KEYS.toWhisper,
                   'whisper',
+                  ev.fromPid,
                 );
               else {
                 this.chatLogFrom(
@@ -5396,40 +5459,97 @@ export class Hud {
                   '#ff80ff',
                   CHAT_TEMPLATE_KEYS.whisper,
                   'whisper',
+                  ev.fromPid,
                 );
                 audio.whisper();
               }
               break;
             case 'general':
-              this.chatLogFrom(ev.from, ev.text, '#ffc864', CHAT_TEMPLATE_KEYS.general, 'general');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ffc864',
+                CHAT_TEMPLATE_KEYS.general,
+                'general',
+                ev.fromPid,
+              );
               break;
             case 'world':
-              this.chatLogFrom(ev.from, ev.text, '#ff9d5c', CHAT_TEMPLATE_KEYS.world, 'world');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff9d5c',
+                CHAT_TEMPLATE_KEYS.world,
+                'world',
+                ev.fromPid,
+              );
               break;
             case 'lfg':
-              this.chatLogFrom(ev.from, ev.text, '#5cd6a0', CHAT_TEMPLATE_KEYS.lfg, 'lfg');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#5cd6a0',
+                CHAT_TEMPLATE_KEYS.lfg,
+                'lfg',
+                ev.fromPid,
+              );
               break;
             case 'guild':
-              this.chatLogFrom(ev.from, ev.text, '#40d264', CHAT_TEMPLATE_KEYS.guild, 'guild');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#40d264',
+                CHAT_TEMPLATE_KEYS.guild,
+                'guild',
+                ev.fromPid,
+              );
               break;
             case 'officer':
-              this.chatLogFrom(ev.from, ev.text, '#4ce0c0', CHAT_TEMPLATE_KEYS.officer, 'officer');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#4ce0c0',
+                CHAT_TEMPLATE_KEYS.officer,
+                'officer',
+                ev.fromPid,
+              );
               break;
             case 'emote':
-              this.chatLogFrom(ev.from, ev.text, '#ff8040', CHAT_TEMPLATE_KEYS.emote, 'emote');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ff8040',
+                CHAT_TEMPLATE_KEYS.emote,
+                'emote',
+                ev.fromPid,
+              );
               break;
             case 'roll':
-              this.chatLogFrom(ev.from, ev.text, '#ffd100', CHAT_TEMPLATE_KEYS.roll, 'roll');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#ffd100',
+                CHAT_TEMPLATE_KEYS.roll,
+                'roll',
+                ev.fromPid,
+              );
               break;
             default:
-              this.chatLogFrom(ev.from, ev.text, '#f0ead8', CHAT_TEMPLATE_KEYS.say, 'say');
+              this.chatLogFrom(
+                ev.from,
+                ev.text,
+                '#f0ead8',
+                CHAT_TEMPLATE_KEYS.say,
+                'say',
+                ev.fromPid,
+              );
               break;
           }
           if (
             (ev.channel === 'say' || ev.channel === 'yell' || ev.channel === 'emote') &&
             ev.entityId !== undefined
           ) {
-            const masked = this.maskChat(ev.text);
+            const masked = this.maskChat(this.questLinkPlainText(ev.text));
             const bubble = ev.channel === 'emote' ? `${ev.from} ${masked}` : masked;
             this.renderer.showChatBubble(ev.entityId, bubble, ev.channel === 'yell');
           }
@@ -5775,6 +5895,7 @@ export class Hud {
     color: string,
     templateKey: TranslationKey,
     chan: string,
+    fromPid?: number,
   ): void {
     const wasNearBottom =
       this.chatLogEl.scrollHeight - this.chatLogEl.scrollTop - this.chatLogEl.clientHeight < 24;
@@ -5800,7 +5921,6 @@ export class Hud {
       const rect = sender.getBoundingClientRect();
       this.openChatPlayerContextMenu(name, rect.left, rect.bottom);
     });
-    const masked = this.maskChat(text);
     const nameToken = '__WOC_CHAT_NAME__';
     const messageToken = '__WOC_CHAT_MESSAGE__';
     const rendered = t(templateKey, { name: nameToken, message: messageToken });
@@ -5811,7 +5931,7 @@ export class Hud {
         div.append(sender);
         senderAppended = true;
       } else if (part === messageToken) {
-        div.append(document.createTextNode(masked));
+        this.appendChatMessageBody(div, text, fromPid);
         messageAppended = true;
       } else if (part) {
         div.append(document.createTextNode(part));
@@ -5819,12 +5939,53 @@ export class Hud {
     }
     if (!senderAppended || !messageAppended) {
       div.textContent = '';
-      div.append(sender, document.createTextNode(`: ${masked}`));
+      div.append(sender, document.createTextNode(': '));
+      this.appendChatMessageBody(div, text, fromPid);
     }
     this.chatLogEl.appendChild(div);
     while (this.chatLogEl.children.length > 200)
       this.chatLogEl.removeChild(this.chatLogEl.firstChild!);
     if (wasNearBottom) this.chatLogEl.scrollTop = this.chatLogEl.scrollHeight;
+  }
+
+  // Append a chat message body, rendering [[q:id]] tokens as clickable quest links
+  // and masking only the plain-text segments. Links bind the message author (fromPid)
+  // so a click can offer accept to the author's party members.
+  private appendChatMessageBody(parent: HTMLElement, text: string, fromPid?: number): void {
+    for (const seg of parseChatSegments(text)) {
+      if (seg.kind === 'text') {
+        if (seg.value) parent.append(document.createTextNode(this.maskChat(seg.value)));
+        continue;
+      }
+      const quest = QUESTS[seg.questId];
+      if (!quest) {
+        parent.append(document.createTextNode(this.maskChat('[?]')));
+        continue;
+      }
+      const link = document.createElement('span');
+      link.className = 'chat-quest-link';
+      link.textContent = `[${questTitle(seg.questId)}]`;
+      link.setAttribute('role', 'button');
+      link.tabIndex = 0;
+      const open = (): void => this.openLinkedQuestDialog(seg.questId, fromPid);
+      link.addEventListener('click', open);
+      link.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        ev.preventDefault();
+        open();
+      });
+      parent.append(link);
+    }
+  }
+
+  // The plain-text form of a chat string with [[q:id]] tokens replaced by [Name]
+  // — used for 3D chat bubbles, which can't host interactive spans.
+  private questLinkPlainText(text: string): string {
+    return parseChatSegments(text)
+      .map((s) =>
+        s.kind === 'text' ? s.value : `[${QUESTS[s.questId] ? questTitle(s.questId) : '?'}]`,
+      )
+      .join('');
   }
 
   /** Replace the server-supplied soft word list (online play only). */
@@ -5906,6 +6067,7 @@ export class Hud {
       'That quest giver is not nearby.': 'questUi.errors.giverMissing',
       'That quest turn-in is not nearby.': 'questUi.errors.turnInMissing',
       'Too far away.': 'questUi.errors.tooFar',
+      "This quest can't be shared.": 'hudChrome.questShare.notShareable',
       'That item is not sold here.': 'itemUi.errors.notSoldHere',
       'Not enough money.': 'itemUi.errors.notEnoughMoney',
       'You must bring your goods to the Merchant.': 'itemUi.errors.bringGoods',
@@ -5968,6 +6130,8 @@ export class Hud {
     if (match) return t('hud.errors.alreadyInParty', { name: match[1] });
     match = /^(.+) already has a pending invitation\.$/.exec(text);
     if (match) return t('hud.errors.pendingInvite', { name: match[1] });
+    match = /^You must be in (.+)'s party to accept that quest\.$/.exec(text);
+    if (match) return t('hudChrome.questShare.notInSharerParty', { name: match[1] });
     match = /^You may keep at most (\d+) goods on the market at once\.$/.exec(text);
     if (match)
       return t('itemUi.errors.tooManyListings', {
@@ -6035,6 +6199,8 @@ export class Hud {
     if (match) return t('questUi.logs.abandoned', { name: questTitleFromSource(match[1]) });
     match = /^Quest completed: (.+)$/.exec(text);
     if (match) return t('questUi.logs.completed', { name: questTitleFromSource(match[1]) });
+    match = /^(.+) accepted your shared quest\.$/.exec(text);
+    if (match) return t('hudChrome.questShare.accepted', { name: match[1] });
     match = /^(.+) \(Complete\)$/.exec(text);
     if (match)
       return t('questUi.logs.ready', {
@@ -6693,6 +6859,76 @@ export class Hud {
     back.textContent = t('questUi.dialog.back');
     back.addEventListener('click', () => this.renderGossip(npc));
     el.appendChild(back);
+    el.querySelector('[data-close]')?.addEventListener('click', () => this.closeQuestDialog());
+    el.style.display = 'block';
+    this.focusFirstInteractive(el);
+  }
+
+  // Open the read-only quest detail for a chat-link click. Shows Accept only when the
+  // viewer is in the link author's party AND the quest is available; the server
+  // re-validates on accept. Non-party / ineligible viewers see view-only info.
+  openLinkedQuestDialog(questId: string, fromPid?: number): void {
+    const quest = QUESTS[questId];
+    if (!quest) return;
+    this.openGossipNpcId = null;
+    if ($('#quest-dialog').style.display !== 'block')
+      this.questDialogReturnFocus = this.currentFocusableElement();
+    this.closeOtherWindows('#quest-dialog');
+    const el = $('#quest-dialog');
+    const state = this.sim.questState(questId);
+    const inSharerParty =
+      fromPid !== undefined &&
+      (this.sim.partyInfo?.members.some((m) => m.pid === fromPid) ?? false);
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'false');
+    el.setAttribute('aria-labelledby', 'quest-dialog-title');
+    el.setAttribute('tabindex', '-1');
+    let html = `<div class="panel-title"><span id="quest-dialog-title">${esc(questTitle(questId))}${this.questSuggestedPlayersHtml(quest.suggestedPlayers)} <span class="quest-muted">&lt;${esc(t('hudChrome.questShare.dialogTitle'))}&gt;</span></span><button type="button" class="x-btn" data-close aria-label="${esc(t('questUi.dialog.close'))}">${svgIcon('close')}</button></div>`;
+    if (quest.minLevel)
+      html += `<div class="qd-req">${esc(t('questUi.detail.requiresLevel', { level: this.questNumber(quest.minLevel) }))}</div>`;
+    html += `<div class="qd-text">${esc(questNarrative(questId, 'text', this.sim.player.name))}</div>`;
+    html += `<div class="qd-sub">${esc(t('questUi.detail.objectives'))}</div>`;
+    html += quest.objectives
+      .map(
+        (o, i) =>
+          `<div class="qd-obj">${esc(this.questProgressText(questObjectiveLabel(questId, i), 0, o.count))}</div>`,
+      )
+      .join('');
+    html += `<div class="qd-sub">${esc(t('questUi.detail.rewards'))}</div>`;
+    html += `<div class="qd-obj">${esc(t('questUi.detail.xpReward', { xp: this.questNumber(quest.xpReward) }))} &nbsp; ${this.moneyHtml(quest.copperReward)}</div>`;
+    const rewardItem = questRewardItem(quest, this.sim.cfg.playerClass);
+    if (rewardItem) {
+      const item = ITEMS[rewardItem];
+      html += `<div class="qd-reward-row" data-reward><span class="qd-reward-label">${esc(t('questUi.detail.itemReward'))}</span>${this.itemIcon(item)}<span class="qd-reward-name" style="color:${QUALITY_COLOR[item.quality ?? 'common'] ?? '#fff'}">${esc(itemDisplayName(item))}</span></div>`;
+    }
+    el.innerHTML = html;
+    const rewardRow = el.querySelector('[data-reward]') as HTMLElement | null;
+    if (rewardRow && rewardItem)
+      this.attachTooltip(rewardRow, () => this.itemTooltip(ITEMS[rewardItem]));
+    if (inSharerParty && state === 'available') {
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.type = 'button';
+      btn.textContent = t('questUi.dialog.accept');
+      btn.addEventListener('click', () => {
+        this.sim.acceptLinkedQuest(questId, fromPid!);
+        this.closeQuestDialog();
+      });
+      el.appendChild(btn);
+    } else {
+      // View-only: explain why no Accept. Non-party -> join hint; in-party but
+      // ineligible -> the reason (already on it / done / requirements unmet).
+      const hint = document.createElement('div');
+      hint.className = 'qd-req';
+      hint.textContent = !inSharerParty
+        ? t('hudChrome.questShare.viewOnlyHint')
+        : state === 'done'
+          ? t('hudChrome.questShare.alreadyDone')
+          : state === 'active' || state === 'ready'
+            ? t('hudChrome.questShare.alreadyOn')
+            : t('hudChrome.questShare.ineligible');
+      el.appendChild(hint);
+    }
     el.querySelector('[data-close]')?.addEventListener('click', () => this.closeQuestDialog());
     el.style.display = 'block';
     this.focusFirstInteractive(el);
@@ -10280,8 +10516,13 @@ export class Hud {
       item.className = `ql-item${qp.questId === this.selectedQuestLogId ? ' sel' : ''}`;
       item.setAttribute('aria-pressed', qp.questId === this.selectedQuestLogId ? 'true' : 'false');
       item.setAttribute('aria-label', t('questUi.log.selectedQuestAria', { name: title, status }));
+      item.title = t('hudChrome.questShare.linkTitle');
       item.innerHTML = `${esc(title)}${qp.state === 'ready' ? ` <span class="quest-complete">(${esc(t('questUi.log.readyStatus'))})</span>` : ''}`;
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (ev) => {
+        if (ev.shiftKey) {
+          this.insertQuestChatLink(qp.questId);
+          return;
+        }
         this.selectedQuestLogId = qp.questId;
         this.renderQuestLog();
       });

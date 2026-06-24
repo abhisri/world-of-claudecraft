@@ -426,6 +426,18 @@ export const pt_BR: EnTranslations = {
     "tips": {
       "joinChannels": "Dica: digite /join world ou /join lfg para conversar com jogadores do reino inteiro."
     },
+    "questShare": {
+      "notShareable": "Esta missão não pode ser compartilhada.",
+      "notInSharerParty": "Você precisa estar no grupo de {name} para aceitar essa missão.",
+      "accepted": "{name} aceitou sua missão compartilhada.",
+      "dialogTitle": "Missão compartilhada",
+      "viewOnlyHint": "Entre no grupo de quem compartilhou para aceitar esta missão.",
+      "alreadyOn": "Você já está nesta missão.",
+      "alreadyDone": "Você já concluiu esta missão.",
+      "ineligible": "Você não atende aos requisitos desta missão.",
+      "noQuestSelected": "Selecione uma missão no seu registro para compartilhar.",
+      "linkTitle": "Shift + clique para vincular esta missão no chat."
+    },
     "plurals": {
       "guildMembers": {
         "one": "você é {rank}, {count} membro",

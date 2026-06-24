@@ -17,6 +17,18 @@ export const es: Partial<Record<TranslationKey, string>> = {
   'seo.officialLabel': 'Sitio web oficial de World of ClaudeCraft',
   'seo.officialBody':
     'worldofclaudecraft.com es el MMO de navegador gratuito oficial del reino Claudemoon. Juega en línea con un personaje persistente, explora en solitario sin conexión, lee la wiki y sigue los enlaces comunitarios verificados desde este sitio.',
+  'hudChrome.questShare.notShareable': 'Esta misión no se puede compartir.',
+  'hudChrome.questShare.notInSharerParty':
+    'Debes estar en el grupo de {name} para aceptar esa misión.',
+  'hudChrome.questShare.accepted': '{name} aceptó tu misión compartida.',
+  'hudChrome.questShare.dialogTitle': 'Misión compartida',
+  'hudChrome.questShare.viewOnlyHint':
+    'Únete al grupo de quien la comparte para aceptar esta misión.',
+  'hudChrome.questShare.alreadyOn': 'Ya tienes esta misión.',
+  'hudChrome.questShare.alreadyDone': 'Ya has completado esta misión.',
+  'hudChrome.questShare.ineligible': 'No cumples los requisitos de esta misión.',
+  'hudChrome.questShare.noQuestSelected': 'Selecciona una misión en tu diario para compartirla.',
+  'hudChrome.questShare.linkTitle': 'Mayús + clic para enlazar esta misión en el chat.',
   'character.sortBy': 'Ordenar',
   'character.sortByLabel': 'Ordenar personajes',
   'character.sortMenuLabel': 'Opciones de orden',
