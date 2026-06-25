@@ -11,15 +11,20 @@ const painter = readFileSync(new URL('../src/ui/options_window.ts', import.meta.
 const hudTs = readFileSync(new URL('../src/ui/hud.ts', import.meta.url), 'utf8');
 
 describe('options_window: no magic values (decision 12)', () => {
-  it('carries no literal hex color in TS (colors live in the extracted stylesheet)', () => {
+  it('carries no literal color in TS (colors live in the extracted stylesheet)', () => {
     const hex = painter.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
     expect(hex, `hex colors must move to tokens/CSS: ${hex.join(', ')}`).toEqual([]);
+    // a color literal can also sneak in as rgb()/hsl(); the painter must carry none.
+    expect(painter, 'rgb()/hsl() color literal must move to tokens/CSS').not.toMatch(
+      /\b(?:rgba?|hsla?)\(/,
+    );
   });
 
   it('names its numeric thresholds instead of bare literals', () => {
-    expect(painter).toContain('BUG_DESC_MAX_LEN');
     expect(painter).toContain('RANGE_FILL_FULL_PCT');
-    // the bare 2000 / 100 literals only appear in the named-constant definitions
+    // the bare 2000 literal appears ONLY on the BUG_DESC_MAX_LEN definition line, so
+    // a future stray 2000 elsewhere (or a dropped constant) trips the guard.
+    expect(painter).toContain('const BUG_DESC_MAX_LEN = 2000;');
     expect(painter.match(/\b2000\b/g) ?? []).toHaveLength(1);
   });
 
@@ -52,11 +57,52 @@ describe('options_window: WCAG 2.2 AA (decision 10)', () => {
     // sliders are native range inputs (role=slider) with an aria-label
     expect(painter).toContain("slider.type = 'range'");
     expect(painter).toContain("slider.setAttribute('aria-label', label)");
+    // and announce the human-meaningful readout (50%, 90 degrees), not the raw value
+    expect(painter).toContain("slider.setAttribute('aria-valuetext', text)");
     // toggles expose their pressed state
     expect(painter).toContain("toggle.setAttribute('aria-pressed'");
     // the async status + error nodes are live regions
     expect(painter).toContain("status.setAttribute('role', 'status')");
     expect(painter).toContain("error.setAttribute('role', 'alert')");
+  });
+
+  it('names the gamepad remap listboxes (the language picker already is named)', () => {
+    // each pad-button dropdown gets the physical button label as its accessible
+    // name, so it is not an unnamed role=listbox (WCAG 4.1.2).
+    expect(painter).toContain('ariaLabel: buttonLabel');
+    expect(painter).toContain("ariaLabel: t('hud.options.language')");
+  });
+});
+
+// The exact control-dispatch wiring. The pure value coercion is unit-tested in
+// options_view.test.ts (sliderDispatchValue / toggleNextValue / boolToggleNextValue);
+// here we pin that the painter routes each descriptor kind to its builder and fires
+// the SAME write the inline original did, so a dropped settings.set side effect or a
+// swapped coercion reds the build. Driving the live DOM + events is the opt-in
+// browser suite scheduled for P15b; this is the no-DOM-suite equivalent.
+describe('options_window: control-primitive dispatch wiring', () => {
+  it('routes each descriptor kind to its matching builder', () => {
+    expect(painter).toContain('this.settingSlider(parent, c, hooks)');
+    expect(painter).toContain('this.settingToggle(parent, c, hooks)');
+    expect(painter).toContain('this.settingBoolToggle(parent, c, hooks)');
+    expect(painter).toContain(
+      'this.settingChoice(parent, c, hooks, c.rerender ? rerender : undefined)',
+    );
+  });
+
+  it('fires the exact same setting write per control kind as the inline original', () => {
+    // slider: the raw input value coerced via the pure dispatch fn
+    expect(painter).toContain('hooks.onSettingChange(key, sliderDispatchValue(slider.value))');
+    // numeric toggle: flip off the stored value, no pre-set
+    expect(painter).toContain(
+      'hooks.onSettingChange(key, toggleNextValue(hooks.settings.get(key)))',
+    );
+    // bool toggle: set-then-dispatch (settings.set returns the committed boolean)
+    expect(painter).toContain(
+      'hooks.settings.set(key, boolToggleNextValue(hooks.settings.get(key)))',
+    );
+    // enumerated choice: the chosen option value verbatim
+    expect(painter).toContain('hooks.onSettingChange(key, option.value)');
   });
 });
 

@@ -291,18 +291,41 @@ describe('options_view: bug report info (cluster 2)', () => {
     expect(nullRealm.realmKnown).toBe(false);
   });
 
-  it('is identical from a Sim-shaped world and a ClientWorld-mirror (decision 15 parity)', () => {
-    // Offline Sim shape: the live player entity + realm string.
-    const simWorld = {
+  it('derives the documented info from BOTH a Sim shape and a ClientWorld-mirror shape (decision 15 parity)', () => {
+    // Two GENUINELY different world shapes, not a self-clone: the offline Sim hands
+    // the window a live player Entity (a prototyped instance carrying extra offline
+    // fields the window must ignore) and an empty realm string (IWorld.realm is ''
+    // in offline play); the online ClientWorld hands it a plain wire-mirrored object
+    // and a populated realm. The slice the window reads (name + pos) must come out
+    // identical from both, so an offline-only field shape can't silently misrender
+    // online; only realm (a documented online/offline difference) differs.
+    const simPlayer = Object.assign(Object.create({ speed: 7 }), {
+      name: 'Tharos',
+      pos: { x: 5.5, y: 2.25, z: -7.75 },
+      hp: 120, // offline-only field the bug-report slice must not read
+    });
+    const simInfo = buildBugReportInfo('', simPlayer);
+    expect(simInfo).toEqual({
+      realmKnown: false,
+      realm: '',
+      characterName: 'Tharos',
+      pos: { x: 5.5, y: 2.25, z: -7.75 },
+    });
+
+    const clientInfo = buildBugReportInfo('Stormrend', {
+      name: 'Tharos',
+      pos: { x: 5.5, y: 2.25, z: -7.75 },
+    });
+    expect(clientInfo).toEqual({
+      realmKnown: true,
       realm: 'Stormrend',
-      player: { name: 'Tharos', pos: { x: 5.5, y: 2.25, z: -7.75 } },
-    };
-    // Online ClientWorld mirror: the same data round-tripped through the wire (JSON),
-    // proving an offline-only field shape does not silently misrender online.
-    const clientWorld = JSON.parse(JSON.stringify(simWorld)) as typeof simWorld;
-    expect(buildBugReportInfo(clientWorld.realm, clientWorld.player)).toEqual(
-      buildBugReportInfo(simWorld.realm, simWorld.player),
-    );
+      characterName: 'Tharos',
+      pos: { x: 5.5, y: 2.25, z: -7.75 },
+    });
+
+    // The read slice is identical across the two shapes; realm is the only divergence.
+    expect(clientInfo.characterName).toBe(simInfo.characterName);
+    expect(clientInfo.pos).toEqual(simInfo.pos);
   });
 });
 
