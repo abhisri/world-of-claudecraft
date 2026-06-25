@@ -95,7 +95,12 @@ const simFiles = walk(simRoot);
 // Curated src/ui pure cores: host-agnostic view models hud.ts imports, each
 // paired with a DOM painter that is deliberately NOT registered here. Seeded with
 // the cores that already exist on v0.16.0; extend as new pure cores land (the
-// later HUD-extraction phases). Paths are repo-relative for the failure messages.
+// later HUD-extraction phases). The forbiddenUiCoreImport guard forbids three +
+// render/game/net + a DOM-owning painter, so it also fits a render-importable
+// game LEAF: src/game/ui_effects_profile.ts is a pure resolver that imports
+// nothing (gfx.ts imports its EFFECTS_QUALITY_LOW_CUTOFF, a render->game leaf
+// import), so it is registered here even though it lives in src/game. Paths are
+// repo-relative for the failure messages.
 const UI_PURE_CORES = [
   'src/ui/unit_portrait.ts',
   'src/ui/xp_bar.ts',
@@ -112,6 +117,7 @@ const UI_PURE_CORES = [
   'src/ui/raid_lockout_view.ts',
   'src/ui/stat_tooltip_view.ts',
   'src/ui/vendor_view.ts',
+  'src/game/ui_effects_profile.ts',
 ].map((rel) => join(repoRoot, rel));
 
 // Pure logic cores that live in src/render (the painter half is Three-side). Just
