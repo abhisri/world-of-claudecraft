@@ -21,7 +21,7 @@ import { MOBS, DELVES, QUESTS } from '../../src/sim/data';
 import { createMob } from '../../src/sim/entity';
 import { Sim } from '../../src/sim/sim';
 import { solveLockActions } from '../../src/sim/lockpick';
-import { DT, FISHING_CAST_ID, type Entity } from '../../src/sim/types';
+import { DT, FISHING_CAST_ID, MAX_LEVEL, type Entity } from '../../src/sim/types';
 import { terrainHeight } from '../../src/sim/world';
 import type { Recorder, Scenario } from './record';
 
@@ -1044,6 +1044,51 @@ function partyRaid(): Scenario {
   };
 }
 
+// Talent application (G1a): exercise every sim-side talent method (applyTalents /
+// respec / saveLoadout + switchLoadout / setSpec) on a max-level warrior so the flat
+// `talentMods` struct re-bakes and the known-ability list flips on each change. Drives
+// NO rng (talent application is deterministic validation + struct baking), so the draw
+// digest stays empty/byte-identical across the extraction. Pure snapshots, no ticks, so
+// the player never enters combat and the talent-lock guard never trips.
+function talentsProgression(): Scenario {
+  return {
+    name: 'talents_progression',
+    coverage: [
+      'applyTalents valid spec build (G1a) + recomputeTalents flat-struct bake',
+      'respec wipes ranks, keeps spec',
+      'saveLoadout (object-alloc overload) + switchLoadout (2 of 4 slots)',
+      'setSpec drops the prior spec tree points',
+      'refreshKnownAbilities(announce=false): known-ability list flips per change',
+    ],
+    sampleEvery: 2,
+    build: () => new Sim({ seed: 1014, playerClass: 'warrior', autoEquip: true }),
+    drive(rec: Recorder) {
+      const sim = rec.sim as AnySim;
+      sim.setPlayerLevel(MAX_LEVEL); // enough talent points for a spec'd build
+      // (1) Apply a valid Arms build: the flat talentMods bakes + known list changes.
+      sim.applyTalents({ spec: 'arms', ranks: { war_cruelty: 2, arms_imp_overpower: 2 }, choices: {} });
+      rec.snapshot('apply-arms');
+      // (2) Respec: ranks wiped, spec retained, stats revert.
+      sim.respec();
+      rec.snapshot('respec');
+      // (3) Save the respec'd build as a loadout (the HUD positional-alloc overload),
+      // apply a different build, then switch back to slot 0.
+      sim.saveLoadout('Arms', ['mortal_strike', 'overpower', null], {
+        spec: 'arms',
+        ranks: { arms_imp_overpower: 2 },
+        choices: {},
+      });
+      sim.applyTalents({ spec: 'arms', ranks: { war_cruelty: 3 }, choices: {} });
+      rec.snapshot('second-build');
+      sim.switchLoadout(0);
+      rec.snapshot('switch-loadout');
+      // (4) Set spec to Fury: the prior (Arms) spec tree's points drop; class points stay.
+      sim.setSpec('fury');
+      rec.snapshot('set-spec');
+    },
+  };
+}
+
 export const SCENARIOS: Scenario[] = [
   soloWarrior(),
   soloMage(),
@@ -1064,4 +1109,5 @@ export const SCENARIOS: Scenario[] = [
   mobTargeting(),
   questKillCredit(),
   questCollectTurnIn(),
+  talentsProgression(),
 ];

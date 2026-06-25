@@ -681,7 +681,7 @@ function scanEmitCandidates(simSrc: string, serverSrc: string): Cand[] {
   // patterns below miss.
   const cond = '[^?,{}\\n]*?';
   const unq = (s: string) => s.slice(1, -1);
-  // --- src/sim/sim.ts emits ---
+  // --- src/sim/sim.ts (+ extracted sim modules, which emit via ctx.*) emits ---
   const e1 = new RegExp(`emit\\(\\{[^}]*?type:\\s*'(log|loot)'[^}]*?text:\\s*${lit}`, 'gs');
   for (const m of simSrc.matchAll(e1)) cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[2]) });
   const e2 = new RegExp(`emit\\(\\{[^}]*?text:\\s*${lit}[^}]*?type:\\s*'(log|loot)'`, 'gs');
@@ -695,19 +695,21 @@ function scanEmitCandidates(simSrc: string, serverSrc: string): Cand[] {
     cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[2]) });
     cands.push({ type: m[1] as Cand['type'], tmpl: unq(m[3]) });
   }
-  // `this.error(` on Sim, plus `this.ctx.error(` from extracted modules (A1+ route
-  // player errors through the SimContext seam, e.g. src/sim/social/party.ts).
-  const er = new RegExp(`this\\.(?:ctx\\.)?error\\([^,]+,\\s*${lit}\\s*\\)`, 'g');
+  // `this.error` on Sim, `this.ctx.error` from class modules (A1+ social/*.ts), and
+  // bare `ctx.error` from free-function modules (G1a progression/talents.ts) are the
+  // same player-facing error sink. `(?:this|ctx)\.error` matches all three (it catches
+  // this.ctx.error via the trailing ctx.error).
+  const er = new RegExp(`(?:this|ctx)\\.error\\([^,]+,\\s*${lit}\\s*\\)`, 'g');
   for (const m of simSrc.matchAll(er)) cands.push({ type: 'error', tmpl: unq(m[1]) });
   // Variable-routed sim emits: this.notice(pid, '<lit>') (emits 'log') and
   // this.stopFollow(p, '<lit>') (arg2 routes through this.error) — blind spots.
   // The first-arg class excludes ),(,newline so a single-arg call (e.g.
   // `this.stopFollow(p);`) cannot span into the NEXT call's literal.
-  const nr = new RegExp(`this\\.(?:notice|stopFollow)\\([^,()\\n]+,\\s*${lit}`, 'g');
+  const nr = new RegExp(`(?:this|ctx)\\.(?:notice|stopFollow)\\([^,()\\n]+,\\s*${lit}`, 'g');
   for (const m of simSrc.matchAll(nr)) cands.push({ type: 'log', tmpl: unq(m[1]) });
   // Ternary args to error/notice/stopFollow (both branches).
   const ert = new RegExp(
-    `this\\.(?:ctx\\.)?(?:error|notice|stopFollow)\\([^,()\\n]+,\\s*${cond}\\?\\s*${lit}\\s*:\\s*${lit}`,
+    `(?:this|ctx)\\.(?:error|notice|stopFollow)\\([^,()\\n]+,\\s*${cond}\\?\\s*${lit}\\s*:\\s*${lit}`,
     'g',
   );
   for (const m of simSrc.matchAll(ert)) {
@@ -753,9 +755,11 @@ describe('S3: every sim.ts emit is recognized (drift guard)', () => {
   // Extraction sessions moved player-facing emits out of sim.ts into sibling sim
   // modules: C1 -> src/sim/combat/damage.ts (the frenzy proc + pet "<name> dies."
   // line), A1+ -> src/sim/social/*.ts (the party machine, later duel/arena/fiesta/
-  // markers) emitting via this.ctx.emit / this.ctx.error. Scan ALL of them alongside
+  // markers), G1a -> src/sim/progression/talents.ts (talent validation toasts). They
+  // emit via this.ctx.* / bare ctx.* through SimContext. Scan ALL of them alongside
   // sim.ts so every language-agnostic sim emit stays under the drift guard; they are
-  // re-localized client-side by the same matchers.
+  // re-localized client-side by the same matchers. When a slice moves emit literals
+  // out of the monolith, append its path here.
   const socialDir = path.resolve(process.cwd(), 'src/sim/social');
   const socialSrc = fs.existsSync(socialDir)
     ? fs
@@ -767,6 +771,7 @@ describe('S3: every sim.ts emit is recognized (drift guard)', () => {
   const simSrc = [
     fs.readFileSync(path.resolve(process.cwd(), 'src/sim/sim.ts'), 'utf8'),
     fs.readFileSync(path.resolve(process.cwd(), 'src/sim/combat/damage.ts'), 'utf8'),
+    fs.readFileSync(path.resolve(process.cwd(), 'src/sim/progression/talents.ts'), 'utf8'),
     socialSrc,
   ].join('\n');
   // Hardened S3: also scan the authoritative server's player-facing emits. The

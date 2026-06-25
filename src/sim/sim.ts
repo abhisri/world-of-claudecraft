@@ -44,7 +44,6 @@ import {
   emptyAllocation,
   emptyModifiers,
   FIRST_TALENT_LEVEL,
-  MAX_LOADOUTS,
   pointsSpent,
   type Role,
   type SavedLoadout,
@@ -52,7 +51,6 @@ import {
   type TalentModifiers,
   talentPointsAtLevel,
   talentsFor,
-  validateAllocation,
 } from './content/talents';
 import type { DelveShopGate, DelveShopOffer } from './data';
 import {
@@ -164,6 +162,16 @@ import {
   runDespawnDecay,
   tickGroundAoEs,
 } from './entity_roster';
+import {
+  applyTalentAllocation,
+  deleteTalentLoadout,
+  respecTalents,
+  saveTalentLoadout,
+  setTalentSpec,
+  spendTalentPoint,
+  switchTalentLoadout,
+  talentPointBudget,
+} from './progression/talents';
 import { createSimContext, type SimContext, type SimContextHost } from './sim_context';
 import { checkQuestReady, onInventoryChangedForQuests, onMobKilledForQuests } from './quests/quest_credit';
 import { PartyMachine } from './social/party';
@@ -2121,122 +2129,41 @@ export class Sim {
   }
 
   // -------------------------------------------------------------------------
-  // Talents & Specializations (server-authoritative). Every allocation change
-  // validates against the level-derived point budget + tree rules, then
-  // recomputes the flat modifier struct. Restricted to out-of-combat (and not
-  // mid-arena): talents never change during a fight.
+  // Talents & Specializations (server-authoritative). The application layer
+  // (validate -> bake the flat TalentModifiers struct -> manage specs + the named
+  // loadouts) lives in progression/talents.ts (G1a). These stay here as thin wrappers
+  // that delegate into the module via this.ctx, so the IWorld / server-command surface
+  // (sim.applyTalents(...) etc.) is unchanged. recomputeTalents (the SOLE tree walk),
+  // talentLockReason, and sanitizeTalentAllocation are module-internal there. The
+  // talent-facing getters (talents/talentSpec/talentRole/loadouts/activeLoadout) and
+  // playerMods (the Fiesta overlay) stay on Sim.
   // -------------------------------------------------------------------------
 
-  // The ONLY place a talent tree is walked. Re-resolves the flat modifier struct
-  // and refreshes the stat pass + known-ability resolver that consume it.
-  private recomputeTalents(meta: PlayerMeta): void {
-    meta.talentMods = computeTalentModifiers(meta.cls, meta.talents);
-    const e = this.entities.get(meta.entityId);
-    if (e) recalcPlayerStats(e, meta.cls, meta.equipment, this.playerMods(meta));
-    this.refreshKnownAbilities(meta, false);
-  }
-
-  private talentLockReason(p: Entity): string | null {
-    if (p.inCombat) return 'You cannot change talents in combat.';
-    if (this.arenaMatches.has(p.id)) return 'You cannot change talents during an arena match.';
-    return null;
-  }
-
   talentPoints(pid?: number): { total: number; spent: number } {
-    const r = this.resolve(pid);
-    if (!r) return { total: 0, spent: 0 };
-    return { total: talentPointsAtLevel(r.e.level), spent: pointsSpent(r.meta.talents) };
-  }
-
-  private sanitizeTalentAllocation(alloc: TalentAllocation): TalentAllocation {
-    const sanitized: TalentAllocation = {
-      spec: alloc.spec ?? null,
-      ranks: {},
-      choices: { ...alloc.choices },
-    };
-    for (const id in alloc.ranks) {
-      const v = Math.floor(alloc.ranks[id]);
-      if (v > 0) sanitized.ranks[id] = v;
-    }
-    return sanitized;
+    return talentPointBudget(this.ctx, pid);
   }
 
   // Commit a whole staged allocation in one shot (the UI's "Apply"). Rejects any
   // allocation that fails server-side validation with a reason event (FR-4.5).
   applyTalents(alloc: TalentAllocation, pid?: number): boolean {
-    const r = this.resolve(pid);
-    if (!r) return false;
-    const lock = this.talentLockReason(r.e);
-    if (lock) {
-      this.error(r.e.id, lock);
-      return false;
-    }
-    const sanitized = this.sanitizeTalentAllocation(alloc);
-    if (sanitized.spec && r.e.level < FIRST_TALENT_LEVEL) {
-      this.error(r.e.id, `You may choose a specialization at level ${FIRST_TALENT_LEVEL}.`);
-      return false;
-    }
-    const check = validateAllocation(r.meta.cls, sanitized, talentPointsAtLevel(r.e.level));
-    if (!check.ok) {
-      this.error(r.e.id, check.reason ?? 'Invalid talent build.');
-      return false;
-    }
-    r.meta.talents = sanitized;
-    this.recomputeTalents(r.meta);
-    this.emit({ type: 'log', pid: r.e.id, text: 'Talents updated.', color: '#ffd100' });
-    return true;
+    return applyTalentAllocation(this.ctx, alloc, pid);
   }
 
   // Spend a single point into a node (incremental API; the UI mostly stages then
   // applies). Validated identically by building + checking a candidate alloc.
   spendTalent(nodeId: string, pid?: number): boolean {
-    const r = this.resolve(pid);
-    if (!r) return false;
-    const cand = cloneAllocation(r.meta.talents);
-    cand.ranks[nodeId] = (cand.ranks[nodeId] ?? 0) + 1;
-    return this.applyTalents(cand, pid);
+    return spendTalentPoint(this.ctx, nodeId, pid);
   }
 
   // Choose / change specialization. Switching specs drops the previous spec
   // tree's points (they belonged to that tree); the class tree is untouched.
   setSpec(specId: string | null, pid?: number): boolean {
-    const r = this.resolve(pid);
-    if (!r) return false;
-    const lock = this.talentLockReason(r.e);
-    if (lock) {
-      this.error(r.e.id, lock);
-      return false;
-    }
-    const ct = talentsFor(r.meta.cls);
-    if (specId !== null && !ct?.specs.some((s) => s.id === specId)) {
-      this.error(r.e.id, 'Unknown specialization.');
-      return false;
-    }
-    const cand = cloneAllocation(r.meta.talents);
-    cand.spec = specId;
-    for (const id of Object.keys(cand.ranks)) {
-      const node = ct?.nodes.find((n) => n.id === id);
-      if (node?.tree === 'spec' && node.specId !== specId) {
-        delete cand.ranks[id];
-        delete cand.choices[id];
-      }
-    }
-    return this.applyTalents(cand, pid);
+    return setTalentSpec(this.ctx, specId, pid);
   }
 
   // Free respec (out of combat): wipe all talent points. Spec is retained.
   respec(pid?: number): boolean {
-    const r = this.resolve(pid);
-    if (!r) return false;
-    const lock = this.talentLockReason(r.e);
-    if (lock) {
-      this.error(r.e.id, lock);
-      return false;
-    }
-    r.meta.talents = { spec: r.meta.talents.spec, ranks: {}, choices: {} };
-    this.recomputeTalents(r.meta);
-    this.emit({ type: 'log', pid: r.e.id, text: 'Talents reset.', color: '#ffd100' });
-    return true;
+    return respecTalents(this.ctx, pid);
   }
 
   // Save the current build (talents + spec + the given action-bar slot map) as a
@@ -2248,104 +2175,17 @@ export class Sim {
     pidOrAlloc?: number | TalentAllocation,
     allocMaybe?: TalentAllocation,
   ): number {
-    const pid = typeof pidOrAlloc === 'number' ? pidOrAlloc : undefined;
-    const alloc = typeof pidOrAlloc === 'object' ? pidOrAlloc : allocMaybe;
-    const r = this.resolve(pid);
-    if (!r) return -1;
-    if (alloc) {
-      const lock = this.talentLockReason(r.e);
-      if (lock) {
-        this.error(r.e.id, lock);
-        return -1;
-      }
-      const sanitized = this.sanitizeTalentAllocation(alloc);
-      if (sanitized.spec && r.e.level < FIRST_TALENT_LEVEL) {
-        this.error(r.e.id, `You may choose a specialization at level ${FIRST_TALENT_LEVEL}.`);
-        return -1;
-      }
-      const check = validateAllocation(r.meta.cls, sanitized, talentPointsAtLevel(r.e.level));
-      if (!check.ok) {
-        this.error(r.e.id, check.reason ?? 'Invalid talent build.');
-        return -1;
-      }
-      r.meta.talents = sanitized;
-      this.recomputeTalents(r.meta);
-    }
-    const clean = (name || 'Build').toString().slice(0, 24);
-    const safeBar = Array.isArray(bar)
-      ? bar.slice(0, 16).map((b) => (typeof b === 'string' ? b : null))
-      : [];
-    const lo: SavedLoadout = { name: clean, alloc: cloneAllocation(r.meta.talents), bar: safeBar };
-    const existing = r.meta.loadouts.findIndex((l) => l.name === clean);
-    if (existing >= 0) {
-      r.meta.loadouts[existing] = lo;
-      r.meta.activeLoadout = existing;
-      this.emit({ type: 'log', pid: r.e.id, text: `Saved build "${clean}".`, color: '#ffd100' });
-      return existing;
-    }
-    if (r.meta.loadouts.length >= MAX_LOADOUTS) {
-      this.error(r.e.id, `You can save at most ${MAX_LOADOUTS} loadouts.`);
-      return -1;
-    }
-    r.meta.loadouts.push(lo);
-    r.meta.activeLoadout = r.meta.loadouts.length - 1;
-    this.emit({ type: 'log', pid: r.e.id, text: `Saved build "${clean}".`, color: '#ffd100' });
-    return r.meta.activeLoadout;
+    return saveTalentLoadout(this.ctx, name, bar, pidOrAlloc, allocMaybe);
   }
 
   // Apply a saved loadout's talents (out of combat). The action bar is restored
   // client-side from the loadout's stored slot map. Re-validated server-side.
   switchLoadout(index: number, pid?: number): boolean {
-    const r = this.resolve(pid);
-    if (!r) return false;
-    const lock = this.talentLockReason(r.e);
-    if (lock) {
-      this.error(r.e.id, lock);
-      return false;
-    }
-    const lo = r.meta.loadouts[index];
-    if (!lo) {
-      this.error(r.e.id, 'No such loadout.');
-      return false;
-    }
-    if (lo.alloc.spec && r.e.level < FIRST_TALENT_LEVEL) {
-      this.error(r.e.id, 'That loadout needs a higher level.');
-      return false;
-    }
-    const check = validateAllocation(r.meta.cls, lo.alloc, talentPointsAtLevel(r.e.level));
-    if (!check.ok) {
-      this.error(r.e.id, `Loadout invalid: ${check.reason ?? 'unknown'}`);
-      return false;
-    }
-    r.meta.talents = cloneAllocation(lo.alloc);
-    r.meta.activeLoadout = index;
-    this.recomputeTalents(r.meta);
-    this.emit({
-      type: 'log',
-      pid: r.e.id,
-      text: `Loadout "${lo.name}" applied.`,
-      color: '#ffd100',
-    });
-    return true;
+    return switchTalentLoadout(this.ctx, index, pid);
   }
 
   deleteLoadout(index: number, pid?: number): boolean {
-    const r = this.resolve(pid);
-    if (!r || index < 0 || index >= r.meta.loadouts.length) return false;
-    const wasActive = r.meta.activeLoadout === index;
-    const name = r.meta.loadouts[index].name;
-    r.meta.loadouts.splice(index, 1);
-    if (wasActive) {
-      r.meta.activeLoadout =
-        r.meta.loadouts.length > 0 ? Math.min(index, r.meta.loadouts.length - 1) : -1;
-      const next = r.meta.activeLoadout >= 0 ? r.meta.loadouts[r.meta.activeLoadout] : null;
-      if (next) {
-        r.meta.talents = cloneAllocation(next.alloc);
-        this.recomputeTalents(r.meta);
-      }
-    } else if (r.meta.activeLoadout > index) r.meta.activeLoadout -= 1;
-    this.emit({ type: 'log', pid: r.e.id, text: `Deleted build "${name}".`, color: '#ffd100' });
-    return true;
+    return deleteTalentLoadout(this.ctx, index, pid);
   }
 
   // Threat modifier including the tank-role talent bonus (e.g. Protection's

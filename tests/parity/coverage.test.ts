@@ -233,4 +233,22 @@ describe('coverage: each scenario fires its subsystem', () => {
     ).toBe(true);
     expect(ev.some((e) => e.type === 'questDone' && e.questId === 'q_boars')).toBe(true);
   });
+
+  it('talents_progression: applyTalents/respec/loadout/setSpec fire and bake the flat struct', () => {
+    const rec = run('talents_progression');
+    const pid = (rec.sim as any).playerId;
+    const ev = rec.allEvents as Ev[];
+    // applyTalents (and setSpec -> applyTalents) emitted the confirmation log.
+    expect(ev.some((e) => e.type === 'log' && e.text === 'Talents updated.')).toBe(true);
+    // respec emitted its own log.
+    expect(ev.some((e) => e.type === 'log' && e.text === 'Talents reset.')).toBe(true);
+    // switchLoadout restored a saved build.
+    expect(
+      ev.some((e) => e.type === 'log' && typeof e.text === 'string' && e.text.startsWith('Loadout ')),
+    ).toBe(true);
+    // setSpec('fury') applied last: the flat talentMods re-baked from the new tree.
+    const meta = (rec.sim as any).players.get(pid);
+    expect(meta.talents.spec).toBe('fury');
+    expect(meta.talentMods.spec).toBe('fury');
+  });
 });
