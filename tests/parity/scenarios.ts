@@ -21,6 +21,7 @@ import { MOBS, DELVES } from '../../src/sim/data';
 import { createMob } from '../../src/sim/entity';
 import { Sim } from '../../src/sim/sim';
 import { solveLockActions } from '../../src/sim/lockpick';
+import { FISHING_CAST_ID } from '../../src/sim/types';
 import type { Entity } from '../../src/sim/types';
 import { terrainHeight } from '../../src/sim/world';
 import type { Recorder, Scenario } from './record';
@@ -655,6 +656,122 @@ function delveDeath(): Scenario {
   };
 }
 
+// C1 damage core: kill a player who is mid-cast inside a fiesta. Pins the
+// dealDamage cross-team lethal arm's emit-THEN-fiestaTakedown order, plus the
+// mid-cast interaction both ways: a non-lethal hit on a normal cast pushes the cast
+// back (pushbackCast ~5664) and a non-lethal hit on the fishing cast cancels it
+// (cancelCast ~5663). Mirrors the fiesta matchmaking flow so the match reaches
+// active before the takedown.
+function fiestaMidcastKill(): Scenario {
+  return {
+    name: 'fiesta_midcast_kill',
+    coverage: [
+      'dealDamage fiesta mid-cast pushback (pushbackCast ~5664)',
+      'dealDamage fiesta mid-cast fishing-cancel (cancelCast ~5663)',
+      'dealDamage fiesta cross-team takedown emit-then-fiestaTakedown order (~5512-5525)',
+      'fiesta lifesteal augment arm (~5499)',
+      'multi-player fiesta meta',
+    ],
+    sampleEvery: 25,
+    build: () => new Sim({ seed: 1014, playerClass: 'warrior', noPlayer: true }),
+    drive(rec: Recorder) {
+      const sim = rec.sim as AnySim;
+      const classes: Array<'warrior' | 'mage' | 'rogue' | 'hunter'> = ['warrior', 'mage', 'rogue', 'hunter'];
+      const pids = classes.map((c, i) => sim.addPlayer(c, `F${i}`));
+      pids.forEach((pid, i) => teleport(sim, sim.entities.get(pid)!, i * 4, -40));
+      pids.forEach((pid) => sim.arenaQueueJoin(pid, 'fiesta'));
+      rec.tick(1);
+      for (let i = 0; i < 20 * 10; i++) {
+        rec.tick(1);
+        const m = sim.arenaMatchFor(pids[0]);
+        if (m && m.state === 'active') break;
+      }
+      const match = sim.arenaMatchFor(pids[0]);
+      if (match && match.fiesta && match.teamA.length && match.teamB.length) {
+        const killer = sim.entities.get(match.teamA[0]) as AnyEntity;
+        const victim = sim.entities.get(match.teamB[0]) as AnyEntity;
+        beef(victim, 5000); // survive the two non-lethal cast-interrupt hits
+        // (a) mid-cast pushback: a normal (non-fishing) cast, hit non-lethally.
+        victim.castingAbility = 'fireball';
+        victim.castRemaining = 2;
+        victim.castTotal = 2;
+        victim.channeling = false;
+        sim.dealDamage(killer, victim, 50, false, 'physical', null, 'hit');
+        rec.snapshot('midcast-pushback');
+        // (b) mid-cast fishing cancel: the fishing cast is cancelled, not pushed.
+        victim.castingAbility = FISHING_CAST_ID;
+        victim.castRemaining = 5;
+        victim.channeling = false;
+        sim.dealDamage(killer, victim, 50, false, 'physical', null, 'hit');
+        rec.snapshot('midcast-fishcancel');
+        // (c) lethal cross-team hit: hp=0 -> emit damage -> fiestaTakedown -> return.
+        victim.castingAbility = 'fireball';
+        victim.castRemaining = 2;
+        victim.castTotal = 2;
+        victim.channeling = false;
+        sim.dealDamage(killer, victim, victim.maxHp + 50, false, 'physical', null, 'hit');
+        rec.notes.fiestaVictimPid = victim.id;
+        rec.notes.fiestaKillerPid = killer.id;
+        rec.snapshot('takedown');
+        rec.tick(1);
+      }
+      rec.tick(20 * 2);
+    },
+  };
+}
+
+// C1 damage core: multiple classes wound a frenzyOnHit mob so maybeFrenzyOnHit (the
+// ONLY rng draw in this slice) fires once per qualifying hit, pinning that draw at
+// its global stream position. The frenzy chance is forced to 1 (the draw still
+// happens; it just makes the blood_frenzy buff land deterministically so the push +
+// refresh branches both run) and restored afterward (MOBS is a process-wide
+// singleton). dealDamage is called directly per class source.
+function multiClassFrenzy(): Scenario {
+  return {
+    name: 'multi_class_frenzy',
+    coverage: [
+      'dealDamage -> maybeFrenzyOnHit rng draw (the only in-slice draw, ~5651/5702)',
+      'blood_frenzy push then refresh branches',
+      'amp stack + threat handoff + tap rights across multiple attackers',
+      'multi-class sources: warrior/mage/rogue',
+    ],
+    sampleEvery: 5,
+    build: () => new Sim({ seed: 1015, playerClass: 'warrior', noPlayer: true }),
+    drive(rec: Recorder) {
+      const sim = rec.sim as AnySim;
+      const classes: Array<'warrior' | 'mage' | 'rogue'> = ['warrior', 'mage', 'rogue'];
+      const pids = classes.map((c, i) => sim.addPlayer(c, `M${i}`));
+      pids.forEach((pid, i) => {
+        const e = sim.entities.get(pid) as AnyEntity;
+        teleport(sim, e, i * 2, -30);
+        beef(e); // keep every attacker alive while the mob swings back
+      });
+      const lead = sim.entities.get(pids[0]) as AnyEntity;
+      const greyjaw = spawnMob(sim, 'old_greyjaw', 6, lead.pos.x + 1, lead.pos.y, lead.pos.z + 2);
+      beef(greyjaw, 200000);
+      greyjaw.hostile = true;
+      rec.track(greyjaw.id);
+      rec.notes.greyjawId = greyjaw.id;
+
+      const greyTrait = MOBS.old_greyjaw.frenzyOnHit;
+      const greyOrig = greyTrait ? greyTrait.chance : undefined;
+      try {
+        if (greyTrait) greyTrait.chance = 1;
+        for (let round = 0; round < 4; round++) {
+          for (const pid of pids) {
+            const e = sim.entities.get(pid) as AnyEntity;
+            sim.dealDamage(e, greyjaw, 30, false, 'physical', null, 'hit');
+          }
+          rec.snapshot(`frenzy-round-${round}`);
+        }
+      } finally {
+        if (greyTrait && greyOrig !== undefined) greyTrait.chance = greyOrig;
+      }
+      rec.tick(10);
+    },
+  };
+}
+
 export const SCENARIOS: Scenario[] = [
   soloWarrior(),
   soloMage(),
@@ -669,4 +786,6 @@ export const SCENARIOS: Scenario[] = [
   partyLoot(),
   entityRoster(),
   delveDeath(),
+  fiestaMidcastKill(),
+  multiClassFrenzy(),
 ];

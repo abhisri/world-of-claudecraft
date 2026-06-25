@@ -1583,6 +1583,14 @@ export const XP_TABLE = [
 ];
 export const MAX_LEVEL = 20;
 
+// Shared sim constants relocated here (C1) so both sim.ts and the extracted damage
+// core (src/sim/combat/damage.ts) can import them without a sim.ts cycle.
+export const PARTY_XP_RANGE = 80; // yards: members this close share kill xp/credit
+// Nythraxis raid boss template id. Used by the damage-core death path (lockout on
+// boss death) and the still-on-Sim encounter logic; N1 may re-home it when it owns
+// the encounter. Kept here as the neutral shared seam in the meantime.
+export const NYTHRAXIS_BOSS_ID = 'nythraxis_scourge_of_thornpeak';
+
 export function xpForLevel(level: number): number {
   return XP_TABLE[Math.min(level - 1, XP_TABLE.length - 1)];
 }

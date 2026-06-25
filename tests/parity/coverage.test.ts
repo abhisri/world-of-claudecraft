@@ -149,4 +149,26 @@ describe('coverage: each scenario fires its subsystem', () => {
     const rec = run('delve_death');
     expect((rec.allEvents as Ev[]).some((e) => e.type === 'delveFailed')).toBe(true);
   });
+
+  it('fiesta_midcast_kill: mid-cast cancel + cross-team takedown both fire', () => {
+    const rec = run('fiesta_midcast_kill');
+    const ev = rec.allEvents as Ev[];
+    // fishing-cast hit -> cancelCast emits castStop(success:false)
+    expect(ev.some((e) => e.type === 'castStop' && e.success === false)).toBe(true);
+    // lethal cross-team hit -> fiesta takedown scored
+    expect(ev.some((e) => e.type === 'fiestaScore' || e.type === 'fiestaDown')).toBe(true);
+    const victimPid = rec.notes.fiestaVictimPid as number;
+    expect(typeof victimPid).toBe('number');
+  });
+
+  it('multi_class_frenzy: frenzyOnHit draws + blood_frenzy lands across multi-class hits', () => {
+    const rec = run('multi_class_frenzy');
+    const gid = rec.notes.greyjawId as number;
+    const g = entities(rec).find((e) => e.id === gid);
+    expect(g, 'scenario greyjaw missing').toBeTruthy();
+    expect(g.auras?.some((a: Ev) => a.id === 'blood_frenzy')).toBe(true);
+    const ev = rec.allEvents as Ev[];
+    const sources = new Set(ev.filter((e) => e.type === 'damage' && e.targetId === gid).map((e) => e.sourceId));
+    expect(sources.size).toBeGreaterThanOrEqual(2); // multiple class sources wounded the mob
+  });
 });

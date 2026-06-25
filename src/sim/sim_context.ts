@@ -17,7 +17,15 @@ import type { DelayedEvent, GroundAoE } from './entity_roster';
 import type { Rng } from './rng';
 import type { ArenaMatch, DuelState, Party, PlayerMeta } from './sim';
 import type { SpatialGrid } from './spatial';
-import type { Aura, CrowdControlDrCategory, DelveRun, Entity, SimEvent, Vec3 } from './types';
+import type {
+  Aura,
+  CrowdControlDrCategory,
+  DelveRun,
+  Entity,
+  SimConfig,
+  SimEvent,
+  Vec3,
+} from './types';
 
 // Live primitive views onto the running Sim. These are GETTERS, not snapshots:
 // `time`/`tickCount` advance every tick, and the `rng`/`entities` identities are
@@ -44,6 +52,12 @@ export interface SimContextPrimitives {
   // live arena bouts keyed by every participant pid (A2); release-spirit early-bails
   // when the dead player is mid-bout.
   readonly arenaMatches: Map<number, ArenaMatch>;
+  // C1 damage-core live views. `players` (PlayerMeta keyed by entity id) and `duels`
+  // (shared duel keyed by both pids) back the damage/death/xp paths; `cfg` supplies
+  // respawn tuning on mob death. Backing fields stay on Sim.
+  readonly players: Map<number, PlayerMeta>;
+  readonly duels: Map<number, DuelState>;
+  readonly cfg: Required<Omit<SimConfig, 'noPlayer'>>;
 }
 
 // Cross-system callbacks. Each signature mirrors the still-on-`Sim` method it
@@ -138,6 +152,28 @@ export interface SimContextCallbacks {
   delveModuleEntry(run: DelveRun): Vec3;
   failDelveRun(run: DelveRun): void;
   pulseGroundAoE(effect: GroundAoE, threatOpts?: { flat?: number; mult?: number }): void;
+
+  // C1 damage core: the post-mitigation damage/death/xp hub the extracted module
+  // (src/sim/combat/damage.ts) owns plus the helpers it consumes (all still on Sim
+  // except dealDamage/handleDeath/grantXp, which delegate to the module). enterCombat
+  // is a shared combat-entry helper that STAYS on Sim, exposed here for the hub.
+  grantXp(amount: number, meta: PlayerMeta, opts?: { fromKill?: boolean }): void;
+  enterCombat(a: Entity, b: Entity): void;
+  hexOutputMult(source: Entity | null): number;
+  critVulnBonus(target: Entity): number;
+  pvpController(e: Entity | null): Entity | null;
+  threatMod(source: Entity, school: string): number;
+  isArenaTeamWiped(match: ArenaMatch, team: 'A' | 'B'): boolean;
+  arenaIsDown(match: ArenaMatch, pid: number): boolean;
+  clearNonPlayerStatAuras(target: Entity): void;
+  delveRunForMob(mobId: number): DelveRun | null;
+  onDelveBossDefeated(run: DelveRun): void;
+  grantNythraxisLockout(boss: Entity): void;
+  frenzyPackmates(dead: Entity): void;
+  armDeathThroes(dead: Entity): void;
+  onMobKilledForQuests(mob: Entity, meta: PlayerMeta): void;
+  refreshKnownAbilities(meta: PlayerMeta, announce: boolean): void;
+  syncPetLevel(owner: Entity): void;
 }
 
 // The seam consumed by extracted modules.
@@ -189,6 +225,15 @@ export function createSimContext(host: SimContextHost): SimContext {
     get arenaMatches() {
       return host.arenaMatches;
     },
+    get players() {
+      return host.players;
+    },
+    get duels() {
+      return host.duels;
+    },
+    get cfg() {
+      return host.cfg;
+    },
     emit: host.emit,
     dealDamage: host.dealDamage,
     handleDeath: host.handleDeath,
@@ -228,5 +273,22 @@ export function createSimContext(host: SimContextHost): SimContext {
     delveModuleEntry: host.delveModuleEntry,
     failDelveRun: host.failDelveRun,
     pulseGroundAoE: host.pulseGroundAoE,
+    grantXp: host.grantXp,
+    enterCombat: host.enterCombat,
+    hexOutputMult: host.hexOutputMult,
+    critVulnBonus: host.critVulnBonus,
+    pvpController: host.pvpController,
+    threatMod: host.threatMod,
+    isArenaTeamWiped: host.isArenaTeamWiped,
+    arenaIsDown: host.arenaIsDown,
+    clearNonPlayerStatAuras: host.clearNonPlayerStatAuras,
+    delveRunForMob: host.delveRunForMob,
+    onDelveBossDefeated: host.onDelveBossDefeated,
+    grantNythraxisLockout: host.grantNythraxisLockout,
+    frenzyPackmates: host.frenzyPackmates,
+    armDeathThroes: host.armDeathThroes,
+    onMobKilledForQuests: host.onMobKilledForQuests,
+    refreshKnownAbilities: host.refreshKnownAbilities,
+    syncPetLevel: host.syncPetLevel,
   };
 }

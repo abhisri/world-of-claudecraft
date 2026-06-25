@@ -7,6 +7,11 @@ import type {
 import { type AssistCandidate, resolveAssist } from './assist';
 import { lineOfSightClear, resolveMovement, resolvePosition } from './colliders';
 import {
+  dealDamage as dealDamageImpl,
+  grantXp as grantXpImpl,
+  handleDeath as handleDeathImpl,
+} from './combat/damage';
+import {
   AUGMENTS_BY_ID,
   type AugmentDef,
   type AugmentSpecial,
@@ -77,7 +82,6 @@ import {
   FISHING_RARE_ID,
   FISHING_TABLES,
   GROUND_OBJECTS,
-  GROUP_XP_BONUS,
   INSTANCE_SLOT_COUNT,
   ITEMS,
   instanceOrigin,
@@ -144,8 +148,6 @@ import { sanitizeRemovedZone1Content } from './removed_zone1_content';
 import { Rng } from './rng';
 import {
   addEntityToRoster,
-  DAMAGE_IDLE_DESPAWN_MOB_IDS,
-  DAMAGE_IDLE_DESPAWN_SECONDS,
   type DelayedEvent,
   drainDelayedEvents,
   dropEntityFromRoster,
@@ -217,14 +219,14 @@ import {
   type LootStrategies,
   MAX_LEVEL,
   MELEE_RANGE,
-  MILESTONES,
   type MobFamily,
   type MobTemplate,
   type MoveInput,
   meleeMissChance,
-  mobXpValue,
   normAngle,
+  NYTHRAXIS_BOSS_ID,
   type OverheadEmoteId,
+  PARTY_XP_RANGE,
   type PetMode,
   type PlayerClass,
   type QuestDef,
@@ -232,8 +234,6 @@ import {
   type QuestState,
   questTurnInNpcIds,
   RUN_SPEED,
-  rageFromDealing,
-  rageFromTaking,
   type SimConfig,
   type SimEvent,
   type SkinCatalog,
@@ -253,7 +253,6 @@ const DUNGEON_LEASH_DISTANCE = 70;
 // passive and will not auto-aggro from proximity (it still fights back if
 // attacked). Elites, rares, and bosses are never trivial.
 const TRIVIAL_LEVEL_GAP = 10;
-const CORPSE_DURATION = 60;
 const EVADE_SPEED_MULT = 1.6;
 // An evading mob walks a straight line home (no pathfinding) and stalls if deep
 // water or a collider sits between it and its spawn. Since evading mobs are
@@ -289,7 +288,6 @@ const NYTHRAXIS_RELIC_SUMMONS: Record<string, string> = {
   royal_seal: 'deathstalker_voss',
 };
 const _NYTHRAXIS_CRYPT_QUESTS = new Set(['q_nythraxis_sealed_crypt', 'q_nythraxis_bound_guardian']);
-const NYTHRAXIS_BOSS_ID = 'nythraxis_scourge_of_thornpeak';
 const NYTHRAXIS_ADD_ID = 'nythraxis_skeleton_warrior';
 const NYTHRAXIS_ALDRIC_ID = 'brother_aldric_raid';
 const _NYTHRAXIS_FINAL_QUEST_ID = 'q_nythraxis_scourges_end';
@@ -328,11 +326,8 @@ const PARTY_MAX = 5;
 const RAID_MIN = 5;
 const RAID_MAX = 10;
 const RAID_GROUP_MAX = 5;
-// DAMAGE_IDLE_DESPAWN_SECONDS / DAMAGE_IDLE_DESPAWN_MOB_IDS moved to entity_roster.ts
-// (the despawn prologue's home); imported above for the damage-path timer reset.
 const RAID_ALLOWED_DUNGEON_IDS = new Set(['nythraxis_crypt', 'nythraxis_boss_arena']);
 const RAID_REQUIRED_DUNGEON_IDS = new Set(['nythraxis_boss_arena']);
-const PARTY_XP_RANGE = 80; // yards: members this close share kill xp/credit
 // Rested XP (classic inn-rested bonus). Resting inside an inn footprint accrues a
 // pool that doubles KILL xp (200%) until spent — vanilla's signature casual-pacing
 // lever. Vanilla rate is 5% of a level per 8 in-game hours, capped at 1.5 levels.
@@ -545,7 +540,6 @@ const SOCIAL_PULL_RADIUS: Partial<Record<MobFamily, number>> = {
   murloc: 8,
 };
 const PACK_FRENZY_AURA_ID = 'pack_frenzy'; // attack-speed buff granted to surviving packmates
-const BLOOD_FRENZY_AURA_ID = 'blood_frenzy'; // self attack-speed buff a wounded frenzyOnHit mob gains
 const SWIM_SURFACE_Y = WATER_LEVEL - 0.75; // body bobs just below the water line
 const SWIM_DEPTH = PLAYER_SWIM_DEPTH; // ground this far under the water line = deep water
 const SWIM_SPEED_MULT = 0.65;
@@ -1066,10 +1060,6 @@ function isShamanShock(abilityId: string): boolean {
     (SHAMAN_SHOCK_COOLDOWN_IDS as readonly string[]).includes(abilityId) ||
     abilityId === 'lightning_shock'
   );
-}
-
-function ignoresDamagePushback(abilityId: string): boolean {
-  return abilityId === 'ghost_wolf';
 }
 
 function isPetClass(cls: PlayerClass): boolean {
@@ -1978,6 +1968,15 @@ export class Sim {
       get arenaMatches() {
         return sim.arenaMatches;
       },
+      get players() {
+        return sim.players;
+      },
+      get duels() {
+        return sim.duels;
+      },
+      get cfg() {
+        return sim.cfg;
+      },
       emit: sim.emit.bind(sim),
       dealDamage: sim.dealDamage.bind(sim),
       handleDeath: sim.handleDeath.bind(sim),
@@ -2017,6 +2016,23 @@ export class Sim {
       delveModuleEntry: sim.delveModuleEntry.bind(sim),
       failDelveRun: sim.failDelveRun.bind(sim),
       pulseGroundAoE: sim.pulseGroundAoE.bind(sim),
+      grantXp: sim.grantXp.bind(sim),
+      enterCombat: sim.enterCombat.bind(sim),
+      hexOutputMult: sim.hexOutputMult.bind(sim),
+      critVulnBonus: sim.critVulnBonus.bind(sim),
+      pvpController: sim.pvpController.bind(sim),
+      threatMod: sim.threatMod.bind(sim),
+      isArenaTeamWiped: sim.isArenaTeamWiped.bind(sim),
+      arenaIsDown: sim.arenaIsDown.bind(sim),
+      clearNonPlayerStatAuras: sim.clearNonPlayerStatAuras.bind(sim),
+      delveRunForMob: sim.delveRunForMob.bind(sim),
+      onDelveBossDefeated: sim.onDelveBossDefeated.bind(sim),
+      grantNythraxisLockout: sim.grantNythraxisLockout.bind(sim),
+      frenzyPackmates: sim.frenzyPackmates.bind(sim),
+      armDeathThroes: sim.armDeathThroes.bind(sim),
+      onMobKilledForQuests: sim.onMobKilledForQuests.bind(sim),
+      refreshKnownAbilities: sim.refreshKnownAbilities.bind(sim),
+      syncPetLevel: sim.syncPetLevel.bind(sim),
     };
     return createSimContext(host);
   }
@@ -5372,399 +5388,17 @@ export class Sim {
     noRage = false,
     threatOpts?: { flat?: number; mult?: number },
   ): void {
-    if (target.dead) return;
-    if (target.gm) return; // GM characters are invulnerable — every damage path funnels here
-    // A mob that broke leash (or a pet freed to the wild) is in 'evade': it has
-    // dropped its hate table and walks home without fighting back, healing to
-    // full only on arrival. Classic mechanics make it immune while it retreats,
-    // so it can't be chipped down — or killed outright — for a risk-free kill.
-    if (target.kind === 'mob' && target.aiState === 'evade') return;
-    amount = Math.max(0, amount);
-
-    // Defensive Stance, classic: deal 10% less, take 10% less (and +30% threat below)
-    if (
-      source &&
-      source.id !== target.id &&
-      source.auras.some((a) => a.kind === 'defensive_stance')
-    ) {
-      amount = Math.round(amount * 0.9);
-    }
-    if (
-      source &&
-      source.id !== target.id &&
-      target.auras.some((a) => a.kind === 'defensive_stance')
-    ) {
-      amount = Math.round(amount * 0.9);
-    }
-
-    // Expose: a cracked-guard debuff amplifies the physical damage the victim
-    // takes (from any attacker) until it expires. Armor is already applied at the
-    // swing site, so this rides on top of the post-mitigation amount.
-    if (school === 'physical' && amount > 0) {
-      let exposeMult = 1;
-      for (const a of target.auras) if (a.kind === 'expose') exposeMult += a.value;
-      if (exposeMult !== 1) amount = Math.round(amount * exposeMult);
-    }
-
-    // Spell Vulnerability: a `spellvuln` debuff amplifies all NON-physical (magic)
-    // damage the victim takes from every attacker. Holy is excluded so healing-
-    // school spells are untouched. Stacks additively across active debuffs and
-    // lands before absorb shields, so a soaked hit still soaks the amplified total.
-    if (amount > 0 && school !== 'physical' && school !== 'holy') {
-      let amp = 0;
-      for (const a of target.auras) {
-        if (a.kind === 'spellvuln') amp += a.value;
-      }
-      if (amp > 0) amount = Math.round(amount * (1 + amp));
-    }
-
-    // Curse of frailty: a cursed victim takes more damage from every source. The
-    // offensive mirror of Defensive Stance's cut above. Multiple curses stack
-    // additively (sum of amps) so layered curses can't multiply out of control.
-    if (amount > 0) {
-      let vuln = 0;
-      for (const a of target.auras) if (a.kind === 'vulnerability') vuln += a.value;
-      if (vuln > 0) amount = Math.round(amount * (1 + vuln));
-    }
-
-    // Weakening Hex: a hexed source deals less damage (mirrors the healing cut in
-    // applyHeal). Self-damage paths (source === target) are left untouched.
-    if (source && source.id !== target.id) {
-      const hexMult = this.hexOutputMult(source);
-      if (hexMult !== 1) amount = Math.round(amount * hexMult);
-    }
-
-    // "Find Weakness": a critvuln debuff makes the target's exposed flesh take
-    // extra damage from CRITICAL hits only (any attacker, any school). Applied
-    // after the defensive-stance reduction, before absorb shields soak it.
-    if (crit && amount > 0 && source && source.id !== target.id) {
-      const bonus = this.critVulnBonus(target);
-      if (bonus > 0) amount = Math.round(amount * (1 + bonus));
-    }
-
-    // absorb shields soak damage first
-    if (amount > 0) {
-      for (let i = target.auras.length - 1; i >= 0 && amount > 0; i--) {
-        const a = target.auras[i];
-        if (a.kind !== 'absorb') continue;
-        const soaked = Math.min(a.value, amount);
-        a.value -= soaked;
-        amount -= soaked;
-        if (a.value <= 0) {
-          target.auras.splice(i, 1);
-          this.emit({ type: 'aura', targetId: target.id, name: a.name, gained: false });
-        }
-      }
-    }
-
-    const sourcePlayer = this.pvpController(source);
-
-    // duels end at 1 hp — nobody dies
-    const duel = target.kind === 'player' ? this.duels.get(target.id) : undefined;
-    if (
-      duel &&
-      duel.state === 'active' &&
-      sourcePlayer &&
-      (sourcePlayer.id === duel.a || sourcePlayer.id === duel.b)
-    ) {
-      if (target.hp - amount < 1) {
-        amount = Math.max(0, target.hp - 1);
-        target.hp = 1;
-        this.emit({
-          type: 'damage',
-          sourceId: source?.id ?? -1,
-          targetId: target.id,
-          amount,
-          crit,
-          school,
-          ability,
-          kind,
-        });
-        this.endDuel(duel, sourcePlayer.id);
-        return;
-      }
-    }
-
-    // Fiesta takedowns score a point and put the victim on a (growing) respawn
-    // timer instead of permanently eliminating them — the party never stops.
-    const match = target.kind === 'player' ? this.arenaMatches.get(target.id) : undefined;
-    // Fiesta lifesteal augment: heal the attacker for a slice of damage dealt.
-    if (
-      match?.fiesta &&
-      match.state === 'active' &&
-      sourcePlayer &&
-      amount > 0 &&
-      this.isArenaCrossTeam(match, sourcePlayer.id, target.id)
-    ) {
-      const ls = this.players.get(sourcePlayer.id)?.fiestaSpecial.lifestealPct ?? 0;
-      if (ls > 0 && !sourcePlayer.dead && sourcePlayer.hp < sourcePlayer.maxHp) {
-        const heal = Math.max(1, Math.round(amount * ls));
-        sourcePlayer.hp = Math.min(sourcePlayer.maxHp, sourcePlayer.hp + heal);
-        this.emit({ type: 'heal', targetId: sourcePlayer.id, amount: heal });
-      }
-    }
-    if (
-      match?.fiesta &&
-      match.state === 'active' &&
-      sourcePlayer &&
-      this.isArenaCrossTeam(match, sourcePlayer.id, target.id)
-    ) {
-      if (target.hp - amount <= 0) {
-        amount = Math.max(0, target.hp);
-        target.hp = 0;
-        this.emit({
-          type: 'damage',
-          sourceId: source?.id ?? -1,
-          targetId: target.id,
-          amount,
-          crit,
-          school,
-          ability,
-          kind,
-        });
-        this.fiestaTakedown(match, sourcePlayer.id, target);
-        return;
-      }
-    }
-
-    // Ranked arena eliminations use normal death state so clients and combat
-    // logic see a real 0 HP defeat. The return timer revives everyone after.
-    if (
-      match &&
-      !match.fiesta &&
-      match.state === 'active' &&
-      sourcePlayer &&
-      this.isArenaCrossTeam(match, sourcePlayer.id, target.id)
-    ) {
-      if (match.defeated.has(target.id)) return;
-      if (target.hp - amount <= 0) {
-        amount = Math.max(0, target.hp);
-        target.hp = 0;
-        match.defeated.add(target.id);
-        this.emit({
-          type: 'damage',
-          sourceId: source?.id ?? -1,
-          targetId: target.id,
-          amount,
-          crit,
-          school,
-          ability,
-          kind,
-        });
-        this.handleDeath(target, source);
-        const loserTeam = this.arenaTeamOf(match, target.id);
-        if (loserTeam && this.isArenaTeamWiped(match, loserTeam)) {
-          this.endArenaMatch(match, loserTeam === 'A' ? 'B' : 'A', 'defeat');
-        }
-        return;
-      }
-    }
-
-    target.hp = Math.max(0, target.hp - amount);
-    this.emit({
-      type: 'damage',
-      sourceId: source?.id ?? -1,
-      targetId: target.id,
+    dealDamageImpl(
+      this.ctx,
+      source,
+      target,
       amount,
       crit,
       school,
       ability,
       kind,
-    });
-
-    if (amount > 0) {
-      if (target.kind === 'mob' && DAMAGE_IDLE_DESPAWN_MOB_IDS.has(target.templateId)) {
-        target.damageIdleDespawnTimer = DAMAGE_IDLE_DESPAWN_SECONDS;
-      }
-      for (let i = target.auras.length - 1; i >= 0; i--) {
-        if (target.auras[i].breaksOnDamage) {
-          this.emit({
-            type: 'aura',
-            targetId: target.id,
-            name: target.auras[i].name,
-            gained: false,
-          });
-          target.auras.splice(i, 1);
-        }
-      }
-    }
-
-    // taking or dealing real damage breaks stealth
-    if (amount > 0) {
-      this.breakStealth(target);
-      if (source && source.id !== target.id) {
-        this.breakStealth(source);
-      }
-    }
-
-    if (source && source.id !== target.id) this.enterCombat(source, target);
-    this.refreshMobLeashFromAction(source, target);
-
-    // classic threat: damage (and the ability's flat bonus) lands on the mob's
-    // hate table, scaled by the attacker's stance/form modifiers
-    if (
-      source &&
-      source.id !== target.id &&
-      target.kind === 'mob' &&
-      target.hostile &&
-      (source.kind === 'player' || source.ownerId !== null)
-    ) {
-      const threat =
-        (amount * (threatOpts?.mult ?? 1) + (threatOpts?.flat ?? 0)) *
-        this.threatMod(source, school);
-      addThreat(target, source.id, threat);
-    }
-
-    // tap rights: the first player (or their pet) to damage a mob owns it
-    if (
-      source &&
-      target.kind === 'mob' &&
-      target.hostile &&
-      target.tappedById === null &&
-      amount > 0
-    ) {
-      if (source.kind === 'player') target.tappedById = source.id;
-      else if (source.ownerId !== null) target.tappedById = source.ownerId;
-    }
-
-    if (source && source.kind === 'player' && source.id !== target.id) {
-      const meta = this.players.get(source.id);
-      if (meta) meta.counters.damageDealt += amount;
-      if (source.resourceType === 'rage' && !noRage && school === 'physical' && !ability) {
-        source.resource = Math.min(
-          source.maxResource,
-          source.resource + rageFromDealing(amount, source.level),
-        );
-      }
-    }
-    if (target.kind === 'player') {
-      const meta = this.players.get(target.id);
-      if (meta) meta.counters.damageTaken += amount;
-      if (target.resourceType === 'rage' && source && source.id !== target.id) {
-        target.resource = Math.min(
-          target.maxResource,
-          target.resource + rageFromTaking(amount, source.level),
-        );
-      }
-      if (isConsuming(target)) {
-        target.eating = null;
-        target.drinking = null;
-      }
-      if (target.sitting) target.sitting = false;
-      // vanilla spell pushback: a landed hit delays the cast rather than
-      // cancelling it (misses and fully absorbed hits don't push back)
-      if (
-        target.castingAbility &&
-        source &&
-        source.id !== target.id &&
-        amount > 0 &&
-        kind === 'hit'
-      ) {
-        if (target.castingAbility === FISHING_CAST_ID) this.cancelCast(target);
-        else if (!ignoresDamagePushback(target.castingAbility)) this.pushbackCast(target);
-      }
-    }
-
-    // Reactive "Frenzy": a wounded mob carrying frenzyOnHit may lash out faster.
-    // Rolls only for mobs that actually carry the trait (the helper bails before
-    // touching rng otherwise), so existing fixed-seed combat stays byte-identical.
-    if (kind === 'hit' && amount > 0 && !target.dead && target.hp > 0) {
-      this.maybeFrenzyOnHit(target, source);
-    }
-    this.reflectSpellWard(source, target, amount, kind, school);
-
-    if (target.hp <= 0) {
-      // A fiesta fighter who somehow bottoms out via a non-takedown path (a
-      // friendly DoT tail, self-damage) is benched, not killed — never let the
-      // party-mode hp hit a permanent death + graveyard flow.
-      const fmatch = target.kind === 'player' ? this.arenaMatches.get(target.id) : undefined;
-      if (fmatch?.fiesta && fmatch.state === 'active' && !this.arenaIsDown(fmatch, target.id)) {
-        this.fiestaDown(fmatch, target, null);
-      } else {
-        this.handleDeath(target, source);
-      }
-    }
-  }
-
-  // Reactive beast "Frenzy": when a mob with the frenzyOnHit trait is struck by a
-  // player (or their pet), it has a chance to fly into a blood frenzy and swing
-  // faster for a few seconds. Modelled as a refreshable buff_haste self-aura — the
-  // same primitive packFrenzy uses — so it rides the normal aura tick and snapshot
-  // wire with no new Entity field. The struck mob buffs ITSELF, so there is no
-  // recursion risk (the buff is not damage) and no player-facing debuff string.
-  private maybeFrenzyOnHit(target: Entity, source: Entity | null): void {
-    const fr = MOBS[target.templateId]?.frenzyOnHit;
-    if (!fr) return; // non-carriers never reach rng — keeps determinism neutral
-    if (target.kind !== 'mob' || !target.hostile || target.ownerId !== null) return;
-    if (!source || source.id === target.id) return;
-    const fromPlayer = source.kind === 'player' || source.ownerId !== null;
-    if (!fromPlayer) return;
-    if (!this.rng.chance(fr.chance)) return;
-    const name = fr.name ?? 'Blood Frenzy';
-    const existing = target.auras.find((a) => a.id === BLOOD_FRENZY_AURA_ID);
-    if (existing) {
-      existing.remaining = fr.duration; // refresh on each further wound; don't stack
-      return;
-    }
-    target.auras.push({
-      id: BLOOD_FRENZY_AURA_ID,
-      name,
-      kind: 'buff_haste',
-      remaining: fr.duration,
-      duration: fr.duration,
-      value: fr.hasteMult,
-      sourceId: target.id,
-      school: 'physical',
-    });
-    this.emit({ type: 'aura', targetId: target.id, name, gained: true });
-    this.emit({
-      type: 'log',
-      text: `${target.name} flies into a frenzy!`,
-      color: '#ff8c00',
-      entityId: target.id,
-    });
-    this.emit({
-      type: 'spellfx',
-      sourceId: target.id,
-      targetId: target.id,
-      school: 'physical',
-      fx: 'nova',
-    });
-  }
-
-  /**
-   * Innate "warded" mobs reflect flat damage onto a caster whose SPELL connects
-   * — the magic-school twin of melee thorns (which only punishes melee swings).
-   * Fires for any non-physical hit the mob survives; the reflected blow is
-   * mob-sourced, so it can never re-trigger a reflect (players carry no template).
-   */
-  private reflectSpellWard(
-    source: Entity | null,
-    target: Entity,
-    amount: number,
-    kind: 'hit' | 'miss' | 'dodge',
-    school: string,
-  ): void {
-    if (source?.kind !== 'player' || source.id === target.id) return;
-    if (
-      target.kind !== 'mob' ||
-      target.hp <= 0 ||
-      kind !== 'hit' ||
-      amount <= 0 ||
-      school === 'physical'
-    )
-      return;
-    const ward = MOBS[target.templateId]?.spellReflect;
-    if (!ward) return;
-    this.dealDamage(
-      target,
-      source,
-      ward.value,
-      false,
-      ward.school ?? 'shadow',
-      ward.name ?? 'Spell Reflection',
-      'hit',
-      true,
+      noRage,
+      threatOpts,
     );
   }
 
@@ -5791,142 +5425,7 @@ export class Sim {
   }
 
   private handleDeath(e: Entity, killer: Entity | null): void {
-    e.dead = true;
-    e.hp = 0;
-    this.clearNonPlayerStatAuras(e);
-    e.auras = [];
-    e.ccDr.clear();
-    e.castingAbility = null;
-    this.emit({ type: 'death', entityId: e.id, killerId: killer?.id ?? -1 });
-
-    // a dead mob keeps no raid marker — respawnMob reuses the same entity id,
-    // so a stale mark would otherwise reappear on the respawn
-    if (e.kind === 'mob') this.clearEntityMarker(e.id);
-
-    // the dead drop off every hate table (and any taunt lock on them)
-    for (const m of this.entities.values()) {
-      if (m.kind !== 'mob' || m.id === e.id) continue;
-      m.threat.delete(e.id);
-      if (m.forcedTargetId === e.id) {
-        m.forcedTargetId = null;
-        m.forcedTargetTimer = 0;
-      }
-    }
-
-    if (e.kind === 'player') {
-      const meta = this.players.get(e.id);
-      if (meta) meta.counters.deaths++;
-      e.autoAttack = false;
-      e.queuedOnSwing = null;
-      e.comboPoints = 0;
-      e.eating = null;
-      e.drinking = null;
-      e.sitting = false;
-      e.chargeTargetId = null;
-      e.chargePath = [];
-      e.followTargetId = null;
-      this.emit({ type: 'playerDeath', pid: e.id });
-      for (const m of this.entities.values()) {
-        if (m.kind === 'mob' && !m.dead && m.aggroTargetId === e.id && m.aiState !== 'dead') {
-          // turn on the next nearby attacker; go home only if nobody is left
-          this.retargetMob(m);
-        }
-      }
-      return;
-    }
-
-    if (e.kind === 'mob') {
-      const template = MOBS[e.templateId];
-      const run = this.delveRunForMob(e.id);
-      if (
-        run &&
-        template &&
-        DELVES[run.delveId]?.bosses.includes(template.id) &&
-        !run.completed &&
-        !run.objective.complete
-      ) {
-        run.objective.complete = true;
-        this.onDelveBossDefeated(run);
-      }
-      if (
-        run?.affixes.includes('restless_graves') &&
-        template &&
-        !template.boss &&
-        !template.elite
-      ) {
-        run.restlessPending.push({
-          at: this.time + 3,
-          x: e.pos.x,
-          z: e.pos.z,
-          mobId: 'reliquary_bonewalker',
-        });
-      }
-      if (e.templateId === NYTHRAXIS_BOSS_ID) this.grantNythraxisLockout(e);
-      e.aiState = 'dead';
-      e.corpseTimer = CORPSE_DURATION;
-      e.respawnTimer =
-        this.cfg.respawnSeconds * (template?.respawnMult ?? (template?.rare ? 4 : 1));
-      e.aggroTargetId = null;
-      clearThreat(e);
-      if (e.ownerId !== null) {
-        e.corpseTimer = Infinity;
-        e.respawnTimer = Infinity;
-        e.hostile = false;
-        e.inCombat = false;
-        this.emit({ type: 'log', text: `${e.name} dies.`, color: '#f66', pid: e.ownerId });
-        // a slain summoned demon lingers only briefly, then unravels (updateMob)
-        if (MOBS[e.templateId]?.family === 'demon') e.corpseTimer = 3;
-        return; // owned pets drop no loot/credit; demons unravel, hunters revive or abandon
-      }
-      this.frenzyPackmates(e); // wild packmates fly into a frenzy when one falls
-      this.armDeathThroes(e); // volatile corpses begin to destabilize, then burst
-
-      // credit goes to the tapping player (fall back to the killer)
-      const creditId = e.tappedById ?? (killer?.kind === 'player' ? killer.id : null);
-      const meta = creditId !== null ? this.players.get(creditId) : null;
-      const creditEntity = creditId !== null ? this.entities.get(creditId) : null;
-      if (meta && creditEntity) {
-        const eliteMult = MOBS[e.templateId]?.elite ? 2 : 1;
-        // party play: kill credit, xp split and quest progress shared with
-        // members nearby (classic group rules + group bonus). A member downed
-        // during the fight still counts while their corpse is in range: classic
-        // groups credit fallen members (and their loot rights), they are not
-        // erased for dying or for releasing to the graveyard after the kill.
-        const party = this.partyOf(creditEntity.id);
-        const eligible: PlayerMeta[] = [];
-        if (party) {
-          for (const mPid of party.members) {
-            const mMeta = this.players.get(mPid);
-            const mE = this.entities.get(mPid);
-            if (mMeta && mE && dist2d(mE.pos, e.pos) <= PARTY_XP_RANGE) eligible.push(mMeta);
-          }
-        }
-        if (eligible.length === 0) eligible.push(meta);
-        e.lootRecipientIds = eligible.map((member) => member.entityId);
-        const bonus = GROUP_XP_BONUS[Math.min(eligible.length, GROUP_XP_BONUS.length) - 1];
-
-        meta.counters.kills++;
-        if (creditEntity.targetId === e.id) creditEntity.autoAttack = false;
-        if (creditEntity.comboTargetId === e.id) {
-          creditEntity.comboPoints = 0;
-          creditEntity.comboTargetId = null;
-          this.emit({ type: 'comboPoint', points: 0, pid: creditEntity.id });
-        }
-        for (const member of eligible) {
-          const mE = this.entities.get(member.entityId);
-          if (!mE) continue;
-          // mobXpValue keeps the level-diff (anti-farm) scaling; grantXp now
-          // routes the award to lifetimeXp even at the cap, so the party gate no
-          // longer blocks max-level members — it just forwards every positive award.
-          const xpGain = Math.round(
-            (mobXpValue(e.level, mE.level) * eliteMult * bonus) / eligible.length,
-          );
-          if (xpGain > 0) this.grantXp(xpGain, member, { fromKill: true });
-          this.onMobKilledForQuests(e, member);
-        }
-        this.rollLoot(e, meta, eligible);
-      }
-    }
+    handleDeathImpl(this.ctx, e, killer);
   }
 
   // True while the player is standing in (or just beside) an inn footprint and
@@ -5968,80 +5467,7 @@ export class Sim {
   }
 
   grantXp(amount: number, meta: PlayerMeta = this.primary, opts?: { fromKill?: boolean }): void {
-    const p = this.entities.get(meta.entityId);
-    if (!p || amount <= 0) return;
-    // Rested XP bonus: classic vanilla only doubles KILL xp (not quests), and
-    // never past the cap (no level bar to advance). The bonus equals the rested
-    // amount drawn down, so the effective award is up to 2x while the pool lasts.
-    let restedBonus = 0;
-    if (opts?.fromKill && p.level < MAX_LEVEL && meta.restedXp > 0) {
-      restedBonus = Math.min(Math.floor(meta.restedXp), amount);
-      meta.restedXp -= restedBonus;
-      amount += restedBonus;
-    }
-    // Lifetime XP accrues for EVERY award, including at the cap — this is what
-    // makes post-cap progression work. It feeds the virtual level, the
-    // leaderboard, and cosmetic milestones. The level bar below only advances
-    // while under the cap; once capped the remainder lives on in lifetimeXp
-    // rather than being discarded to gold/zero (FR-1.4).
-    this.accrueLifetimeXp(amount, meta, p);
-    meta.counters.xpGained += amount;
-    this.emit({
-      type: 'xp',
-      amount,
-      pid: p.id,
-      ...(restedBonus > 0 ? { rested: restedBonus } : {}),
-    });
-
-    if (p.level >= MAX_LEVEL) return; // bar frozen at cap; lifetimeXp already credited
-
-    meta.xp += amount;
-    while (p.level < MAX_LEVEL && meta.xp >= xpForLevel(p.level)) {
-      meta.xp -= xpForLevel(p.level);
-      p.level++;
-      meta.counters.levelUps++;
-      recalcPlayerStats(p, meta.cls, meta.equipment, this.playerMods(meta));
-      p.hp = p.maxHp;
-      if (p.resourceType === 'mana') p.resource = p.maxResource;
-      this.emit({ type: 'levelup', level: p.level, pid: p.id });
-      this.refreshKnownAbilities(meta, true);
-      this.syncPetLevel(p);
-    }
-    // Dinged to cap mid-grant: clear the leftover from the BAR. It is not lost —
-    // the full award was already added to lifetimeXp above (FR-1.4).
-    if (p.level >= MAX_LEVEL) meta.xp = 0;
-  }
-
-  // Add to the monotonic lifetime counter, emitting cosmetic virtual-level-up
-  // events past the cap and unlocking any newly crossed milestones. Cheap: one
-  // add plus an O(log n) table lookup, never touched on the per-tick hot path.
-  private accrueLifetimeXp(amount: number, meta: PlayerMeta, p: Entity): void {
-    const atCap = p.level >= MAX_LEVEL;
-    const beforeVL = atCap ? virtualLevel(meta.lifetimeXp) : 0;
-    meta.lifetimeXp += amount;
-    // 64-bit-safe invariant: JS numbers are exact to 2^53. A single character
-    // reaching this is effectively impossible, but clamp + log if it ever does.
-    if (meta.lifetimeXp >= Number.MAX_SAFE_INTEGER) {
-      meta.lifetimeXp = Number.MAX_SAFE_INTEGER;
-      console.warn(`lifetimeXp for ${meta.name} hit the 2^53 ceiling and was clamped`);
-    }
-    if (atCap) {
-      const afterVL = virtualLevel(meta.lifetimeXp);
-      for (let v = beforeVL + 1; v <= afterVL; v++) {
-        this.emit({ type: 'virtualLevelUp', level: v, pid: p.id });
-      }
-    }
-    this.checkMilestones(meta, p);
-  }
-
-  // Unlock any cosmetic milestone whose lifetime-XP threshold was just crossed.
-  private checkMilestones(meta: PlayerMeta, p: Entity): void {
-    for (const m of MILESTONES) {
-      if (meta.lifetimeXp >= m.lifetimeXp && !meta.unlockedMilestones.has(m.id)) {
-        meta.unlockedMilestones.add(m.id);
-        this.emit({ type: 'milestoneUnlocked', milestoneId: m.id, pid: p.id });
-      }
-    }
+    grantXpImpl(this.ctx, amount, meta, opts);
   }
 
   // Opt-in cosmetic prestige: only at the cap. Resets the level XP

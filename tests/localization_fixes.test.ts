@@ -748,7 +748,15 @@ function scanEmitCandidates(simSrc: string, serverSrc: string): Cand[] {
 // hud.ts source) + the real localizeServerText/localizeSimText fallbacks. ---
 describe('S3: every sim.ts emit is recognized (drift guard)', () => {
   const hudSrc = fs.readFileSync(path.resolve(process.cwd(), 'src/ui/hud.ts'), 'utf8');
-  const simSrc = fs.readFileSync(path.resolve(process.cwd(), 'src/sim/sim.ts'), 'utf8');
+  // C1 moved the damage-core player-facing emits (the frenzy proc and the pet
+  // "<name> dies." line) out of sim.ts into src/sim/combat/damage.ts. Scan that
+  // module alongside sim.ts so those emits stay under the drift guard; both files
+  // are language-agnostic sim code re-localized client-side by the same matchers.
+  const simSrc =
+    `${fs.readFileSync(path.resolve(process.cwd(), 'src/sim/sim.ts'), 'utf8')}\n${fs.readFileSync(
+      path.resolve(process.cwd(), 'src/sim/combat/damage.ts'),
+      'utf8',
+    )}`;
   // Hardened S3: also scan the authoritative server's player-facing emits. The
   // server (server/game.ts) is language-agnostic like the sim and re-localized
   // client-side by localizeServerText; previously the guard read only sim.ts, so
