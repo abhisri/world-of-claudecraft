@@ -174,6 +174,20 @@ describe('coverage: each scenario fires its subsystem', () => {
     expect(ev.some((e) => e.type === 'vendor' && e.action === 'buy' && e.itemId === 'reliquary_legs')).toBe(true);
   });
 
+  it('delve_companion: rank-2 Tessa swings (16762), heals the owner, and the run holds her', () => {
+    const rec = run('delve_companion');
+    const sim = rec.sim as any;
+    const ev = rec.allEvents as Ev[];
+    const compId = rec.notes.companionId as number;
+    const pid = sim.playerId as number;
+    expect(compId, 'companion did not spawn').toBeTruthy();
+    // combat arm: the companion dealt damage via mobSwing (~16762).
+    expect(ev.some((e) => e.type === 'damage' && e.sourceId === compId)).toBe(true);
+    // heal arm: a heal toward the owner + the companion's spellfx tick fired.
+    expect(ev.some((e) => e.type === 'heal' && e.targetId === pid && e.amount > 0)).toBe(true);
+    expect(ev.some((e) => e.type === 'spellfx' && e.sourceId === compId && e.fx === 'tick')).toBe(true);
+  });
+
   it('quest_kill_credit: kill credit accrues and the quest promotes to ready then turns in', () => {
     const rec = run('quest_kill_credit');
     const ev = rec.allEvents as Ev[];

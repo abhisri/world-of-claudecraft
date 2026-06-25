@@ -800,6 +800,106 @@ function delveProgression(): Scenario {
   };
 }
 
+// Delve companion AI (I2c): the full updateDelveCompanion brain for Acolyte Tessa,
+// upgraded to rank 2, across all three arms in one run. (a) COMBAT: she acquires the
+// owner's hostile target (the finale boss), closes to MELEE_RANGE*0.9, and swings via
+// the shared mobSwing on her weapon cadence (the rng crit/hit draws this slice must
+// keep in stream order). To pin the close-to-reach branch too, she is shoved out of
+// reach mid-fight so she re-approaches and swings again. (b) HEAL: while in combat the
+// owner drops to 50% within DELVE_COMPANION_HEAL_RANGE and the wanderTimer fires a
+// RANK-2 DELVE_COMPANION_HEAL_PCT percent heal (direct hp mutation + heal/spellfx emit,
+// no aura). (c) HEEL: with the swarm dropped and combatTarget null she moveToward's the
+// owner past DELVE_COMPANION_FOLLOW, then warps + rebuckets past PET_TELEPORT_DISTANCE.
+// Pins the heal/heel arms + rank scaling the combat-only delve_lockpick golden skips.
+function delveCompanion(): Scenario {
+  return {
+    name: 'delve_companion',
+    coverage: [
+      'updateDelveCompanion combat arm: acquire owner target -> close-to-reach -> mobSwing on cadence (~16762 rng draws)',
+      'updateDelveCompanion rank-2 heal arm: DELVE_COMPANION_HEAL_PCT[2] percent heal of the lowest-HP party member (heal + spellfx tick)',
+      'updateDelveCompanion heel arm: moveToward owner past DELVE_COMPANION_FOLLOW, then warp + rebucket past PET_TELEPORT_DISTANCE',
+      'combat_start/low_hp barks via maybeCompanionBark (stays on Sim)',
+    ],
+    sampleEvery: 5,
+    build: () => new Sim({ seed: 3010, playerClass: 'warrior', autoEquip: true }),
+    drive(rec: Recorder) {
+      const sim = rec.sim as AnySim;
+      const def = DELVES.collapsed_reliquary;
+      sim.setPlayerLevel(def.minLevel);
+      const p = sim.player as AnyEntity;
+      beef(p);
+      teleport(sim, p, def.doorPos.x, def.doorPos.z);
+      // Rank 2 BEFORE enter: spawnDelveCompanion scales her level AND the heal arm
+      // scales by DELVE_COMPANION_HEAL_PCT[2].
+      const meta = sim.players.get(sim.playerId) as Record<string, any>;
+      meta.companionUpgrades.companion_tessa = 2;
+      sim.enterDelve('collapsed_reliquary', 'normal');
+      const run = sim.delveRunForPlayer(sim.playerId);
+      if (!run) {
+        rec.tick(2);
+        return;
+      }
+      run.bountiful = false; // pin against the rare coffer roll
+      run.modules = ['reliquary_finale'];
+      run.moduleIndex = 0;
+      (sim as any).spawnDelveModule(run);
+      const comp = run.companion
+        ? (sim.entities.get(run.companion.entityId) as AnyEntity | undefined)
+        : undefined;
+      const boss = [...sim.entities.values()].find(
+        (e: AnyEntity) => e.templateId === 'deacon_varric',
+      ) as AnyEntity | undefined;
+      if (!comp || !boss) {
+        rec.tick(2);
+        return;
+      }
+      rec.notes.companionId = comp.id;
+      rec.track(comp.id, boss.id);
+
+      // (a) COMBAT: owner targets the beefed boss; the companion acquires it and swings
+      // on cadence. Start adjacent for a guaranteed first swing...
+      beef(boss, 40000); // survive the swings -> repeated cadence draws
+      boss.hostile = true;
+      comp.pos = { x: boss.pos.x + 1, y: boss.pos.y, z: boss.pos.z };
+      comp.prevPos = { ...comp.pos };
+      comp.swingTimer = 0;
+      sim.rebucket(comp);
+      sim.targetEntity(boss.id);
+      rec.tick(20); // in-reach: mobSwing on cadence
+      // ...then shove her out of reach so the close-to-reach branch (moveToward) runs
+      // and she re-approaches to swing again.
+      comp.pos = { x: boss.pos.x + 10, y: boss.pos.y, z: boss.pos.z };
+      comp.prevPos = { ...comp.pos };
+      sim.rebucket(comp);
+      rec.tick(20); // close-to-reach -> re-approach -> swing
+      rec.snapshot('combat');
+
+      // (b) HEAL: still in combat, the owner drops to 50% within heal range -> the
+      // wanderTimer fires a rank-2 percent heal (direct hp + heal/spellfx emit).
+      teleport(sim, p, comp.pos.x + 3, comp.pos.z); // within DELVE_COMPANION_HEAL_RANGE
+      p.hp = Math.max(1, Math.round(p.maxHp * 0.5));
+      comp.wanderTimer = 0;
+      rec.tick(1);
+      rec.snapshot('heal');
+
+      // (c) HEEL: drop the swarm + clear the target so combatTarget is null; the owner
+      // a short walk away pulls a moveToward, and far away a warp + rebucket.
+      for (const [id, ent] of [...sim.entities]) {
+        if ((ent as AnyEntity).kind === 'mob' && (ent as AnyEntity).hostile) sim.entities.delete(id);
+      }
+      p.targetId = null;
+      p.autoAttack = false;
+      p.inCombat = false;
+      teleport(sim, p, comp.pos.x + 12, comp.pos.z); // > DELVE_COMPANION_FOLLOW (4)
+      rec.tick(8); // heel: moveToward owner
+      rec.snapshot('heel-walk');
+      teleport(sim, p, comp.pos.x + 80, comp.pos.z); // > PET_TELEPORT_DISTANCE (60)
+      rec.tick(2); // heel: warp + rebucket
+      rec.snapshot('heel-teleport');
+    },
+  };
+}
+
 // Quest kill-credit (Q1): accept a kill quest at its giver NPC (driving
 // finalizeQuestAccept's onInventoryChangedForQuests), then slay the target mob one
 // at a time so handleDeath's party-credit loop fires onMobKilledForQuests (counts++
@@ -1014,6 +1114,7 @@ export const SCENARIOS: Scenario[] = [
   entityRoster(),
   delveDeath(),
   delveProgression(),
+  delveCompanion(),
   questKillCredit(),
   questCollectTurnIn(),
   dungeonInstances(),
