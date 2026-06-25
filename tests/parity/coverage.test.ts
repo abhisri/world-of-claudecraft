@@ -266,4 +266,18 @@ describe('coverage: each scenario fires its subsystem', () => {
     expect(druid?.auras?.some((a: Ev) => a.kind === 'form_cat')).toBe(true);
     expect(druid?.auras?.some((a: Ev) => a.kind === 'form_bear')).toBe(false);
   });
+
+  it('c5_auto_attack: melee swing table + ranged Auto Shot + wand + queued on-swing fire', () => {
+    const rec = run('c5_auto_attack');
+    const ev = rec.allEvents as Ev[];
+    // ranged white swings carry their hardcoded labels in the damage-event ability field.
+    expect(ev.some((e) => e.type === 'damage' && e.ability === 'Auto Shot')).toBe(true); // hunter ranged path
+    expect(ev.some((e) => e.type === 'damage' && e.ability === 'Wand')).toBe(true); // mage wand path (no dead zone)
+    // melee auto-attack produced physical white-hit outcomes (the single-roll table).
+    expect(
+      ev.some((e) => e.type === 'damage' && e.school === 'physical' && (e.kind === 'hit' || e.kind === 'miss' || e.kind === 'dodge')),
+    ).toBe(true);
+    // a queued on-next-swing ability was consumed in the swing path (its name rode through).
+    expect(ev.some((e) => e.type === 'damage' && (e.ability === 'Heroic Strike' || e.ability === 'Raptor Strike'))).toBe(true);
+  });
 });

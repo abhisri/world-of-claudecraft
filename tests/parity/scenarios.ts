@@ -1299,6 +1299,112 @@ function c4bEffectDispatch(): Scenario {
   };
 }
 
+// Player auto-attack + the melee/ranged white-hit table (C5). Drives the
+// updatePlayerAutoAttack tick driver across several swing intervals for five
+// builds at once: a warrior meleeing a spiked-hide boar (thorns reflect tail) with
+// Heroic Strike queued (queuedOnSwing spend + bonus, cooldown 0), a rogue plain
+// melee, a hunter in melee with Raptor Strike queued (queuedOnSwing + on-next-swing
+// cooldown set, cd 6), a hunter at range firing Auto Shot (physical, armor-mitigated,
+// 8yd dead zone), and a mage wanding (arcane, no armor, no dead zone). Targets are
+// re-pinned to their lane each round so the ranged dead-zone vs wand branches stay
+// exercised, and the rogue's auto-attack is stopped at the end (stopAutoAttack entry).
+function c5AutoAttack(): Scenario {
+  return {
+    name: 'c5_auto_attack',
+    coverage: [
+      'player auto-attack driver updatePlayerAutoAttack (swingTimer cadence, facing/range gates)',
+      'meleeSwing white-hit table: single rng.next() miss/dodge + crit + armor mitigation',
+      'queuedOnSwing heroic_strike spend + bonus (warrior, cooldown 0)',
+      'queuedOnSwing raptor_strike spend + bonus + on-next-swing cooldown set (hunter, cooldown 6)',
+      'overpowerUntil window set on a melee dodge',
+      'spiked-hide reflect tail of meleeSwing (wild_boar Bristled Hide)',
+      'rangedSwing Auto Shot (hunter, physical, armor-mitigated, 8yd dead zone)',
+      'rangedSwing Wand (mage, arcane, no armor, no dead zone)',
+      'stopAutoAttack public entry',
+    ],
+    sampleEvery: 5,
+    build: () => new Sim({ seed: 1019, playerClass: 'warrior', noPlayer: true }),
+    drive(rec: Recorder) {
+      const sim = rec.sim as AnySim;
+      const warrior = sim.addPlayer('warrior', 'Wr') as number;
+      const rogue = sim.addPlayer('rogue', 'Rg') as number;
+      const hunterM = sim.addPlayer('hunter', 'Hm') as number;
+      const hunterR = sim.addPlayer('hunter', 'Hr') as number;
+      const mage = sim.addPlayer('mage', 'Mg') as number;
+      const ids = [warrior, rogue, hunterM, hunterR, mage];
+      for (const pid of ids) sim.setPlayerLevel(15, pid);
+      const eWarrior = sim.entities.get(warrior) as AnyEntity;
+      const eRogue = sim.entities.get(rogue) as AnyEntity;
+      const eHunterM = sim.entities.get(hunterM) as AnyEntity;
+      const eHunterR = sim.entities.get(hunterR) as AnyEntity;
+      const eMage = sim.entities.get(mage) as AnyEntity;
+      const lanes: Array<[AnyEntity, number]> = [
+        [eWarrior, -60],
+        [eRogue, -30],
+        [eHunterM, 0],
+        [eHunterR, 30],
+        [eMage, 60],
+      ];
+      for (const [e, x] of lanes) {
+        teleport(sim, e, x, -45);
+        beef(e, 80000);
+      }
+
+      const spawnTarget = (owner: AnyEntity, key: string, dz: number, level: number): AnyEntity => {
+        const m = spawnMob(sim, key, level, owner.pos.x, owner.pos.y, owner.pos.z + dz);
+        beef(m, 500000);
+        m.hostile = true;
+        m.aiState = 'idle';
+        rec.track(m.id);
+        return m;
+      };
+      // dz 1.5 = melee; dz 20 = hunter Auto Shot band (> 8yd dead zone, <= 35);
+      // dz 15 = wand band (no dead zone). wild_boar carries the spiked-hide thorns.
+      const mobWarrior = spawnTarget(eWarrior, 'wild_boar', 1.5, 3);
+      const mobRogue = spawnTarget(eRogue, 'forest_wolf', 1.5, 6);
+      const mobHunterM = spawnTarget(eHunterM, 'forest_wolf', 1.5, 6);
+      const mobHunterR = spawnTarget(eHunterR, 'forest_wolf', 20, 8);
+      const mobMage = spawnTarget(eMage, 'forest_wolf', 15, 8);
+      const pairs: Array<[number, AnyEntity, AnyEntity, number]> = [
+        [warrior, eWarrior, mobWarrior, 1.5],
+        [rogue, eRogue, mobRogue, 1.5],
+        [hunterM, eHunterM, mobHunterM, 1.5],
+        [hunterR, eHunterR, mobHunterR, 20],
+        [mage, eMage, mobMage, 15],
+      ];
+      for (const [pid, e, m] of pairs) {
+        face(e, m);
+        sim.targetEntity(m.id, pid);
+      }
+      for (const pid of ids) sim.startAutoAttack(pid);
+
+      for (let round = 0; round < 12; round++) {
+        // Re-pin each target to its lane distance + re-face so the ranged dead-zone
+        // (Auto Shot) vs no-dead-zone (Wand) branches stay deterministically exercised.
+        for (const [, e, m, dz] of pairs) {
+          teleport(sim, m, e.pos.x, e.pos.z + dz);
+          face(e, m);
+        }
+        eWarrior.resource = eWarrior.maxResource;
+        eHunterM.resource = eHunterM.maxResource;
+        // Queue on-next-swing abilities (the guard avoids the cast-toggle that a
+        // re-cast while already queued would trigger).
+        if (eWarrior.gcdRemaining <= 0 && !eWarrior.castingAbility && !eWarrior.queuedOnSwing) {
+          sim.castAbility('heroic_strike', warrior);
+        }
+        if (eHunterM.gcdRemaining <= 0 && !eHunterM.castingAbility && !eHunterM.queuedOnSwing) {
+          sim.castAbility('raptor_strike', hunterM);
+        }
+        rec.tick(10);
+      }
+      rec.snapshot('swings');
+      sim.stopAutoAttack(rogue); // public stop entry
+      rec.tick(6);
+      rec.snapshot('after-stop');
+    },
+  };
+}
+
 export const SCENARIOS: Scenario[] = [
   soloWarrior(),
   soloMage(),
@@ -1319,4 +1425,5 @@ export const SCENARIOS: Scenario[] = [
   c3AuraRunner(),
   c4aCastingLifecycle(),
   c4bEffectDispatch(),
+  c5AutoAttack(),
 ];
