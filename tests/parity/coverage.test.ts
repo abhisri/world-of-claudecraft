@@ -63,6 +63,18 @@ describe('coverage: each scenario fires its subsystem', () => {
     expect(greyjaws.some((e) => e.forcedTargetId === pid)).toBe(true);
   });
 
+  it('mob_swing_affixes: stun/venom/silence/rampage procs land + friendly pet never debuffs', () => {
+    const rec = run('mob_swing_affixes');
+    const n = rec.notes as Record<string, any>;
+    // Each heavy-hitter proc fired its rng.chance and applied its aura on a landed swing.
+    expect(n.stunLanded).toBe(true); // mogger_lackey stunOnHit
+    expect(n.venomLanded).toBe(true); // webwood_spider venom DoT
+    expect(n.silenceLanded).toBe(true); // gravecaller_summoner silence
+    expect(n.rampageStacks).toBeGreaterThan(0); // warlord_drogmar self-stacking buff_ap
+    // The friendly (hostile=false) pet swung the dummy but applied no on-hit debuff.
+    expect(n.dummyDebuffs).toBe(0);
+  });
+
   it('hunter_pet: friendly ranged pet (8093) AND hostile petSpell mob (6776) both fire', () => {
     const rec = run('hunter_pet');
     const pid = (rec.sim as any).playerId;

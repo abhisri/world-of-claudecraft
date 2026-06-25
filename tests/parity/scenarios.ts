@@ -6,6 +6,7 @@
 //  - meleeSwing weaponStrike:  heroic_strike (warrior), sinister_strike (rogue)
 //  - auto-attack + mobSwing:   solo_warrior (mob swings back)
 //  - frenzy + on-hit affix:    affix_mob (old_greyjaw frenzyOnHit + ridge_stalker bleed)
+//  - mob-swing affix cascade:  mob_swing_affixes (stun/venom/silence/rampage + friendly-pet short-circuit, M3)
 //  - pets:                     hunter_pet (updateRangedPetAttack), warlock_pet (mobSwing pet arm + applyTaunt)
 //  - ground-AoE:               paladin_consecration (updateGroundAoEs first + pulseGroundAoE both callers)
 //  - arena + fiesta:           arena_1v1, fiesta
@@ -232,6 +233,114 @@ function affixMob(): Scenario {
       sim.targetEntity(greyjaw.id);
       sim.castAbility('taunt');
       rec.snapshot('taunt');
+      rec.tick(4);
+    },
+  };
+}
+
+// M3 mob on-hit affix cascade: four hostile mobs, each carrying a distinct
+// heavy-hitter affix, swing a player so the cascade's per-template proc rng.chance
+// rolls fire at fixed stream positions and land their auras (stun / venom DoT /
+// silence, chances pinned to 1 in a try/finally so the shared MOBS table is restored;
+// rampage self-buff is unconditional). A FRIENDLY (hostile=false) pet also swings a
+// separate mob through mobSwing so the load-bearing `mob.hostile` short-circuit branch
+// -- which draws NO cascade rng and applies no debuff to the mob it hits -- is pinned
+// in the trace too. The affix mobs sit one level above the player so the base hit
+// table lands reliably (a missed/dodged base swing short-circuits the whole cascade).
+function mobSwingAffixes(): Scenario {
+  return {
+    name: 'mob_swing_affixes',
+    coverage: [
+      'mobSwing affix cascade: stunOnHit (mogger_lackey -> stun aura on player)',
+      'mobSwing affix cascade: venom DoT (webwood_spider -> dot aura on player)',
+      'mobSwing affix cascade: silence (gravecaller_summoner -> silence aura on player)',
+      'mobSwing affix cascade: rampage stacking buff_ap (warlord_drogmar self-buff)',
+      'friendly-pet mobSwing: mob.hostile=false short-circuits every proc (no debuff on its target)',
+    ],
+    build: () => new Sim({ seed: 1007, playerClass: 'warrior', autoEquip: true }),
+    drive(rec: Recorder) {
+      const sim = rec.sim as AnySim;
+      sim.setPlayerLevel(16);
+      const p = sim.player as AnyEntity;
+      // beef() does not stick on a player (applyAura -> recalcPlayerStats resets maxHp,
+      // and several affixes ride negative buff_* drains); top the player up right before
+      // each swing so it survives every draw, mirroring mob_locomotion's reviveTarget.
+      const topUp = () => {
+        p.hp = 1_000_000;
+      };
+      const lackey = spawnMob(sim, 'mogger_lackey', 18, p.pos.x + 2, p.pos.y, p.pos.z);
+      const spider = spawnMob(sim, 'webwood_spider', 18, p.pos.x - 2, p.pos.y, p.pos.z);
+      const summoner = spawnMob(sim, 'gravecaller_summoner', 18, p.pos.x + 3, p.pos.y, p.pos.z);
+      const drogmar = spawnMob(sim, 'warlord_drogmar', 18, p.pos.x - 3, p.pos.y, p.pos.z);
+      for (const m of [lackey, spider, summoner, drogmar]) {
+        beef(m, 200000);
+        aggroOnto(m, p);
+      }
+      // Friendly pet: a hostile=false forest_wolf (affix-free) swinging a separate mob.
+      // Every cascade guard short-circuits on its hostile flag, so it deals base damage
+      // but applies no on-hit debuff to the mob it hits.
+      const pet = spawnMob(sim, 'forest_wolf', 8, p.pos.x + 1, p.pos.y, p.pos.z);
+      pet.ownerId = p.id;
+      pet.hostile = false;
+      const dummy = spawnMob(sim, 'forest_wolf', 8, p.pos.x + 9, p.pos.y, p.pos.z);
+      beef(dummy, 200000);
+      rec.track(lackey.id, spider.id, summoner.id, drogmar.id, pet.id, dummy.id);
+      rec.notes.petId = pet.id;
+      rec.notes.dummyId = dummy.id;
+      teleport(sim, p, lackey.pos.x - 1.5, lackey.pos.z);
+
+      // OR-accumulate "ever landed" across rounds so a single base miss never makes the
+      // coverage assertion flaky; deterministic for this seed (the golden pins it).
+      let stunLanded = false;
+      let venomLanded = false;
+      let silenceLanded = false;
+      let rampageStacks = 0;
+      let dummyDebuffs = 0;
+
+      const stun = MOBS.mogger_lackey.stunOnHit;
+      const venom = MOBS.webwood_spider.venom;
+      const silence = MOBS.gravecaller_summoner.silence;
+      const stunOrig = stun ? stun.chance : undefined;
+      const venomOrig = venom ? venom.chance : undefined;
+      const silenceOrig = silence ? silence.chance : undefined;
+      try {
+        if (stun) stun.chance = 1;
+        if (venom) venom.chance = 1;
+        if (silence) silence.chance = 1;
+        for (let round = 0; round < 6; round++) {
+          topUp();
+          sim.mobSwing(lackey, p);
+          topUp();
+          sim.mobSwing(spider, p);
+          topUp();
+          sim.mobSwing(summoner, p);
+          topUp();
+          sim.mobSwing(drogmar, p);
+          stunLanded = stunLanded || p.auras.some((a: any) => a.id === 'stun_mogger_lackey');
+          venomLanded = venomLanded || p.auras.some((a: any) => a.id === 'venom_webwood_spider');
+          silenceLanded =
+            silenceLanded || p.auras.some((a: any) => a.id === 'silence_gravecaller_summoner');
+          rampageStacks = Math.max(
+            rampageStacks,
+            drogmar.auras.find((a: any) => a.id === 'rampage_warlord_drogmar')?.stacks ?? 0,
+          );
+          // Friendly pet swings the dummy: base hit only, no cascade procs.
+          sim.mobSwing(pet, dummy);
+          dummyDebuffs = Math.max(dummyDebuffs, dummy.auras.length);
+          rec.tick(10);
+        }
+      } finally {
+        if (stun && stunOrig !== undefined) stun.chance = stunOrig;
+        if (venom && venomOrig !== undefined) venom.chance = venomOrig;
+        if (silence && silenceOrig !== undefined) silence.chance = silenceOrig;
+      }
+      rec.notes.stunLanded = stunLanded;
+      rec.notes.venomLanded = venomLanded;
+      rec.notes.silenceLanded = silenceLanded;
+      rec.notes.rampageStacks = rampageStacks;
+      rec.notes.dummyDebuffs = dummyDebuffs;
+      topUp();
+      rec.snapshot('affixes');
       rec.tick(4);
     },
   };
@@ -903,6 +1012,7 @@ export const SCENARIOS: Scenario[] = [
   soloMage(),
   soloRogue(),
   affixMob(),
+  mobSwingAffixes(),
   hunterPet(),
   warlockPet(),
   paladinConsecration(),
