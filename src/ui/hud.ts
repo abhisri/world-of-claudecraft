@@ -4281,7 +4281,7 @@ export class Hud {
       maxResource: p.maxResource,
       resourceType: p.resourceType,
     });
-    const bar = $('#pf-resource') as HTMLElement;
+    const bar = this.pfResourceEl; // the cached ref the family painter also writes
     // `.low` is this method's own class (the unit_frame painter toggles only the
     // mutually-exclusive power-type classes, never `low`), so toggling it each frame
     // is cheap and idempotent. Only the expensive style / label writes below are
