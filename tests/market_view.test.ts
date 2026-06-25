@@ -205,6 +205,36 @@ describe('market_view: sell states', () => {
       body.form.suggested.copper;
     expect(reconstructed).toBe(40);
   });
+
+  it('takes the buyValue branch and splits it across silver + copper', () => {
+    // healing_potion has a defined buyValue (170c), so the suggested ask takes the
+    // `buyValue ??` left arm; 170c splits to 1s 70c, exercising the silver modulo
+    // and the copper remainder that the copper-only 40c case above never reaches.
+    const body = buildMarketSell('healing_potion', 5);
+    expect(body.state).toBe('form');
+    if (body.state !== 'form') return;
+    expect(body.form.suggested).toEqual({ gold: 0, silver: 1, copper: 70 });
+    const reconstructed =
+      body.form.suggested.gold * COPPER_PER_GOLD +
+      body.form.suggested.silver * COPPER_PER_SILVER +
+      body.form.suggested.copper;
+    expect(reconstructed).toBe(170);
+  });
+
+  it('splits a high ask into nonzero gold via the sellValue*4 branch', () => {
+    // deathlord_warplate has no buyValue, so the suggested ask is sellValue * 4 =
+    // 9000 * 4 = 36000c, which splits to 3g 60s, exercising the gold floor-division
+    // (the divisor + ordering a copper-only case cannot catch).
+    const body = buildMarketSell('deathlord_warplate', 1);
+    expect(body.state).toBe('form');
+    if (body.state !== 'form') return;
+    expect(body.form.suggested).toEqual({ gold: 3, silver: 60, copper: 0 });
+    const reconstructed =
+      body.form.suggested.gold * COPPER_PER_GOLD +
+      body.form.suggested.silver * COPPER_PER_SILVER +
+      body.form.suggested.copper;
+    expect(reconstructed).toBe(36000);
+  });
 });
 
 describe('market_view: collect states', () => {

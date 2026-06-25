@@ -217,6 +217,30 @@ describe('src/ui pure-core invariants', () => {
       `src/ui pure cores must be deterministic (no Math.random/Date.now/performance.now):\n${violations.join('\n')}`,
     ).toEqual([]);
   });
+
+  // Teeth check: the scans above only prove the registered cores are CLEAN today.
+  // This pins the matcher itself so a future weakening (a regex typo, a dropped
+  // branch) cannot silently let a core import a forbidden layer and stay green.
+  // It makes the per-phase "the guard must still FAIL on an injected forbidden
+  // import" acceptance step a durable regression test instead of a manual ritual.
+  it('forbiddenUiCoreImport flags every forbidden layer and allows the permitted ones', () => {
+    // three (the renderer dependency), in both the bare and submodule forms.
+    expect(forbiddenUiCoreImport('three')).toBe('three');
+    expect(forbiddenUiCoreImport('three/examples/jsm/controls/OrbitControls')).toBe('three');
+    // render / game / net layers, however the relative path reaches them.
+    expect(forbiddenUiCoreImport('../render/characters/assets')).toBe('render');
+    expect(forbiddenUiCoreImport('../../render/renderer')).toBe('render');
+    expect(forbiddenUiCoreImport('../game/audio')).toBe('game');
+    expect(forbiddenUiCoreImport('../net/client_world')).toBe('net');
+    // A DOM-owning painter or the painter host (DOM coupling one hop removed).
+    expect(forbiddenUiCoreImport('./delve_map_painter')).toBe('painter');
+    expect(forbiddenUiCoreImport('./painter_host')).toBe('painter');
+    // Permitted: host-agnostic sim types/data and sibling pure ui cores.
+    expect(forbiddenUiCoreImport('../sim/types')).toBeNull();
+    expect(forbiddenUiCoreImport('../sim/data')).toBeNull();
+    expect(forbiddenUiCoreImport('./market_filters')).toBeNull();
+    expect(forbiddenUiCoreImport('./entity_i18n')).toBeNull();
+  });
 });
 
 describe('src/render pure-core invariants', () => {
