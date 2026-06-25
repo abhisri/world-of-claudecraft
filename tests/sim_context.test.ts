@@ -96,6 +96,10 @@ const CALLBACK_KEYS = [
   // M3 mob-swing affix cascade surface.
   'effectiveArmor',
   'recalcPlayer',
+  // P1a pet-AI surface.
+  'syncPetAspect',
+  'effectiveAttackPower',
+  'isHostileTo',
 ] as const;
 
 // A fully-spied fake host. `clock` is mutable so a test can prove the context reads
@@ -201,6 +205,9 @@ function makeFakeHost() {
     onBossDeath: vi.fn(),
     effectiveArmor: vi.fn(() => 0),
     recalcPlayer: vi.fn(),
+    syncPetAspect: vi.fn(),
+    effectiveAttackPower: vi.fn(() => 0),
+    isHostileTo: vi.fn(() => false),
   };
   return { host, rng, entities, clock };
 }

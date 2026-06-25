@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { petPickTarget } from '../src/sim/pet/pet_ai';
 import { Sim } from '../src/sim/sim';
 import { Entity } from '../src/sim/types';
 
@@ -54,7 +55,7 @@ function setup() {
   owner.targetId = null;
   owner.autoAttack = false;
   const meta = sim.meta(pid)!;
-  const pick = (): Entity | null => (sim as any).petPickTarget(pet, owner);
+  const pick = (): Entity | null => petPickTarget((sim as any).ctx, pet, owner);
   return { sim, pid, owner, pet, target, meta, pick };
 }
 
@@ -107,13 +108,13 @@ describe('aggressive pet AFK-farm gate: activity stamping (end-to-end)', () => {
 
   it('a real movement tick stamps activity and re-opens the gate', () => {
     const { sim, owner, pet, target, meta } = setupE2E();
-    expect((sim as any).petPickTarget(pet, owner)).toBeNull(); // idle: no pull
+    expect(petPickTarget((sim as any).ctx, pet, owner)).toBeNull(); // idle: no pull
     meta.moveInput.forward = true; // hold a movement key
     sim.tick();                    // updatePlayerMovement runs for real and stamps
     meta.moveInput.forward = false;
     expect(isFresh(sim, meta)).toBe(true);
     place(owner, 0, 0); place(pet, 28, 0); place(target, 33, 0); // undo a tick of drift
-    expect((sim as any).petPickTarget(pet, owner)?.id).toBe(target.id);
+    expect(petPickTarget((sim as any).ctx, pet, owner)?.id).toBe(target.id);
   });
 
   it('a real ability cast stamps activity', () => {

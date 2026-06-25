@@ -140,6 +140,7 @@ import {
 import { resetEvadingMob as resetEvadingMobFn, updateMob as updateMobFn } from './mob/locomotion';
 import { runMobSwingAffixes } from './mob/mob_swing';
 import * as lifecycle from './mob/lifecycle';
+import * as petAi from './pet/pet_ai';
 import { combatProfileForMob, effectiveMobMeleeRange, type MobCombatProfile } from './mob_combat';
 import {
   findPlayerPath,
@@ -234,6 +235,8 @@ import {
   NYTHRAXIS_ADD_ID,
   NYTHRAXIS_BOSS_ID,
   type OverheadEmoteId,
+  PET_GROWL_INTERVAL,
+  PET_TELEPORT_DISTANCE,
   type PetMode,
   type PlayerClass,
   type QuestDef,
@@ -548,20 +551,10 @@ const CHARGE_MAX_DURATION = 3; // seconds before a blocked charge gives up
 const CHARGE_ARRIVE_RANGE = MELEE_RANGE - 1; // stop inside melee range
 const FOLLOW_STOP_DIST = 3; // /follow trails this close behind the leader (yards)
 const FOLLOW_MAX_RANGE = 60; // give up follow once the leader is this far away
-const PET_LEASH = 40; // yards from the owner before a pet gives up its target
-const PET_FOLLOW_DISTANCE = 3.5;
-const PET_TELEPORT_DISTANCE = 60; // owner this far AND no route exists: pet warps to heel (last resort)
-const PET_PATH_RECALC = 0.5; // seconds between heel-path A* recomputes per pet (throttle)
-const PET_PATH_SPAN = 96; // A* search half-window in cells; covers the teleport distance + slack
-const PET_PATH_STALE_DISTANCE = 4; // path end this far from the (now-moved) owner: recompute the heel route
-const PET_WAYPOINT_REACHED = 1; // pet within this of the next waypoint: pop it and home on the next leg
-const PET_ASSIST_RANGE = 50; // how far the pet scans for enemies engaging the pair
-const PET_AGGRESSIVE_RANGE = 18; // aggressive pets look for idle enemies this close
-// Anti-AFK: an aggressive pet only proactively pulls fresh targets while its
-// owner has acted (moved, cast, or commanded the pet) within this many ticks.
-// 1200 ticks = 60s at 20Hz. Stops hunters/warlocks parking an aggressive pet to
-// farm XP/loot while AFK; the pet still DEFENDS an idle owner. Tunable.
-const PET_OWNER_IDLE_TICKS = 1200;
+// Pet-AI tick tuning (PET_LEASH/PET_FOLLOW_DISTANCE/PET_PATH_*/PET_WAYPOINT_REACHED/
+// PET_ASSIST_RANGE/PET_AGGRESSIVE_RANGE/PET_OWNER_IDLE_TICKS) moved with the slice to
+// src/sim/pet/pet_ai.ts (P1a). PET_GROWL_INTERVAL + PET_TELEPORT_DISTANCE are shared
+// with on-Sim pet code, so they relocated to ./types and are imported above.
 // A pet only keeps its OWNER flagged in combat while it is actively trading blows
 // (its combatTimer resets to 0 on every hit dealt/taken). A pet that merely holds a
 // target it is chasing or can't reach stops dragging the owner into perpetual combat
@@ -569,7 +562,6 @@ const PET_OWNER_IDLE_TICKS = 1200;
 // 5s combat-linger used for the owner's own inCombat flag.
 const PET_COMBAT_LINGER = 5;
 const PET_TAUNT_RANGE = 5;
-const PET_GROWL_INTERVAL = 10; // controlled pets can tank by forcing attention
 const PET_FEED_DURATION = 5;
 const PET_FEED_TICK = 1;
 const DEMON_HEAL_MANA_COST = 55;
@@ -2028,7 +2020,9 @@ export class Sim {
       mobEffectiveMeleeRange: sim.mobEffectiveMeleeRange.bind(sim),
       mobCanSwim: sim.mobCanSwim.bind(sim),
       resolveMovePoint: sim.resolveMovePoint.bind(sim),
-      updatePet: sim.updatePet.bind(sim),
+      // P1a pet AI lives in src/sim/pet/pet_ai.ts; locomotion.updateMob reaches it
+      // through this seam binding (late-bound arrow so sim.ctx resolves at call time).
+      updatePet: (pet) => petAi.updatePet(sim.ctx, pet),
       isDelveCompanionMob: sim.isDelveCompanionMob.bind(sim),
       updateDelveCompanion: sim.updateDelveCompanion.bind(sim),
       updateBossMechanics: sim.updateBossMechanics.bind(sim),
@@ -2054,6 +2048,12 @@ export class Sim {
       // the devour recalc wrapper. Both stay on Sim; the cascade reaches them via ctx.
       effectiveArmor: sim.effectiveArmor.bind(sim),
       recalcPlayer: sim.recalcPlayer.bind(sim),
+      // P1a pet-AI seam: the helpers the moved updatePet/petRangedAttack/petPickTarget
+      // reach back for. All STAY on Sim (syncPetAspect is pet-management, P1b owns it;
+      // effectiveAttackPower scales the imp bolt; isHostileTo is the shared predicate).
+      syncPetAspect: sim.syncPetAspect.bind(sim),
+      effectiveAttackPower: sim.effectiveAttackPower.bind(sim),
+      isHostileTo: sim.isHostileTo.bind(sim),
     };
     return createSimContext(host);
   }
@@ -6667,160 +6667,6 @@ export class Sim {
     if (meta) recalcPlayerStats(target, meta.cls, meta.equipment, meta.talentMods);
   }
 
-  // Pet brain: assist the owner (attack whatever they fight or whatever
-  // attacks either of you), otherwise heel. Pets swing like mobs and build
-  // their own entries on enemy hate tables.
-  private updatePet(pet: Entity): void {
-    const owner = pet.ownerId !== null ? this.entities.get(pet.ownerId) : null;
-    if (owner?.kind !== 'player' || !this.players.has(owner.id)) {
-      this.despawnPersistentPet(pet);
-      return;
-    }
-    if (this.isStunned(pet)) return;
-    this.syncPetAspect(pet, owner);
-    pet.petTauntTimer = Math.max(0, pet.petTauntTimer - DT);
-    if (!pet.inCombat && this.tickCount % 40 === 0 && pet.hp < pet.maxHp) {
-      pet.hp = Math.min(pet.maxHp, pet.hp + Math.max(1, Math.round(pet.maxHp * 0.02)));
-    }
-
-    let target = pet.aggroTargetId !== null ? (this.entities.get(pet.aggroTargetId) ?? null) : null;
-    if (target && (target.dead || !this.isHostileTo(pet, target))) target = null;
-    if (target && dist2d(owner.pos, pet.pos) > PET_LEASH) target = null;
-    if (!target && !owner.dead) target = this.petPickTarget(pet, owner);
-    pet.aggroTargetId = target?.id ?? null;
-    pet.inCombat = target !== null;
-    if (!target) pet.petManualTauntPending = false;
-
-    if (target) {
-      // ranged demon (imp) holds its distance and hurls bolts; melee pets close
-      // in, taunt to hold threat (voidwalker tank), and swing
-      const ranged = MOBS[pet.templateId]?.petRanged;
-      const template = MOBS[pet.templateId];
-      if (!ranged && template?.petRole === 'ranged_dps' && template.petSpell) {
-        this.updateRangedPetAttack(pet, target, template.petSpell);
-        return;
-      }
-      const reach = ranged ? ranged.range : MELEE_RANGE * 0.8;
-      const d = dist2d(pet.pos, target.pos);
-      if (d > reach) {
-        if (!this.isRooted(pet))
-          this.moveToward(pet, target.pos, pet.moveSpeed * this.moveSpeedMult(pet));
-        pet.swingTimer = Math.max(0, pet.swingTimer - DT);
-      } else {
-        pet.facing = angleTo(pet.pos, target.pos);
-        if (
-          target.kind === 'mob' &&
-          !ranged &&
-          pet.petTauntTimer <= 0 &&
-          (pet.petAutoTaunt || pet.petManualTauntPending)
-        ) {
-          this.applyTaunt(pet, target);
-          pet.petManualTauntPending = false;
-          pet.petTauntTimer = PET_GROWL_INTERVAL;
-        }
-        pet.swingTimer -= DT;
-        if (pet.swingTimer <= 0) {
-          if (ranged) this.petRangedAttack(pet, target, ranged);
-          else this.mobSwing(pet, target);
-          pet.swingTimer = pet.weapon.speed * this.swingIntervalMult(pet);
-        }
-      }
-      return;
-    }
-
-    // heel
-    pet.swingTimer = Math.max(0, pet.swingTimer - DT);
-    this.petFollow(pet, owner);
-  }
-
-  // Heel locomotion: route the pet to its owner AROUND obstacles instead of
-  // letting greedy slide-steering wedge on a wall and then snapping the pet to
-  // the owner. Mirrors the warrior-charge path cache (`petPath`): A* is recomputed
-  // at most every PET_PATH_RECALC and otherwise the cached waypoints are followed.
-  // The 60yd teleport is kept only as a true last resort, for when no route to the
-  // owner exists at all (e.g. owner stranded across un-navigable terrain).
-  private petFollow(pet: Entity, owner: Entity): void {
-    pet.petPathCooldown = Math.max(0, pet.petPathCooldown - DT);
-    const d = dist2d(pet.pos, owner.pos);
-    if (d <= PET_FOLLOW_DISTANCE) {
-      pet.petPath = [];
-      return;
-    }
-    if (this.isRooted(pet)) return;
-
-    const swim = this.mobCanSwim(MOBS[pet.templateId]);
-    const recompute = (): void => {
-      pet.petPath = findPlayerPath(
-        this.cfg.seed,
-        pet.pos,
-        owner.pos,
-        PET_PATH_SPAN,
-        false,
-        swim,
-      ).map((w) => ({ x: w.x, y: 0, z: w.z }));
-      pet.petPathCooldown = PET_PATH_RECALC;
-    };
-    // recompute when the throttle has elapsed and the cache is stale: empty, or
-    // its end no longer lands near the (now-moved) owner. findPlayerPath returns a
-    // single-waypoint straight line (length 1) when the goal is unreachable.
-    const end = pet.petPath[pet.petPath.length - 1];
-    const stale = !end || dist2d(end, owner.pos) > PET_PATH_STALE_DISTANCE;
-    if (pet.petPathCooldown <= 0 && stale) recompute();
-    // drop waypoints we've reached; the last leg homes on the live owner position.
-    while (pet.petPath.length > 1 && dist2d(pet.pos, pet.petPath[0]) < PET_WAYPOINT_REACHED)
-      pet.petPath.shift();
-
-    // Last-resort teleport: only when the owner is far AND genuinely unreachable.
-    // We confirm with a FRESH path (ignoring the throttle) so a stale single-point
-    // cache from a moment ago can never trigger a spurious snap while a real route
-    // exists — e.g. right after a combat→heel transition.
-    if (
-      pet.petPath.length <= 1 &&
-      d > PET_TELEPORT_DISTANCE &&
-      !lineOfSightClear(this.cfg.seed, pet.pos, owner.pos, BODY_RADIUS)
-    ) {
-      recompute();
-      if (pet.petPath.length <= 1) {
-        pet.pos = { ...owner.pos };
-        pet.prevPos = { ...pet.pos };
-        pet.petPath = [];
-        // a warp is a teleport: keep the spatial grid exact this tick instead of
-        // waiting for the end-of-tick refresh, so same-tick aggro/AoE queries
-        // don't miss the pet at its old cell (matches every other teleport site)
-        this.rebucket(pet);
-        return;
-      }
-    }
-
-    const routed = pet.petPath.length > 1;
-    const aim = routed ? pet.petPath[0] : owner.pos;
-    const speed = Math.max(pet.moveSpeed, RUN_SPEED * 1.1) * this.moveSpeedMult(pet);
-    this.moveToward(pet, aim, speed);
-  }
-
-  /** A ranged demon pet (imp) hurls a spell-school bolt: a telegraphed
-   *  projectile that bypasses armor, mirroring the player caster path. Damage
-   *  comes from the mob's weapon range + AP, exactly like its melee siblings. */
-  private petRangedAttack(
-    pet: Entity,
-    target: Entity,
-    ranged: { range: number; school: Aura['school'] },
-  ): void {
-    this.emit({
-      type: 'spellfx',
-      sourceId: pet.id,
-      targetId: target.id,
-      school: ranged.school,
-      fx: 'projectile',
-    });
-    const crit = this.rng.chance(0.05);
-    let dmg =
-      this.rng.range(pet.weapon.min, pet.weapon.max) +
-      (this.effectiveAttackPower(pet) / 14) * pet.weapon.speed;
-    if (crit) dmg *= 2;
-    this.dealDamage(pet, target, Math.max(1, Math.round(dmg)), crit, ranged.school, null, 'hit');
-  }
-
   private updateRangedPetAttack(
     pet: Entity,
     target: Entity,
@@ -6869,37 +6715,6 @@ export class Sim {
       this.dealDamage(pet, target, Math.max(1, dmg), false, spell.school, spell.name, 'hit');
     }
     pet.swingTimer = spell.every;
-  }
-
-  private petPickTarget(pet: Entity, owner: Entity): Entity | null {
-    if (pet.petMode === 'passive') return null;
-    // Anti-AFK: an aggressive pet only proactively pulls fresh targets while its
-    // owner is actually playing. An idle owner's pet still defends (engagingUs /
-    // ownerOffense below) but cannot farm the area alone (hunter/warlock).
-    const ownerMeta = this.players.get(owner.id);
-    const ownerIdle =
-      !ownerMeta || this.tickCount - ownerMeta.lastActiveTick > PET_OWNER_IDLE_TICKS;
-    let best: Entity | null = null;
-    let bestD = pet.petMode === 'aggressive' ? PET_AGGRESSIVE_RANGE : PET_ASSIST_RANGE;
-    for (const m of this.entities.values()) {
-      if (m.id === pet.id || m.dead || !this.isHostileTo(pet, m)) continue;
-      const engagingUs =
-        m.kind === 'mob' && (m.aggroTargetId === owner.id || m.aggroTargetId === pet.id);
-      const ownerOffense =
-        owner.targetId === m.id &&
-        (owner.autoAttack || (m.kind === 'mob' && m.threat.has(owner.id)));
-      const aggressive =
-        pet.petMode === 'aggressive' &&
-        !ownerIdle &&
-        dist2d(pet.pos, m.pos) <= PET_AGGRESSIVE_RANGE;
-      if (!engagingUs && !ownerOffense && !aggressive) continue;
-      const d = dist2d(pet.pos, m.pos);
-      if (d < bestD) {
-        best = m;
-        bestD = d;
-      }
-    }
-    return best;
   }
 
   // Step `e` one tick toward `dest`. With `ignoreObstacles`, the mover phases

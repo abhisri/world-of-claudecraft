@@ -168,6 +168,9 @@ function makeCtx() {
     onBossDeath: vi.fn(),
     effectiveArmor: vi.fn(() => 0),
     recalcPlayer: vi.fn(),
+    syncPetAspect: vi.fn(),
+    effectiveAttackPower: vi.fn(() => 0),
+    isHostileTo: vi.fn(() => false),
   };
   const ctx = createSimContext(host);
   return {

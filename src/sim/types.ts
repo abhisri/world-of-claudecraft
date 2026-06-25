@@ -8,6 +8,13 @@ export const RUN_SPEED = 7; // yards/sec, classic run speed
 export const TURN_SPEED = Math.PI; // rad/sec keyboard turning
 export const MELEE_RANGE = 5; // yards
 export const INTERACT_RANGE = 5;
+// Pet tuning shared between the pet-AI slice (src/sim/pet/pet_ai.ts) and code that
+// stays on Sim, so it lives in this neutral module (the slice-only PET_* consts live
+// in pet_ai.ts). PET_GROWL_INTERVAL is read by the moved updatePet auto-taunt arm AND
+// the on-Sim manual-growl command; PET_TELEPORT_DISTANCE by the moved petFollow heel
+// AND an on-Sim follow check.
+export const PET_GROWL_INTERVAL = 10; // controlled pets can tank by forcing attention
+export const PET_TELEPORT_DISTANCE = 60; // owner this far AND no route exists: pet warps to heel (last resort)
 // Leash distance: how far a pulled mob may be dragged from its leash anchor before
 // it evades home. Shared between the mob-locomotion slice (chase/flee leash checks)
 // and the profiled-combat path that stays on Sim, so it lives in this neutral module.

@@ -212,6 +212,14 @@ export interface SimContextCallbacks {
   // the module never touches the map directly).
   effectiveArmor(e: Entity): number;
   recalcPlayer(target: Entity): void;
+
+  // P1a pet AI (src/sim/pet/pet_ai): the moved updatePet/petRangedAttack/petPickTarget
+  // reach back for these. All STAY on Sim. `syncPetAspect` is pet-management (the P1b
+  // pet-command slice owns it eventually); `effectiveAttackPower` scales the imp bolt;
+  // `isHostileTo` is the shared hostility predicate (~20 other Sim callers keep this.).
+  syncPetAspect(pet: Entity, owner: Entity): void;
+  effectiveAttackPower(e: Entity): number;
+  isHostileTo(attacker: Entity, target: Entity): boolean;
 }
 
 // The seam consumed by extracted modules.
@@ -347,5 +355,9 @@ export function createSimContext(host: SimContextHost): SimContext {
     // M3 mob-swing affix cascade seam.
     effectiveArmor: host.effectiveArmor,
     recalcPlayer: host.recalcPlayer,
+    // P1a pet-AI seam.
+    syncPetAspect: host.syncPetAspect,
+    effectiveAttackPower: host.effectiveAttackPower,
+    isHostileTo: host.isHostileTo,
   };
 }
