@@ -67,13 +67,29 @@ describe('P4b per-entry CSS wiring + #rotate-device gate (decision 16a)', () => 
     expect(hudMobile).not.toMatch(/#rotate-device[^}]*display:\s*none\s*!important/);
   });
 
-  it('the barrel uses FLAT (dotless) layer names with hud-mobile after shell', () => {
-    expect(barrel).toContain(
-      '@layer tokens, base, layout, components, hud, shell, hud-mobile, index-extra, play-extra;',
-    );
-    // A dotted name (e.g. "hud.mobile") would be a SUBLAYER of the early "hud" layer
-    // and lose to shell. Guard against regressing the @layer declaration to dots.
-    expect(barrel).not.toContain('hud.mobile,');
-    expect(barrel).not.toContain('index.extra,');
+  it('the barrel AND both .extra files re-declare the identical FLAT @layer order (hud-mobile after shell)', () => {
+    // The .extra files re-declare the @layer order up front (idempotent with the barrel)
+    // so the per-entry slot resolves regardless of sheet parse order. All three MUST carry
+    // the SAME flat declaration: a divergent order in a .extra file would place its layer in
+    // a different cascade slot. A dotted name (e.g. "hud.mobile") would be a SUBLAYER of the
+    // early "hud" layer and lose to shell, the exact trap P4b fixed.
+    const ORDER =
+      '@layer tokens, base, layout, components, hud, shell, hud-mobile, index-extra, play-extra;';
+    for (const [name, css] of [
+      ['barrel', barrel],
+      ['index.extra.css', indexExtra],
+      ['play.extra.css', playExtra],
+    ] as const) {
+      expect(css, `${name} must declare the canonical flat @layer order`).toContain(ORDER);
+      expect(css, `${name} must not regress to a dotted hud.mobile sublayer`).not.toContain(
+        'hud.mobile,',
+      );
+      expect(css, `${name} must not regress to a dotted index.extra sublayer`).not.toContain(
+        'index.extra,',
+      );
+      expect(css, `${name} must not regress to a dotted play.extra sublayer`).not.toContain(
+        'play.extra,',
+      );
+    }
   });
 });

@@ -91,11 +91,46 @@ describe('P1 CSS extraction: barrel + seam wiring', () => {
     );
   });
 
-  it('imports tokens then base from the barrel', () => {
-    const ti = barrel.indexOf('tokens.css');
-    const bi = barrel.indexOf('base.css');
-    expect(ti).toBeGreaterThan(-1);
-    expect(bi).toBeGreaterThan(ti);
+  it('@imports every shared module exactly once (a dropped @import ships the game unstyled with a green suite)', () => {
+    // Every other CSS guard (css_corpus, client_shell, charselect, mobile_window_transform)
+    // reads the modules off disk directly, so deleting an @import line here leaves the whole
+    // suite green while that layer never loads at runtime. Pin the seam itself.
+    for (const m of [
+      'tokens.css',
+      'base.css',
+      'layout.css',
+      'hud.css',
+      'components.css',
+      'shell.css',
+      'hud.mobile.css',
+    ]) {
+      const imp = `@import "./${m}";`;
+      expect(barrel, `barrel must @import ${m}`).toContain(imp);
+      expect(barrel.split(imp).length - 1, `barrel must @import ${m} exactly once`).toBe(1);
+    }
+  });
+
+  it('@imports in cascade order, with hud.css BEFORE components.css (same @layer components tie-break)', () => {
+    // Import order roughly follows the @layer cascade. The one deliberate exception:
+    // hud.css and components.css both target @layer components, so components.css is
+    // imported LAST of the pair to win equal-specificity ties (the pre-extraction
+    // unlayered precedence). hud-mobile is imported after shell so its in-game overrides
+    // of pre-game shell elements win.
+    const at = (m: string) => barrel.indexOf(`@import "./${m}";`);
+    const order = [
+      'tokens.css',
+      'base.css',
+      'layout.css',
+      'hud.css',
+      'components.css',
+      'shell.css',
+      'hud.mobile.css',
+    ];
+    for (let i = 1; i < order.length; i++) {
+      expect(at(order[i]), `${order[i]} must be imported after ${order[i - 1]}`).toBeGreaterThan(
+        at(order[i - 1]),
+      );
+    }
   });
 
   it('imports the barrel once from the shared game bootstrap (covers index.html + play.html)', () => {
