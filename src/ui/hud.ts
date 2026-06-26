@@ -9,6 +9,16 @@ import {
   type Settings,
 } from '../game/settings';
 import { sfx } from '../game/sfx';
+import type { UiEffectsTier } from '../game/ui_effects_profile';
+import {
+  auraRefreshIntervalMs,
+  auraVisibleCap,
+  cadenceDue,
+  coerceFxTier,
+  minimapRedrawIntervalMs,
+  partyFrameNonSelfIntervalMs,
+  targetFrameNonSelfIntervalMs,
+} from '../game/ui_tier_knobs';
 import { voice } from '../game/voice';
 import { castBarState, consumeBarState } from '../render/cast_bar';
 import { CharacterPreview } from '../render/characters';
@@ -877,6 +887,16 @@ export class Hud {
   private lastHudFastAt = 0;
   private lastHudMediumAt = 0;
   private lastHudSlowAt = 0;
+  // P14a per-element tier cadence stamps (graphics-tier knobs). Each gates a non-self /
+  // canvas redraw to a slower interval on the LOW static preset; on every other tier the
+  // interval is 0 (cadenceDue is always true), so these are no-ops and the path is the
+  // unchanged per-frame path. The SELF/player frame has no stamp (it always paints).
+  private lastMinimapDrawAt = 0;
+  private lastBuffBarPaintAt = 0;
+  private lastTargetDebuffsPaintAt = 0;
+  private lastTargetFramePaintAt = 0;
+  private lastTargetFrameId: number | null = null;
+  private lastPartyFramesAt = 0;
   private charPreview: CharacterPreview | null = null;
   private charPreviewCanvas: HTMLCanvasElement | null = null;
   // Cosmetic skin-select event overlay (opened by the skinEvent cue). The shared
@@ -2306,6 +2326,9 @@ export class Hud {
     document.getElementById('ui') as HTMLElement,
     (x, y, z) => this.renderer.worldToScreen(x, y, z),
     getUiScale,
+    // P14a: tier the pool cap / TTL / drop-non-crit from the STATIC preset (data-fx-level),
+    // never the governor. spawn() reads this per event.
+    { getFxTier: () => this.fxTier() },
   );
   // The player frame is the FIRST instance of the unit_frame family (P10b). It owns
   // its own element set; target/party become further instances of this exact
@@ -2418,11 +2441,17 @@ export class Hud {
     this.writerFacet,
     this.buffBarEl,
     this.aurasPainterDeps,
+    document,
+    // P14a Slice C: cap the visible aura count on the LOW static preset (never the
+    // governor).
+    () => this.fxTier(),
   );
   private readonly targetDebuffsPainter = new AurasPainter(
     this.writerFacet,
     this.targetDebuffsEl,
     this.aurasPainterDeps,
+    document,
+    () => this.fxTier(),
   );
   // Overworld minimap canvas painter (the delve branch stays with delvePainter). Owns
   // the marker core; redraws from the fastHud (~10Hz) band. classCss colors the party
@@ -4054,10 +4083,20 @@ export class Hud {
     this.setStyleProp(el, '--lhv-pulse', `${v.pulseSeconds.toFixed(3)}s`);
   }
 
+  // The STATIC ui effects tier (P5's data-fx-level, written by the preset applier and
+  // NEVER the FPS governor: the two-controller hazard). The per-element P14a knobs read
+  // this, so flipping the graphics preset is the only thing that moves a knob. Read once
+  // per update() frame; coerceFxTier defaults an unset/unknown stamp to 'ultra' (full
+  // effects), so a missing stamp never silently sheds HUD cost.
+  private fxTier(): UiEffectsTier {
+    return coerceFxTier(document.documentElement.dataset.fxLevel);
+  }
+
   update(): void {
     const sim = this.sim;
     const p = sim.player;
     const now = performance.now();
+    const fxTier = this.fxTier();
     const fastHud = now - this.lastHudFastAt >= 100;
     if (fastHud) {
       this.lastHudFastAt = now;
@@ -4109,8 +4148,14 @@ export class Hud {
     this.updateLowResource(p);
 
     // buff bar (player buffs + debuffs): the keyed-pool aura painter (P12b), driven by
-    // the auras_view core every frame (the elided writers make a no-op frame free).
-    this.buffBarPainter.paint(this.buffBarView.tick(p));
+    // the auras_view core every frame (the elided writers make a no-op frame free). P14a
+    // Slice C tiers the refresh (tick) granularity: full tiers repaint every frame
+    // (interval 0, cadenceDue always true); low coarsens to ~4Hz. The visible-count cap
+    // is applied inside the painter.
+    if (cadenceDue(this.lastBuffBarPaintAt, now, auraRefreshIntervalMs(fxTier))) {
+      this.lastBuffBarPaintAt = now;
+      this.buffBarPainter.paint(this.buffBarView.tick(p));
+    }
 
     // target frame: the SECOND instance of the unit_frame family (P11b). The shared
     // frame (display/name/level/hp/absorb/portrait gate) goes through the family
@@ -4123,24 +4168,39 @@ export class Hud {
       const isBoss = !!MOBS[target.templateId]?.boss;
       // The portrait gate fires inside paint(); hand it the subject to redraw.
       this.targetPortraitSubject = target;
-      this.targetFramePainter.paint(
-        unitFrameView({
-          present: true,
-          hpFrac: target.hp / Math.max(1, target.maxHp),
-          hpText: target.dead ? t('hud.core.dead') : `${target.hp} / ${target.maxHp}`,
-          resourceKind: 'none',
-          resFrac: 0,
-          resText: '',
-          levelText: isBoss ? BOSS_SKULL_GLYPH : String(target.level),
-          name: entityDisplayName(target),
-          // id-keyed gate, byte-faithful to the old lastPortraitTarget !== target.id;
-          // the painter resets it on hide so an id reused by a new mob still redraws.
-          portraitKey: String(target.id),
-          absorb: target.dead ? null : target,
-          dead: false,
-          outOfRange: false,
-        }),
-      );
+      // P14a Slice D: the target is a NON-SELF frame; on low throttle its HP/level/
+      // portrait refresh (~10Hz), while the SELF/player frame stays full-rate. A target
+      // SWAP bypasses the throttle so selecting a new target updates immediately. The full
+      // tiers return interval 0 (cadenceDue always true), so this paints every frame as
+      // before. The elite tag / name color / debuffs / cast bar / combo below stay
+      // full-rate (debuffs are separately tiered in Slice C; the cast bar is a raid
+      // mechanic indicator), so only the unit_frame body is throttled.
+      const targetChanged = target.id !== this.lastTargetFrameId;
+      if (
+        targetChanged ||
+        cadenceDue(this.lastTargetFramePaintAt, now, targetFrameNonSelfIntervalMs(fxTier))
+      ) {
+        this.lastTargetFramePaintAt = now;
+        this.lastTargetFrameId = target.id;
+        this.targetFramePainter.paint(
+          unitFrameView({
+            present: true,
+            hpFrac: target.hp / Math.max(1, target.maxHp),
+            hpText: target.dead ? t('hud.core.dead') : `${target.hp} / ${target.maxHp}`,
+            resourceKind: 'none',
+            resFrac: 0,
+            resText: '',
+            levelText: isBoss ? BOSS_SKULL_GLYPH : String(target.level),
+            name: entityDisplayName(target),
+            // id-keyed gate, byte-faithful to the old lastPortraitTarget !== target.id;
+            // the painter resets it on hide so an id reused by a new mob still redraws.
+            portraitKey: String(target.id),
+            absorb: target.dead ? null : target,
+            dead: false,
+            outOfRange: false,
+          }),
+        );
+      }
       // Target-only sub-parts the family frame does not express, each routed through
       // the elided writers (the elite class + name color are the two writes the four
       // original writers cannot express, hence the P10a toggleClass / setStyleProp).
@@ -4151,7 +4211,17 @@ export class Hud {
         'color',
         target.hostile ? 'var(--color-hostile)' : 'var(--color-friendly)',
       );
-      this.targetDebuffsPainter.paint(this.targetDebuffsView.tick(target));
+      // P14a Slice C: tier the target-debuff refresh (tick) granularity like the buff
+      // bar. A target SWAP (targetChanged) forces an immediate repaint so the strip never
+      // shows the previous target's debuffs while throttled on low; otherwise the full
+      // tiers repaint every frame and low coarsens to ~4Hz.
+      if (
+        targetChanged ||
+        cadenceDue(this.lastTargetDebuffsPaintAt, now, auraRefreshIntervalMs(fxTier))
+      ) {
+        this.lastTargetDebuffsPaintAt = now;
+        this.targetDebuffsPainter.paint(this.targetDebuffsView.tick(target));
+      }
       // target/boss cast bar (e.g. Nythraxis' Deathless Rage), shown under the name +
       // HP so the raid sees exactly when to channel the wardstones. The target
       // instance shows the raw cast id and never eats/drinks (no `consume`).
@@ -4180,7 +4250,10 @@ export class Hud {
       }
     } else {
       // No target (or a world object): hide the frame. The painter also resets its
-      // portrait gate here, so re-acquiring a target repaints (the old -999 reset).
+      // portrait gate here, so re-acquiring a target repaints (the old -999 reset). Reset
+      // the P14a cadence id too, so re-acquiring a target bypasses the low-tier throttle
+      // and paints immediately (targetChanged becomes true on the next frame with a target).
+      this.lastTargetFrameId = null;
       this.targetFramePainter.paint(unitFrameView(ABSENT_TARGET_DESCRIPTOR));
     }
 
@@ -4334,7 +4407,13 @@ export class Hud {
 
       this.updateQuestTracker();
       this.updateDelveTracker();
-      this.updatePartyFrames();
+      // P14a Slice D: party members are NON-SELF frames. They already run on the ~4Hz
+      // mediumHud band; on low slow them further (~2Hz). The full tiers return interval 0,
+      // so cadenceDue is always true and party stays on the unchanged mediumHud cadence.
+      if (cadenceDue(this.lastPartyFramesAt, now, partyFrameNonSelfIntervalMs(fxTier))) {
+        this.lastPartyFramesAt = now;
+        this.updatePartyFrames();
+      }
       this.updateTradeWindow();
       this.updateArenaStatus();
       this.updateFiestaHud();
@@ -4361,7 +4440,13 @@ export class Hud {
     }
     this.arenaMatchSeen = inArenaMatch;
     if (fastHud) {
-      this.updateMinimap();
+      // P14a Slice B: the minimap canvas redraw is the heaviest fastHud item; tier its
+      // cadence (full tiers redraw every fastHud tick = ~10Hz; low throttles to ~3-4Hz).
+      // The clock / coords / compass are cheap text and stay at the full fastHud rate.
+      if (cadenceDue(this.lastMinimapDrawAt, now, minimapRedrawIntervalMs(fxTier))) {
+        this.lastMinimapDrawAt = now;
+        this.updateMinimap();
+      }
       this.updateClock();
       this.updateMinimapCoords();
       this.updateCompass();
