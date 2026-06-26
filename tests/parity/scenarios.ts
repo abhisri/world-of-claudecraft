@@ -1636,6 +1636,56 @@ function questCollectTurnIn(): Scenario {
   };
 }
 
+// Quest link-share + abandon (W4): the two quest verbs no other parity scenario
+// drives. Two players, NO proximity needed for the linked path. First the share is
+// rejected by the party gate (acceptLinkedQuest's myParty/sharerParty check) and an
+// abandon of an unheld quest hits the early-return guard (no emit); then A invites B
+// into a party and the share goes through (finalizeQuestAccept's questLog.set + the
+// fallback re-grant loop + the accept log, plus the sharer notice back to A); finally
+// B abandons the held quest (questLog.delete + the 'Quest abandoned' log). q_wolves is
+// shareable (no `shareable:false`), level-gateless, and prereq-free, so it is
+// 'available' to a fresh player. Draws NO rng, so the draw-order digest must stay
+// byte-identical across the move.
+function questLinkAbandon(): Scenario {
+  return {
+    name: 'quest_link_abandon',
+    coverage: [
+      'acceptLinkedQuest party-gate: not-in-party error then in-party share',
+      'finalizeQuestAccept via the linked-share path (questLog.set + fallback re-grant + sharer notice)',
+      'abandonQuest questLog.delete + log emit, plus the not-in-log early-return guard',
+    ],
+    build: () => new Sim({ seed: 1017, playerClass: 'warrior', noPlayer: true }),
+    drive(rec: Recorder) {
+      const sim = rec.sim as AnySim;
+      const a = sim.addPlayer('warrior', 'Aleph'); // sharer
+      const b = sim.addPlayer('mage', 'Bet'); // acceptor
+      teleport(sim, sim.entities.get(a)!, 20, 20);
+      teleport(sim, sim.entities.get(b)!, 21, 20);
+      rec.notes.a = a;
+      rec.notes.b = b;
+      const questId = 'q_wolves';
+      // 1. Not partied yet: the party gate rejects the linked accept (error, no quest).
+      sim.acceptLinkedQuest(questId, a, b);
+      rec.snapshot('link-no-party');
+      // 2. Abandon a quest B does not hold: the `!questLog.has` early-return (no emit).
+      sim.abandonQuest(questId, b);
+      rec.snapshot('abandon-noop');
+      // 3. Form a party (A invites, B accepts).
+      sim.partyInvite(b, a);
+      sim.partyAccept(b);
+      rec.snapshot('partied');
+      // 4. In party + quest available: the share goes through (finalizeQuestAccept
+      //    re-grant + accept log, plus the sharer notice to A).
+      sim.acceptLinkedQuest(questId, a, b);
+      rec.snapshot('link-accepted');
+      // 5. B abandons the quest it now holds (questLog.delete + 'Quest abandoned' log).
+      sim.abandonQuest(questId, b);
+      rec.snapshot('abandoned');
+      rec.tick(2);
+    },
+  };
+}
+
 // Party/raid state machine (A1): the full social flow, which draws NO rng of its
 // own. Forms a party of five, converts it to a raid, fills to a second subgroup,
 // moves a member across groups, then hands off leadership and drains the roster to
@@ -3517,6 +3567,7 @@ export const SCENARIOS: Scenario[] = [
   delveCompanion(),
   questKillCredit(),
   questCollectTurnIn(),
+  questLinkAbandon(),
   talentsProgression(),
   multiClassHeal(),
   mobLocomotion(),
