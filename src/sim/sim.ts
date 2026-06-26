@@ -29,11 +29,8 @@ import {
   updateCasting as updateCastingImpl,
 } from './combat/casting_lifecycle';
 import {
-  isLockedOut,
   isRooted,
-  isSilenced,
   isStunned,
-  tonguesMult,
 } from './combat/cc';
 import {
   dealDamage as dealDamageImpl,
@@ -82,7 +79,6 @@ import {
 import {
   cloneAllocation,
   computeTalentModifiers,
-  defaultBuild,
   emptyAllocation,
   emptyModifiers,
   FIRST_TALENT_LEVEL,
@@ -105,10 +101,8 @@ import {
   DELVE_COMPANIONS,
   DELVE_LIST,
   DELVE_SLOT_COUNT,
-  DELVES,
   DUNGEON_LIST,
   DUNGEON_X_THRESHOLD,
-  DUNGEONS,
   delveAt,
   delveOrigin,
   dungeonAt,
@@ -123,7 +117,6 @@ import {
   PLAYER_START,
   QUESTS,
   questRewardItemId,
-  resolveDelveShopOffers,
   ZONES,
   zoneAt,
 } from './data';
@@ -194,6 +187,7 @@ import {
 import * as companionMod from './delves/companion';
 import * as lockpickMod from './delves/lockpick_controller';
 import { Market, MARKET_MAX_LISTINGS, type MarketListing, type MarketSave } from './market';
+import { formatMoney } from './format_money';
 import * as runsMod from './delves/runs';
 import * as chatMod from './social/chat';
 import * as tradeMod from './social/trade';
@@ -235,7 +229,6 @@ import { Targeting } from './targeting';
 import {
   addThreat,
   clearThreat,
-  stealthDetectionRadius,
   TAUNT_FORCE_SECONDS,
   threatEntries,
   threatModifier,
@@ -251,17 +244,12 @@ import {
   type AuraKind,
   angleTo,
   armorReduction,
-  DEMON_HEAL_CAST_ID,
   CONSUME_DURATION,
   CONSUME_TICKS,
   type CrowdControlDrCategory,
-  type CurrencyLootStrategy,
   DELVE_COMPANION_HEAL_INTERVAL,
-  DELVE_COMPANION_MAX_RANK,
-  DELVE_PLATE_RADIUS,
   type DelveDef,
   type DelveModuleDef,
-  type DelveObjectState,
   type DelveRun,
   DT,
   dist2d,
@@ -273,14 +261,12 @@ import {
   FISHING_CAST_ID,
   FISHING_CAST_TIME,
   GCD,
-  INSTANCE_EMPTY_TIMEOUT,
   INTERACT_RANGE,
   type InvSlot,
   isConsuming,
   isPetClass,
   isQuestTurnInNpc,
   LEASH_DISTANCE,
-  type LootEntry,
   type LootRollChoice,
   type LootRollPrompt,
   type LootSlot,
@@ -293,9 +279,6 @@ import {
   normAngle,
   OBJECT_RESPAWN,
   type OverheadEmoteId,
-  PARTY_XP_RANGE,
-  PET_GROWL_INTERVAL,
-  PET_TELEPORT_DISTANCE,
   type PetMode,
   type PlayerClass,
   type QuestDef,
@@ -7513,13 +7496,7 @@ export class Sim {
   }
 }
 
-export function formatMoney(copper: number): string {
-  const g = Math.floor(copper / 10000);
-  const s = Math.floor((copper % 10000) / 100);
-  const c = copper % 100;
-  const parts: string[] = [];
-  if (g > 0) parts.push(`${g}g`);
-  if (s > 0) parts.push(`${s}s`);
-  if (c > 0 || parts.length === 0) parts.push(`${c}c`);
-  return parts.join(' ');
-}
+// formatMoney now lives in ./format_money (a leaf module, to break the value-cycle
+// with market.ts and loot/loot_roll.ts). Re-exported here so existing importers
+// (e.g. tests/gold_command.test.ts) that import it from './sim' keep working.
+export { formatMoney };

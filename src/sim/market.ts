@@ -10,7 +10,8 @@
 // (enforced by tests/architecture.test.ts). The market draws NO rng.
 
 import { ITEMS } from './data';
-import { formatMoney, type PlayerMeta } from './sim';
+import { formatMoney } from './format_money';
+import type { PlayerMeta } from './sim';
 import type { SimContext } from './sim_context';
 import { dist2d, INTERACT_RANGE, type Entity, type InvSlot } from './types';
 

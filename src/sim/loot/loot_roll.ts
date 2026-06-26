@@ -24,7 +24,7 @@
 // (enforced by tests/architecture.test.ts).
 
 import { ITEMS, MOBS, QUESTS } from '../data';
-import { formatMoney } from '../sim';
+import { formatMoney } from '../format_money';
 import type { PlayerMeta } from '../sim';
 import type { SimContext } from '../sim_context';
 import { dist2d, PARTY_XP_RANGE } from '../types';
