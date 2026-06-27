@@ -43,6 +43,18 @@ function walk(dir: string): string[] {
   return out;
 }
 
+// On-disk pure-core candidates in a single layer dir (non-recursive): the modules
+// named with the pure-core convention <thing>_view.ts / <thing>_core.ts. The
+// COMPLETENESS sweep below asserts every one of these IS registered, so a new
+// extraction that forgets to add its core to the allowlist fails the guard instead
+// of silently escaping it. Bare-named cores (xp_bar.ts, swing_timer.ts, ...) are
+// not caught by this convention; new extractions follow the *_view/*_core naming.
+function onDiskCores(dir: string): string[] {
+  return readdirSync(dir)
+    .filter((name) => /_(?:view|core)\.ts$/.test(name) && !name.endsWith('.d.ts'))
+    .map((name) => join(dir, name));
+}
+
 // Blank out comments while preserving line count and column positions, so prose
 // (a code comment that names Math.random, or "the search window") cannot create a
 // false positive. String literals are left intact: the dotted patterns matched
@@ -217,6 +229,21 @@ describe('src/ui pure-core invariants', () => {
     expect(missing, `curated src/ui pure core missing:\n${missing.join('\n')}`).toEqual([]);
   });
 
+  // COMPLETENESS (P17a): the reverse of the existence check above. The other scans
+  // only prove the LISTED cores are clean; this proves the converse - every on-disk
+  // src/ui *_view / *_core IS registered - so a future extraction that names a pure
+  // core <thing>_view.ts but forgets to add it to UI_PURE_CORES fails here instead
+  // of silently escaping the purity / determinism scans. src/guide is a separate SPA
+  // layer (src/guide/CLAUDE.md), not a hud.ts-consumed core, so it is out of scope.
+  it('registers every on-disk src/ui *_view / *_core pure core (completeness)', () => {
+    const registered = new Set(UI_PURE_CORES);
+    const unregistered = onDiskCores(join(repoRoot, 'src', 'ui')).filter((f) => !registered.has(f));
+    expect(
+      unregistered.map((f) => relative(repoRoot, f)),
+      `every src/ui *_view/*_core must be in UI_PURE_CORES (register it if pure, or rename it if it is not a pure core):\n${unregistered.join('\n')}`,
+    ).toEqual([]);
+  });
+
   it('imports nothing from render/game/net, three, or a DOM-owning painter (host-agnostic, unit-testable)', () => {
     const violations = scanImports(UI_PURE_CORES, forbiddenUiCoreImport);
     expect(
@@ -270,6 +297,21 @@ describe('src/render pure-core invariants', () => {
   it('lists only files that exist (the curated pure cores)', () => {
     const missing = RENDER_PURE_CORES.filter((f) => !statSync(f).isFile());
     expect(missing, `curated src/render pure core missing:\n${missing.join('\n')}`).toEqual([]);
+  });
+
+  // COMPLETENESS (P17a): every on-disk src/render *_view / *_core must be registered
+  // in RENDER_PURE_CORES (the render-resident logic cores: cast_bar is bare-named, so
+  // nameplate_view.ts is the one the convention catches). A new render core that is
+  // not registered fails here instead of escaping the Three-free / determinism scans.
+  it('registers every on-disk src/render *_view / *_core pure core (completeness)', () => {
+    const registered = new Set(RENDER_PURE_CORES);
+    const unregistered = onDiskCores(join(repoRoot, 'src', 'render')).filter(
+      (f) => !registered.has(f),
+    );
+    expect(
+      unregistered.map((f) => relative(repoRoot, f)),
+      `every src/render *_view/*_core must be in RENDER_PURE_CORES (register it if pure, or rename it if it is not a pure core):\n${unregistered.join('\n')}`,
+    ).toEqual([]);
   });
 
   it('imports nothing from game/net, three, or a DOM-owning painter (Three-free, unit-testable)', () => {
