@@ -13,9 +13,14 @@ export const SETTING_RANGES = {
   // SFX by default so dialogue reads over ambient combat noise.
   voiceVolume: { min: 0, max: 1, def: 0.9 },
   brightness: { min: 0.6, max: 1.5, def: 1 },
-  // 1 low, 2 medium, 3 high, 4 ultra, 5 advanced. The renderer reads this
-  // from localStorage during startup because tier choice controls preload.
-  graphicsPreset: { min: 1, max: 5, def: 4 },
+  // 1 low, 2 medium, 3 high, 4 ultra, 5 advanced. The renderer reads this from
+  // localStorage during startup because tier choice controls preload. def is MEDIUM (a safe
+  // middle, also the Reset target): on a player's FIRST run main.ts probes the device and
+  // PERSISTS a device-appropriate preset over this default (resolveDefaultGraphicsPreset in
+  // gfx.ts; medium when the device signals are inconclusive), so a weak phone is not stuck on
+  // a tier it cannot run and a strong desktop is not capped below what it can drive. An
+  // explicit player choice (stored here) is never overridden.
+  graphicsPreset: { min: 1, max: 5, def: 2 },
   // Adaptive browser-effects tier for the DOM/CSS layer (distinct from the WebGL
   // graphicsPreset above). 0 = Auto: detect the engine (Chromium/WebKit/Gecko),
   // version and desktop-vs-mobile and tone down the most GPU-expensive CSS

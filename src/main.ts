@@ -75,7 +75,7 @@ import { CharacterPreview } from './render/characters';
 import { skinCount } from './render/characters/manifest';
 import { playerPortraitDataUrl } from './render/characters/portrait';
 import { installWebGLContextRelease } from './render/context_release';
-import { GFX, graphicsPresetLabel } from './render/gfx';
+import { firstRunGraphicsPreset, GFX, graphicsPresetLabel } from './render/gfx';
 import { Renderer } from './render/renderer';
 import { navigatorSaveData } from './render/sky';
 import { pathCrossesFence } from './sim/colliders';
@@ -858,6 +858,14 @@ async function startGame(
 
   const keybinds = new Keybinds(keybindScope);
   const settings = new Settings();
+  // First-run graphics default: if the player has never chosen a graphics preset, probe the
+  // device (GPU name, memory, cores, touch) and PERSIST a device-appropriate preset (medium
+  // when inconclusive) over the medium default, BEFORE the effects applier and renderer read
+  // it, so the 3D tier, the data-fx-level cadence (nameplates), and the options UI all agree.
+  // A static one-shot probe (resolveDefaultGraphicsPreset), never the FPS governor (decision 6);
+  // an explicit stored preset returns null here and is never overridden.
+  const autoPreset = firstRunGraphicsPreset();
+  if (autoPreset !== null) settings.set('graphicsPreset', autoPreset);
   // UI theming: apply the persisted theme's CSS variables to :root, then keep a
   // hook so the Options panel can switch preset / override colours live.
   const themeStore = new ThemeStore();

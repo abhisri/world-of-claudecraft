@@ -46,6 +46,7 @@ export type GfxBucketLevels = Record<GfxBucketId, number>;
 export interface GfxRuntimeHints {
   search: string;
   deviceMemory?: number;
+  hardwareConcurrency?: number;
   maxTouchPoints: number;
   coarsePointer: boolean;
   narrowViewport: boolean;
@@ -356,6 +357,7 @@ function runtimeHints(): GfxRuntimeHints {
   return {
     search: typeof location !== 'undefined' ? location.search : '',
     deviceMemory: nav?.deviceMemory,
+    hardwareConcurrency: nav?.hardwareConcurrency,
     maxTouchPoints: nav?.maxTouchPoints ?? 0,
     coarsePointer: typeof matchMedia !== 'undefined' ? matchMedia('(pointer: coarse)').matches : false,
     narrowViewport: typeof matchMedia !== 'undefined'
@@ -373,6 +375,121 @@ function runtimeHints(): GfxRuntimeHints {
 export function isConstrainedBrowser(hints: GfxRuntimeHints): boolean {
   if (hints.deviceMemory !== undefined && hints.deviceMemory <= 4) return true;
   return hints.maxTouchPoints > 0 && (hints.coarsePointer || hints.narrowViewport);
+}
+
+/**
+ * Coarse GPU class from the UNMASKED_RENDERER_WEBGL string, the single most reliable static
+ * capability signal (RAM/cores are only weak tie-breakers, see resolveDefaultGraphicsPreset).
+ * Conservative on purpose: a masked/unplaced name returns 'unknown' so the resolver falls back
+ * to MEDIUM rather than guessing. Mirrors the detect-gpu name->class model (pmndrs/detect-gpu,
+ * which reads UNMASKED_RENDERER_WEBGL and looks it up in an fps-per-GPU blob; we drop the blob
+ * and bucket by family) plus the mobile-GPU generation ladders (Adreno 3xx-4xx/Mali-T weak ->
+ * 5xx-6xx mid -> 7xx/8xx flagship; Apple A rises A14+). Test order matters: software first, then
+ * the codebase's named weak-integrated parts, then strong/flagship, then mid, then old/low.
+ */
+export type GpuClass =
+  | 'software'
+  | 'strongDesktop'
+  | 'flagshipMobile'
+  | 'midIntegrated'
+  | 'midMobile'
+  | 'weak'
+  | 'unknown';
+
+export function classifyGpuRenderer(name: string | undefined): GpuClass {
+  const n = (name ?? '').toLowerCase();
+  if (!n) return 'unknown';
+  // Software rasterizers (no real GPU): always the lowest tier.
+  if (/swiftshader|llvmpipe|basic render|softpipe|microsoft basic/.test(n)) return 'software';
+  // The older Intel integrated parts the codebase already names as weak (kept AHEAD of the
+  // mid-integrated bucket so an Iris Plus 6xx / UHD 6xx / HD 5xx-6xx stays weak, consistent with
+  // the existing leanFoliage treatment in settingsFor).
+  if (isWeakIntegratedGpu(name)) return 'weak';
+  // Strong desktop discrete + Apple Silicon.
+  if (/\b(rtx|gtx)\b|geforce|radeon\s?(rx|pro|vii)|\barc\b|\bnvidia\b|apple\s?m[1-9]/.test(n))
+    return 'strongDesktop';
+  // Recent flagship mobile.
+  if (
+    /apple a(1[4-9]|[2-9]\d)|adreno \(tm\) (6[6-9]\d|7\d\d|8\d\d)|immortalis|mali-g7\d\d|xclipse/.test(
+      n,
+    )
+  )
+    return 'flagshipMobile';
+  // Mid integrated (newer Intel Xe / AMD integrated).
+  if (/iris xe|iris plus|radeon (vega|graphics)|uhd graphics 6\d\d|intel.*xe/.test(n))
+    return 'midIntegrated';
+  // Mid mobile.
+  if (
+    /apple a1[1-3]|adreno \(tm\) (5\d\d|6[0-5]\d)|mali-g(5\d|6\d|7[0-8])|powervr (gt|gm|b)/.test(n)
+  )
+    return 'midMobile';
+  // Old / low mobile + old integrated.
+  if (
+    /adreno \(tm\) [34]\d\d|mali-t|mali-4\d\d|mali-g(31|51|52)\b|powervr (sgx|g6)|apple a([5-9]|10)\b|(hd|uhd) graphics (\d{3}\b|[45]\d{2})|intel.*gma/.test(
+      n,
+    )
+  )
+    return 'weak';
+  return 'unknown';
+}
+
+/**
+ * The device-appropriate graphics preset (1 low .. 4 ultra) for a player who has NOT chosen one,
+ * so a weak phone is not stuck on a tier it cannot run and a strong desktop is not capped below
+ * what it can drive. MEDIUM (2) is the deliberate fallback whenever the signals are inconclusive
+ * (the product call: a safe middle the runtime auto-governor can climb from). Pure function of
+ * static device hints only (GPU name, deviceMemory, hardwareConcurrency, touch/coarse/narrow);
+ * reads NO FPS governor and runs ONCE on first boot, so it never fights the runtime governor (the
+ * two-controller rule, decision 6). main.ts persists the result over the medium default so the 3D
+ * tier, the data-fx-level applier, and the options UI all read one consistent value; an explicit
+ * player preset is never passed here. Never returns ADVANCED (5): that expert custom profile is
+ * opt-in, never an auto-default.
+ *
+ * Grounded in the standard adaptive-quality practice (detect-gpu name tiering + web.dev adaptive
+ * loading), first-match-wins. CRITICAL: deviceMemory + hardwareConcurrency may only RAISE a tier
+ * or break a tie, NEVER pull one down. Safari caps hardwareConcurrency (2 on iOS, 8 on macOS) and
+ * Safari + Firefox omit deviceMemory entirely (Chromium-only, clamped, max ~8), so a flagship
+ * iPhone reports cores=2 / mem=undefined: a low-count down-rank would wrongly bucket it low. The
+ * recognized GPU class sets the floor; a masked/unknown name lands on MEDIUM. Ultra is gated
+ * behind a recognized strong-desktop GPU (a masked name cannot reach it).
+ */
+export function resolveDefaultGraphicsPreset(hints: GfxRuntimeHints): number {
+  const gpu = classifyGpuRenderer(hints.gpuRenderer);
+  const mem = hints.deviceMemory; // GiB, Chromium-only (clamped, max ~8); undefined elsewhere
+  const cores = hints.hardwareConcurrency; // logical cores, or undefined
+  const isMobile = hints.maxTouchPoints > 0 && (hints.coarsePointer || hints.narrowViewport);
+  // Corroborating RAM/core signal (or deviceMemory simply unreported, as on Firefox): only ever
+  // used to RAISE the strong-desktop tier to ultra, never to demote.
+  const ampleOrUnknownMem =
+    mem === undefined || mem >= 8 || (cores !== undefined && cores >= 8);
+
+  if (gpu === 'software' || gpu === 'weak') return PRESET_LOW;
+  if (gpu === 'strongDesktop' && !isMobile)
+    return ampleOrUnknownMem ? PRESET_ULTRA : PRESET_HIGH;
+  // A strong/flagship GPU on a touch device: capped at HIGH (ultra is desktop-only) for thermals.
+  if (gpu === 'flagshipMobile' || (gpu === 'strongDesktop' && isMobile)) return PRESET_HIGH;
+  if (gpu === 'midIntegrated' || gpu === 'midMobile') return PRESET_MEDIUM;
+  if (
+    gpu === 'unknown' &&
+    !isMobile &&
+    mem !== undefined &&
+    mem >= 8 &&
+    cores !== undefined &&
+    cores >= 8
+  )
+    return PRESET_HIGH;
+  return PRESET_MEDIUM; // unknown / masked / inconclusive -> the safe middle
+}
+
+/**
+ * The device-aware preset to persist on a player's FIRST run, or null when they have already
+ * chosen (or auto-persisted) a preset, so the caller never overrides an explicit choice and
+ * only writes once. Reads localStorage directly (storedNumericSetting), so it sees the true
+ * unset state that settings.get() masks behind the medium default.
+ */
+export function firstRunGraphicsPreset(): number | null {
+  if (storedNumericSetting('graphicsPreset') !== undefined) return null;
+  return resolveDefaultGraphicsPreset(runtimeHints());
 }
 
 export function tierFromHints(hints: GfxRuntimeHints, softwareGl: boolean): GfxTier {

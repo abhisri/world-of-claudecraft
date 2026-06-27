@@ -4072,10 +4072,11 @@ export class Renderer {
     // Static-preset tiered cadence (P14b): the nameplate refresh interval follows
     // the player's chosen graphics tier (the data-fx-level the preset applier
     // stamps), NEVER the FPS governor (the two-controller rule, decision 6). The
-    // LOW tier runs 1/15s, richer tiers 1/24s. NOTE this keys on the preset, not the
-    // device as before: a mobile device on a non-low preset now refreshes at the
-    // faster 1/24s (not the old device-forced 1/15s); the 1/15s is now a staleness
-    // floor only, with the mobile cost ceiling tracked for the P17a perf gate.
+    // LOW tier runs 1/15s, richer tiers 1/24s. The axis is the PRESET, not the device:
+    // the weak-GPU cost ceiling (the PR901 lesson) is restored through the device-aware
+    // first-run default (resolveDefaultGraphicsPreset in gfx.ts, P18e), which lands a
+    // recognized-weak or software GPU on the LOW preset (its 1/15s ceiling) while a
+    // mid/unknown device defaults to medium (1/24s). An explicit player preset wins.
     const nameplateInterval = nameplateIntervalSec(
       coerceFxTier(document.documentElement.dataset.fxLevel),
     );

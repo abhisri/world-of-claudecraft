@@ -18,8 +18,10 @@ describe('Settings', () => {
     const s = new Settings();
 
     expect(localStorage.getItem('woc_settings')).toBeNull();
-    expect(SETTING_RANGES.graphicsPreset.def).toBe(4);
-    expect(s.get('graphicsPreset')).toBe(4);
+    // def is MEDIUM (the Reset target + the pre-probe value); first-run device detection in
+    // main.ts persists a device-appropriate preset over it (see resolveDefaultGraphicsPreset).
+    expect(SETTING_RANGES.graphicsPreset.def).toBe(2);
+    expect(s.get('graphicsPreset')).toBe(2);
   });
 
   it('starts at the documented defaults (camera calmer than the old 1.0)', () => {

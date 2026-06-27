@@ -158,10 +158,13 @@ export function nonSelfRepaintDue(
 // the control AXIS changed device -> preset: the old fork capped EVERY mobile
 // device at 1/15s (a weak-GPU cost ceiling, the PR901 lesson); here 1/15s is the
 // LOW tier alone and 1/24s every richer tier, so a mobile device on a non-low
-// preset now runs the faster/costlier 1/24s. The 1/15s is kept only as a STALENESS
-// floor (no tier refreshes slower, so a nameplate never lags more than before);
-// restoring the mobile cost ceiling is the P17a mobile-perf gate's job, not this
-// knob's. Seconds, not ms: the renderer accumulates dt (seconds) against this, so
+// preset runs the faster/costlier 1/24s. The 1/15s is still the STALENESS floor (no
+// tier refreshes slower, so a nameplate never lags more than before); the mobile
+// weak-GPU cost ceiling is restored by the device-aware first-run default (gfx.ts
+// resolveDefaultGraphicsPreset, P18e): a recognized-weak or software GPU defaults to the LOW
+// preset, so it lands on this 1/15s cadence (a mid/unknown device defaults to medium = the
+// 1/24s tier), and this knob stays a pure function of the resulting tier. Seconds, not ms: the
+// renderer accumulates dt (seconds) against this, so
 // it is NOT gated through cadenceDue(). Two-controller invariant (decision 6): the
 // renderer derives the tier from the static data-fx-level (coerceFxTier), never the
 // FPS governor.
@@ -177,10 +180,11 @@ export const NAMEPLATE_INTERVAL_LOW_SEC = 1 / 15;
 export const NAMEPLATE_INTERVAL_FULL_SEC = 1 / 24;
 
 /** Seconds between full nameplate refreshes for `tier`: the LOW tier holds 1/15s,
- *  every richer tier runs 1/24s. (Old behavior keyed on the device, not the tier,
- *  so a mobile device on a non-low preset now gets 1/24s: the accepted, P17a-tracked
- *  axis change.) Always positive (nameplates throttle on every tier), so the renderer
- *  compares it directly against its accumulated dt, not through cadenceDue(). */
+ *  every richer tier runs 1/24s. The axis is the tier, not the device; the device-aware
+ *  first-run default (gfx.ts resolveDefaultGraphicsPreset, P18e) lands a recognized-weak or
+ *  software device on the LOW tier, restoring the 1/15s ceiling for weak GPUs. Always positive
+ *  (nameplates throttle on every tier), so the renderer compares it directly against its
+ *  accumulated dt, not through cadenceDue(). */
 export function nameplateIntervalSec(tier: UiEffectsTier): number {
   return tier === 'low' ? NAMEPLATE_INTERVAL_LOW_SEC : NAMEPLATE_INTERVAL_FULL_SEC;
 }
