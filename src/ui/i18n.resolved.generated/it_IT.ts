@@ -606,6 +606,11 @@ export const it_IT: EnTranslations = {
       "leaderOnly": "Solo il capo incursione può convertire in un gruppo.",
       "tooLarge": "Un'incursione con più di cinque membri non può tornare a essere un gruppo."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Infligge {value} danni da {school} ogni {interval} s",
       "hot": "Ripristina {value} salute ogni {interval} s",

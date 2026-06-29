@@ -606,6 +606,11 @@ export const id_ID: EnTranslations = {
       "leaderOnly": "Hanya pemimpin raid yang dapat mengubahnya menjadi rombongan.",
       "tooLarge": "Raid dengan lebih dari lima anggota tidak dapat diubah kembali menjadi rombongan."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Memberikan {value} kerusakan {school} setiap {interval} dtk",
       "hot": "Memulihkan {value} kesehatan setiap {interval} dtk",

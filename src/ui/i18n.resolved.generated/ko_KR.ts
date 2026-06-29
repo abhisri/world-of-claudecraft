@@ -606,6 +606,11 @@ export const ko_KR: EnTranslations = {
       "leaderOnly": "공격대장만 파티로 전환할 수 있습니다.",
       "tooLarge": "인원이 5명을 초과하는 공격대는 파티로 다시 전환할 수 없습니다."
     },
+    "itemArmorType": {
+      "cloth": "천",
+      "leather": "가죽",
+      "mail": "사슬"
+    },
     "auraEffect": {
       "dot": "{interval}초마다 {value}의 {school} 피해를 입힙니다",
       "hot": "{interval}초마다 생명력을 {value} 회복합니다",

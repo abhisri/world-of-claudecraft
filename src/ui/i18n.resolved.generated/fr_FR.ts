@@ -606,6 +606,11 @@ export const fr_FR: EnTranslations = {
       "leaderOnly": "Seul le chef de raid peut convertir en groupe.",
       "tooLarge": "Un raid de plus de cinq membres ne peut pas être reconverti en groupe."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Inflige {value} points de dégâts de {school} toutes les {interval} s",
       "hot": "Rend {value} points de vie toutes les {interval} s",

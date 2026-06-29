@@ -606,6 +606,11 @@ export const es_ES: EnTranslations = {
       "leaderOnly": "Solo el líder de la banda puede convertir la banda en grupo.",
       "tooLarge": "Una banda con más de cinco miembros no puede volver a convertirse en grupo."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Provoca {value} de daño de {school} cada {interval} s",
       "hot": "Recupera {value} de salud cada {interval} s",

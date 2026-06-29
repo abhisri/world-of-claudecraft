@@ -2120,6 +2120,20 @@
     color: var(--color-text-muted);
     font-size: 11px;
   }
+  /* slot line that also carries the armor subtype: slot left, type right-aligned.
+     The slot keeps the muted tt-sub color; the armor class reads brighter so the
+     newly surfaced "which class is this for" cue stands out. */
+  #tooltip .tt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  #tooltip .tt-row .tt-armor {
+    color: var(--color-text-light);
+  }
+  #tooltip .tt-row .tt-armor.tt-armor-bad {
+    color: #ff5040;
+  }
   /* One-line aura effect summary under the tooltip title (buff/debuff hover). */
   #tooltip .tt-effect {
     color: var(--color-accent, #d4b483);

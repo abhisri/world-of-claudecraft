@@ -606,6 +606,11 @@ export const sv_SE: EnTranslations = {
       "leaderOnly": "Endast raidledaren får omvandla till en grupp.",
       "tooLarge": "En raid med fler än fem medlemmar kan inte omvandlas tillbaka till en grupp."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Gör {value} {school}-skada var {interval}:e s",
       "hot": "Återställer {value} hälsa var {interval}:e s",

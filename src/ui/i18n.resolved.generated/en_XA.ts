@@ -606,6 +606,11 @@ export const en_XA: EnTranslations = {
       "leaderOnly": "[Óñļý ţĥé ŕáíð ļéáðéŕ ɱáý çóñʋéŕţ ţó á þáŕţý.]",
       "tooLarge": "[Á ŕáíð ŵíţĥ ɱóŕé ţĥáñ ƒíʋé ɱéɱƀéŕš çáññóţ çóñʋéŕţ ƀáçķ ţó á þáŕţý.]"
     },
+    "itemArmorType": {
+      "cloth": "[Çļóţĥ]",
+      "leather": "[Ļéáţĥéŕ]",
+      "mail": "[Ɱáíļ]"
+    },
     "auraEffect": {
       "dot": "[Ðéáļš {value} {school} ðáɱáĝé éʋéŕý {interval} šéç]",
       "hot": "[Ŕéšţóŕéš {value} ĥéáļţĥ éʋéŕý {interval} šéç]",

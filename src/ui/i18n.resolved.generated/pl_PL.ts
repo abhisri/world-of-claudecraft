@@ -606,6 +606,11 @@ export const pl_PL: EnTranslations = {
       "leaderOnly": "Tylko przywódca rajdu może przekształcić go w drużynę.",
       "tooLarge": "Rajd liczący ponad pięciu członków nie może zostać przekształcony z powrotem w drużynę."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Zadaje {value} obrażeń od {school} co {interval} s",
       "hot": "Przywraca {value} zdrowia co {interval} s",

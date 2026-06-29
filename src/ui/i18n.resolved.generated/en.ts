@@ -606,6 +606,11 @@ export const en: EnTranslations = {
       "leaderOnly": "Only the raid leader may convert to a party.",
       "tooLarge": "A raid with more than five members cannot convert back to a party."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Deals {value} {school} damage every {interval} sec",
       "hot": "Restores {value} health every {interval} sec",

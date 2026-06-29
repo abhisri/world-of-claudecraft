@@ -606,6 +606,11 @@ export const ja_JP: EnTranslations = {
       "leaderOnly": "パーティに変換できるのはレイドリーダーだけです。",
       "tooLarge": "メンバーが5人を超えるレイドはパーティに戻せません。"
     },
+    "itemArmorType": {
+      "cloth": "布",
+      "leather": "革",
+      "mail": "鎖"
+    },
     "auraEffect": {
       "dot": "{interval}秒ごとに{value}の{school}ダメージを与える",
       "hot": "{interval}秒ごとに体力を{value}回復する",

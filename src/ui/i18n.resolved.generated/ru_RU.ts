@@ -606,6 +606,11 @@ export const ru_RU: EnTranslations = {
       "leaderOnly": "Только лидер рейда может преобразовать рейд в группу.",
       "tooLarge": "Рейд, в котором более пяти участников, нельзя преобразовать обратно в группу."
     },
+    "itemArmorType": {
+      "cloth": "Ткань",
+      "leather": "Кожа",
+      "mail": "Кольчуга"
+    },
     "auraEffect": {
       "dot": "Наносит {value} единиц урона ({school}) каждые {interval} сек",
       "hot": "Восстанавливает {value} здоровья каждые {interval} сек",

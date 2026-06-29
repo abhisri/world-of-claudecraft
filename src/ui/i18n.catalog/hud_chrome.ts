@@ -630,6 +630,14 @@ export const hudChromeStrings = {
     leaderOnly: 'Only the raid leader may convert to a party.',
     tooLarge: 'A raid with more than five members cannot convert back to a party.',
   },
+  // Armor subtype shown on an armor item's slot line (classic shows the slot on the
+  // left, the armor class on the right). Resolved from src/ui/item_armor_type.ts via
+  // the sim's armorTypeForItem; tells the player which classes the gear is meant for.
+  itemArmorType: {
+    cloth: 'Cloth',
+    leather: 'Leather',
+    mail: 'Mail',
+  },
   // Buff/debuff hover tooltip effect line: a one-line summary of what the active
   // aura does, shown under its name and remaining time. Numbers are spliced in via
   // formatNumber as {value}/{pct}/{interval}/{stacks}/{min}/{max}; {school} is the

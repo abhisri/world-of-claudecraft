@@ -606,6 +606,11 @@ export const tr_TR: EnTranslations = {
       "leaderOnly": "Yalnızca akın lideri gruba dönüştürebilir.",
       "tooLarge": "Beşten fazla üyesi olan bir akın yeniden gruba dönüştürülemez."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Her {interval} sn {value} {school} hasarı verir",
       "hot": "Her {interval} sn {value} sağlık yeniler",

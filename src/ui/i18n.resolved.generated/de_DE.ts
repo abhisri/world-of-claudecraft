@@ -606,6 +606,11 @@ export const de_DE: EnTranslations = {
       "leaderOnly": "Nur der Schlachtzugsleiter darf in eine Gruppe umwandeln.",
       "tooLarge": "Ein Schlachtzug mit mehr als fünf Mitgliedern kann nicht wieder in eine Gruppe umgewandelt werden."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Verursacht alle {interval} s {value} {school}schaden",
       "hot": "Stellt alle {interval} s {value} Gesundheit wieder her",

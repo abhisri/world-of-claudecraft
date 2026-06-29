@@ -606,6 +606,11 @@ export const vi_VN: EnTranslations = {
       "leaderOnly": "Chỉ thủ lĩnh raid mới có thể chuyển thành tổ đội.",
       "tooLarge": "Một raid có hơn năm thành viên không thể chuyển trở lại thành tổ đội."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Gây {value} sát thương {school} mỗi {interval} giây",
       "hot": "Hồi {value} máu mỗi {interval} giây",

@@ -606,6 +606,11 @@ export const zh_TW: EnTranslations = {
       "leaderOnly": "只有團隊領袖可以轉換為隊伍。",
       "tooLarge": "超過五名成員的團隊無法轉換回隊伍。"
     },
+    "itemArmorType": {
+      "cloth": "布甲",
+      "leather": "皮甲",
+      "mail": "鎖甲"
+    },
     "auraEffect": {
       "dot": "每 {interval} 秒造成 {value} 點{school}傷害",
       "hot": "每 {interval} 秒恢復 {value} 點生命值",

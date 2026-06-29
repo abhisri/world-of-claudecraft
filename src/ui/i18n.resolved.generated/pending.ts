@@ -9,24 +9,80 @@
 // Reproducibility is checked by tests/i18n_resolved_equivalence.test.ts.
 
 export const pending: Record<string, readonly string[]> = {
-  "es": [],
-  "es_ES": [],
-  "fr_FR": [],
-  "fr_CA": [],
+  "es": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "es_ES": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "fr_FR": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "fr_CA": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
   "en_CA": [],
-  "it_IT": [],
-  "de_DE": [],
+  "it_IT": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "de_DE": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
   "zh_CN": [],
   "zh_TW": [],
   "ko_KR": [],
   "ja_JP": [],
-  "pt_BR": [],
+  "pt_BR": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
   "ru_RU": [],
-  "nl_NL": [],
-  "pl_PL": [],
-  "id_ID": [],
-  "tr_TR": [],
-  "sv_SE": [],
-  "vi_VN": [],
-  "da_DK": []
+  "nl_NL": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "pl_PL": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "id_ID": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "tr_TR": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "sv_SE": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "vi_VN": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ],
+  "da_DK": [
+    "hudChrome.itemArmorType.cloth",
+    "hudChrome.itemArmorType.leather",
+    "hudChrome.itemArmorType.mail"
+  ]
 };

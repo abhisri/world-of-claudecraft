@@ -606,6 +606,11 @@ export const nl_NL: EnTranslations = {
       "leaderOnly": "Alleen de raidleider kan omzetten naar een groep.",
       "tooLarge": "Een raid met meer dan vijf leden kan niet terug omgezet worden naar een groep."
     },
+    "itemArmorType": {
+      "cloth": "Cloth",
+      "leather": "Leather",
+      "mail": "Mail"
+    },
     "auraEffect": {
       "dot": "Brengt elke {interval} s {value} {school}schade toe",
       "hot": "Herstelt elke {interval} s {value} gezondheid",

@@ -57,7 +57,7 @@ import {
   ZONES,
   zoneAt,
 } from '../sim/data';
-import { armorTypeForItem, weaponArchetypeForItem } from '../sim/equipment_rules';
+import { armorTypeForItem, canEquipItem, weaponArchetypeForItem } from '../sim/equipment_rules';
 import type { Ante, PickAction } from '../sim/lockpick';
 import { PICK_ACTIONS } from '../sim/lockpick';
 import type { ResolvedAbility } from '../sim/sim';
@@ -186,6 +186,7 @@ import {
   tPlural,
 } from './i18n';
 import { iconDataUrl, QUALITY_COLOR, raidMarkerDataUrl } from './icons';
+import { itemArmorTypeLabelKey } from './item_armor_type';
 import { itemStatDeltas } from './item_compare';
 import { LeaderboardWindow } from './leaderboard_window';
 import { ReannounceMarker } from './live_region_reannounce';
@@ -2917,7 +2918,17 @@ export class Hud {
       }),
     )}</div>`;
     if (item.slot) {
-      html += `<div class="tt-sub">${esc(itemSlotName(item.slot))}</div>`;
+      // Classic layout: slot name on the left, armor subtype (Cloth/Leather/Mail)
+      // right-aligned on the same line so it is clear which classes the gear suits.
+      const armorTypeKey = itemArmorTypeLabelKey(item);
+      if (armorTypeKey) {
+        // Red armor type = the viewing player's class cannot wear this armor weight
+        // (e.g. a mage hovering Mail), so they know it is not for them at a glance.
+        const badClass = canEquipItem(this.sim.cfg.playerClass, item) ? '' : ' tt-armor-bad';
+        html += `<div class="tt-sub tt-row"><span>${esc(itemSlotName(item.slot))}</span><span class="tt-armor${badClass}">${esc(t(armorTypeKey))}</span></div>`;
+      } else {
+        html += `<div class="tt-sub">${esc(itemSlotName(item.slot))}</div>`;
+      }
     }
     if (item.weapon) {
       const dps = (item.weapon.min + item.weapon.max) / 2 / item.weapon.speed;
