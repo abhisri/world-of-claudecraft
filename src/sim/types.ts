@@ -1024,6 +1024,11 @@ export interface AbilityDef {
   // multiplier on the damage-threat (both scale with stance/form modifiers).
   threat?: { flat?: number; mult?: number };
   requiresForm?: 'bear' | 'cat'; // druid form kit (maul/growl/swipe/claw/bite)
+  // Mutually exclusive self-buff group: casting one ability in the group cancels
+  // any active buff from a sibling in the same group (e.g. hunter aspects, where
+  // only one aspect may be active at a time). Distinct from form toggles, which
+  // are excluded by aura kind, not by group.
+  exclusiveGroup?: string;
   requiresStealth?: boolean; // ambush
   requiresOutOfCombat?: boolean; // stealth
   learnLevel: number;
