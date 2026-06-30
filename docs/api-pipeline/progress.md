@@ -334,9 +334,10 @@ Deliverables:
 
 QA:
 - [x] Fixes applied (3 SHOULD-FIX + the actionable NITs from the correctness/security review, all applied)
-- [x] Tests added (33 in tests/server/http/schema.test.ts: runtime + tsc-checked type-level)
+- [x] Tests added (37 in tests/server/http/schema.test.ts: runtime + tsc-checked type-level)
 - [x] Dead code removed (none introduced; module is the minimal combinator set)
 - [x] Reviews clean (privacy-security 0/0, qa-checklist 0/0, adversarial-correctness 0 BLOCKING)
+- [x] Dedicated QA gate (phase-06-qa.md) PASS: 0 BLOCKING, 1 SHOULD-FIX + 3 NIT all applied (all test-coverage)
 
 Notes:
 DONE + QA DONE (2026-06-30). New module `server/http/schema.ts` (150 code lines, under the ~150 cap;
@@ -375,7 +376,30 @@ and an explicit-pointer decode). Deferred (correctly OUT of scope): code->HTTP-s
 (P7), the `withBody`/validate middleware that calls decode() (P8), RouteDef.schema wiring + registry
 (P9), concrete page/pageSize bounds + the {items,...} envelope (P10), the client i18n matcher (P22).
 Validation: tsc/biome(ci:changed)/build:server all green; `tests/server/http/` 229 pass (schema 33);
-full ASCII-clean. Next: Phase 06 QA (phase-06-qa.md).
+full ASCII-clean.
+
+Phase 06 QA gate (phase-06-qa.md, dedicated adversarial pass, 2026-06-30): PASS. A 4-auditor fan-out
+(correctness, test-coverage, dead-code, privacy-security) plus per-finding adversarial verify found
+0 BLOCKING and CONFIRMED 1 SHOULD-FIX + 3 NIT, all TEST-COVERAGE gaps; the implementation itself was
+re-verified defect-free (no schema.ts change). The correctness and security auditors confirmed every
+STEP 5 criterion against the real code; 3 further findings were REFUTED on verification (a redundant
+params-survival assertion, and two subjective dead-code simplifications: the makeDefault-vs-base-decode
+duplication and the one-pass-return rule-of-three, both judged non-defects not worth churning correct
+code). The 4 confirmed test additions (commit, +4 tests -> schema 37):
+- SHOULD-FIX: object()'s makeDefault() clone path for an absent optional field is a SECOND clone site
+  separate from optional().decode(undefined); only the latter was tested, so dropping the object-path
+  clone (schema.ts:217) would pass all 33 tests yet share one mutable default across decodes (per-request
+  cross-mutation bleed). Added a mutable-default non-aliasing test through the object path.
+- NIT: assert the null-prototype output construction (Object.getPrototypeOf === null), which no test
+  pinned (a refactor to a plain `{}` literal would still pass, since declared-keys-only already neutralizes
+  __proto__ input).
+- NIT: assert `~standard.validate` converts a MULTI-segment pointer to a nested path array
+  (['parent','child']); only [] and ['id'] were covered.
+- NIT: prove the second clause of the pollution invariant (a SHAPE that itself declares a `__proto__`
+  key, via a computed key) cannot pollute Object.prototype.
+Re-validation after the test hardening: tsc/biome(ci:changed)/build:server all green; `tests/server/http/`
+233 pass (schema 37); full ASCII-clean. Next: Phase 07 (RFC 9457 error model + error_codes catalog,
+phase-07-error-model.md).
 
 ## Phase 07: RFC 9457 error model + per-surface serializers + error_codes catalog
 
