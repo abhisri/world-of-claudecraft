@@ -616,7 +616,41 @@
 #discord-cta-banner .dc-cta-x:hover {
   background: #ffffff3a;
 }
-@media (max-width: 560px) {
+/* Phones: the desktop flex row squeezes the title column down to one word per line
+   (the fixed logo/button/dismiss starve it) and the vertically centered button then
+   overlaps it. Re-flow to a grid (logo + title + dismiss on top, the link button
+   full-width below) so the title gets the leftover space and wraps normally, with
+   mobile-floor (>=40px) tap targets. Gated on coarse-pointer too, not just a narrow
+   width, so landscape phones get the same layout (per src/ui/CLAUDE.md). */
+@media (max-width: 560px), (pointer: coarse) {
+  #discord-cta-banner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "logo text close"
+      "btn  btn  btn";
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 8px;
+    width: min(94vw, 440px);
+  }
+  #discord-cta-banner .dc-cta-logo {
+    grid-area: logo;
+  }
+  #discord-cta-banner .dc-cta-text {
+    grid-area: text;
+  }
+  #discord-cta-banner .dc-cta-x {
+    grid-area: close;
+    align-self: start;
+    width: 40px;
+    height: 40px;
+  }
+  #discord-cta-banner .dc-cta-btn {
+    grid-area: btn;
+    width: 100%;
+    min-height: 40px;
+  }
   #discord-cta-banner .dc-cta-title {
     font-size: 12.5px;
   }
