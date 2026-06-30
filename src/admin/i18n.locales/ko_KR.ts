@@ -400,7 +400,6 @@ export const ko_KR: Record<string, string> = {
   'blockedIps.colCreatedAt': '생성일',
   'blockedIps.addFailed': 'IP를 차단하지 못했습니다.',
   'blockedIps.removeFailed': 'IP 차단을 해제하지 못했습니다.',
-  'sharedIps.description': '둘 이상의 계정에서 관찰된 IP 주소(계정 수에 따라 정렬됨)',
   'sharedIps.onlineDescription': '현재 둘 이상의 온라인 계정에서 사용되는 IP 주소입니다.',
   'sharedIps.onlineOnly': '온라인 계정만 해당',
   'sharedIps.warning':

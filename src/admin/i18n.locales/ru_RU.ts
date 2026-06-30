@@ -400,8 +400,6 @@ export const ru_RU: Record<string, string> = {
   'blockedIps.colCreatedAt': 'Создан',
   'blockedIps.addFailed': 'Не удалось заблокировать IP.',
   'blockedIps.removeFailed': 'Не удалось разблокировать IP.',
-  'sharedIps.description':
-    'IP-адреса, наблюдаемые в нескольких учетных записях, упорядочены по количеству учетных записей.',
   'sharedIps.onlineDescription':
     'IP-адреса, которые в настоящее время используются более чем одной онлайн-учетной записью.',
   'sharedIps.onlineOnly': 'Только онлайн-аккаунты',

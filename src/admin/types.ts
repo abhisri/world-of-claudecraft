@@ -95,6 +95,28 @@ export interface LivePlayer {
   }[];
 }
 
+export interface SuspiciousEvidence {
+  kind: string;
+  weight: number;
+  detail: string;
+  expiresAt: number;
+}
+
+export interface SuspiciousPlayer {
+  ref: {
+    accountId: number;
+    characterId: number;
+    name: string;
+    ip: string;
+  };
+  score: number;
+  evidence: SuspiciousEvidence[];
+}
+
+export interface SuspiciousPlayersData {
+  players: SuspiciousPlayer[];
+}
+
 export interface Activity {
   days: number;
   registrations: { day: string; count: number }[];

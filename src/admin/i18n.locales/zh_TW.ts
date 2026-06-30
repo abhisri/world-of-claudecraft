@@ -398,7 +398,6 @@ export const zh_TW: Record<string, string> = {
   'blockedIps.colCreatedAt': '建立時間',
   'blockedIps.addFailed': '封鎖 IP 失敗。',
   'blockedIps.removeFailed': '解除封鎖 IP 失敗。',
-  'sharedIps.description': '在多個帳戶中觀察到的 IP 位址，按帳戶數排序。',
   'sharedIps.onlineDescription': '目前由多個線上帳戶使用的 IP 位址。',
   'sharedIps.onlineOnly': '僅限線上帳戶',
   'sharedIps.warning':

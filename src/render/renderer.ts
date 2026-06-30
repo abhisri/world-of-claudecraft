@@ -83,6 +83,7 @@ import { RenderBudgetGovernor, type RenderBudgetState } from './render_budget';
 import { downscaleDims } from './screenshot';
 import { drapeRingLocalY } from './selection_ring';
 import { buildClouds, buildSky, type SkyView } from './sky';
+import { nearestSloppyPickId, type SloppyPickCandidate } from './sloppy_pick';
 import { shouldRenderStealthGhost } from './stealth';
 import { buildFlaredConeFan, buildRingXZ, drapeConeWorld } from './target_cone_debug';
 import { buildTerrain, type TerrainView } from './terrain';
@@ -734,7 +735,13 @@ export class Renderer {
   private baseExposure = 1.12; // tone-mapping exposure at brightness 1.0
   private tmpV = new THREE.Vector3();
   private viewCandidates: ViewCandidate[] = [];
+  // Persistent scratch for the sloppy-pick column build. pick() is also the
+  // per-frame hover-cursor path (updateHoverCursor in main.ts), so a fresh array
+  // here would be per-frame garbage on every cursor-over-empty-ground frame.
+  // Reused like viewCandidates: cleared with .length = 0, grown in place.
+  private sloppyCandidates: SloppyPickCandidate[] = [];
   private tmpV2 = new THREE.Vector3();
+  private tmpV3 = new THREE.Vector3();
   // Manual frustum cull for characters. Their skinned meshes keep
   // frustumCulled=false (a skinned mesh's bind-pose bounds don't follow the
   // animated pose, so Three's own cull pops visible rigs out), which means an
@@ -4760,26 +4767,47 @@ export class Renderer {
     // and melee scrums (often hidden behind the player's own model) make
     // precise capsule clicks fiddly. Objects (doors/loot) still need a
     // direct hit; the local player never competes for the click.
+    //
+    // Each candidate is a vertical screen COLUMN from the body midpoint up to an
+    // overhead anchor a touch above the head (the +1.0 the chat-bubble path uses;
+    // slightly higher than the nameplate's own NAMEPLATE_ANCHOR_LIFT of 0.8, which
+    // with the 26px radius just helps the column reach the floating name text).
+    // So a click on the floating name (what a healer does to target a party
+    // member) registers on its owner instead of falling outside a body-only radius.
     const SLOPPY_PICK_PX = 26;
-    let bestId: number | null = null;
-    let bestD = SLOPPY_PICK_PX;
+    const candidates = this.sloppyCandidates;
+    candidates.length = 0;
     for (const [id, v] of this.views) {
       if (id === this.sim.playerId || !v.visual || !v.group.visible) continue;
       const e = this.sim.entities.get(id);
       if (!e || (e.dead && !e.lootable)) continue;
+      // body midpoint anchor (also the in-front-of-camera cull)
       this.tmpV.copy(v.group.position);
       this.tmpV.y += v.height * e.scale * 0.5;
       this.tmpV.project(this.camera);
       if (this.tmpV.z > 1) continue;
-      const sx = (this.tmpV.x * 0.5 + 0.5) * this.viewport.width;
-      const sy = (-this.tmpV.y * 0.5 + 0.5) * this.viewport.height;
-      const d = Math.hypot(sx - clientX, sy - clientY);
-      if (d < bestD) {
-        bestD = d;
-        bestId = id;
+      const midX = (this.tmpV.x * 0.5 + 0.5) * this.viewport.width;
+      const midY = (-this.tmpV.y * 0.5 + 0.5) * this.viewport.height;
+      // Overhead anchor (the +1.0 chat-bubble offset, see the note above).
+      // Collapse the column to the body point if the anchor is not safely in
+      // front of the camera: a point behind the near plane projects to bogus
+      // screen coords that could steal an unrelated click (close / first-person
+      // camera puts the head behind the near plane). Same guard the real
+      // nameplate path uses before trusting its projection.
+      this.tmpV2.copy(v.group.position);
+      this.tmpV2.y += v.height * e.scale + 1.0;
+      let topX = midX;
+      let topY = midY;
+      if (isProjectedNameplateAnchorVisible(this.camera, this.tmpV2, this.tmpV3)) {
+        this.tmpV2.project(this.camera);
+        if (this.tmpV2.z <= 1) {
+          topX = (this.tmpV2.x * 0.5 + 0.5) * this.viewport.width;
+          topY = (-this.tmpV2.y * 0.5 + 0.5) * this.viewport.height;
+        }
       }
+      candidates.push({ id, midX, midY, topX, topY });
     }
-    return bestId;
+    return nearestSloppyPickId(clientX, clientY, candidates, SLOPPY_PICK_PX);
   }
 
   // Drop a transient OSRS-style click marker at a world ground point. Called from

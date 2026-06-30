@@ -3049,12 +3049,21 @@
 
   /* ---------- The World Market (the Merchant's auction house) ---------- */
   #market-window {
-    width: 470px;
+    width: 560px;
     height: min(640px, calc(85vh - 24px));
     display: none;
     flex-direction: column;
     overflow: hidden;
     min-height: 0;
+  }
+  /* The title (name + subtitle) and the close button are flex siblings; let the
+     title shrink and ellipsize so the close button can never overlap the name,
+     however verbose the localized title runs. */
+  #market-window .panel-title > span:first-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .mkt-tabs {
     display: flex;

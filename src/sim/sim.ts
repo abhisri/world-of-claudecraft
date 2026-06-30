@@ -65,9 +65,11 @@ import {
   emptyAllocation,
   emptyModifiers,
   type Role,
+  repairAllocation,
   type SavedLoadout,
   type TalentAllocation,
   type TalentModifiers,
+  talentPointsAtLevel,
 } from './content/talents';
 import { applyCooldowns, type SavedCooldowns, serializeCooldowns } from './cooldown_persist';
 import type { DelveShopGate, DelveShopOffer } from './data';
@@ -1213,11 +1215,20 @@ export class Sim {
       }
       for (const q of s.questsDone) meta.questsDone.add(q);
       if (s.talents)
-        meta.talents = {
-          spec: s.talents.spec ?? null,
-          ranks: { ...s.talents.ranks },
-          choices: { ...s.talents.choices },
-        };
+        // Revalidate the persisted build against the current rules + level budget
+        // before it is baked into the flat mods below. A stored allocation replays
+        // verbatim on load, so without this an over-budget, prereq-broken, or gated
+        // build (stale tuning, a level-down, or a tampered save) would still grant
+        // its stats/abilities. An honest in-budget build is returned unchanged.
+        meta.talents = repairAllocation(
+          cls,
+          {
+            spec: s.talents.spec ?? null,
+            ranks: { ...s.talents.ranks },
+            choices: { ...s.talents.choices },
+          },
+          talentPointsAtLevel(player.level),
+        );
       if (s.loadouts)
         meta.loadouts = s.loadouts.map((l) => ({
           name: l.name,

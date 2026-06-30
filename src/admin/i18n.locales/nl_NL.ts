@@ -402,8 +402,6 @@ export const nl_NL: Record<string, string> = {
   'blockedIps.colCreatedAt': 'Aangemaakt',
   'blockedIps.addFailed': 'Blokkeren van het IP mislukt.',
   'blockedIps.removeFailed': 'Deblokkeren van het IP mislukt.',
-  'sharedIps.description':
-    'IP-adressen waargenomen voor meer dan één account, gerangschikt op accountaantal.',
   'sharedIps.onlineDescription':
     'IP-adressen die momenteel door meer dan één online account worden gebruikt.',
   'sharedIps.onlineOnly': 'Alleen online-accounts',

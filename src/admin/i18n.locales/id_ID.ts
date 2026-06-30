@@ -401,8 +401,6 @@ export const id_ID: Record<string, string> = {
   'blockedIps.colCreatedAt': 'Dibuat',
   'blockedIps.addFailed': 'Gagal memblokir IP.',
   'blockedIps.removeFailed': 'Gagal membuka blokir IP.',
-  'sharedIps.description':
-    'Alamat IP diamati di lebih dari satu akun, diurutkan berdasarkan jumlah akun.',
   'sharedIps.onlineDescription': 'Alamat IP saat ini digunakan oleh lebih dari satu akun online.',
   'sharedIps.onlineOnly': 'Hanya akun online',
   'sharedIps.warning':

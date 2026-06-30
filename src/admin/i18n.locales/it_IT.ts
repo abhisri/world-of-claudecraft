@@ -404,8 +404,6 @@ export const it_IT: Record<string, string> = {
   'blockedIps.colCreatedAt': 'Creato',
   'blockedIps.addFailed': "Blocco dell'IP non riuscito.",
   'blockedIps.removeFailed': "Sblocco dell'IP non riuscito.",
-  'sharedIps.description':
-    'Indirizzi IP osservati su più di un account, ordinati per numero di account.',
   'sharedIps.onlineDescription': 'Indirizzi IP attualmente utilizzati da più di un account online.',
   'sharedIps.onlineOnly': 'Solo conti online',
   'sharedIps.warning':

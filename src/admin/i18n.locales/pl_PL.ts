@@ -400,8 +400,6 @@ export const pl_PL: Record<string, string> = {
   'blockedIps.colCreatedAt': 'Utworzono',
   'blockedIps.addFailed': 'Nie udało się zablokować IP.',
   'blockedIps.removeFailed': 'Nie udało się odblokować IP.',
-  'sharedIps.description':
-    'Adresy IP zaobserwowane na więcej niż jednym koncie, uporządkowane według liczby kont.',
   'sharedIps.onlineDescription':
     'Adresy IP aktualnie używane przez więcej niż jedno konto internetowe.',
   'sharedIps.onlineOnly': 'Tylko konta internetowe',
