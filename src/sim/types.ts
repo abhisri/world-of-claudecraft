@@ -1437,6 +1437,11 @@ export interface Entity {
   // client maps it to a held weapon model. Recomputed in recalcPlayerStats and
   // synced in identity fields (terse `mh`). The sim never reads it for gameplay.
   mainhandItemId: string | null;
+  // Full worn equipment (players only; empty otherwise). Render-only mirror of
+  // PlayerMeta.equipment, recomputed in recalcPlayerStats and synced in identity
+  // fields (terse `eq`) so another player can be inspected. Like mainhandItemId,
+  // the sim never reads it for gameplay (no effect on stats).
+  equippedItems: Partial<Record<EquipSlot, string>>;
   // $WOC holder-tier flair (cosmetic): 0/undefined = none, 1-10 = Ember…Sovereign.
   // Set server-side from the player's connected-wallet balance and synced in
   // identity fields like skin. The sim never reads it (no gameplay effect).

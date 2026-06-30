@@ -912,6 +912,31 @@
     min-height: 40px;
     font-size: 16px;
   }
+  /* Inspect (player profile) on mobile: a full-width, scrollable window with the
+     gear stacked into a single one-item-per-row list, so each item name reads in
+     full instead of being squeezed into two narrow columns. */
+  body.mobile-touch #inspect-window {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    width: auto;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    transform: none;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  body.mobile-touch .inspect-paperdoll {
+    flex-direction: column;
+  }
+  body.mobile-touch .inspect-paperdoll .equip-col {
+    width: 100%;
+  }
+  /* Drop the right column's mirrored layout so every row reads left to right. */
+  body.mobile-touch .inspect-paperdoll .equip-col-right .equip-slot {
+    flex-direction: row;
+    text-align: left;
+  }
   body.mobile-touch #social-window,
   body.mobile-touch #trade-window {
     position: fixed;

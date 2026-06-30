@@ -481,6 +481,16 @@ function identityFields(e: Entity): Record<string, unknown> {
   if (e.skinCatalog === 'mech') out.cat = 'mech';
   if (e.skin) out.sk = e.skin;
   if (e.mainhandItemId) out.mh = e.mainhandItemId; // equipped mainhand → held weapon model (render-only)
+  // Full worn set, for the inspect-another-player window. Players only and only
+  // when something is equipped; rides the identity record (first appearance +
+  // on change), never the per-tick dynamic fields. Render-only, like `mh`.
+  if (e.kind === 'player') {
+    const eq = e.equippedItems;
+    for (const _ in eq) {
+      out.eq = eq;
+      break;
+    }
+  }
   if (e.holderTier) out.ht = e.holderTier; // $WOC holder-tier flair (cosmetic)
   if (e.holderBalance) out.hb = Math.round(e.holderBalance); // exact $WOC, for inspect
   if (e.discordTier) out.dt = e.discordTier; // Discord status-tier flair (cosmetic)

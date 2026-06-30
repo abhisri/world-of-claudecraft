@@ -114,6 +114,7 @@ import { AurasPainter, type AurasPainterDeps } from './auras_painter';
 import { type AurasDeps, createAurasView } from './auras_view';
 import { BagsWindow } from './bags_window';
 import { CastBarPainter } from './cast_bar_painter';
+import { buildPaperdollView, type PaperdollSlot } from './char_view';
 import { CharWindow } from './char_window';
 import {
   activeCharacterAppearancePreview,
@@ -9985,12 +9986,43 @@ export class Hud {
       `<div class="inspect-meta">${esc(t('itemUi.equipment.levelClass', { level: formatNumber(e.level, { maximumFractionDigits: 0 }), className }))}</div>` +
       holderHtml +
       discordHtml +
-      `</div>`;
+      `</div>` +
+      // Worn gear, mirrored from the entity's render-only `equippedItems` (the
+      // `eq` identity field). Item names/icons/tooltips resolve fully client-side
+      // from the static ITEMS table, so only the slot->id map crosses the wire.
+      `<div class="inspect-equip">` +
+      `<div class="inspect-equip-title">${esc(t('classDetails.sections.equipment'))}</div>` +
+      `<div class="paperdoll inspect-paperdoll">` +
+      `<div class="equip-col" id="inspect-equip-left"></div>` +
+      `<div class="equip-col equip-col-right" id="inspect-equip-right"></div>` +
+      `</div></div>`;
     hydratePortraits(el);
+    const view = buildPaperdollView(e.equippedItems, ITEMS);
+    const leftCol = el.querySelector('#inspect-equip-left');
+    const rightCol = el.querySelector('#inspect-equip-right');
+    for (const cell of view.left) leftCol?.appendChild(this.buildInspectSlotRow(cell));
+    for (const cell of view.right) rightCol?.appendChild(this.buildInspectSlotRow(cell));
     el.querySelector('[data-close]')?.addEventListener('click', () => {
       el.style.display = 'none';
     });
     el.style.display = 'block';
+  }
+
+  // One read-only equipment row for the inspect window: icon, slot name, and the
+  // equipped item (quality-tinted) with its tooltip. Unlike the character window's
+  // own paperdoll row, there are no unequip / drag affordances (another player's
+  // gear is view-only); the quality color comes from the shared QUALITY_COLOR map.
+  private buildInspectSlotRow(cell: PaperdollSlot): HTMLElement {
+    const { slot, item } = cell;
+    const row = document.createElement('div');
+    row.className = 'equip-slot';
+    const qColor = item ? (QUALITY_COLOR[item.quality ?? 'common'] ?? '#fff') : '';
+    const icon = item
+      ? this.itemIcon(item)
+      : `<img class="item-icon" src="${iconDataUrl('item', 'slot_empty')}" alt="" draggable="false">`;
+    row.innerHTML = `${icon}<div><div class="slot-name">${esc(itemSlotName(slot))}</div><div class="slot-item"${item ? ` style="color:${qColor}"` : ''}>${item ? esc(itemDisplayName(item)) : esc(t('itemUi.equipment.empty'))}</div></div>`;
+    if (item) this.attachTooltip(row, () => this.itemTooltip(item));
+    return row;
   }
 
   // Raid/target marker picker for an enemy, opened from its target unit frame.
