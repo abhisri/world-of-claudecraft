@@ -182,7 +182,11 @@ export function compilePattern(path: string): CompiledPattern {
  * the captured params (an empty object for a fully static pattern) or null when
  * the path does not match. Comparison is segment count then segment-by-segment
  * string equality with param capture; there is no per-request regex. A param
- * never captures an empty segment (so a stray '//' cannot match a ':name').
+ * never captures an empty segment (so a stray '//' cannot match a ':name'). The
+ * params object has a NULL prototype (Object.create(null)) so a downstream
+ * lookup by an untrusted key can never read an inherited Object.prototype
+ * member; this is defense-in-depth on top of the compile-time reserved-name
+ * guard (param VALUES from the wire are only ever stored under validated NAMES).
  */
 export function matchPattern(
   pattern: CompiledPattern,
@@ -190,7 +194,7 @@ export function matchPattern(
 ): Record<string, string> | null {
   const parts = splitSegments(path);
   if (parts.length !== pattern.segments.length) return null;
-  const params: Record<string, string> = {};
+  const params: Record<string, string> = Object.create(null);
   for (let i = 0; i < pattern.segments.length; i++) {
     const segment = pattern.segments[i];
     const part = parts[i];
