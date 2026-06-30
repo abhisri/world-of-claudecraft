@@ -39,6 +39,7 @@ import {
   setInterfaceMode,
   useTouchInterface,
 } from './game/mobile_controls';
+import { mouselookReleaseFacing } from './game/mouselook_release';
 import { music } from './game/music';
 import { createPerfMonitor } from './game/perf';
 import { startPerfReporter } from './game/perf_reporter';
@@ -1881,6 +1882,14 @@ async function startGame(
   // eases back to zero so the camera settles in behind the character.
   let lastInterpFacing: number | null = null;
   let wasClickMoving = false;
+  // Tracks classic right-mouse mouselook across frames so its falling edge can
+  // commit the final camera yaw to the player facing (see mouselook_release.ts).
+  let prevMouselook = false;
+  // The release yaw, latched until a sim tick actually commits it. Offline a tick
+  // runs on only ~2/3 of frames (60Hz frames, 20Hz ticks), so committing only on
+  // the release frame would drop the one-shot when release lands on a zero-tick
+  // frame. Held here until consumed, then cleared.
+  let pendingReleaseFacing: number | null = null;
   function updateCamera(frameDt: number, interpFacing: number): void {
     const mi = input.readMoveInput();
     const clickMoving = !!input.clickMoveTarget && !input.suspendMovement && !world.player.dead;
@@ -2109,7 +2118,20 @@ async function startGame(
     const mouselook = input.isMouselookActive() && !world.player.dead;
     const controllerFacing = input.controllerFacingOverride();
     const renderFacing = renderFacingOverride();
-    const movementFacing = !world.player.dead ? (renderFacing ?? controllerFacing) : null;
+    // On the frame mouselook is released, latch the final camera yaw so the player
+    // facing ends exactly where the camera ended; otherwise the last slice of the
+    // turn is dropped and the character lags the camera. The render/controller
+    // overrides take precedence and reclaim the heading, clearing any stale latch.
+    const edgeReleaseFacing = mouselookReleaseFacing(prevMouselook, mouselook, input.camYaw);
+    prevMouselook = mouselook;
+    if (renderFacing !== null || controllerFacing !== null) {
+      pendingReleaseFacing = null;
+    } else if (edgeReleaseFacing !== null) {
+      pendingReleaseFacing = edgeReleaseFacing;
+    }
+    const movementFacing = !world.player.dead
+      ? (renderFacing ?? controllerFacing ?? pendingReleaseFacing)
+      : null;
 
     if (offlineSim) {
       acc += frameDt;
@@ -2136,6 +2158,9 @@ async function startGame(
             events: events.length,
           }),
         );
+        // A tick consumed the latched release facing (movementFacing fed
+        // stepFacing above); drop it so it is not re-applied next frame.
+        pendingReleaseFacing = null;
         acc -= DT;
       }
       const pp = offlineSim.player;
@@ -2177,6 +2202,9 @@ async function startGame(
     const netFacing = movementFacing ?? resolved.facing;
     Object.assign(net.moveInput, resolved.mi);
     net.setMouselookFacing(netFacing);
+    // Online streams facing every frame, so the latched release yaw is consumed
+    // here; drop it so it is not re-applied next frame.
+    pendingReleaseFacing = null;
     if (net.flushInput()) perf.markInputSent(performance.now());
     const echoSamples = net.consumeInputEchoSamples();
     for (const sample of echoSamples) {
