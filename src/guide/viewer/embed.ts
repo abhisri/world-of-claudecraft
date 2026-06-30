@@ -24,6 +24,10 @@ export interface ModelEmbedOptions {
   variant?: 'inline' | 'feature';
   /** Poster pixel box (square). Defaults to 96. */
   posterSize?: number;
+  /** Auto-load and spin the model on mount (no click) once it scrolls into view, when WebGL
+   *  is available and the reader allows motion. Otherwise the still poster + "View in 3D"
+   *  affordance remain (the graceful 2D fallback). Used for the class hero portrait. */
+  autoplay?: boolean;
 }
 
 const VARIANT_CLASS: Record<NonNullable<ModelEmbedOptions['variant']>, string> = {
@@ -45,7 +49,7 @@ export function modelViewerEmbed(opts: ModelEmbedOptions): string {
     : '';
   return `
     <figure class="${cls}" data-model="${esc(opts.modelKey)}"${opts.tint ? ` data-tint="${esc(opts.tint)}"` : ''}
-      data-name="${esc(opts.name)}" data-state="idle">
+      data-name="${esc(opts.name)}"${opts.autoplay ? ' data-autoplay="true"' : ''} data-state="idle">
       <div class="guide-viewer-stage">
         ${poster}
         <button type="button" class="guide-viewer-load" aria-label="${esc(viewLabel)}">
