@@ -3459,7 +3459,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '向頭上有標記的人接取任務，完成目標後回報，即可換取經驗值、金幣與裝備。畫面上的任務追蹤器會讓你隨時掌握目標。',
   'guide.howToPlay.deathTitle': '死亡並非終點',
   'guide.howToPlay.deathBody':
-    '若你倒下，可在最近的墓地釋放靈魂，再跑回自己的屍體。不會損失任何經驗值。',
+    '若你倒下，可釋放靈魂並在最近的墓地復活，生命值回滿，再自行回到你原先所在之處。不會損失任何經驗值。',
   'guide.howToPlay.groupingTitle': '同心協力',
   'guide.howToPlay.groupingBody':
     '邀請其他人組成隊伍，即可共享任務進度並挑戰地城。世界大部分內容皆可單人完成，因此組隊是一種選擇，而非負擔。',
@@ -3474,7 +3474,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.controls.actionHeader': '動作',
   'guide.controls.groupMovement': '移動',
   'guide.controls.groupCombat': '鎖定目標與戰鬥',
-  'guide.controls.groupInterface': '視窗',
+  'guide.controls.groupInterface': '介面',
   'guide.controls.controllerBody':
     '手把同樣可用，且預設即開啟手把支援。左搖桿負責移動，右搖桿控制鏡頭，正面按鍵與肩鍵則涵蓋你的技能、跳躍與互動。開啟任何視窗都會喚出畫面上的指標，供你操作選單。你可以在選項中的手把設定裡重新配置按鍵，並調整搖桿盲區、鏡頭速度、震動以及反轉視角。',
   'guide.controls.controllerHeading': '使用手把時',
@@ -3484,7 +3484,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.controls.talents': '天賦',
   'guide.controls.arena': '競技場',
   'guide.controls.leaderboard': '排行榜',
-  'guide.controls.abilities': '使用技能',
+  'guide.controls.abilities': '使用動作列技能（數字鍵列；第二條動作列位於數字鍵盤上）',
   'guide.controls.mobileHeading': '行動裝置上',
   'guide.controls.mobileBody':
     '在手機與平板上會自動顯示觸控操作：左側為移動搖桿，在右側任意處拖曳即可環顧，並有螢幕上的按鈕供你使用技能與選單。',
@@ -3492,10 +3492,10 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '戰鬥遵循熟悉的經典MMO規則。你完全不需要研究這些就能玩得很好，這只是讓你了解戰鬥運作的大致樣貌。',
   'guide.combat.hitTitle': '並非每一擊都會命中',
   'guide.combat.hitBody':
-    '攻擊可能會失手，或被閃躲、招架與格擋，敵人的攻擊也是如此。與和你等級相近的對手作戰並保持裝備更新，正是讓你的攻擊命中的關鍵。',
-  'guide.combat.mitigationTitle': '護甲與裝備讓你屹立不搖',
+    '攻擊可能會失手或被閃躲，敵人的攻擊也是如此，而法術則可能直接被抵抗。與和你等級相近的對手作戰，正是讓你的攻擊持續命中的關鍵；等級差距愈大，你就愈常揮空。',
+  'guide.combat.mitigationTitle': '護甲與生命值讓你屹立不搖',
   'guide.combat.mitigationBody':
-    '護甲能減緩物理傷害，合適的裝備能削弱魔法傷害，因此升級裝備是你續戰力的主要來源。重甲職業能承受更多傷害，但沒有任何東西能讓你刀槍不入。',
+    '護甲能減緩物理傷害，因此更好的護甲是你在近戰中續戰力的主要來源。魔法則是另一回事：你靠的是更深厚的生命值池，以及直接抵抗一道法術的機會，而非護甲。重甲職業能承受更多，但沒有任何東西能讓你刀槍不入。',
   'guide.combat.resourcesTitle': '每種職業都有自己的節奏',
   'guide.combat.resourcesBody':
     '戰士在激戰中累積怒氣，盜賊消耗會穩定回復的能量，施法者則管理一池法力。掌握你的資源，等於掌握了玩好職業的一半。',
@@ -3508,7 +3508,8 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.glossary.gcdTerm': '全域冷卻',
   'guide.glossary.gcdDef': '使用大多數技能後共享的短暫停頓，讓你無法一次傾瀉所有技能。',
   'guide.glossary.dpsTerm': 'DPS',
-  'guide.glossary.dpsDef': '每秒傷害，用以粗略衡量某事物造成傷害的速度。',
+  'guide.glossary.dpsDef':
+    '每秒傷害，用以粗略衡量某事物造成傷害的速度。也用來指輸出這個角色定位本身，例如「一名坦克、一名治療與三名 DPS」。',
   'guide.glossary.eliteTerm': '精英',
   'guide.glossary.eliteDef': '比一般敵人更強悍的敵人，通常需要組隊應付。地城與稀有敵人往往是精英。',
   'guide.glossary.rareTerm': '稀有',
@@ -3536,7 +3537,8 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.faqPage.a4':
     '可以。遊戲提供即時的單人離線模式，而線上世界除了地城與團隊副本外，皆可完全單人完成。',
   'guide.faqPage.q5': '總共有幾種職業？',
-  'guide.faqPage.a5': '九種，涵蓋經典的坦克、治療與輸出角色定位，每種都有自己的資源與招牌技能。',
+  'guide.faqPage.a5':
+    '九種，涵蓋經典的坦克、治療與輸出角色定位，每一種都有自己的資源系統（怒氣、法力或能量）以及專屬的招牌技能。',
   'guide.faqPage.q6': '等級上限是多少？',
   'guide.faqPage.a6': '{cap} 級，需橫跨三座相連的區域，透過任務、地城與探索達成。',
   'guide.faqPage.q7': '我的角色會被保存嗎？',
@@ -3584,7 +3586,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.family.beast.desc':
     '森林與原野中的野生動物，從狼與野豬到捕食牠們的猛獸。獵人能馴服其中許多。',
   'guide.family.spider.name': '蜘蛛',
-  'guide.family.spider.desc': '在黑暗糾結之地築巢的織網者與毒蟲。',
+  'guide.family.spider.desc': '在黑暗糾結之地築巢的織網者與毒蟲。Hunter 能像馴服野獸一樣馴服牠們。',
   'guide.family.murloc.name': '魚人',
   'guide.family.murloc.desc': '兩棲的沼澤居民，成群聚集於淺灘，喧鬧且強烈護衛地盤。',
   'guide.family.kobold.name': '狗頭人',
@@ -3593,7 +3595,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.family.humanoid.desc':
     '盜匪、邪教徒，以及其他誤入歧途之人。他們靠戰術作戰，而非只憑蠻力。',
   'guide.family.troll.name': '巨魔',
-  'guide.family.troll.desc': '體型龐大、癒合迅速的蠻獸，棲居於沼澤與高地之中。',
+  'guide.family.troll.desc': '體型龐大的蠻獸，棲居於沼澤地的泥沼之中。',
   'guide.family.ogre.name': '食人妖',
   'guide.family.ogre.desc': '巨大、遲鈍且危險。牠們駐紮於高處的隘口，出手如山崩般沉重。',
   'guide.family.undead.name': '不死生物',
@@ -3619,17 +3621,18 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '頭頂有標記的人有工作要交給你。與他們交談即可接取任務。你的第一個任務是「狼臨城下」，由東溪鎮的執法官紅溪發布。',
   'guide.questsPage.objectivesTitle': '目標',
   'guide.questsPage.objectivesBody':
-    '擊殺特定敵人、收集物品，或與世界中的某物互動。畫面上的任務追蹤器會隨著你的進展計算進度。',
+    '擊殺特定敵人、收集物品，或與世界中的某物互動。畫面上的任務追蹤器會隨著你的進展計算進度。若你改變心意，可以從任務記錄中放棄一項任務，日後再從發布者那裡重新接取。',
   'guide.questsPage.turninTitle': '繳交任務',
   'guide.questsPage.turninBody':
-    '返回任務發布者處（地圖會指示位置），即可獲得經驗值、金幣，以及通常會有一件配合你職業挑選的裝備。',
+    '將完成的任務帶到它的繳交標記處（地圖會指示位置），即可換得經驗值、金幣，以及通常會有一件配合你職業挑選的裝備。那通常就是把任務交給你的人，不過有些任務會讓你轉而前往另一個人那裡。',
   'guide.questsPage.partyTitle': '組隊接任務',
   'guide.questsPage.partyBody':
-    '附近的隊伍成員會共享擊殺與目標進度，所以一起接任務只會更快，絕不會更慢。',
+    '附近的隊伍成員會共享擊殺與目標進度，所以一起接任務只會更快，絕不會更慢。你也可以與隊伍分享任務：用 /share 指令將它以可點擊的連結貼到聊天中，任何符合條件的附近成員都能一鍵接取同一項任務。',
   'guide.questsPage.storyTitle': '一條主線貫穿其中',
   'guide.questsPage.storyBody':
     '從你在東溪鎮的第一批跑腿差事開始，亡者出了問題。一個邪教正在運作，線索向北穿過每個區域。循線追查，便能查出幕後主使是誰。',
-  'guide.questsPage.soloNote': '主線劇情完全可以單人完成；只有最終幾個章節需要組隊。',
+  'guide.questsPage.soloNote':
+    '主線劇情一路到每個篇章的結局都可以單人完成，而那結局是一座五人地城。',
   'guide.dungeonsPage.heading': '地城與團隊副本',
   'guide.dungeonsPage.intro':
     '當開放世界不夠盡興時，召集一支隊伍踏入副本：一份專為你的隊伍打造的地城私人副本。',
@@ -3709,7 +3712,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.augmentsNote':
     '強化與增益只在該場對戰中有效。它們著重於即興、好玩的搭配，而非長久的力量，所以沒有人能花錢買到勝利。',
   'guide.arenaPage.coliseumBody':
-    '競技場是這個王國的鬥技舞台，你會在排名對戰中面對其他玩家。獲勝便能提升排名，最強的鬥士會登上排行榜供眾人見證。',
+    'Coliseum 是這個王國的競技場，你會在排名對戰中面對其他玩家，進行一對一或二對二的較量。每個級別都各自保有自己的排名，因此一場勝利能讓你在那道天梯上往上爬，讓整個王國都看得見。',
   'guide.arenaPage.coliseumHeading': '灰燼鬥獸場',
   'guide.arenaPage.duelsBody':
     '向你遇到的任何玩家發起一場友誼決鬥。賭上的只有顏面，所以這是學習對戰組合或解決友好爭論最簡單的方式。',
@@ -3754,7 +3757,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.faqPage.q11': '我該如何找隊伍？',
   'guide.faqPage.q9': '有PvP嗎？',
   'guide.glossary.augmentDef':
-    '在2v2的Fiesta競技場對戰中挑選的暫時性強化，只在該場對戰中重塑你的技能組。',
+    '在2v2的嘉年華競技場對戰中挑選的暫時性強化，只在該場對戰中重塑你的技能組。',
   'guide.glossary.augmentTerm': '強化',
   'guide.glossary.buffDef': '施加在你或友方身上的有益效果，例如在一段時間內提升某項屬性的祝福。',
   'guide.glossary.buffTerm': '增益',
@@ -3817,7 +3820,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.talentsPage.intro':
     '天賦是你讓職業展現個人風格的方式。它們是選擇性的、寬容的，而且容易更動，所以你可以放心嘗試。',
   'guide.talentsPage.resetNote':
-    '你隨時都能重置天賦，所以早期的選擇絕不會是陷阱。儘管嘗試，看看自己喜歡什麼，並自由地改變主意。',
+    '只要脫離戰鬥，你隨時都能重置天賦，所以早期的選擇絕不會是陷阱。儘管嘗試，看看自己喜歡什麼，並自由地改變主意。',
   'guide.talentsPage.resetTitle': '沒有什麼是永久的',
   'guide.talentsPage.shareNote':
     '一套完成的天賦配置可以複製成一段可分享的短代碼，交給朋友，對方只要把它直接貼進自己的天賦面板即可載入。',
@@ -3833,7 +3836,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '每個職業都能撐住場面並達到等級上限。選擇你喜歡的奇幻設定，而不是別人口中所謂最好的那個。',
   'guide.wishPage.i1Title': '你不會選錯職業',
   'guide.wishPage.i2Body':
-    '當你倒下時，會在墓地以靈魂出竅復活，再跑回自己的屍體。不會損失任何經驗，所以放心去冒險、去學習。',
+    '當你倒下時，會釋放靈魂並在最近的墓地復活，再自行返回原處。不會損失任何經驗，所以放心去冒險、去學習。',
   'guide.wishPage.i2Title': '死亡幾乎不會讓你付出代價',
   'guide.wishPage.i3Body': '天賦在10級解鎖，並且隨時都能重置，所以你早期的選擇絕不是永久的。',
   'guide.wishPage.i3Title': '天賦不是陷阱',
@@ -3886,13 +3889,13 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.combat.ccBody':
     '控場是一種特殊的減益，會限制目標所能做的事：暈眩、定身與緩速、阻斷施法的沉默、繳械、恐懼，還有能讓敵人短暫無害的變形術。其中有些，例如定身、恐懼與變形術，若太快重複施加便會失去效用，因此無法永無止盡地連鎖控制。',
   'guide.combat.deathBody':
-    '若你的生命值歸零，你便倒下了。稍候片刻你會復活，並從中斷之處繼續，所以死亡只會花掉你一點時間，而非進度。戰鬥之間請坐下進食飲水，好讓你以全盛狀態迎接下一場。',
+    '若你的生命值歸零，你便倒下了。釋放你的靈魂，在最近的墓地以全滿生命值復活，再自行跑回原處，所以死亡只會花掉你一點時間，而非你的進度。戰鬥之間，坐下進食飲水，好讓你以全盛狀態迎接下一場。',
   'guide.combat.deathTitle': '當你倒下時',
   'guide.combat.effectsBody':
     '許多技能會施加一個會持續存在的效果。有益的（增益）能提升你的屬性、為你護盾，或一點一滴地治療你；有害的（減益）則以持續傷害消耗你的生命，或使你衰弱。留意動作列附近的小圖示，便能看出你身上有哪些效果以及還剩多久。',
   'guide.combat.effectsTitle': '增益、減益與控場',
   'guide.dungeonsPage.cryptLeadBody':
-    '在群峰高處，遠離主要戰場之外，藏著一樁更為冰冷的謎團。古老的墳墓刻著一頂無任何記載記得的王冠，而守護它們的亡者曾侍奉一位被遺忘的國王。讀懂他們的墓碑，蒐集他們守存的拱心石，你便能解封一座有三位忠魂以死封閉的陵墓，為循線追查到底的人開啟第二場十人試煉。',
+    '在群峰高處，遠離主要戰場之外，藏著一樁更為冰冷的謎團。古老的墳墓刻著一頂無任何記載記得的王冠，而守護它們的亡者曾侍奉一位被遺忘的國王。讀懂他們的墓碑，蒐集他們守存的拱心石，你便能解封一座有三位忠魂以死守護封閉的陵墓，這是一場選擇性的試煉，為那些循線追查到底的人開啟通往這個王國十人團隊副本的道路。',
   'guide.dungeonsPage.cryptLeadTitle': '一道亡者本應永遠緊閉的門',
   'guide.dungeonsPage.templeLoreBody':
     '這座神殿有著自己的傳說，比你在別處追查的邪教更為古老。在微光湖的岸邊（那是一座飲下月光、又交還溺亡者的山中湖泊），一名孤獨的看守者守著一道蒼白光芒之門。在水面之下，一道冰冷的石階向下通往那裡。沉沒在此的人並非死於意外：他們是蒼白唱詩班，在禮拜中沉入水底，自此再未停止吟唱。古老的守衛在被湖水吞沒之前，在岩石上刻下了唯一一句警語，一段向他們稱之為溺月之物獻上的禱詞，其下另有一隻更沉穩的手添上了兩個字：它只是沉睡。',
@@ -3904,12 +3907,12 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '錢幣分為三種。一百枚銅幣換一枚銀幣，一百枚銀幣換一枚金幣，因此你的錢袋會從最小的硬幣開始累積。你可透過任務獎勵、拾取被擊敗的敵人，以及變賣不再需要的物品來賺取金錢。',
   'guide.economy.coinTitle': '金幣、銀幣與銅幣',
   'guide.economy.intro':
-    '錢幣是整個世界的潤滑劑：它能購買裝備與補給、支付你的修理與任務開銷，並在玩家之間流轉。這一切只要遊玩就能自然累積，所以不妨把這一頁當成一張地圖，看看你的錢從何處來、又往何處去。',
+    '錢幣是整個世界的潤滑劑：它能購買你的裝備、補給與旅行用品，並在玩家之間易手。這一切只要遊玩就能自然取得，所以不妨把這一頁當成一張地圖，看看你的錢從何處來、又往何處去。',
   'guide.economy.junkBody':
     '你用不上的掉落物仍能賣給任何商人，因此每當你經過城鎮時就清空背包，別讓它們塞滿。真正一文不值的零碎雜物也可以直接丟棄以騰出空間。',
   'guide.economy.junkTitle': '清理雜物',
   'guide.economy.marketBody':
-    '商人經營著世界市場，那是一個由玩家驅動的交易所，讓你能與或許從未謀面的人買賣。與商人對話即可開啟它。',
+    '商人經營著世界市場，那是一個由玩家驅動的交易所，讓你能與或許從未謀面的人買賣。與商人對話即可開啟它。商人也會在那裡長期掛售自己的一批貨品，因此即使沒有其他玩家上架，也總有東西可買。',
   'guide.economy.marketBrowse':
     '瀏覽：捲動列表或按名稱搜尋，找出待售的商品。每筆刊登都會顯示貨物、賣家，以及整堆的開價。',
   'guide.economy.marketCollect':
@@ -3926,7 +3929,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '你可以與站在你身旁的任何人面對面交易。雙方都把物品與錢幣放進一個共享的視窗，唯有兩人都確認後交換才會成立，因此誰都不會吃虧。這是把掉落物交給朋友或敲定一筆買賣最簡單的方法。',
   'guide.economy.tradeTitle': '與其他玩家交易',
   'guide.economy.vendorsBody':
-    '城鎮與哨站裡到處是商人，各有各的生意。補給商備有食物與飲品，武器匠與盔甲匠出售裝備，草藥師經營施法材料，軍需官則準備實用的旅行用品。走到他們面前，便能看到他們在賣什麼。',
+    '城鎮與哨站裡到處是商人，各有各的生意。補給商備有食物與飲品，武器匠與盔甲匠出售裝備，軍需官則準備實用的旅行用品。走到他們面前，便能看到他們在賣什麼。',
   'guide.economy.vendorsTitle': '商人與他們的存貨',
   'guide.gear.consumablesElixirs':
     '藥劑會在你冒險時給予暫時的增益，是一點小小的優勢，在你想再多撐一程時派得上用場。',
@@ -3946,12 +3949,12 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.gear.cosmeticsRanks':
     '外觀本身也分稀有度層級，而愈稀有的便愈值得追求。掙得較高的層級，也會一併解鎖其下的各種外觀。',
   'guide.gear.cosmeticsSkins':
-    '有兩條外觀路線可供收集。每種職業都有少數幾款替代外觀，那是專屬於它的全新風貌，唯你能穿戴。在它們之外還有染色：具名的雙色配色方案，能徹底為一款外觀重新上色，從沉穩的金屬色到鮮明的帝國色調皆有。',
+    '有兩條外觀路線可供收集。大多數職業都有數款替代外觀，那是該職業外貌的全新詮釋，唯你能穿戴。在它們之外還有染色：具名的雙色配色方案，能徹底為一款外觀重新上色，從沉穩的金屬色到鮮明的帝國色調皆有。',
   'guide.gear.cosmeticsTitle': '外觀與裝飾',
   'guide.gear.fishingBody':
-    '釣魚是一種沉靜的調劑。裝備一根釣竿，向開闊的水域拋竿，再把上鉤之物拉上來。你大多會釣到能烹調成食物的魚、偶爾賣得幾枚銅板的雜物，以及時不時出現的珍貴稀有漁獲。你能釣到什麼，取決於你下竿的水域。',
+    '釣魚是一種沉靜的調劑。裝備一根釣竿，向開闊的水域拋竿，再把上鉤之物拉上來。你大多會釣到可直接食用的魚，偶爾賣得幾枚銅板的雜物，以及時不時出現的珍貴稀有漁獲。你能釣到什麼，取決於你下竿的水域。',
   'guide.gear.fishingFood':
-    '你拉上來的魚是生的，而生魚就是食物。把漁獲烹調過後，當你坐下進食時便能回復更多，而較好的魚來自北方更冷、更深的水域。在湖邊下一根線，是在戰鬥之間悄悄補充背包存糧的方法。',
+    '你拉上來的魚就是食物：坐下休息時吃一條便能回復生命值，而較肥美的魚來自北方更冷、更深的水域。在湖邊下一根線，是在戰鬥之間悄悄補充背包存糧的安靜方法。',
   'guide.gear.fishingRare':
     '時不時你的釣線會勾上遠勝於晚餐之物：一條閃閃發亮的珍貴之魚，任何釣客都可能在任何水域走運釣到。釣上一條，你的記錄便會因這份漁獲而亮起。這正是那種會讓人想四處炫耀、值得在湖邊消磨一個悠閒午後的好運。',
   'guide.gear.fishingTitle': '釣魚',
@@ -3982,7 +3985,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.gear.slotShoulder': '肩部',
   'guide.gear.slotWaist': '腰部',
   'guide.gear.slotsBody':
-    '你有一個武器欄位與七個護甲欄位。你裝備的每一件都會強化你的角色，而隨著你找到升級品，便能自由搭配組合。',
+    '你有一個武器欄位與七個護甲欄位。每種職業只能使用特定的武器，並穿戴不超過自身重量等級的護甲，無論是布甲、皮甲或鎖甲，因此適合你的升級品，正是為你的職業打造的那些。在這個範圍內，用你所能找到最好的物件填滿每一個欄位。',
   'guide.gear.slotsTitle': '你能裝備什麼',
   'guide.gear.sourcesBody':
     '你早期的升級大多來自任務獎勵，因此完成任務比刷怪更划算。敵人被你擊敗時會掉落裝備，城鎮裡的商人販售扎實的基本款，玩家市場則讓你能向其他冒險者購買。',
@@ -4027,9 +4030,9 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.progression.noRush':
     '不必急。這個世界就在那裡，讓你以自己的步調盡情享受，所以儘管漫遊、接下吸引你目光的任務，讓你的英雄一路成長吧。',
   'guide.progression.prestigeBody':
-    '經驗值在抵達上限之後仍會持續計算。它會灌注一個純外觀的虛擬等級，讓你的經驗條繼續攀升，還有一個你能為了榮耀而掙得的長期聲望階級。它純屬選擇性質，絕不賦予力量，只是你所走過的旅途的一個印記。',
+    '經驗值在抵達上限之後仍會持續計算。它會灌注一個純外觀的虛擬等級，讓你的經驗條繼續攀升，還有一個你能為了榮譽而掙得的長期聲望階級。跨越重大的生涯經驗里程碑，還會解鎖顯示在你角色資訊面板上的外觀頭銜與名條邊框。這一切純屬選擇性質，絕不賦予力量，只是你所走過旅途的一個印記。',
   'guide.progression.restedBody':
-    '當你登出，或在旅店這類安全之處休息時，你的角色會在你離開期間累積充分休息經驗。下一次你出門戰鬥，那一池經驗便會額外加成你的擊殺，直到耗盡為止。它會隨時間累積，加速你的早期等級，所以在城鎮裡登出絕非浪費時間。',
+    '在旅店這類安全之處、脫離戰鬥狀態下休息，當你坐在那裡時，你的角色便會累積充分休息經驗。下一次你出門戰鬥，那一池經驗會額外加成你的擊殺，直到耗盡為止。在旅店裡稍作停留絕非浪費時間，它能加速你接下來的一段升級。',
   'guide.progression.restedTitle': '充分休息經驗',
   'guide.progression.xpBody':
     '你透過完成任務與擊敗敵人來賺取經驗值。任務給予的經驗值遠遠最多，因此跟隨任務的軌跡是攀升最快的方式。沿途殺敵則補足其餘部分。',
@@ -4040,34 +4043,34 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '在泥沼，溺斃絕非意外。有人正像在填滿一個奉獻箱般填滿這片沼澤，從每一個被湖水吞沒的旅人身上喚起聽命的亡者。沿著命令的鏈條一路追查到溺沒堡壘中的喚霧者，他的遺言道出了某種更為古老之物，正在群峰之下蠢動。',
   'guide.questsPage.sagaMarshTitle': '沼澤：一筆靈魂的貢品',
   'guide.questsPage.sagaPeaksBody':
-    '在棘峰，整場圖謀變得清晰。自谷地以來竊取的每一個靈魂，都是傾注於喚醒一個封印在山下的遠古之物的貢品。始於一座禮拜堂庭院的線索，終結於此，一道需要十人才能開啟的門前。至於門後等候的是誰，就留給你自己去揭曉了。',
+    '在 Thornpeak，整場圖謀變得清晰。自 Vale 以來被竊取的每一個靈魂，都是傾注於那個邪教在山脈心臟地帶之陰森勾當的貢品。始於一座禮拜堂庭院的線索，終結於此：一場五人的深入探索，去面對這一切背後的黑手。至於在最深處等候的是誰，就留給你自己去揭曉了。',
   'guide.questsPage.sagaPeaksTitle': '群峰：貢品所為何來',
   'guide.questsPage.sagaTitle': '循線北行',
   'guide.questsPage.sagaValeBody':
     '在東溪，亡者不得安息，而其背後的印記屬於一個早被認為消亡已久的教派。將它追溯到一名在禮拜堂地穴中作祟的喚墓者身上，而他自己的文件又把你指向北方的沼澤。',
   'guide.questsPage.sagaValeTitle': '谷地：印記上的一個名字',
   'guide.questsPage.sideCryptBody':
-    '在群峰高處流傳著一樁更為靜謐的謎團：古老的墳墓上刻著一頂無任何記載記得的王冠。讀懂亡者，蒐集他們所守護之物，解封一座本應永遠緊閉的陵墓。這是一條偵探般的線索，為一支完整的團隊開啟了通往第二場終局試煉的道路。',
+    '在群峰高處流傳著一樁更為靜謐的謎團：古老的墳墓上刻著一頂無任何記載記得的王冠。讀懂亡者，蒐集他們所守護之物，解封一座本應永遠緊閉的陵墓。這是一條偵探般的線索，為你開啟通往這個王國十人終局團隊副本的道路。',
   'guide.questsPage.sideCryptTitle': '被遺忘的國王',
   'guide.questsPage.sideTempleBody':
     '高峰之上一座高山湖泊中，一道蒼白光芒構成的門扉，通往一座沉沒的神殿，那裡有一群溺亡的邪教徒仍在歌唱。它那條短短的任務鏈獨立於主線故事之外，是一樁自成一體的謎團，獻給每一個攀上湖岸、讀懂刻在岩石上的警語，並下去一探那些警語究竟所為何來的人。',
   'guide.questsPage.sideTempleTitle': '沉沒的神殿',
   'guide.questsPage.sideTitle': '主線之外的支線',
   'guide.questsPage.sideWardenBody':
-    '在故事之外，谷地與沼澤的守衛還會發布一道長期的懸賞階梯。一個敵人接一個敵人地往上爬，就像在你之前的每一位守衛掙得席位的方式那樣。這是踏實的升級，也是一趟巡覽各區域最惡劣麻煩製造者的旅程。',
+    '在故事之外，Vale 與沼澤的執法官與守衛還會發布一道長期的懸賞階梯。一個敵人接一個敵人地往上爬，就像在你之前的每一位賞金獵人掙得席位的方式那樣。這是踏實的升級，也是一趟巡覽各區域最惡劣麻煩製造者的旅程。',
   'guide.questsPage.sideWardenTitle': '掙得你的名聲',
   'guide.questsPage.typeGatherBody':
     '從世界中或從敵人的掉落物收集物品：草藥、礦石、遺失的書信、一個邪教陰森的施法材料。有些物件只會從特定的敵人身上掉落，所以狩獵與收集相輔相成。',
   'guide.questsPage.typeGatherTitle': '收集',
   'guide.questsPage.typeGroupBody':
-    '主線故事的每一個篇章都終結於一道地城之門。前導部分可單人完成，但對一個篇章反派的最後一擊，是為五人隊伍而設（而最末一場，則是十人）。',
+    '主線故事的每一個篇章都終結於一道地城之門。前導部分可單人完成，但對一個篇章反派的最後一擊，是為五人隊伍而設。',
   'guide.questsPage.typeGroupTitle': '組隊終局',
   'guide.questsPage.typeInteractBody':
     '使用、淨化或閱讀世界中固定的某物：一座被玷污的墳墓、一句刻在岸邊岩石上的警語、一道封印的地穴之門。走到標記前並對它採取行動。',
   'guide.questsPage.typeInteractTitle': '互動',
   'guide.questsPage.typeMusterBody':
-    '安全地護送一張友善的面孔從一處抵達另一處，或在北征之前召集一座城鎮的守衛。這些任務讓你與那些你身在其故事之中的人們一同前行。',
-  'guide.questsPage.typeMusterTitle': '護送與召集',
+    '有些任務會要你在北征之前召集一座城鎮：削減城門口的威脅，並蒐集守軍所需之物。這些是擊殺與收集目標，為了那些你身在其故事之中的人們而效力，並讓你與他們一同前行。',
+  'guide.questsPage.typeMusterTitle': '召集防禦',
   'guide.questsPage.typeSlayBody':
     '削減一群野獸，或藉由擊敗指定數量的某種標記敵人來瓦解一個邪教的掌控。遊戲中的第一個任務，清除東溪大道上的群狼，便是這類任務。',
   'guide.questsPage.typeSlayTitle': '擊殺',
@@ -4075,7 +4078,8 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '大多數任務都屬於幾種熟悉的形式之一。畫面上的追蹤器會明確指出每一個任務的要求，讓你絕不會無所適從。',
   'guide.questsPage.typesTitle': '你會見到的任務種類',
   'guide.social.chanGeneral': '綜合。',
-  'guide.social.chanGeneralBody': '一個常駐的本地頻道，供你周遭的人使用，適合用來提問或閒聊。',
+  'guide.social.chanGeneralBody':
+    '一個常駐的全王國頻道，能觸及所有在線的人，適合用來提問或閒聊。不同於「世界」與「尋求組隊」，你永遠不需要主動加入。',
   'guide.social.chanGuild': '公會與幹部。',
   'guide.social.chanGuildBody':
     '供你公會使用的頻道。公會聊天能傳達給每一位成員；幹部頻道則僅供幹部使用。',
@@ -4126,7 +4130,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '當一件物品進行擲骰時，每位符合資格的成員若想要它便選擇需求，若只想當備品則選擇貪婪，或選擇放棄退出。骰點最高者勝出。',
   'guide.social.lootRollTitle': '需求、貪婪或放棄。',
   'guide.social.partyBody':
-    '對另一名玩家的名字按右鍵並選擇邀請，或用聊天指令來邀請他。一支隊伍最多容納五名玩家，你們其中一人為隊長。',
+    '對另一名玩家的名字按右鍵並選擇邀請。一支隊伍最多容納五名玩家，你們其中一人為隊長。',
   'guide.social.partyCredit':
     '彼此靠近的隊伍成員會共享擊殺與任務進度，所以一起接任務只會更快，絕不會更慢。組成隊伍也是你以團隊身分踏入地城的方式。',
   'guide.social.partyHeading': '組成隊伍',
@@ -4154,7 +4158,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '有兩件事會提升你的屬性。每一級都會依你的職業添加固定的各項屬性，而你裝備的裝備則在其上再添。保持裝備更新是變強最穩當的途徑，一路直到等級上限。',
   'guide.stats.growHeading': '你的屬性如何成長',
   'guide.stats.intBody':
-    '智力能擴大施法者的法力池，並提升他們的法術打出暴擊的機率。它對那些以法力施法的職業很重要；對怒氣或能量職業而言則作用甚微。',
+    '智力能擴大施法者的法力池，提升他們的法術強度好讓法術打得更重，並提高他們法術造成暴擊的機率。它對那些以法力施法的職業很重要；對怒氣或能量職業而言則作用甚微。',
   'guide.stats.intTitle': '智力',
   'guide.stats.intro':
     '你的角色由少數幾項屬性所描述。你完全不必把它們背下來也能玩得很好，但大致了解每一項的作用，能幫你看懂自己的角色面板並挑選正確的升級品。',
@@ -4194,10 +4198,10 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'guide.worldPage.valeGreeter': '雷德布魯克元帥，東溪鎮',
   'guide.worldPage.valeGreeting': '把你的劍帶在身邊。谷地已不復昔日。',
   'guide.worldPage.valePlaceNotes':
-    '東溪鎮是你的第一個主據點。狼徑與野豬草甸是溫和的狩獵場；鏡湖是適合垂釣的靜謐水域；蛛網林與銅礦坑藏著蜘蛛與貪礦的掘地者；一座盜匪營地與墮落禮拜堂另有更粗野的活計；碧木林地則是北方一片平和的野生林地。',
+    'Eastbrook 是你的第一個主據點。Wolf Run 與 Boar Meadow 是溫和的狩獵場；Mirror Lake 是適合垂釣的靜謐水域；Webwood 與 Copper Dig 藏著蜘蛛與貪礦的掘地者；一座 Bandit Camp 與 Fallen Chapel 另有更粗野的活計；Reliquary Hill 向下通往 Collapsed Reliquary，這個王國的第一座探窟；而 Brightwood Glade 則是北方一片靜謐、陽光灑落的林地。',
   'guide.worldPage.gladeTitle': '寧靜一隅：碧木林地',
   'guide.worldPage.gladeBody':
-    '谷地裡的故事並不全都關於亡者。北方有一片陽光灑落的林地，名為碧木林地，保有自己較溫和的節奏：安靜小徑、啃草的鹿，以及枝葉下警覺的野獸。它是你所追循之路旁的一段柔和對照，當道路給你餘裕漫遊時，很值得前去一看。',
+    'Vale 裡的故事並不全都關於亡者。北方有一片陽光灑落的林地，名為 Brightwood Glade，保有自己較溫和的節奏：盡是安靜的小徑，以及枝葉下斑駁的光影。它是你所追循之路旁的一段柔和對照，當道路給你餘裕漫遊時，很值得前去一看。',
   // APM telemetry label from release/v0.14.0
   'hudChrome.perf.labels.apm': 'APM',
   'entities.zones.eastbrook_vale.pois.9.label': '明木林地',

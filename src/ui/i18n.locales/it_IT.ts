@@ -3490,17 +3490,18 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     'Ogni livello ti rende più resistente e sblocca nuove abilità, fino al limite del livello {cap}. Le missioni sono la via più rapida per salire; dungeon ed esplorazione completano il quadro.',
   'guide.combat.growTitle': 'Diventi più forte ad ogni livello',
   'guide.combat.hitBody':
-    "Gli attacchi possono mancare o essere schivati, parati e bloccati, e lo stesso vale per quelli del nemico. Combattere vicino al tuo livello e tenere aggiornato l'equipaggiamento è ciò che fa andare a segno i tuoi colpi.",
+    'Gli attacchi possono mancare o essere schivati, e lo stesso vale per quelli del nemico, mentre gli incantesimi possono essere resistiti del tutto. Combattere vicino al tuo livello è ciò che fa andare a segno i tuoi colpi; più ampio è il divario di livello, più colpisci a vuoto.',
   'guide.combat.hitTitle': 'Non tutti i colpi vanno a segno',
   'guide.combat.intro':
     'Il combattimento segue le familiari regole degli MMO classici. Non hai mai bisogno di studiarne nulla per giocare bene, questa è solo la forma di come funzionano gli scontri.',
   'guide.combat.mitigationBody':
-    "La corazza attenua i colpi fisici e l'equipaggiamento giusto smorza la magia, perciò i potenziamenti sono la tua principale fonte di resistenza. Le classi con corazza più pesante incassano di più, ma nulla ti rende invulnerabile.",
-  'guide.combat.mitigationTitle': 'Corazza ed equipaggiamento ti tengono in piedi',
+    'La corazza attenua i colpi fisici, perciò una corazza migliore è la tua principale fonte di resistenza nel corpo a corpo. La magia è un altro paio di maniche: agli incantesimi resisti con una riserva di salute più ampia e la possibilità di resistere del tutto a uno di essi, non con la corazza. Le classi con corazza più pesante incassano di più, ma nulla ti rende invulnerabile.',
+  'guide.combat.mitigationTitle': 'Corazza e salute ti tengono in piedi',
   'guide.combat.resourcesBody':
     'I guerrieri accumulano Ira nel vivo dello scontro, i ladri spendono Energia che si rigenera costantemente, e gli incantatori gestiscono una riserva di Mana. Imparare la tua risorsa è metà del giocare bene la tua classe.',
   'guide.combat.resourcesTitle': 'Ogni classe ha il suo ritmo',
-  'guide.controls.abilities': 'Usa abilità',
+  'guide.controls.abilities':
+    'Usa le abilità della barra delle azioni (la fila dei numeri; una seconda barra è sul tastierino numerico)',
   'guide.controls.actionHeader': 'Azione',
   'guide.controls.arena': 'Arena',
   'guide.controls.controllerBody':
@@ -3510,7 +3511,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.controls.gameMenu': 'Apri il menu di gioco e le opzioni',
   'guide.controls.groupCamera': 'Telecamera',
   'guide.controls.groupCombat': 'Selezione bersaglio e combattimento',
-  'guide.controls.groupInterface': 'Finestre',
+  'guide.controls.groupInterface': 'Interfaccia',
   'guide.controls.groupMovement': 'Movimento',
   'guide.controls.intro':
     'Tasti predefiniti per il desktop. Ogni associazione può essere cambiata nelle opzioni di gioco.',
@@ -3602,10 +3603,9 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     'Enormi, ottusi e pericolosi. Si accampano sui passi alti e colpiscono come una frana.',
   'guide.family.ogre.name': 'Ogre',
   'guide.family.spider.desc':
-    'Tessitori di ragnatele e agguatatori velenosi che fanno il nido in luoghi bui e intricati.',
+    'Tessitori di ragnatele e agguatatori velenosi che fanno il nido in luoghi bui e intricati. Gli Hunter possono domarli, proprio come le bestie.',
   'guide.family.spider.name': 'Ragni',
-  'guide.family.troll.desc':
-    'Bruti imponenti dalla rapida guarigione che si annidano nella palude e nelle alte terre.',
+  'guide.family.troll.desc': "Bruti imponenti che si annidano nelle paludi dell'acquitrino.",
   'guide.family.troll.name': 'Troll',
   'guide.family.undead.desc':
     'I morti senza pace, rialzati da mani più oscure. Non si stancano e non fuggono.',
@@ -3619,7 +3619,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.faqPage.a4':
     "Sì. C'è una modalità offline per giocatore singolo immediata, e il mondo online è pienamente affrontabile in solitaria a parte dungeon e incursione.",
   'guide.faqPage.a5':
-    'Nove, che coprono i ruoli classici di tank, guaritore e danno, ognuna con la propria risorsa e abilità distintive.',
+    'Nove, che coprono i ruoli classici di tank, guaritore e danno, ognuna con un sistema di risorse (ira, mana o energia) e le proprie abilità distintive.',
   'guide.faqPage.a6':
     'Livello {cap}, raggiunto attraverso tre zone collegate di missioni, dungeon ed esplorazione.',
   'guide.faqPage.a7':
@@ -3646,7 +3646,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     "L'attenzione di un nemico. Il giocatore che genera più minaccia mantiene l'aggro e viene attaccato.",
   'guide.glossary.aggroTerm': 'Aggro',
   'guide.glossary.dpsDef':
-    'Danni al secondo, una misura approssimativa della velocità con cui qualcosa infligge danni.',
+    'Danni al secondo, una misura approssimativa della velocità con cui qualcosa infligge danni. Si usa anche per il ruolo stesso di chi infligge danni, come in un tank, un guaritore e tre DPS.',
   'guide.glossary.dpsTerm': 'DPS',
   'guide.glossary.eliteDef':
     'Un nemico più tosto del normale, di solito pensato per un gruppo. I nemici dei dungeon e i rari sono spesso elite.',
@@ -3744,7 +3744,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.howToPlay.basicsHeading': 'Le basi',
   'guide.howToPlay.controlsLink': 'Consulta il riferimento completo dei comandi',
   'guide.howToPlay.deathBody':
-    'Se cadi, liberi il tuo spirito al cimitero più vicino e torni di corsa al tuo corpo. Non si perde esperienza.',
+    'Se cadi, liberi il tuo spirito e risorgi al cimitero più vicino, di nuovo a piena salute, poi raggiungi il punto in cui eri. Non si perde esperienza.',
   'guide.howToPlay.deathTitle': 'La morte non è la fine',
   'guide.howToPlay.firstHeading': 'I tuoi primi 15 minuti',
   'guide.howToPlay.groupingBody':
@@ -3818,18 +3818,18 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.questsPage.intro':
     'Le missioni sono il cuore del mondo e il modo più rapido per salire di livello. Ecco come funzionano.',
   'guide.questsPage.objectivesBody':
-    'Uccidi certi nemici, raccogli oggetti o interagisci con qualcosa nel mondo. Il tracciatore a schermo conta i tuoi progressi mentre avanzi.',
+    "Uccidi certi nemici, raccogli oggetti o interagisci con qualcosa nel mondo. Il tracciatore a schermo conta i tuoi progressi mentre avanzi. Se cambi idea, puoi abbandonare una missione dal tuo registro delle missioni e riprenderla più tardi da chi te l'ha affidata.",
   'guide.questsPage.objectivesTitle': 'Obiettivi',
   'guide.questsPage.partyBody':
-    'I membri del gruppo nelle vicinanze condividono il credito di uccisioni e obiettivi, quindi affrontare le missioni insieme è più veloce, mai più lento.',
+    'I membri del gruppo nelle vicinanze condividono il credito di uccisioni e obiettivi, quindi affrontare le missioni insieme è più veloce, mai più lento. Puoi anche condividere una missione con il tuo gruppo: pubblicala in chat come collegamento cliccabile con il comando /share, e qualsiasi membro vicino che ne ha i requisiti può accettare la stessa missione con un clic.',
   'guide.questsPage.partyTitle': 'Missioni in gruppo',
   'guide.questsPage.soloNote':
-    'La storia principale è pienamente affrontabile in solitaria; solo i suoi capitoli finali richiedono un gruppo.',
+    'La storia principale è affrontabile in solitaria fino al finale di ogni capitolo, che è un dungeon per cinque giocatori.',
   'guide.questsPage.storyBody':
     "Fin dalle tue prime commissioni a Eastbrook, qualcosa non va con i morti. Un culto è all'opera, e la pista conduce a nord attraverso ogni zona. Seguila per scoprire chi c'è dietro.",
   'guide.questsPage.storyTitle': 'Un filo li attraversa tutti',
   'guide.questsPage.turninBody':
-    'Torna da chi ti ha dato la missione, la mappa ti mostra dove, per esperienza, monete e spesso un pezzo di equipaggiamento scelto per la tua classe.',
+    "Porta una missione completata al suo indicatore di consegna, la mappa ti mostra dove, per esperienza, monete e spesso un pezzo di equipaggiamento scelto per la tua classe. Di solito è chi te l'ha affidata, anche se alcune missioni ti mandano da qualcun altro.",
   'guide.questsPage.turninTitle': 'Consegna',
   'guide.resourceName.energy': 'Energia',
   'guide.resourceName.mana': 'Mana',
@@ -3957,7 +3957,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.arenaPage.augmentsNote':
     'Potenziamenti e bonus durano solo per la partita. Sono pensati per costruzioni giocose e improvvisate, non per un potere duraturo, così nessuno si compra la vittoria.',
   'guide.arenaPage.coliseumBody':
-    "Il Colosseo è l'arena del reame, dove affronti altri giocatori in partite classificate. Vinci e la tua posizione sale, e i combattenti più forti scalano la classifica davanti a tutti.",
+    "Il Colosseo è l'arena del reame, dove affronti altri giocatori in partite classificate, uno contro uno o due contro due. Ogni categoria mantiene la propria classifica, perciò una vittoria ti fa salire in quella graduatoria sotto gli occhi di tutto il reame.",
   'guide.arenaPage.coliseumHeading': 'Il Colosseo di Cenere',
   'guide.arenaPage.duelsBody':
     "Sfida a duello amichevole qualsiasi giocatore che incontri. In palio non c'è altro che l'orgoglio, quindi è il modo più semplice per imparare uno scontro o risolvere una disputa amichevole.",
@@ -4080,7 +4080,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.talentsPage.intro':
     'I talenti sono il modo in cui rendi una classe tua. Sono facoltativi, indulgenti e facili da cambiare, così puoi sperimentare senza timori.',
   'guide.talentsPage.resetNote':
-    'Puoi reimpostare i tuoi talenti in qualsiasi momento, quindi una scelta iniziale non è mai una trappola. Prova le cose, scopri cosa ti piace e cambia idea liberamente.',
+    'Puoi reimpostare i tuoi talenti in qualsiasi momento, purché tu sia fuori dal combattimento, quindi una scelta iniziale non è mai una trappola. Prova le cose, scopri cosa ti piace e cambia idea liberamente.',
   'guide.talentsPage.resetTitle': 'Niente è permanente',
   'guide.talentsPage.shareNote':
     'Una configurazione finita può essere copiata in un breve codice condivisibile e passata a un amico, che lo incolla direttamente nel proprio pannello dei talenti per caricarla.',
@@ -4096,7 +4096,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     'Ogni classe può cavarsela e raggiungere il limite. Scegli la fantasia che ti piace, non quella che qualcun altro definisce la migliore.',
   'guide.wishPage.i1Title': 'Non puoi scegliere una classe sbagliata',
   'guide.wishPage.i2Body':
-    'Quando cadi, ti risvegli a un cimitero e corri indietro fino al tuo corpo. Non si perde esperienza, quindi puoi correre rischi e imparare in tutta sicurezza.',
+    'Quando cadi, liberi il tuo spirito e risorgi al cimitero più vicino, poi torni sui tuoi passi. Non si perde esperienza, quindi puoi correre rischi e imparare in tutta sicurezza.',
   'guide.wishPage.i2Title': 'Morire ti costa pochissimo',
   'guide.wishPage.i3Body':
     'Si sbloccano al livello 10 e si reimpostano quando vuoi, quindi le tue scelte iniziali non sono mai permanenti.',
@@ -4153,13 +4153,13 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.combat.ccBody':
     "Il controllo della folla è un tipo speciale di malus che limita ciò che un bersaglio può fare: stordimenti, radicamenti e rallentamenti, silenzi che fermano il lancio di incantesimi, disarmi, paure, e la metamorfosi che rende un nemico inoffensivo per un momento. Alcuni di questi, come radicamenti, paure e metamorfosi, perdono presa se riapplicati troppo in fretta, perciò non possono essere concatenati all'infinito.",
   'guide.combat.deathBody':
-    "Se la tua salute arriva a zero, cadi. Risorgi dopo una breve attesa e riprendi da dove avevi lasciato, perciò una morte ti costa un po' di tempo, non i tuoi progressi. Tra uno scontro e l'altro, siediti a mangiare e bere così affronti il prossimo a piena forza.",
+    "Se la tua salute arriva a zero, cadi. Libera il tuo spirito per risorgere al cimitero più vicino a piena salute, poi torna sui tuoi passi, così una morte ti costa un po' di tempo, non i tuoi progressi. Tra uno scontro e l'altro, siediti a mangiare e bere così affronti il prossimo a piena forza.",
   'guide.combat.deathTitle': 'Quando cadi',
   'guide.combat.effectsBody':
     "Molte abilità applicano un effetto che permane. Quelli benefici (potenziamenti) aumentano le tue statistiche, ti proteggono o ti curano un po' alla volta; quelli dannosi (malus) ti prosciugano la salute con danno nel tempo o ti indeboliscono. Tieni d'occhio le piccole icone vicino alla barra delle azioni per vedere cosa hai addosso e quanto dura.",
   'guide.combat.effectsTitle': 'Potenziamenti, malus e controllo della folla',
   'guide.dungeonsPage.cryptLeadBody':
-    'In alto sulle vette, lontano dallo scontro principale, giace un mistero più gelido. Vecchie tombe portano una corona di cui nessuna cronaca conserva memoria, e i morti che le custodiscono servirono un tempo un re dimenticato. Leggi le loro lapidi, raccogli le chiavi di volta che custodivano, e potrai dissigillare un sepolcro che tre anime fedeli morirono per tenere chiuso, aprendo una seconda prova per dieci giocatori a chi segue gli indizi fino in fondo.',
+    'In alto sulle vette, lontano dallo scontro principale, giace un mistero più gelido. Vecchie tombe portano una corona di cui nessuna cronaca conserva memoria, e i morti che le custodiscono servirono un tempo un re dimenticato. Leggi le loro lapidi, raccogli le chiavi di volta che custodivano, e potrai dissigillare un sepolcro che tre anime fedeli morirono per tenere chiuso: la prova facoltativa che apre il reame alla sua incursione per dieci giocatori, per chi segue gli indizi fino in fondo.',
   'guide.dungeonsPage.cryptLeadTitle': 'Una porta che i morti dovevano tenere chiusa',
   'guide.dungeonsPage.templeLoreBody':
     "Il tempio ha una sua leggenda, più antica del culto che insegui altrove. Sulla riva del Glimmermere, un laghetto che beve la luce della luna e restituisce gli annegati, un solitario guardiano custodisce una porta di pallida luce. Sotto la superficie, una scalinata di pietra fredda scende fino ad esso. Coloro che vi affondarono non annegarono per disgrazia: erano il Coro Pallido, che si immerse in preghiera e non smise mai di cantare. I vecchi custodi incisero un solo avvertimento nelle rocce prima che l'acqua li prendesse, una preghiera a qualcosa che chiamavano la Luna Annegata, con una mano più ferma che aggiunse due parole sotto di essa: dorme soltanto.",
@@ -4171,12 +4171,12 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     'Il denaro si presenta in tre monete. Cento rame fanno un argento, e cento argenti fanno un oro, perciò la tua borsa si riempie a partire dalla moneta più piccola. Lo guadagni dalle ricompense delle missioni, saccheggiando i nemici caduti e vendendo ciò che non ti serve più.',
   'guide.economy.coinTitle': 'Oro, argento e rame',
   'guide.economy.intro':
-    'Le monete fanno girare tutto il mondo: comprano equipaggiamento e provviste, pagano le tue riparazioni e i costi delle missioni, e passano di mano tra i giocatori. Raccogli tutto questo semplicemente giocando, perciò considera questa pagina come una mappa di dove arriva e dove va il tuo denaro.',
+    "Le monete fanno girare tutto il mondo: comprano il tuo equipaggiamento, le provviste e l'attrezzatura da viaggio, e passano di mano tra i giocatori. Raccogli tutto questo semplicemente giocando, perciò considera questa pagina come una mappa di dove arriva e dove va il tuo denaro.",
   'guide.economy.junkBody':
     'Anche gli oggetti che non ti servono si vendono a qualunque venditore, perciò svuota le borse ogni volta che passi per la città invece di lasciarle riempire. Le cianfrusaglie davvero senza valore possono anche essere scartate del tutto per far spazio.',
   'guide.economy.junkTitle': 'Liberarsi delle cianfrusaglie',
   'guide.economy.marketBody':
-    'Il Mercante gestisce il Mercato Mondiale, una piazza di scambio guidata dai giocatori dove puoi comprare e vendere con persone che forse non incontrerai mai. Parla con il Mercante per aprirlo.',
+    "Il Mercante gestisce il Mercato Mondiale, una piazza di scambio guidata dai giocatori dove puoi comprare e vendere con persone che forse non incontrerai mai. Parla con il Mercante per aprirlo. Il Mercante tiene anche una scorta fissa di merce propria in vendita lì, così c'è sempre qualcosa da comprare anche quando nessun altro giocatore ha messo in vendita nulla.",
   'guide.economy.marketBrowse':
     "Sfogliare: scorri gli annunci o cerca per nome per trovare ciò che è in vendita. Ogni annuncio mostra la merce, il venditore e il prezzo richiesto per l'intera pila.",
   'guide.economy.marketCollect':
@@ -4193,7 +4193,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     'Puoi scambiare faccia a faccia con chiunque ti stia vicino. Entrambi mettete oggetti e monete in una finestra condivisa e lo scambio avviene solo dopo che entrambi lo confermate, così nessuno dei due può essere ingannato. È il modo semplice per passare un bottino a un amico o concludere un accordo.',
   'guide.economy.tradeTitle': 'Scambiare con altri giocatori',
   'guide.economy.vendorsBody':
-    'Città e avamposti sono disseminati di mercanti, ognuno con il proprio commercio. I provvigionieri tengono cibo e bevande, armaioli e fabbri portano equipaggiamento, gli erboristi trattano reagenti, e un quartiermastro tiene attrezzatura pratica da viaggio. Avvicinati a uno per vedere cosa vende.',
+    'Città e avamposti sono disseminati di mercanti, ognuno con il proprio commercio. I provvigionieri tengono cibo e bevande, armaioli e fabbri portano equipaggiamento, e un quartiermastro tiene attrezzatura pratica da viaggio. Avvicinati a uno per vedere cosa vende.',
   'guide.economy.vendorsTitle': 'I venditori e ciò che tengono',
   'guide.gear.consumablesElixirs':
     "Gli elisir concedono un potenziamento temporaneo mentre sei all'avventura, un piccolo vantaggio che aiuta quando vuoi spingerti un po' oltre.",
@@ -4213,12 +4213,12 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.gear.cosmeticsRanks':
     'Gli oggetti estetici hanno i propri gradi di rarità, e i più rari sono una bella cosa da inseguire. Guadagnare un grado superiore sblocca anche gli aspetti sottostanti.',
   'guide.gear.cosmeticsSkins':
-    'Ci sono due linee estetiche da collezionare. Ogni classe ha una manciata di aspetti alternativi, una nuova interpretazione del suo look che è tua soltanto da indossare. Accanto a essi ci sono i chroma: schemi di colore bicolore con nome che ridipingono interamente un aspetto, dai metalli sobri ai vivaci colori imperiali.',
+    'Ci sono due linee estetiche da collezionare. La maggior parte delle classi ha diversi aspetti alternativi, una nuova interpretazione del look della classe che è tua da indossare. Accanto a essi ci sono i chroma: schemi di colore bicolore con nome che ridipingono interamente un aspetto, dai metalli sobri ai vivaci colori imperiali.',
   'guide.gear.cosmeticsTitle': 'Aspetti ed estetica',
   'guide.gear.fishingBody':
-    'La pesca è un sereno cambio di ritmo. Equipaggia una canna da pesca, lancia in acque aperte e tira su ciò che abbocca. Per lo più catturi pesci che puoi cucinare per farne cibo, qualche cianfrusaglia da vendere per pochi spiccioli, e di tanto in tanto una preziosa cattura rara. Ciò che trovi dipende dalle acque in cui peschi.',
+    'La pesca è un sereno cambio di ritmo. Equipaggia una canna da pesca, lancia in acque aperte e tira su ciò che abbocca. Per lo più catturi pesci che sono cibo che puoi mangiare, qualche cianfrusaglia da vendere per pochi spiccioli, e di tanto in tanto una preziosa cattura rara. Ciò che trovi dipende dalle acque in cui peschi.',
   'guide.gear.fishingFood':
-    "I pesci che tiri su sono crudi, e il pesce crudo è cibo. Cucina la tua cattura e curerà di più quando ti siedi a mangiare, con i pesci migliori che vengono dalle acque più fredde e profonde a nord. Una lenza nel lago è un modo tranquillo per tenere la sacca rifornita tra uno scontro e l'altro.",
+    "I pesci che tiri su sono cibo: mangiane uno mentre ti siedi a riposare e ti ripristina la salute, con i pesci più sostanziosi che vengono dalle acque più fredde e profonde a nord. Una lenza nel lago è un modo tranquillo per tenere la sacca rifornita tra uno scontro e l'altro.",
   'guide.gear.fishingRare':
     'Di tanto in tanto la tua lenza pesca qualcosa di ben migliore di una cena: uno scintillante pesce pregiato in cui qualunque pescatore può imbattersi per fortuna in qualunque acqua. Aggancialo e il tuo registro si illuminerà per la cattura. È il genere di colpo fortunato che rende un pigro pomeriggio al lago degno di essere raccontato.',
   'guide.gear.fishingTitle': 'Pesca',
@@ -4249,7 +4249,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.gear.slotShoulder': 'Spalle',
   'guide.gear.slotWaist': 'Vita',
   'guide.gear.slotsBody':
-    "Hai uno slot per l'arma e sette slot per l'armatura. Ogni pezzo che equipaggi si aggiunge al tuo personaggio, e puoi mescolare e abbinare liberamente man mano che trovi miglioramenti.",
+    "Hai uno slot per l'arma e sette slot per l'armatura. Ogni classe può usare solo certe armi e indossa armatura fino al proprio peso, stoffa, cuoio o maglia, perciò i miglioramenti adatti a te sono quelli fatti per la tua classe. Detto questo, riempi ogni slot con il pezzo migliore che trovi.",
   'guide.gear.slotsTitle': 'Cosa puoi equipaggiare',
   'guide.gear.sourcesBody':
     'Gran parte dei tuoi primi miglioramenti sono ricompense delle missioni, perciò conviene portarle a termine invece di macinare nemici. I nemici lasciano cadere equipaggiamento quando li sconfiggi, i venditori in città vendono solide basi, e il mercato dei giocatori ti permette di comprare da altri avventurieri.',
@@ -4298,9 +4298,9 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.progression.noRush':
     "Non c'è fretta. Il mondo è lì per essere goduto al tuo ritmo, perciò vaga, prendi le missioni che attirano il tuo sguardo e lascia che il tuo eroe cresca lungo il cammino.",
   'guide.progression.prestigeBody':
-    "L'esperienza continua a contare anche dopo il limite. Alimenta un livello virtuale puramente estetico, così la tua barra dell'esperienza continua a salire, e un grado di prestigio a lungo termine che puoi guadagnare per il riconoscimento. È del tutto facoltativo e non concede mai potere, solo un segno della strada che hai percorso.",
+    "L'esperienza continua a contare anche dopo il limite. Alimenta un livello virtuale puramente estetico, così la tua barra dell'esperienza continua a salire, e un grado di prestigio a lungo termine che puoi guadagnare per il riconoscimento. Superare grandi traguardi di esperienza totale sblocca anche titoli estetici e bordi della targhetta che compaiono sulla tua scheda del personaggio. È tutto del tutto facoltativo e non concede mai potere, solo un segno della strada che hai percorso.",
   'guide.progression.restedBody':
-    'Quando ti disconnetti, o riposi in un luogo sicuro come una locanda, il tuo personaggio accumula esperienza da riposo mentre sei via. La prossima volta che esci a combattere, quella riserva dà alle tue uccisioni una spinta extra finché non si esaurisce. Si accumula nel tempo e accelera i tuoi primi livelli, perciò disconnetterti in città non è mai tempo sprecato.',
+    'Riposa in un luogo sicuro come una locanda, fuori dal combattimento, e il tuo personaggio accumula esperienza da riposo mentre sei seduto lì. La prossima volta che esci a combattere, quella riserva dà alle tue uccisioni una spinta extra finché non si esaurisce. Una pausa alla locanda non è mai tempo sprecato; accelera il tuo prossimo tratto di salita di livello.',
   'guide.progression.restedTitle': 'Esperienza da riposo',
   'guide.progression.xpBody':
     'Guadagni esperienza completando missioni e sconfiggendo nemici. Le missioni ne danno di gran lunga di più, perciò seguire la pista delle missioni è il modo più rapido per salire. Uccidere creature lungo la strada riempie il resto.',
@@ -4311,34 +4311,34 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     "A Mirefen gli annegamenti non sono casuali. Qualcuno sta riempiendo l'acquitrino come una cassetta delle decime, rialzando morti obbedienti da ogni viaggiatore che l'acqua si prende. Risali gli ordini lungo la catena fino a un Richiamanebbie nel bastione annegato, le cui ultime parole nominano qualcosa di ancora più antico, che si agita sotto le vette.",
   'guide.questsPage.sagaMarshTitle': 'La palude: una decima di anime',
   'guide.questsPage.sagaPeaksBody':
-    "Su Thornpeak l'intero disegno si fa chiaro. Ogni anima rubata fin dalla Valle era una decima versata per risvegliare un'antica creatura sigillata sotto la montagna. La pista che cominciò nel cortile di una cappella finisce qui, a una porta che ci vogliono in dieci per aprire. Lasceremo a te scoprire chi attende dietro di essa.",
+    "Su Thornpeak l'intero disegno si fa chiaro. Ogni anima rubata fin dalla Valle era una decima versata per l'oscura opera del culto nel cuore della montagna. La pista che cominciò nel cortile di una cappella finisce qui, in una discesa per cinque giocatori per affrontare la mano dietro a tutto. Lasceremo a te scoprire chi attende in fondo.",
   'guide.questsPage.sagaPeaksTitle': 'Le vette: a cosa serviva la decima',
   'guide.questsPage.sagaTitle': 'Segui la pista verso nord',
   'guide.questsPage.sagaValeBody':
     "A Eastbrook i morti non vogliono riposare, e il marchio che vi sta dietro appartiene a una setta che si credeva scomparsa da tempo. Risaline la traccia fino a un Richiamatombe che opera nella cripta della cappella, e le sue stesse carte ti indicano l'acquitrino a nord.",
   'guide.questsPage.sagaValeTitle': 'La Valle: un nome su un sigillo',
   'guide.questsPage.sideCryptBody':
-    "In alto sulle vette corre un mistero più silenzioso: vecchie tombe segnate da una corona di cui nessuna cronaca conserva memoria. Leggi i morti, raccogli ciò che custodivano e dissigilla un sepolcro che doveva restare chiuso. È la pista di un investigatore che apre la via a una seconda prova di fine gioco per un'intera incursione.",
+    "In alto sulle vette corre un mistero più silenzioso: vecchie tombe segnate da una corona di cui nessuna cronaca conserva memoria. Leggi i morti, raccogli ciò che custodivano e dissigilla un sepolcro che doveva restare chiuso. È la pista di un investigatore che apre la via all'incursione di fine gioco per dieci giocatori del reame.",
   'guide.questsPage.sideCryptTitle': 'Il re dimenticato',
   'guide.questsPage.sideTempleBody':
     'Un cancello di pallida luce su un alto laghetto montano tra le vette si apre su un santuario sommerso dove un culto annegato canta ancora. La sua breve catena di missioni resta separata dalla storia principale, un mistero a sé stante per chiunque salga fino alla riva, legga gli avvertimenti incisi sulle rocce e scenda a scoprire a cosa servissero.',
   'guide.questsPage.sideTempleTitle': 'Il Tempio Annegato',
   'guide.questsPage.sideTitle': 'Fili che si staccano dalla strada principale',
   'guide.questsPage.sideWardenBody':
-    "Accanto alla storia, i guardiani della Valle e dell'acquitrino offrono una scala di taglie permanente. Scalala, nemico dopo nemico, nel modo in cui ogni guardiano prima di te si è guadagnato il proprio posto. È una crescita di livello onesta e un giro tra i peggiori piantagrane di ogni zona.",
+    "Accanto alla storia, i marescialli e i guardiani della Valle e dell'acquitrino offrono una scala di taglie permanente. Scalala, nemico dopo nemico, nel modo in cui ogni cacciatore di taglie prima di te si è guadagnato il proprio posto. È una crescita di livello onesta e un giro tra i peggiori piantagrane di ogni zona.",
   'guide.questsPage.sideWardenTitle': 'Guadagnarsi il proprio nome',
   'guide.questsPage.typeGatherBody':
     'Raccogli oggetti dal mondo o da ciò che i nemici lasciano cadere: erbe, minerale, lettere perdute, i tetri reagenti di un culto. Alcuni pezzi cadono solo da un nemico particolare, perciò la caccia e il bottino vanno di pari passo.',
   'guide.questsPage.typeGatherTitle': 'Raccogli',
   'guide.questsPage.typeGroupBody':
-    "Ogni capitolo della storia principale si conclude a una porta di dungeon. L'introduzione è affrontabile in solitaria, ma il colpo finale contro il cattivo di un capitolo è pensato per un gruppo di cinque (e l'ultimissimo, per dieci).",
+    "Ogni capitolo della storia principale si conclude a una porta di dungeon. L'introduzione è affrontabile in solitaria, ma il colpo finale contro il cattivo di un capitolo è pensato per un gruppo di cinque.",
   'guide.questsPage.typeGroupTitle': 'Finali di gruppo',
   'guide.questsPage.typeInteractBody':
     'Usa, purifica o leggi qualcosa di fisso nel mondo: una tomba profanata, un avvertimento inciso su una roccia della riva, una porta di cripta sigillata. Avvicinati al segnale e agisci su di esso.',
   'guide.questsPage.typeInteractTitle': 'Interagisci',
   'guide.questsPage.typeMusterBody':
-    'Scorta sano e salvo un volto amico da un luogo a un altro, o raduna i difensori di una città prima di una spinta verso nord. Questi ti tengono in movimento con le persone della cui storia fai parte.',
-  'guide.questsPage.typeMusterTitle': 'Scorta e raduno',
+    'Alcune missioni ti fanno radunare una città prima di una spinta verso nord: riduci la minaccia alle porte e raccogli ciò di cui hanno bisogno i difensori. Sono obiettivi di uccisione e raccolta al servizio delle persone della cui storia fai parte, e ti tengono in movimento con loro.',
+  'guide.questsPage.typeMusterTitle': 'Raduna la difesa',
   'guide.questsPage.typeSlayBody':
     'Dirada un branco di bestie o spezza la presa di un culto sconfiggendo un dato numero di un nemico segnato. La prima missione del gioco, ripulire i lupi dalla strada di Eastbrook, è una di queste.',
   'guide.questsPage.typeSlayTitle': 'Uccidi',
@@ -4347,7 +4347,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.questsPage.typesTitle': 'I tipi di missione che incontrerai',
   'guide.social.chanGeneral': 'Generale.',
   'guide.social.chanGeneralBody':
-    'Un canale locale sempre attivo per le persone intorno a te, buono per fare una domanda o chiacchierare.',
+    'Un canale di tutto il reame sempre attivo che raggiunge tutti gli online, buono per fare una domanda o chiacchierare in generale. A differenza dei canali Mondo e Cerca gruppo, non devi mai iscriverti.',
   'guide.social.chanGuild': 'Gilda e Ufficiali.',
   'guide.social.chanGuildBody':
     'Canali per la tua gilda. La chat di gilda raggiunge ogni membro; il canale degli ufficiali è solo per gli ufficiali.',
@@ -4402,7 +4402,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     'Quando un oggetto va a tiro, ogni membro idoneo sceglie Bisogno se lo vuole, Brama se lo prenderebbe solo come scorta, o Passa per chiamarsi fuori. Il tiro più alto vince.',
   'guide.social.lootRollTitle': 'Bisogno, Brama o Passa.',
   'guide.social.partyBody':
-    'Invita un altro giocatore facendo clic destro sul suo nome e scegliendo di invitarlo, oppure con un comando di chat. Un gruppo ospita fino a cinque giocatori, e uno di voi è il capo.',
+    'Invita un altro giocatore facendo clic destro sul suo nome e scegliendo di invitarlo. Un gruppo ospita fino a cinque giocatori, e uno di voi è il capo.',
   'guide.social.partyCredit':
     'I membri del gruppo vicini tra loro condividono il credito di uccisioni e missioni, perciò fare missioni insieme è più rapido, mai più lento. Un gruppo è anche il modo per entrare in un dungeon come squadra.',
   'guide.social.partyHeading': 'Formare un gruppo',
@@ -4430,7 +4430,7 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
     "Due cose accrescono le tue statistiche. Ogni livello aggiunge una quantità fissa di ciascun attributo adatta alla tua classe, e l'equipaggiamento che indossi ne aggiunge altra ancora. Tenere il tuo equipaggiamento aggiornato è il modo più costante per diventare più forte, fino al limite di livello.",
   'guide.stats.growHeading': 'Come crescono le tue statistiche',
   'guide.stats.intBody':
-    "L'Intelletto accresce la riserva di mana di un incantatore e migliora la probabilità che i suoi incantesimi colpiscano in critico. Conta per le classi che lanciano dal mana; per una classe a Ira o Energia fa poco.",
+    "L'Intelletto accresce la riserva di mana di un incantatore, ne aumenta il potere magico così che i suoi incantesimi colpiscano più forte, e migliora la probabilità che i suoi incantesimi colpiscano in critico. Conta per le classi che lanciano dal mana; per una classe a Ira o Energia fa poco.",
   'guide.stats.intTitle': 'Intelletto',
   'guide.stats.intro':
     "Il tuo personaggio è descritto da una manciata di attributi. Non devi mai memorizzarli per giocare bene, ma sapere all'incirca cosa fa ciascuno ti aiuta a leggere la tua scheda del personaggio e a scegliere i miglioramenti giusti.",
@@ -4474,10 +4474,10 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'guide.worldPage.valeGreeter': 'Maresciallo Redbrook, Eastbrook',
   'guide.worldPage.valeGreeting': 'Tieni la lama a portata. La Valle non è più quella di un tempo.',
   'guide.worldPage.valePlaceNotes':
-    'Eastbrook è la tua prima base. Il Sentiero dei Lupi e il Prato dei Cinghiali sono terreni di caccia tranquilli; il Lago a Specchio è acqua quieta dove pescare; il Boscoragnatela e lo Scavo di Rame nascondono ragni e scavatori avidi di minerale; un Campo di Banditi e la Cappella Caduta custodiscono lavori più duri; la Radura di Brightwood è una serena radura di natura selvaggia a nord.',
+    'Eastbrook è la tua prima base. Il Sentiero dei Lupi e il Prato dei Cinghiali sono terreni di caccia tranquilli; il Lago a Specchio è acqua quieta dove pescare; il Boscoragnatela e lo Scavo di Rame nascondono ragni e scavatori avidi di minerale; un Campo di Banditi e la Cappella Caduta custodiscono lavori più duri; il Colle del Reliquiario scende nel Reliquiario Crollato, il primo delve del reame; e Brightwood Glade è una serena radura assolata a nord.',
   'guide.worldPage.gladeTitle': 'Un angolo quieto: la Radura di Brightwood',
   'guide.worldPage.gladeBody':
-    'Non ogni storia della Valle parla dei morti. A nord, una radura assolata chiamata Brightwood mantiene un ritmo più gentile tutto suo, con sentieri silenziosi, cervi al pascolo e bestie guardinghe sotto i rami. È un contrappunto lieve alla pista che stai seguendo e vale la pena vederla quando la strada ti lascia spazio per vagare.',
+    'Non ogni storia della Valle parla dei morti. A nord, una radura assolata chiamata Brightwood Glade mantiene un ritmo più gentile tutto suo, fatto di sentieri silenziosi e luce screziata sotto i rami. È un contrappunto lieve alla pista che stai seguendo e vale la pena vederla quando la strada ti lascia spazio per vagare.',
   // APM telemetry label from release/v0.14.0
   'hudChrome.perf.labels.apm': 'APM',
   // Account-security portal (2FA, verified email change, GDPR export) from PR #833.
