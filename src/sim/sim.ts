@@ -6574,10 +6574,8 @@ export class Sim {
     return craftSkillsFor(this.ctx, pid);
   }
 
-  /** Common-tier skill gain for exactly one craft; never affects any other craft
-   *  (see professions/wheel.ts: the conserved-mass drain only triggers from
-   *  uncommon tier upward, which this dev-command path never passes). No-op for
-   *  an unknown pid or craft id. */
+  /** Additive-only skill gain for exactly one craft; never affects any other craft
+   *  (see professions/wheel.ts). No-op for an unknown pid or craft id. */
   gainCraftSkill(pid: number, craftId: string, amount: number): void {
     const meta = this.players.get(pid);
     if (!meta) return;

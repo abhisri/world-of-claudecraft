@@ -68,7 +68,7 @@ export function resolveCraft(ctx: SimContext, pid: number, recipeId: string): Cr
   const skill = meta ? (meta.craftSkills[recipe.professionId] ?? 0) : 0;
   const quality = rollMaterialRarity(skill, ctx.rng);
   ctx.addItem(recipe.resultItemId, recipe.resultCount, pid);
-  if (meta) gainCraftSkill(meta.craftSkills, recipe.professionId, CRAFT_SKILL_GAIN, quality);
+  if (meta) gainCraftSkill(meta.craftSkills, recipe.professionId, CRAFT_SKILL_GAIN);
   return {
     ok: true,
     recipeId,
