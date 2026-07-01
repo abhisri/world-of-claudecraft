@@ -31,7 +31,7 @@ Mark a row's Status as "In progress" or "Done" and fill Started / Completed
 | Phase 09 | Done | 2026-06-30 | 2026-06-30 |
 | Phase 09 QA | Not started |  |  |
 | Phase 10 | Done | 2026-06-30 | 2026-06-30 |
-| Phase 10 QA | Not started |  |  |
+| Phase 10 QA | Done | 2026-07-01 | 2026-07-01 |
 | Phase 11 | Not started |  |  |
 | Phase 11 QA | Not started |  |  |
 | Phase 12 | Not started |  |  |
@@ -651,10 +651,18 @@ Deliverables:
 - [x] Apply the one bearer resolver to /api/realms (anonymous-friendly when no token) and /api/search, closing their authz gap (new additive `optional` mode on requireAccount)
 
 QA:
-- [ ] Fixes applied
-- [ ] Tests added
-- [ ] Dead code removed
-- [ ] Reviews clean
+- [x] Fixes applied
+- [x] Tests added
+- [x] Dead code removed
+- [x] Reviews clean
+
+QA gate outcome (2026-07-01): PASS. A 4-dimension audit (correctness+dual-path parity, test-coverage, dead-code, privacy-security-review) with per-finding adversarial verification produced 0 BLOCKING and 0 SHOULD-FIX (two findings initially rated SHOULD-FIX were downgraded to NICE-TO-HAVE on verification). Two findings were refuted (a claim that the /api/status deviation neutered the cors_reflected_origin_get fixture, refuted because CORS is applied top-level from one place and is mode-independent by construction; and the anonymous-search security note, which was already a PASS verdict). Per the apply-all directive, all five verified NICE-TO-HAVE findings were fixed:
+- (1) HEAD dual-path divergence (the one substantive finding): registering the 9 GET routes exposed a real UNDOCUMENTED parity break. The Phase 4 router synthesizes HEAD from GET (match.head), and the dispatcher ran the onion for it, so under API_DISPATCH 'new' a HEAD to a migrated GET route served 200-as-GET while the legacy ladder 404s HEAD (violating acceptance criterion 9, "zero undocumented diff"). The parity filter is PATH-scoped, so a known_deviations entry would over-broaden and mask real GET breaks. Fix (parity-preserving): the dispatcher now DELEGATES a HEAD match to the legacy ladder (server/http/dispatch.ts), keeping HEAD byte-identical (404 both paths) while the legacy arms are retained; serving HEAD as GET is a deliberate change deferred to the Phase 25 flag flip / ladder deletion. Enforced by a new dispatch.test.ts case (HEAD match delegates) and a parity corpus case (HEAD /api/leaderboard 404 on both paths, no divergence).
+- (2) arena + project-stats handlers had no handler-level test (only their read fns): added an injectable dbReads seam (setLeaderboardDbForTests/resetLeaderboardDbForTests, mirroring the runtime seam) so the two always-DB-hitting handlers can be driven with a FakeDb; added handler tests for both.
+- (3) readPublicSheet's second 404 (name resolves but the row read returns null) and its null-rank 200 branch were untested: added both.
+- (4) six read-fn Db interfaces (ArenaReadDb/SearchReadDb/RealmsReadDb/ProjectStatsReadDb/PublicSheetDb/PublicSheetDeps) were exported but unused outside the module: made module-private.
+- (5) five scope/format constants (LEADERBOARD_SCOPE_DEFAULT/GLOBAL, LEADERBOARD_GUILD_BOARD, ARENA_FORMAT_2V2/DEFAULT) were exported but unused outside the module: made module-private; decodeScope/decodeArenaFormat now return the named constant (single-sourced compare + return). The three limit constants the unit tests import stay exported.
+QA fix scope (5 files): server/http/dispatch.ts, server/leaderboard.ts, tests/server/http/dispatch.test.ts, tests/server/http/parity.test.ts, tests/server/leaderboard.test.ts. Validation: tsc clean; the leaderboard + http/{dispatch,parity,completeness,registry,require_account} + known_deviations suites green (104 tests); ci:changed clean; build:server + full pre-merge gate green.
 
 New module + surface:
 - `server/leaderboard.ts` (NEW): the public-read domain. Pure query decoders + pure response builders + host-agnostic read functions (each takes a narrow Db interface, unit-tested via the Phase 2 FakeLeaderboardDb/FakeCharactersDb) + thin Ctx handlers + `export const routes: RouteDef[]` (9 GET routes). Runtime singletons the handlers need but cannot import without a cycle (game.clients.size / game.perfProfile, the three cache-fronted readers getLeaderboard/getGuildLeaderboard/getReleases, GITHUB_REPO/RELEASES_SIZE, publicOrigin, toSheetRank) are INJECTED once at boot via `configureLeaderboardRuntime` (main.ts, at module load). The in-memory leaderboard/releases caches STAY in main.ts (unchanged behavior); the injected readers reference the exact same functions the legacy arms use.
@@ -681,7 +689,7 @@ Rate limit + error bodies (parity-first): the ported routes keep their legacy `{
 Notes:
 - Reviewers (per the phase contract): privacy-security-review REQUIRED = 0 CRITICAL, 1 WARNING (applied), 3 INFO (by-design); port-faithfulness coverage = all 9 routes FAITHFUL (3 with the intended deviations), every named constant matches the legacy inline literal; qa-checklist = READY, 0 BLOCKING / 0 SHOULD-FIX, 2 low NITs (both applied). SKIPPED (no matching surface): migration-safety, cross-platform-sync, architecture-reviewer.
 - Applied review findings (apply-all rule): (1) SECURITY WARNING: /api/search became anonymous but was unrate-limited (the gap-close opened an unauthenticated DB-hitting name-enumeration surface); now gated in-handler with publicReadRateLimited, the same per-IP budget the public sheet uses, 429 `{error:'rate limited'}` (parity-safe: the harness resets the limiter per pass so the single request stays under budget); added a search-429 unit test. (2) NIT: the realms-search-authz-gap-close deviation now also documents that a present VALID token from a banned/suspended account is rejected 403 (requireAccount's uniform moderation gate, which the legacy bearerAccount skipped). (3) NIT: added a public-sheet 429 branch unit test.
-- INFO/by-design (no change): the /api/status name-list trim and the search/realms gap-close are only live under API_DISPATCH 'new' (the legacy arms stay for rollback; the flag flips in Phase 25); the router adds HEAD-as-GET + a trailing-slash normalization to migrated routes (a Phase 9 dispatcher property, canonical-path bodies identical); the test-only DATABASE_URL is a dummy loopback literal (the established test-setup pattern).
+- INFO/by-design (no change): the /api/status name-list trim and the search/realms gap-close are only live under API_DISPATCH 'new' (the legacy arms stay for rollback; the flag flips in Phase 25); the router adds a trailing-slash normalization to migrated routes (a Phase 9 dispatcher property, canonical-path bodies identical); the test-only DATABASE_URL is a dummy loopback literal (the established test-setup pattern). CORRECTED in QA: the router's HEAD-as-GET synthesis was NOT identical to the legacy ladder (legacy 404s HEAD; the onion would have served 200-as-GET), so the QA pass made the dispatcher DELEGATE a HEAD match to the legacy ladder, keeping HEAD byte-identical (404) until the Phase 25 flag flip (see the QA gate outcome above).
 
 More notes:
 
