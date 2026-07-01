@@ -788,6 +788,10 @@ export const en_XA: EnTranslations = {
       "hostile": "[Ĥóšţíļé]",
       "friendly": "[Ƒŕíéñðļý]"
     },
+    "targetFrame": {
+      "unlock": "[Ɱóʋé ţáŕĝéţ ƒŕáɱé]",
+      "lock": "[Ļóçķ ţáŕĝéţ ƒŕáɱé]"
+    },
     "itemTooltip": {
       "requiresLevel": "[Ŕéɋúíŕéš Ļéʋéļ {level}]"
     },

@@ -788,6 +788,10 @@ export const da_DK: EnTranslations = {
       "hostile": "Hostile",
       "friendly": "Friendly"
     },
+    "targetFrame": {
+      "unlock": "Move target frame",
+      "lock": "Lock target frame"
+    },
     "itemTooltip": {
       "requiresLevel": "Kræver niveau {level}"
     },

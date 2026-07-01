@@ -26,6 +26,8 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'hudChrome.mobTooltip.levelFamily': '等級 {level} {family}',
   'hudChrome.mobTooltip.hostile': '敵對',
   'hudChrome.mobTooltip.friendly': '友方',
+  'hudChrome.targetFrame.unlock': '移動目標框',
+  'hudChrome.targetFrame.lock': '鎖定目標框',
   'hud.core.mapCanvasLabel': '地圖',
   'hud.core.mapSummary': '{zone}的地圖。',
   'hudChrome.castBar.playerAria': '你的施法條',

@@ -875,6 +875,16 @@ export const hudChromeStrings = {
     hostile: 'Hostile',
     friendly: 'Friendly',
   },
+  // Movable target frame: the small corner toggle that unlocks the frame for
+  // dragging and locks it back in place (target_frame_pos.ts + hud.ts wiring).
+  // The one button swaps its accessible name with its pressed state; both values
+  // are wordy (M16), filled in the five non-Latin locales in this same change.
+  targetFrame: {
+    // aria-label / title while LOCKED (aria-pressed=false): press to move it.
+    unlock: 'Move target frame',
+    // aria-label / title while UNLOCKED (aria-pressed=true): press to fix it.
+    lock: 'Lock target frame',
+  },
   // Item tooltip: the minimum character level needed to equip a piece (classic
   // "Requires Level N"). Shown red when the viewer is below it. {level} runs
   // through formatNumber.

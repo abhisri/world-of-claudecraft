@@ -788,6 +788,10 @@ export const vi_VN: EnTranslations = {
       "hostile": "Hostile",
       "friendly": "Friendly"
     },
+    "targetFrame": {
+      "unlock": "Move target frame",
+      "lock": "Lock target frame"
+    },
     "itemTooltip": {
       "requiresLevel": "Yêu cầu Cấp {level}"
     },

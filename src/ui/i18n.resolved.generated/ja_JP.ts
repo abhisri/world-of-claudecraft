@@ -788,6 +788,10 @@ export const ja_JP: EnTranslations = {
       "hostile": "敵対",
       "friendly": "味方"
     },
+    "targetFrame": {
+      "unlock": "ターゲットフレームを移動",
+      "lock": "ターゲットフレームを固定"
+    },
     "itemTooltip": {
       "requiresLevel": "必要レベル {level}"
     },

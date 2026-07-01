@@ -788,6 +788,10 @@ export const de_DE: EnTranslations = {
       "hostile": "Hostile",
       "friendly": "Friendly"
     },
+    "targetFrame": {
+      "unlock": "Move target frame",
+      "lock": "Lock target frame"
+    },
     "itemTooltip": {
       "requiresLevel": "Benötigt Stufe {level}"
     },

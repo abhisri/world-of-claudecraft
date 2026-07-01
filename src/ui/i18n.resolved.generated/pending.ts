@@ -9,32 +9,46 @@
 // Reproducibility is checked by tests/i18n_resolved_equivalence.test.ts.
 
 export const pending: Record<string, readonly string[]> = {
-  "es": [],
-  "es_ES": [],
+  "es": [
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
+  ],
+  "es_ES": [
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
+  ],
   "fr_FR": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "fr_CA": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "en_CA": [],
   "it_IT": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "de_DE": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "zh_CN": [],
   "zh_TW": [],
@@ -44,49 +58,65 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "ru_RU": [],
   "nl_NL": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "pl_PL": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "id_ID": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "tr_TR": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "sv_SE": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "vi_VN": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ],
   "da_DK": [
     "hudChrome.mobTooltip.familyDemon",
     "hudChrome.mobTooltip.friendly",
     "hudChrome.mobTooltip.hostile",
-    "hudChrome.mobTooltip.levelFamily"
+    "hudChrome.mobTooltip.levelFamily",
+    "hudChrome.targetFrame.lock",
+    "hudChrome.targetFrame.unlock"
   ]
 };

@@ -428,6 +428,83 @@
     display: none;
     z-index: 6;
   }
+  /* Movable target frame: the small corner toggle (built in hud.ts) that unlocks
+     the frame for dragging and locks it back. Sits just outside the top-right
+     corner like the rest badge, so it never overlaps the portrait or bars. The
+     glyph is a mask: move arrows while LOCKED (press to move), a padlock while
+     UNLOCKED (press to fix). Desktop only (hidden on mobile-touch). */
+  #target-frame .tf-move-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid #4a3d1d;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #2c2c3a, #15151f);
+    color: var(--color-text-muted);
+    cursor: var(--cursor-point);
+    opacity: 0.6;
+    z-index: 7;
+    box-shadow:
+      inset 0 1px 0 #ffffff14,
+      0 1px 3px #0009;
+    transition:
+      opacity 0.12s ease,
+      border-color 0.12s ease,
+      color 0.12s ease;
+  }
+  #target-frame .tf-move-btn::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    background-color: currentColor;
+    -webkit-mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%201.5%208.5%205H11v6H5V8.5L1.5%2012%205%2015.5V13h6v6H8.5L12%2022.5%2015.5%2019H13v-6h6v2.5L22.5%2012%2019%208.5V11h-6V5h2.5z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%201.5%208.5%205H11v6H5V8.5L1.5%2012%205%2015.5V13h6v6H8.5L12%2022.5%2015.5%2019H13v-6h6v2.5L22.5%2012%2019%208.5V11h-6V5h2.5z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  #target-frame .tf-move-btn:hover {
+    opacity: 1;
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  #target-frame .tf-move-btn:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 1px;
+    opacity: 1;
+  }
+  /* Unlocked (move mode): highlight the button gold and swap to the padlock glyph. */
+  #target-frame .tf-move-btn.active {
+    opacity: 1;
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  #target-frame .tf-move-btn.active::before {
+    -webkit-mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%2010V7a5%205%200%200%201%2010%200v3h1.2A1.8%201.8%200%200%201%2020%2011.8v7.4A1.8%201.8%200%200%201%2018.2%2021H5.8A1.8%201.8%200%200%201%204%2019.2v-7.4A1.8%201.8%200%200%201%205.8%2010H7zm2%200h6V7a3%203%200%200%200-6%200v3z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask:
+      url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%2010V7a5%205%200%200%201%2010%200v3h1.2A1.8%201.8%200%200%201%2020%2011.8v7.4A1.8%201.8%200%200%201%2018.2%2021H5.8A1.8%201.8%200%200%201%204%2019.2v-7.4A1.8%201.8%200%200%201%205.8%2010H7zm2%200h6V7a3%203%200%200%200-6%200v3z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  /* The frame while unlocked: a dashed gold hint and a move cursor over the body. */
+  #target-frame.tf-unlocked {
+    cursor: move;
+    outline: 1px dashed var(--gold);
+    outline-offset: 2px;
+    touch-action: none;
+  }
+  body.target-frame-dragging,
+  body.target-frame-dragging * {
+    user-select: none;
+  }
+  body.mobile-touch #target-frame .tf-move-btn {
+    display: none;
+  }
   .portrait-wrap {
     position: relative;
     width: 64px;

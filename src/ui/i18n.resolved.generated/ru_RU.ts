@@ -788,6 +788,10 @@ export const ru_RU: EnTranslations = {
       "hostile": "Враждебный",
       "friendly": "Дружественный"
     },
+    "targetFrame": {
+      "unlock": "Переместить рамку цели",
+      "lock": "Закрепить рамку цели"
+    },
     "itemTooltip": {
       "requiresLevel": "Требуется уровень {level}"
     },

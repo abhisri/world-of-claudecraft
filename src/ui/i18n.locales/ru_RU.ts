@@ -26,6 +26,8 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.mobTooltip.levelFamily': 'Уровень {level} {family}',
   'hudChrome.mobTooltip.hostile': 'Враждебный',
   'hudChrome.mobTooltip.friendly': 'Дружественный',
+  'hudChrome.targetFrame.unlock': 'Переместить рамку цели',
+  'hudChrome.targetFrame.lock': 'Закрепить рамку цели',
   'hud.core.mapCanvasLabel': 'Карта',
   'hud.core.mapSummary': 'Карта зоны {zone}.',
   'hudChrome.castBar.playerAria': 'Ваша полоса применения',

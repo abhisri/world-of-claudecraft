@@ -26,6 +26,8 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.mobTooltip.levelFamily': '{level}레벨 {family}',
   'hudChrome.mobTooltip.hostile': '적대',
   'hudChrome.mobTooltip.friendly': '아군',
+  'hudChrome.targetFrame.unlock': '대상 프레임 이동',
+  'hudChrome.targetFrame.lock': '대상 프레임 고정',
   'hud.core.mapCanvasLabel': '지도',
   'hud.core.mapSummary': '{zone}의 지도.',
   'hudChrome.castBar.playerAria': '내 시전 막대',

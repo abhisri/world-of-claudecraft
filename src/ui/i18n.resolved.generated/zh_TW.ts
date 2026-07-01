@@ -788,6 +788,10 @@ export const zh_TW: EnTranslations = {
       "hostile": "敵對",
       "friendly": "友方"
     },
+    "targetFrame": {
+      "unlock": "移動目標框",
+      "lock": "鎖定目標框"
+    },
     "itemTooltip": {
       "requiresLevel": "需要等級 {level}"
     },

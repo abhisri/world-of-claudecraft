@@ -788,6 +788,10 @@ export const ko_KR: EnTranslations = {
       "hostile": "적대",
       "friendly": "아군"
     },
+    "targetFrame": {
+      "unlock": "대상 프레임 이동",
+      "lock": "대상 프레임 고정"
+    },
     "itemTooltip": {
       "requiresLevel": "필요 레벨 {level}"
     },
