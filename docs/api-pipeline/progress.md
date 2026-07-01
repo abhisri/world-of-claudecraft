@@ -404,17 +404,64 @@ phase-07-error-model.md).
 ## Phase 07: RFC 9457 error model + per-surface serializers + error_codes catalog
 
 Deliverables:
-- [ ] HttpError(status,code,msg) + mapError: malformed-JSON->400, validation->422, missing/invalid token->401(+WWW-Authenticate), no-entitlement->403, over-cap->413, unique-violation->409, rate-limited->429, unknown->logged-500 with no stack/SQL/table text
-- [ ] Per-route serializer selection (problem+json / RFC 6749 / {success,data,error} / HTML-error / redirect / binary), NOT per-prefix, resolving the non-JSON /api classification
-- [ ] error_codes.ts as the single as-const source of truth, frozen (domain,reason) + param keys append-only per AIP-193, reusing existing domain.reason vocabulary
+- [x] HttpError(status,code,params?,headers?) + toAppError: malformed-JSON->400, validation->422 (ALL issues one pass), missing/invalid token->401(+WWW-Authenticate), no-entitlement->403, over-cap->413, unique-violation(23505)->409, rate-limited->429(+Retry-After), unknown->onUnexpected-500 with no stack/SQL/table text
+- [x] Per-SURFACE serializer selection (problem+json / RFC 6749 oauth / admin {success,data,error} / HTML-error / redirect 302 / binary text/plain / ok_false 405), by the route error-surface tag NOT per-prefix, resolving the non-JSON /api classification
+- [x] error_codes.ts as the single as-const source of truth, deep-frozen (domain.reason) + param keys append-only per AIP-193, reusing the existing userFacingApiError vocabulary
 
 QA:
-- [ ] Fixes applied
-- [ ] Tests added
-- [ ] Dead code removed
-- [ ] Reviews clean
+- [x] Fixes applied (2 SHOULD-FIX + the actionable NITs from privacy-security-review + qa-checklist, all applied; 1 nit declined with documented rationale)
+- [x] Tests added (91 across the 3 files: 9 error_codes + 46 errors + 36 leak; was 85, +6 in review hardening)
+- [x] Dead code removed (folded the duplicated isUnexpected() branch enumeration into a single AppError.unexpected flag)
+- [x] Reviews clean (privacy-security-review 0 BLOCKING, qa-checklist READY/0 BLOCKING)
 
 Notes:
+DONE + QA DONE (2026-06-30). Two new spine modules, zero new deps, wires NO routes (Phase 8 calls
+mapError; Phase 22 localizes the codes). `server/http/error_codes.ts` (140 lines): a deep-frozen
+`as const` ERROR_CODES catalog, `ErrorCode = keyof typeof ERROR_CODES`, 48 codes (9 structural + 39
+harvested). `server/http/errors.ts` (392 lines): `HttpError(status, code, params?, headers?)`,
+`toAppError(err): AppError` (the exhaustive status table), `normalizeSurface(EnvelopeKind|ErrorSurface)`,
+seven per-surface serializers, `mapError(err, ctx, opts?): {status, headers, contentType, body}` that
+RETURNS the shape (does not write ctx.res). Orchestrated as 1 Explore (context) + 3 parallel writers
+(A catalog, B errors, C leak test) against a locked contract, then 2 reviewers.
+
+Key facts that corrected the phase brief (from the Explore pass): (a) Ctx has NO `route`/`envelope`
+field (Phase-5-frozen), so mapError reads the surface from `opts.surface` (the route `EnvelopeKind`
+tag), defaulting to 'problem'; Phase 8's withErrors will pass it from the matched RouteDef. (b)
+schema.ts has NO ValidationError class and decode() never throws; it returns `{ok,value}|{ok:false,
+issues:Issue[]}`, so a 422 normally arrives as an HttpError Phase 8 builds, and toAppError also
+defensively recognizes a raw `{ok:false, issues}`. (c) the Discord callback is HTML not a 302, so the
+REDIRECT class maps to ZERO live routes today (the 'redirect' serializer is defined for completeness).
+(d) the card 413 is application/json + Connection:close today; the 'binary' serializer is the new
+minimal text/plain form (binary is NOT in the stay-as-today set).
+
+Seeded codes: the 9 structural (validation.failed[issues], json.malformed, auth.token_missing,
+auth.token_invalid, auth.forbidden, body.too_large[maxBytes], db.conflict, rate_limit.exceeded
+[retryAfterSeconds], internal.error) + 39 harvested domain.reason codes reconciled 1:1 to the existing
+userFacingApiError identities (auth.*, account.*, character.*, moderation.*, email.*, two_factor.*).
+The ONLY parametric harvested code is moderation.suspended_until[date]. Each harvested code carries an
+`// identity:` comment naming its English source string for the Phase 22 client matcher.
+
+Review verdict: privacy-security-review 0 BLOCKING (the 500-no-leak hard gate holds on all 7 surfaces;
+redirect Location is a fixed encoded /error?code=; no open-redirect; auth/status/header semantics
+correct). qa-checklist READY, 0 BLOCKING. Applied: (1) SHOULD-FIX serializeProblem now spreads
+`...params` FIRST so an RFC 9457 reserved member (notably `code`, the localization key) can never be
+shadowed by a future catalog param; (2) SHOULD-FIX documented the intentional breadth of the
+SyntaxError->400 arm + the Phase 8 narrowing plan (withBody rethrows HttpError(400) so stray internal
+SyntaxErrors fall to the 500+onUnexpected branch); (3) NIT unified the unexpected-500 decision into a
+single AppError.unexpected flag (deleted isUnexpected, removing the lockstep duplication); (4) NIT
+added tests (params-in-body maxBytes/retryAfterSeconds/date, the reserved-key shadow regression,
+case-insensitive header non-overwrite, non-auth-401 WWW-Authenticate skip, the unexpected-flag
+semantics). DECLINED with rationale: broadening WWW-Authenticate to all 401s (privacy nit) - it is
+applied surface-agnostically in toAppError and a Bearer challenge is only meaningful on the bearer
+API surface, not on oauth/admin 401s; a route needing another RFC 7235 challenge sets its own header.
+
+Validation: tsc clean; the 3 new files 91 tests pass; full tests/server/http 324 pass (was 318);
+S3 guard (localization_fixes.test.ts) 27 pass/3 skip (unchanged; server matcher untouched, Phase 22
+owns the REST code-parity guard); build:server exit 0; Biome clean on the 5 changed files; ci:changed
+exit 0; ASCII-clean (no em/en dash, emoji, .only, debugger). Deferrals: withErrors middleware -> P8;
+client userFacingApiError extension + apiError.* catalog + per-surface code-parity Vitest -> P22; the
+real Retry-After VALUE sourcing from the limiter -> P19; the em-dash rate-limit string fix -> P13; the
+structured logger + /metrics -> P23. Next: Phase 07 QA (phase-07-qa.md).
 
 ## Phase 08: Core middleware set + metric/log hook seam + thin rateLimit adapter
 
