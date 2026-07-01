@@ -142,6 +142,7 @@ import {
   t,
   tPlural,
 } from './ui/i18n';
+import { defaultIconPrewarmEntries, prewarmIconCache } from './ui/icon_prewarm';
 import { iconDataUrl } from './ui/icons';
 import { createMetricsSampler } from './ui/perf_metrics_sampler';
 import { PerfOverlay } from './ui/perf_overlay';
@@ -2393,6 +2394,10 @@ async function startGame(
           tokenProvider: () => api.token,
           characterIdProvider: () => online?.characterId ?? null,
         });
+        // Warm the procedural icon cache during idle time so the first
+        // bags/vendor/loot open never pays the compose burst synchronously
+        // (icon_prewarm.ts). Re-entry is a fast no-op: the cache is module-global.
+        prewarmIconCache(defaultIconPrewarmEntries());
         (window as any).__game = {
           sim: world,
           world,

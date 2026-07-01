@@ -1330,30 +1330,64 @@ export class ClientWorld implements IWorld {
       // updates the existing Map in place: no per-entity Map churn at 20 Hz
       e.threat.clear();
       if (w.thr) for (const [tid, tv] of w.thr as [number, number][]) e.threat.set(tid, tv);
-      e.auras = (w.auras ?? []).map((a: any) => ({
-        id: a.id,
-        name: a.name,
-        kind: a.kind,
-        remaining: a.rem,
-        duration: a.dur,
-        // The wire carries the aura magnitude (and imbue range / tick cadence / school) so buff
-        // and debuff hover tooltips show the real numbers online exactly as offline (aura_effect
-        // reads these). A 0/absent value decodes to 0 (value-less auras and an old server are
-        // unchanged), a missing school falls back to the physical default, and imbue range /
-        // tick cadence stay undefined when not sent. sourceId stays simplified (a separate
-        // pre-existing wire reduction, not read by the tooltip).
-        value: a.value ?? 0,
-        value2: a.value2,
-        value3: a.value3,
-        tickInterval: a.tickInterval,
-        sourceId: 0,
-        school: a.school ?? 'physical',
-        stacks: a.stacks,
-        // Mirror the charge count for a charge-limited aura (Lightning Shield); the wire sends it
-        // only when defined (server/game.ts), so an ordinary aura or an old server decodes to
-        // undefined and the badge falls back to the stacks path, exactly as before.
-        charges: a.charges,
-      }));
+      // The wire carries the aura magnitude (and imbue range / tick cadence / school) so buff
+      // and debuff hover tooltips show the real numbers online exactly as offline (aura_effect
+      // reads these). A 0/absent value decodes to 0 (value-less auras and an old server are
+      // unchanged), a missing school falls back to the physical default, and imbue range /
+      // tick cadence stay undefined when not sent. sourceId stays simplified (a separate
+      // pre-existing wire reduction, not read by the tooltip).
+      //
+      // Between snapshots the aura SET is usually unchanged (only `rem` ticks down), so when
+      // the incoming ids line up index-for-index with the existing records, update those
+      // records in place: no array + per-aura object allocation per entity at 20 Hz, and the
+      // preserved object identity matches the offline Sim (one live aura object across ticks).
+      // Any composition change (gain/fade/reorder) falls back to the fresh build below.
+      const wireAuras: any[] = w.auras ?? [];
+      let sameAuraShape = e.auras.length === wireAuras.length;
+      if (sameAuraShape) {
+        for (let i = 0; i < wireAuras.length; i++) {
+          if (e.auras[i].id !== wireAuras[i].id) {
+            sameAuraShape = false;
+            break;
+          }
+        }
+      }
+      if (sameAuraShape) {
+        for (let i = 0; i < wireAuras.length; i++) {
+          const a = wireAuras[i];
+          const rec = e.auras[i];
+          rec.name = a.name;
+          rec.kind = a.kind;
+          rec.remaining = a.rem;
+          rec.duration = a.dur;
+          rec.value = a.value ?? 0;
+          rec.value2 = a.value2;
+          rec.value3 = a.value3;
+          rec.tickInterval = a.tickInterval;
+          rec.school = a.school ?? 'physical';
+          rec.stacks = a.stacks;
+          // Mirror the charge count for a charge-limited aura (Lightning Shield); the wire
+          // sends it only when defined (server/game.ts), so an ordinary aura or an old server
+          // decodes to undefined and the badge falls back to the stacks path, exactly as before.
+          rec.charges = a.charges;
+        }
+      } else {
+        e.auras = wireAuras.map((a: any) => ({
+          id: a.id,
+          name: a.name,
+          kind: a.kind,
+          remaining: a.rem,
+          duration: a.dur,
+          value: a.value ?? 0,
+          value2: a.value2,
+          value3: a.value3,
+          tickInterval: a.tickInterval,
+          sourceId: 0,
+          school: a.school ?? 'physical',
+          stacks: a.stacks,
+          charges: a.charges,
+        }));
+      }
       e.loot = w.lootList ?? null;
       return e;
     };
