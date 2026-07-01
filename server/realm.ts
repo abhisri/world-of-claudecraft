@@ -122,9 +122,18 @@ export const REALM_ORIGINS: ReadonlySet<string> = new Set(
 // client-side. Mutating and owner-scoped routes are NOT here — they keep the
 // narrow realm/native allowlist (cookieless bearer auth) in main.ts's maybeCors.
 const PUBLIC_CORS_PREFIXES = ['/api/public/', '/avatar/'];
+// Two more public read surfaces from the map editor: the public map browse and
+// the content-addressed GLB byte GET. Matched exactly (not by prefix) so the
+// owner-scoped /api/maps and /api/assets/mine routes keep the narrow allowlist.
+const PUBLIC_CORS_EXACT_PATHS = new Set(['/api/maps/public']);
+const PUBLIC_ASSET_GLB_PATH = /^\/api\/assets\/[a-f0-9]{64}\.glb$/;
 
 export function isPublicCorsPath(path: string): boolean {
-  return PUBLIC_CORS_PREFIXES.some((prefix) => path.startsWith(prefix));
+  return (
+    PUBLIC_CORS_PREFIXES.some((prefix) => path.startsWith(prefix)) ||
+    PUBLIC_CORS_EXACT_PATHS.has(path) ||
+    PUBLIC_ASSET_GLB_PATH.test(path)
+  );
 }
 
 export function publicOriginForRealm(realm: string, directory: readonly RealmEntry[]): string {

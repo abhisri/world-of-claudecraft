@@ -225,6 +225,35 @@ export function resetCardUploadRateLimits(): void {
   cardUploadAccountAttempts.clear();
 }
 
+// GLB asset uploads (POST /api/assets) get their own per-IP AND per-account
+// bucket, mirroring the player-card upload throttle above: an upload flood can
+// never burn a player's login budget (these maps are separate from the shared
+// `attempts` map, so STRICTEST_RATE_LIMIT is unaffected), and a single account
+// spraying uploads through many IPs is still capped by the account key.
+export const ASSET_UPLOAD_MAX_PER_MINUTE = 10;
+const assetUploadIpAttempts = new Map<string, number[]>();
+const assetUploadAccountAttempts = new Map<number, number[]>();
+
+export function assetUploadRateLimited(req: http.IncomingMessage, accountId: number): boolean {
+  const ipLimited = recordSlidingWindowAttempt(
+    assetUploadIpAttempts,
+    requestIp(req),
+    ASSET_UPLOAD_MAX_PER_MINUTE,
+  );
+  const accountLimited = recordSlidingWindowAttempt(
+    assetUploadAccountAttempts,
+    accountId,
+    ASSET_UPLOAD_MAX_PER_MINUTE,
+  );
+  return ipLimited || accountLimited;
+}
+
+/** Reset asset upload throttles. Test-only: keeps scoped buckets isolated. */
+export function resetAssetUploadRateLimits(): void {
+  assetUploadIpAttempts.clear();
+  assetUploadAccountAttempts.clear();
+}
+
 export function walletLinkRateLimited(req: http.IncomingMessage, accountId: number): boolean {
   const ipLimited = recordSlidingWindowAttempt(
     walletLinkIpAttempts,
