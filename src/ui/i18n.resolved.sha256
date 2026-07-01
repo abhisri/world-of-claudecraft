@@ -8,4 +8,8 @@ dd6f64693ddd20285d758fb344d10a0294af361540370a4f02437a5d99685d35
 >>>>>>> 823de8b8 (fix(i18n): refresh resolved-table baseline hash)
 =======
 cd4fca59283f81f11361c401e549079f1bc03a700f77492532f38cc5c5cea231
+<<<<<<< HEAD
 >>>>>>> 52acc447 (fix(i18n): translate the 6 new crafted tool entity names in every locale)
+=======
+d3f0ad93c1011d73a4fb5904505c0c941cc9c72824b72fa232e755d988e3f3a9
+>>>>>>> fa430203 (feat(sim): add always/prompt-on-use configuration for tool effects (#1138))

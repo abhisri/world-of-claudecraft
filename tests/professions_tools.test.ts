@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { TOOL_EFFECTS } from '../src/sim/content/professions';
 import { ITEMS, NPCS } from '../src/sim/data';
 import {
   applyEffectBonus,
@@ -8,6 +9,7 @@ import {
   gatherToolTier,
   type HarvestOutcome,
   isGatherToolUse,
+  resolveToolEffectUse,
   slotEffect,
 } from '../src/sim/professions/tools';
 import { Rng } from '../src/sim/rng';
@@ -281,5 +283,88 @@ describe('tool effect slotting with durability and depletion (#1136)', () => {
     expect(slot.durability).toBe(0);
     const fresh = slotEffect('quickening_charm');
     expect(fresh.durability).toBeGreaterThan(0);
+  });
+
+  it('slotEffect defaults to always mode', () => {
+    expect(slotEffect('gatherers_cache').confirmMode).toBe('always');
+  });
+});
+
+describe('always/prompt-on-use confirmation gate (#1138)', () => {
+  const baseOutcome: HarvestOutcome = { quantity: 2, quality: 1, respawnTicks: 100 };
+
+  it("'always' mode is byte-for-byte identical to #1136's baseline behavior, confirmed or not", () => {
+    const runOld = (seed: number) => {
+      const rng = new Rng(seed);
+      const slot = slotEffect('gatherers_cache');
+      const history: { outcome: HarvestOutcome; depleted: boolean }[] = [];
+      for (let i = 0; i < 30; i++) {
+        const outcome = applyEffectBonus(slot, baseOutcome);
+        const depleted = depleteEffect(slot, rng);
+        history.push({ outcome, depleted });
+      }
+      return { history, finalDurability: slot.durability };
+    };
+    const runNew = (seed: number, confirmed: boolean) => {
+      const rng = new Rng(seed);
+      const slot = slotEffect('gatherers_cache', 'always');
+      const history: { outcome: HarvestOutcome; depleted: boolean }[] = [];
+      for (let i = 0; i < 30; i++) {
+        const result = resolveToolEffectUse(slot, baseOutcome, rng, confirmed);
+        expect(result.applied).toBe(true);
+        history.push({ outcome: result.outcome, depleted: result.depleted });
+      }
+      return { history, finalDurability: slot.durability };
+    };
+    const old1 = runOld(12345);
+    expect(runNew(12345, true)).toEqual(old1);
+    // confirmed is ignored entirely in 'always' mode: false behaves the same.
+    expect(runNew(12345, false)).toEqual(old1);
+  });
+
+  it('prompt mode without confirmation applies no bonus and consumes no charge', () => {
+    const rng = new Rng(1);
+    const slot = slotEffect('gatherers_cache', 'prompt');
+    const startingDurability = slot.durability;
+    const result = resolveToolEffectUse(slot, baseOutcome, rng, false);
+    expect(result.applied).toBe(false);
+    expect(result.depleted).toBe(false);
+    expect(result.outcome).toEqual(baseOutcome);
+    expect(slot.durability).toBe(startingDurability);
+  });
+
+  it('prompt mode with confirmed=true behaves like always mode for that one use', () => {
+    const seed = 42;
+    const rngPrompt = new Rng(seed);
+    const promptSlot = slotEffect('gatherers_cache', 'prompt');
+    const promptResult = resolveToolEffectUse(promptSlot, baseOutcome, rngPrompt, true);
+
+    const rngAlways = new Rng(seed);
+    const alwaysSlot = slotEffect('gatherers_cache', 'always');
+    const alwaysResult = resolveToolEffectUse(alwaysSlot, baseOutcome, rngAlways, true);
+
+    expect(promptResult.applied).toBe(true);
+    expect(promptResult).toEqual(alwaysResult);
+    expect(promptSlot.durability).toBe(alwaysSlot.durability);
+  });
+
+  it('repeated unconfirmed prompt uses never deplete the slot, across many draws', () => {
+    const rng = new Rng(7);
+    const slot = slotEffect('artisans_eye', 'prompt');
+    for (let i = 0; i < 100; i++) {
+      const result = resolveToolEffectUse(slot, baseOutcome, rng, false);
+      expect(result.applied).toBe(false);
+      expect(result.outcome).toEqual(baseOutcome);
+    }
+    expect(slot.durability).toBe(TOOL_EFFECTS.artisans_eye.startingDurability);
+  });
+
+  it('resolveToolEffectUse returns an unapplied no-op when there is no slot at all', () => {
+    const rng = new Rng(1);
+    expect(resolveToolEffectUse(undefined, baseOutcome, rng, true)).toEqual({
+      outcome: baseOutcome,
+      depleted: false,
+      applied: false,
+    });
   });
 });
