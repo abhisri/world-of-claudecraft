@@ -307,6 +307,16 @@ describe('POST /api/reports validation ladder', () => {
     expect(r.body).toEqual({ error: 'choose a report reason' });
   });
 
+  it('400s a present-but-invalid reason (allowlist miss) { error: "choose a report reason" }', async () => {
+    // cleanReportReason is an allowlist membership check (REPORT_REASONS.includes), not a
+    // trimmer: a present string that is not an allowed reason (here whitespace) returns
+    // null just like a missing reason, so the route rejects it identically. This exercises
+    // the includes() === false branch that the missing-reason ({}) case above does not reach.
+    const r = await authedPost({ reason: '   ' });
+    expect(r.status).toBe(400);
+    expect(r.body).toEqual({ error: 'choose a report reason' });
+  });
+
   it('400s a non-finite reporterCharacterId { error: "invalid report target" }', async () => {
     const r = await authedPost({ reason: 'spam' });
     expect(r.status).toBe(400);

@@ -376,6 +376,24 @@ describe('/api dispatch parity (legacy flag vs new flag)', () => {
     expect(stableStringify(newCap)).toBe(stableStringify(oldCap));
   });
 
+  it('GET /api/perf-report is identical old-vs-new and is a 404 (re-pins the masked /api/perf-report)', async () => {
+    // Companion to the site-presence 405 re-pin above. /api/perf-report is listed in three
+    // known deviations (perfReport200NotThrottle, perfReportSitePresence405OkFalse, and
+    // reportsBodyValidationRemap), so the aggregate path-scoped filter marks the WHOLE
+    // /api/perf-report path as a known deviation. A non-POST /api/perf-report is NOT the
+    // handler's dead 405 { ok: false } branch: it resolves methodNotAllowed and the new
+    // dispatcher delegates it to the legacy ladder, whose dispatch arm gates on POST, so a
+    // GET falls through to the 404 unknown-endpoint arm (db-free) exactly as the legacy path
+    // does. This dedicated assertion pins that 404 byte-identical on both flags, which the
+    // masking would otherwise hide (mirrors the site-presence 405 + reports 401 re-pins).
+    const { oldCap, newCap } = await captureBothModes(() =>
+      makeReq({ method: 'GET', url: '/api/perf-report' }),
+    );
+    expect(oldCap.status).toBe(404);
+    expect(newCap.status).toBe(oldCap.status);
+    expect(stableStringify(newCap)).toBe(stableStringify(oldCap));
+  });
+
   it('GET /api/characters with no auth is identical old-vs-new and is a 401', async () => {
     const { oldCap, newCap } = await captureBothModes(() =>
       makeReq({ method: 'GET', url: '/api/characters' }),

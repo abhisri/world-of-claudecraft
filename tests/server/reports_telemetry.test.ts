@@ -150,8 +150,11 @@ describe('POST /api/site-presence (public site-presence beacon)', () => {
   });
 
   it('is public and not web-login-gated (no middleware; 200s with no bearer)', async () => {
-    // The route carries no auth or web-login guard, so it is reachable independent
-    // of REQUIRE_WEB_LOGIN (the web-login prologue only ever gated register / login).
+    // The route carries no auth or web-login guard, so it is reachable independent of
+    // REQUIRE_WEB_LOGIN. The web-login prologue is a main.ts concern OUTSIDE the RouteDef
+    // (webLoginEnforced / isWebClientRequest, exercised in tests/web_login_guard.test.ts)
+    // and only ever gated register / login, so this no-middleware assertion is the correct
+    // route-level proof that the prologue cannot start gating site-presence under the router.
     expect(routeFor('POST', '/api/site-presence').middleware).toBeUndefined();
     const r = await runRoute('POST', '/api/site-presence', {
       body: { visitorId: 'b'.repeat(16), page: 'home' },
