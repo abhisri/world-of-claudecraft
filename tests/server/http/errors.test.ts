@@ -4,7 +4,7 @@
 // normalizeSurface (exercised through mapError), the onUnexpected sink, and 500 leak-freedom.
 
 import { describe, expect, it, vi } from 'vitest';
-import { HttpError, mapError, toAppError } from '../../../server/http/errors';
+import { escapeHtml, HttpError, mapError, toAppError } from '../../../server/http/errors';
 import { fakeCtx } from '../helpers/fake_ctx';
 
 // The locked param value type cannot name an Issue[], so callers cast at the boundary.
@@ -372,5 +372,47 @@ describe('the unexpected flag is the single source of truth for the onUnexpected
     const spy = vi.fn();
     mapError(new HttpError(500, 'internal.error' as never), fakeCtx(), { onUnexpected: spy });
     expect(spy).not.toHaveBeenCalled();
+  });
+});
+
+describe('escapeHtml escapes every HTML-significant character', () => {
+  it('replaces &, <, >, double-quote, and single-quote with their entities', () => {
+    expect(escapeHtml(`<script>alert("x&y")</script>'`)).toBe(
+      '&lt;script&gt;alert(&quot;x&amp;y&quot;)&lt;/script&gt;&#39;',
+    );
+  });
+
+  it('escapes the ampersand first so a literal entity is not mis-decoded', () => {
+    expect(escapeHtml('&lt;')).toBe('&amp;lt;');
+  });
+
+  it('leaves already-safe text untouched', () => {
+    expect(escapeHtml('Forbidden')).toBe('Forbidden');
+  });
+});
+
+describe('serializer detail fallback and implied-header propagation', () => {
+  it('falls back to the HTTP status reason for a code with no DETAILS entry', () => {
+    // moderation.suspended is a harvested code absent from the DETAILS map, so the problem
+    // body detail must be the 403 reason phrase, pinning the detailFor `??` fallback branch.
+    const res = mapError(new HttpError(403, 'moderation.suspended' as never), fakeCtx(), {
+      surface: 'problem',
+    });
+    expect(JSON.parse(res.body).detail).toBe('Forbidden');
+  });
+
+  it('propagates WWW-Authenticate onto the serialized 401 response headers', () => {
+    const res = mapError(new HttpError(401, 'auth.token_missing' as never), fakeCtx(), {
+      surface: 'problem',
+    });
+    expect(res.status).toBe(401);
+    expect(res.headers['WWW-Authenticate']).toBe('Bearer');
+  });
+
+  it('propagates the invalid_token WWW-Authenticate variant through mapError', () => {
+    const res = mapError(new HttpError(401, 'auth.token_invalid' as never), fakeCtx(), {
+      surface: 'oauth',
+    });
+    expect(res.headers['WWW-Authenticate']).toBe('Bearer error="invalid_token"');
   });
 });
