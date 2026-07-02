@@ -3406,8 +3406,14 @@ export class GameServer {
     let id: number | undefined;
     if ('targetId' in ev && typeof ev.targetId === 'number') id = ev.targetId;
     else if ('entityId' in ev && typeof ev.entityId === 'number') id = ev.entityId;
-    if (id === undefined) return null; // chat/log etc: broadcast
-    return this.sim.entities.get(id)?.pos ?? null;
+    if (id !== undefined) return this.sim.entities.get(id)?.pos ?? null;
+    // world-coordinate events (spellfxAt: a ground-targeted impact) anchor at
+    // their own point so they interest-scope like entity-anchored fx instead
+    // of fanning out server-wide (dist2d ignores y)
+    if ('x' in ev && 'z' in ev && typeof ev.x === 'number' && typeof ev.z === 'number') {
+      return { x: ev.x, y: 0, z: ev.z };
+    }
+    return null; // chat/log etc: broadcast
   }
 
   private isSpectateLocalChat(session: ClientSession, text: string): boolean {

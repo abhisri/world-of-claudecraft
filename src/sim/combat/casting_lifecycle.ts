@@ -129,6 +129,9 @@ export function updateCasting(ctx: SimContext, p: Entity, meta: PlayerMeta): voi
     if (p.castRemaining <= CAST_COMPLETE_EPS) {
       p.castingAbility = null;
       p.channeling = false;
+      // completed ground-targeted channels drop their aim like every other
+      // resolve path: castAim is always cleared on resolve
+      p.castAim = null;
       ctx.emit({ type: 'castStop', entityId: p.id, success: true });
     }
     return;
