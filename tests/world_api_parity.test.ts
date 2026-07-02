@@ -33,10 +33,15 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { ClientWorld } from '../src/net/online';
 import { Sim } from '../src/sim/sim';
-import type { PlayerClass } from '../src/sim/types';
+import { OVERHEAD_EMOTE_IDS, type PlayerClass } from '../src/sim/types';
 // The 20 facet interfaces the W1 split produced (src/world_api/<facet>.ts). Imported
 // type-only to pin each facet's runtime member array to its interface key-set below.
 import type { IWorldChat } from '../src/world_api/chat';
+// The overhead-emote runtime surface the chat facet derives locally (see the
+// exhaustiveness guard at the bottom of this file): the seam imports sim/ for TYPES
+// only, so world_api/chat.ts rebuilds its id set from OVERHEAD_EMOTES instead of
+// value-importing OVERHEAD_EMOTE_IDS. This guard pins the two lists in lockstep.
+import { isOverheadEmoteId, OVERHEAD_EMOTES } from '../src/world_api/chat';
 import type { IWorldCombat } from '../src/world_api/combat';
 import type { IWorldCosmetics } from '../src/world_api/cosmetics';
 import type { IWorldDelves } from '../src/world_api/delves';
@@ -1001,5 +1006,30 @@ describe('W1: aggregate IWorld member set equals the disjoint union of the 20 fa
     const sortedUnion = [...union].sort();
     const pinned = IWORLD_MEMBERS.map((m) => m.name).sort();
     expect(sortedUnion).toEqual(pinned);
+  });
+});
+
+describe('world_api/chat overhead-emote id set stays exhaustive vs sim/types', () => {
+  // world_api/chat.ts derives its runtime id set from its own OVERHEAD_EMOTES list
+  // rather than value-importing sim/types' OVERHEAD_EMOTE_IDS (the IWorld seam pulls
+  // sim/ for TYPES only). `satisfies` proves every listed id is a VALID OverheadEmoteId
+  // but NOT that the list is COMPLETE, so absent this guard a new emote added to
+  // OVERHEAD_EMOTE_IDS but not to OVERHEAD_EMOTES would silently fall out of
+  // isOverheadEmoteId. Pin the two as equal sets so any drift reddens here.
+  const localIds = OVERHEAD_EMOTES.map((e) => e.id);
+
+  it('the local OVERHEAD_EMOTES id set equals sim/types OVERHEAD_EMOTE_IDS', () => {
+    expect([...localIds].sort()).toEqual([...OVERHEAD_EMOTE_IDS].sort());
+  });
+
+  it('OVERHEAD_EMOTES carries no duplicate id', () => {
+    expect(new Set(localIds).size).toBe(localIds.length);
+  });
+
+  it('isOverheadEmoteId accepts every source id and rejects non-ids', () => {
+    for (const id of OVERHEAD_EMOTE_IDS) expect(isOverheadEmoteId(id)).toBe(true);
+    expect(isOverheadEmoteId('not-an-emote')).toBe(false);
+    expect(isOverheadEmoteId(42)).toBe(false);
+    expect(isOverheadEmoteId(undefined)).toBe(false);
   });
 });
