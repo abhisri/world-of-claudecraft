@@ -56,6 +56,7 @@ export const DEVIATION_ID = {
   dailyRewardsBodyValidationRemap: 'daily-rewards-body-validation-remap',
   dailyRewardsOpsBodyValidationRemap: 'daily-rewards-ops-body-validation-remap',
   rateLimit429Draft11Headers: 'rate-limit-429-draft11-headers',
+  securityHeadersAllSurfaces: 'security-headers-all-surfaces',
 } as const;
 export type DeviationId = (typeof DEVIATION_ID)[keyof typeof DEVIATION_ID];
 
@@ -1211,6 +1212,49 @@ export const KNOWN_DEVIATIONS: readonly KnownDeviation[] = [
       'character routes), or newLimiterReportsCreate (/api/reports), so this entry adds no ' +
       'new masking and needs no new captureBothModes re-pin. Documented here and pinned ' +
       'directly on the thrown HttpError in tests/server/http/rate_limit.test.ts.',
+  },
+  {
+    id: DEVIATION_ID.securityHeadersAllSurfaces,
+    // Cross-cutting: the wrapper covers EVERY response on EVERY prefix (static,
+    // /c/ SSR, /p/ card, /avatar, sitemap, and all four API dispatchers). These
+    // four rows are one representative per dispatcher; the inventory has no way
+    // to name the non-API prefix routes (they are deliberately uninventoried,
+    // see the surface_inventory.ts header).
+    routes: ['/api/login', '/admin/api/login', '/oauth/token', '/internal/restart-countdown'],
+    currentBehavior:
+      'Before Phase 21 no response carries any security header: no ' +
+      'X-Content-Type-Options, Referrer-Policy, Permissions-Policy, ' +
+      'Cross-Origin-Opener-Policy, Cross-Origin-Resource-Policy, ' +
+      'Strict-Transport-Security, or X-Frame-Options anywhere in the tree, and ' +
+      'the /oauth/token and /oauth/device_authorization JSON responses (which ' +
+      'carry bearer secrets) set no Cache-Control.',
+    intendedBehavior:
+      'Phase 21 sets, via the TOP-LEVEL withSecurityHeaders wrapper in ' +
+      'routeHttpRequest (ahead of the prefix ladder, shared by the legacy ladder ' +
+      'AND the new dispatcher so a dispatch flag rollback cannot drop a header): ' +
+      'X-Content-Type-Options: nosniff, Referrer-Policy: ' +
+      'strict-origin-when-cross-origin, a Permissions-Policy deny list that ' +
+      'excludes the features the game client uses (fullscreen, gamepad) plus ' +
+      'autoplay/screen-wake-lock, Cross-Origin-Opener-Policy: same-origin, and ' +
+      'Cross-Origin-Resource-Policy: same-origin on every response; ' +
+      'Strict-Transport-Security only under NODE_ENV=production; and ' +
+      'X-Frame-Options: DENY plus Cache-Control: no-store on the /oauth/ prefix. ' +
+      'Cross-Origin-Embedder-Policy is deliberately NOT set (it would break ' +
+      'cross-origin GLB/HDRI loads) and no Content-Security-Policy header is ' +
+      'emitted (a full CSP is a separate report-only effort).',
+    introducedInPhase: 21,
+    reason:
+      'The hardening headers are the Phase 21 deliverable. Old-vs-new parity is ' +
+      'unaffected by construction (both dispatch arms flow through the one ' +
+      'top-level wrapper, so captureBothModes sees identical header sets and no ' +
+      'parity masking is needed); the visible contract change is against the ' +
+      'pre-21 goldens, so every fixture under tests/server/fixtures/ was ' +
+      're-pinned with the new header set in the same change. The log-only ' +
+      'Content-Type 415 gate and cross-site Origin check added in the same phase ' +
+      'change no observable behavior (they pass every request through and only ' +
+      'record mismatches) until their named enforce flags flip after the native ' +
+      'traffic audit.',
+    goldenFixtures: ['tests/server/fixtures/main/site_presence_get_405.json'],
   },
 ];
 

@@ -50,6 +50,11 @@ function fakeRes() {
     getHeader(k: string) {
       return this.headers[k.toLowerCase()];
     },
+    // The Phase 21 withSecurityHeaders wrapper defensively strips Server /
+    // X-Powered-By on every routeHttpRequest call, so the double must accept it.
+    removeHeader(k: string) {
+      delete this.headers[k.toLowerCase()];
+    },
     writeHead(code: number, h?: Record<string, string>) {
       this.writeHeadCodes.push(code);
       this.statusCode = code;

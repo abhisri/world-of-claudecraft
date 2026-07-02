@@ -24,6 +24,7 @@ import type * as http from 'node:http';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AccountModerationStatus } from '../../server/db';
 import { compose } from '../../server/http/compose';
+import { withSecurityHeaders } from '../../server/http/middleware/security_headers';
 import { withErrors } from '../../server/http/middleware/with_errors';
 import type { Method, Middleware } from '../../server/http/types';
 import { handleCardUpload } from '../../server/player_card';
@@ -140,6 +141,10 @@ async function runCard(opts: { headers?: Record<string, string>; url?: string } 
     url: opts.url ?? '/api/card',
     headers: opts.headers,
   });
+  // Mirror the real serving path: routeHttpRequest applies the Phase 21 top-level
+  // security headers BEFORE any dispatch, so the byte-identical golden (re-pinned
+  // through routeHttpRequest) carries them on every response, this 413 included.
+  withSecurityHeaders(ctx.req, ctx.res);
   const stack: Middleware[] = [
     withErrors({ surface: 'problem+json' }),
     ...(route.middleware ?? []),
@@ -171,14 +176,31 @@ afterEach(() => {
 });
 
 // ---------------------------------------------------------------------------
+// Phase 21 wiring pin: the REAL card RouteDef declares its binary request body.
+// ---------------------------------------------------------------------------
+
+describe('content-type gate exemption wiring', () => {
+  it("declares meta.requestBody 'binary' on the real POST /api/card RouteDef", () => {
+    // The Phase 21 Content-Type 415 gate exempts by MATCHED-RouteDef metadata,
+    // so this literal is the ONLY thing standing between an enforce-mode flip
+    // (API_CONTENT_TYPE_ENFORCE=1) and a 415 on every image/png card upload.
+    // Dropping it would break no other test until that flip; this pin makes the
+    // regression fail now.
+    const route = routeFor('POST', '/api/card');
+    expect(route.meta?.requestBody).toBe('binary');
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Functional order proof, step 1: the content-length guard is the FIRST middleware.
 // ---------------------------------------------------------------------------
 
 describe('pre-auth content-length 413 (byte-identical to the golden)', () => {
   it('413s an oversize content-length with NO auth, matching card_too_large_413.json byte-for-byte', async () => {
     const r = await runCard({ headers: { 'content-length': OVERSIZE_CONTENT_LENGTH } });
-    // Byte-for-byte: status 413, body {"error":"image too large"}, and exactly the three
-    // headers { connection: 'close', content-length: 27, content-type: 'application/json' }.
+    // Byte-for-byte: status 413, body {"error":"image too large"}, and exactly the route's
+    // three headers { connection: 'close', content-length: 27, content-type: application/json }
+    // plus the Phase 21 top-level security-header set the golden now carries.
     const golden = fixture('card_too_large_413');
     expect({ status: r.status, body: r.raw, headers: r.headers }).toEqual(golden);
     // The terminal (the handler) is never reached: the guard short-circuits with no next().

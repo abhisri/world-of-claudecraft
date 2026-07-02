@@ -123,6 +123,7 @@ import {
   createApiDispatcher,
   selectApiEntry,
 } from './http/dispatch';
+import { withSecurityHeaders } from './http/middleware/security_headers';
 import { apiRegistry } from './http/registry';
 import { isUniqueViolation, json, readBody } from './http_util';
 import { configureInternalRuntime, handleInternalApi } from './internal';
@@ -1740,6 +1741,9 @@ function applyCorsAndPreflight(
 // its own unmatched paths to the same legacy handler, so behavior is byte-identical
 // until Phase 25.
 export function routeHttpRequest(req: http.IncomingMessage, res: http.ServerResponse): void {
+  // Top-level so both dispatch arms and every prefix (and the OPTIONS-204
+  // short-circuit) carry the headers; a flag rollback cannot drop them.
+  withSecurityHeaders(req, res);
   const url = req.url ?? '';
   const path = url.split('?')[0];
   const isApi = url.startsWith('/api/') || url.startsWith('/admin/api/');
