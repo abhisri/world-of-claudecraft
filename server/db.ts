@@ -9,6 +9,7 @@ import { DISCORD_SCHEMA } from './discord_db';
 import { GITHUB_SCHEMA } from './github_db';
 import { isUniqueViolation } from './http_util';
 import { OAUTH_SCHEMA } from './oauth_db';
+import { RATELIMIT_PRUNE_SQL, RATELIMIT_SCHEMA } from './ratelimit_db';
 import { REALM } from './realm';
 import { chooseArchiveName } from './reclaim_name';
 import { SOCIAL_SCHEMA } from './social_db';
@@ -537,6 +538,27 @@ export async function ensureSchema(): Promise<void> {
     // FK-references accounts(id), so it runs after SCHEMA. Applied unconditionally
     // (idempotent), like the Discord tables.
     await client.query(GITHUB_SCHEMA);
+    // Tier-2 global rate-limit backstop table (pg-backed fixed-window counters,
+    // one row per (policy, key)) for the multi-realm deployment. Applied
+    // unconditionally (idempotent), like the Discord/GitHub tables. See
+    // server/ratelimit_db.ts.
+    await client.query(RATELIMIT_SCHEMA);
+    // Fail-fast at boot if rate_limits did not materialize: the tier-2 limiter
+    // depends on it, and a defined-but-unwired schema shipped once before
+    // (DISCORD_SCHEMA, PR #1044). to_regclass sees the uncommitted DDL on this
+    // same client inside the transaction. Scoped to this one table on purpose
+    // (the other schemas stay test-guarded).
+    const rateLimitsReg = await client.query("SELECT to_regclass('public.rate_limits') AS reg");
+    if (!rateLimitsReg.rows[0]?.reg) {
+      throw new Error(
+        'rate_limits table missing after DDL: RATELIMIT_SCHEMA (server/ratelimit_db.ts) was not applied',
+      );
+    }
+    // Reclaim expired tier-2 windows at boot (rows older than two windows are
+    // dead by construction; see RATELIMIT_PRUNE_SQL). A concurrent serving realm
+    // is unaffected: only expired windows match, and a racing UPSERT on a pruned
+    // key simply re-inserts a fresh row.
+    await client.query(RATELIMIT_PRUNE_SQL);
     // Seed the chat-filter word lists + config on first boot only (idempotent).
     // Runs under the same advisory lock so concurrent realm boots don't race.
     await seedChatFilterDefaults(client);
