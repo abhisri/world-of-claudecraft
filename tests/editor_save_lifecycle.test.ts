@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EditGeneration } from '../src/editor/save_lifecycle_core';
+import { EditGeneration, shouldAutosave } from '../src/editor/save_lifecycle_core';
 
 describe('EditGeneration (save race guard)', () => {
   it('a clean save clears dirty and the draft', () => {
@@ -41,5 +41,29 @@ describe('EditGeneration (save race guard)', () => {
     gen.bump();
     expect(b).toBeGreaterThan(a);
     expect(gen.current).toBeGreaterThan(b);
+  });
+});
+
+describe('shouldAutosave', () => {
+  const base = { enabled: true, dirty: true, saving: false, editing: false };
+
+  it('fires only when enabled, dirty, idle, and no gesture is mid-flight', () => {
+    expect(shouldAutosave(base)).toBe(true);
+  });
+
+  it('never fires while disabled (the default)', () => {
+    expect(shouldAutosave({ ...base, enabled: false })).toBe(false);
+  });
+
+  it('never fires with nothing to save', () => {
+    expect(shouldAutosave({ ...base, dirty: false })).toBe(false);
+  });
+
+  it('never races an in-flight save', () => {
+    expect(shouldAutosave({ ...base, saving: true })).toBe(false);
+  });
+
+  it('never serializes mid-gesture (stroke or placement drag)', () => {
+    expect(shouldAutosave({ ...base, editing: true })).toBe(false);
   });
 });

@@ -1825,6 +1825,8 @@ export const zh_CN: EnTranslations = {
       "view2dTitle": "在俯视示意图上编辑",
       "undoCount": "撤销：{count}",
       "undoCountTitle": "可撤销 {count} 步（Ctrl+Z 撤销，Ctrl+Y 重做）",
+      "autosave": "自动保存",
+      "autosaveTitle": "有未保存的更改时自动保存地图。保存失败时会自动关闭。",
       "undo": "Undo",
       "undoTitle": "撤销上一次更改（Ctrl+Z）",
       "redo": "Redo",
@@ -2072,7 +2074,8 @@ export const zh_CN: EnTranslations = {
       "autosaveFailed": "自动保存失败（浏览器存储已满或被禁用）。请导出地图以保留备份。",
       "terrainCapReached": "已达到地形编辑上限（{max}）。多余的雕刻印记未被添加。",
       "placementCapReached": "已达到放置上限（{max}）。多余的资源未被添加。",
-      "blockerCapReached": "已达到空气墙上限（{max}）。新墙未被添加。"
+      "blockerCapReached": "已达到空气墙上限（{max}）。新墙未被添加。",
+      "autosaveOff": "自动保存已关闭：{reason} 请手动保存后再重新开启。"
     },
     "confirm": {
       "ok": "确定",

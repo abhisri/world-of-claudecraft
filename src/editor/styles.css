@@ -276,6 +276,31 @@ input[type="range"] {
   color: var(--gold);
 }
 
+/* Autosave toggle: a status LED, gray when off, green when on (the gold block
+   the generic .active gives every other button would read as "pressed", not
+   "running"). */
+.ed-actions .ed-autosave::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: 1px;
+  background: #55606d;
+}
+
+.ed-actions .ed-autosave.active {
+  background: #16241a;
+  border-color: #3d6b41;
+  color: var(--color-text-success);
+  font-weight: 600;
+}
+
+.ed-actions .ed-autosave.active::before {
+  background: var(--color-text-success);
+}
+
 .ed-view-toggle {
   display: inline-flex;
   border: 1px solid var(--ed-line);

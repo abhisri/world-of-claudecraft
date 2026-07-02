@@ -5123,6 +5123,9 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'editor.topbar.view2dTitle': 'Редактировать на схематичной карте сверху',
   'editor.topbar.undoCount': 'Отмена: {count}',
   'editor.topbar.undoCountTitle': 'Можно отменить {count} шагов (Ctrl+Z отмена, Ctrl+Y повтор)',
+  'editor.topbar.autosave': 'Автосохранение',
+  'editor.topbar.autosaveTitle':
+    'Автоматически сохранять карту, пока есть несохраненные изменения. Отключается само при ошибке сохранения.',
   'editor.topbar.undoTitle': 'Отменить последнее изменение (Ctrl+Z)',
   'editor.topbar.redoTitle': 'Вернуть отмененное изменение (Ctrl+Y)',
   'editor.topbar.offline': 'Офлайн',
@@ -5336,6 +5339,7 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'editor.status.deleted': 'Карта удалена.',
   'editor.status.assetPlacedFirst': 'Сначала выберите модель в браузере.',
   'editor.status.loading3d': 'Загрузка мира...',
+  'editor.status.autosaveOff': 'Автосохранение отключено: {reason} Сохраните вручную, затем включите снова.',
   'editor.status.playtestLaunch': 'Запуск теста...',
   'editor.status.playtestFailed': 'Не удалось запустить тест (хранилище заблокировано).',
   'editor.status.draftSaved': 'Черновик сохранен автоматически.',

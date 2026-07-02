@@ -63,7 +63,7 @@ import {
 } from './placement_transform_core';
 import { DEFAULT_PLAYTEST_SEED, launchPlaytest } from './playtest';
 import { type Bounds, scatterHills, scatterPlacements } from './procgen';
-import { EditGeneration } from './save_lifecycle_core';
+import { EditGeneration, shouldAutosave } from './save_lifecycle_core';
 import { editorErrorKey } from './server_errors_core';
 import { appendSpan, removeSpan } from './span_core';
 import {
@@ -84,6 +84,7 @@ import { Camera, pickHandle, type ScreenPoint, type Vec2, type Viewport } from '
 
 const KINDS: EntityKind[] = ['hub', 'graveyard', 'lake', 'poi', 'camp', 'npc', 'object'];
 const AUTOSAVE_MS = 30_000;
+const AUTOSAVE_PREF_KEY = 'woc_editor_autosave';
 const WATER_DEBOUNCE_MS = 100;
 
 interface RegionBox {
@@ -172,6 +173,13 @@ export class EditorApp {
   private readonly undo = new UndoStack();
   private dirty = false;
   private saving = false;
+  // Autosave (full save, not the draft backup): user-toggled, default OFF,
+  // persisted; disabled again by setAutosave(false) on any autosave error so a
+  // failing server can never loop toasts or hide that saving is broken.
+  private autosaveOn = false;
+  // True while a pointer gesture (stroke / placement drag) is mutating the
+  // document; autosave must never serialize mid-gesture.
+  private pointerEditActive = false;
   // Edits made while a save is in flight bump this; finishSave only clears the
   // dirty flag / draft when the generation it snapshotted is still current.
   private readonly editGen = new EditGeneration();
@@ -262,6 +270,7 @@ export class EditorApp {
       onOpen: () => this.drawer.open(),
       onSave: () => void this.save(),
       onSaveAs: () => void this.saveAs(),
+      onAutosaveToggle: () => this.setAutosave(!this.autosaveOn),
       onFork: () => void this.forkCurrent(),
       onImport: () => void this.importFile(),
       onExport: () => this.exportFile(),
@@ -272,6 +281,13 @@ export class EditorApp {
       onRedo: () => this.doRedo(),
       onHelp: () => this.tutorial.openHelp(),
     });
+    // Autosave preference: default off; a blocked storage read stays off.
+    try {
+      this.autosaveOn = localStorage.getItem(AUTOSAVE_PREF_KEY) === '1';
+    } catch {
+      this.autosaveOn = false;
+    }
+    this.topbar.setAutosave(this.autosaveOn);
 
     const main = el('div', 'ed-main');
     this.root.appendChild(main);
@@ -541,6 +557,7 @@ export class EditorApp {
   // ---- shared edit routing (3D hooks + 2D pointer both land here) -----------------
 
   private editStart(w: Vec2): void {
+    this.pointerEditActive = true;
     switch (this.tool) {
       case 'raise':
       case 'lower':
@@ -622,6 +639,7 @@ export class EditorApp {
   }
 
   private editEnd(): void {
+    this.pointerEditActive = false;
     switch (this.tool) {
       case 'raise':
       case 'lower':
@@ -1700,7 +1718,13 @@ export class EditorApp {
 
   // ---- save / open / import / export -----------------------------------------------
 
-  private async save(): Promise<void> {
+  /**
+   * Save locally + to the server. `auto` = fired by the autosave tick: it must
+   * stay silent on success (no toast per tick) and must NEVER open a dialog;
+   * any failure (conflict included) turns autosave off with one explanatory
+   * toast, so a broken save path cannot loop.
+   */
+  private async save(auto = false): Promise<void> {
     if (this.saving) return;
     this.map.meta.updatedAt = now();
     // Snapshot the edit generation the payload covers: edits made while the
@@ -1708,13 +1732,20 @@ export class EditorApp {
     const generation = this.editGen.current;
     const okLocal = this.io.saveLocal(this.map);
     // A blocked local save warns but never blocks the server save.
-    if (!okLocal) this.toasts.error(t('editor.status.saveFailedLocal'));
+    if (!okLocal) {
+      if (auto) {
+        this.autosaveErrored(t('editor.status.saveFailedLocal'));
+        return;
+      }
+      this.toasts.error(t('editor.status.saveFailedLocal'));
+    }
     if (!signedIn()) {
       if (okLocal) {
         this.finishSave(
           t('editor.status.savedLocalOnly', { name: this.map.meta.name }),
           null,
           generation,
+          auto,
         );
       }
       return;
@@ -1727,9 +1758,19 @@ export class EditorApp {
         t('editor.status.savedServer', { name: this.map.meta.name, version: link.version }),
         link.version,
         generation,
+        auto,
       );
     } catch (err) {
-      if (err instanceof EditorApiError && err.code === 'version_conflict') {
+      if (auto) {
+        this.autosaveErrored(
+          t(
+            err instanceof EditorApiError
+              ? editorErrorKey(err.code, err.status)
+              : editorErrorKey(null),
+          ),
+        );
+        this.topbar.setSaveState(t('editor.topbar.savedLocal'));
+      } else if (err instanceof EditorApiError && err.code === 'version_conflict') {
         await this.resolveConflict(err.serverVersion ?? 0);
       } else {
         const key =
@@ -1745,7 +1786,18 @@ export class EditorApp {
     }
   }
 
-  private finishSave(message: string, serverVersion: number | null, generation: number): void {
+  /** An automatic save failed: turn the feature off and say why, once. */
+  private autosaveErrored(reason: string): void {
+    this.setAutosave(false);
+    this.toasts.error(t('editor.status.autosaveOff', { reason }));
+  }
+
+  private finishSave(
+    message: string,
+    serverVersion: number | null,
+    generation: number,
+    quiet = false,
+  ): void {
     const fin = this.editGen.finalize(generation);
     if (fin.clearDirty) {
       this.dirty = false;
@@ -1759,7 +1811,8 @@ export class EditorApp {
     this.topbar.setForkEnabled(this.io.linkFor(this.map.meta.id) !== null);
     // Only clear THIS map's draft, and only when no mid-save edits landed.
     if (fin.clearDraft) this.io.draftClear(this.map.meta.id);
-    this.toasts.success(message);
+    // Autosaves succeed silently: one toast per 30s tick would be noise.
+    if (!quiet) this.toasts.success(message);
   }
 
   private async resolveConflict(serverVersion: number): Promise<void> {
@@ -1937,18 +1990,39 @@ export class EditorApp {
     input.click();
   }
 
+  private setAutosave(on: boolean): void {
+    this.autosaveOn = on;
+    this.topbar.setAutosave(on);
+    try {
+      localStorage.setItem(AUTOSAVE_PREF_KEY, on ? '1' : '0');
+    } catch {
+      // Blocked storage: the toggle still works for this session.
+    }
+  }
+
   private autosave(): void {
     if (!this.dirty) return;
     const ok = this.io.draftSave(this.map);
     if (ok) {
       this.autosaveWarned = false;
-      return;
-    }
-    // Surface a silent autosave failure once per failure episode: the user
-    // believes a draft backup exists when it does not.
-    if (!this.autosaveWarned) {
+    } else if (!this.autosaveWarned) {
+      // Surface a silent autosave failure once per failure episode: the user
+      // believes a draft backup exists when it does not.
       this.autosaveWarned = true;
       this.toasts.error(t('editor.status.autosaveFailed'));
+    }
+    // The opt-in FULL autosave rides the same tick, strictly gated: never over
+    // an in-flight save and never mid-gesture (it would serialize a half-drawn
+    // stroke's undo state).
+    if (
+      shouldAutosave({
+        enabled: this.autosaveOn,
+        dirty: this.dirty,
+        saving: this.saving,
+        editing: this.pointerEditActive || this.placementDragging,
+      })
+    ) {
+      void this.save(true);
     }
   }
 

@@ -35,3 +35,25 @@ export class EditGeneration {
     return { clearDirty: unchanged, clearDraft: unchanged };
   }
 }
+
+// ---- autosave gate ----------------------------------------------------------
+
+export interface AutosaveState {
+  /** The user's topbar toggle (default off; disabled again on any save error). */
+  enabled: boolean;
+  /** The document has unsaved edits. */
+  dirty: boolean;
+  /** A save is already in flight. */
+  saving: boolean;
+  /** A pointer edit (stroke / placement drag) is mid-gesture. */
+  editing: boolean;
+}
+
+/**
+ * Whether the periodic tick may fire an automatic save. Deliberately strict:
+ * autosave must never race a manual save, serialize mid-gesture, or run while
+ * there is nothing to save.
+ */
+export function shouldAutosave(s: AutosaveState): boolean {
+  return s.enabled && s.dirty && !s.saving && !s.editing;
+}

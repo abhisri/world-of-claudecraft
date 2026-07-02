@@ -12,6 +12,7 @@ export interface TopbarDeps {
   onOpen(): void;
   onSave(): void;
   onSaveAs(): void;
+  onAutosaveToggle(): void;
   onFork(): void;
   onImport(): void;
   onExport(): void;
@@ -33,6 +34,7 @@ export class Topbar {
   private readonly forkBtn: HTMLButtonElement;
   private readonly uploadBtn: HTMLButtonElement;
   private readonly saveBtn: HTMLButtonElement;
+  private readonly autosaveBtn: HTMLButtonElement;
   private readonly undoBtn: HTMLButtonElement;
   private readonly redoBtn: HTMLButtonElement;
   private readonly viewButtons = new Map<'3d' | '2d', HTMLButtonElement>();
@@ -128,6 +130,16 @@ export class Topbar {
       t('editor.topbar.saveTitle'),
     );
     actions.appendChild(this.saveBtn);
+    // Autosave toggle: default off; the app flips it and pushes state back via
+    // setAutosave (it also turns itself off after a save error).
+    this.autosaveBtn = button(
+      t('editor.topbar.autosave'),
+      deps.onAutosaveToggle,
+      'ed-autosave',
+      t('editor.topbar.autosaveTitle'),
+    );
+    this.autosaveBtn.setAttribute('aria-pressed', 'false');
+    actions.appendChild(this.autosaveBtn);
     actions.appendChild(
       button(t('editor.topbar.saveAs'), deps.onSaveAs, undefined, t('editor.topbar.saveAsTitle')),
     );
@@ -198,6 +210,11 @@ export class Topbar {
 
   setSaveState(text: string): void {
     this.saveState.textContent = text;
+  }
+
+  setAutosave(on: boolean): void {
+    this.autosaveBtn.classList.toggle('active', on);
+    this.autosaveBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
 
   setSaving(saving: boolean): void {

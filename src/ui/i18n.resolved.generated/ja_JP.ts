@@ -1825,6 +1825,8 @@ export const ja_JP: EnTranslations = {
       "view2dTitle": "俯瞰の記号マップで編集",
       "undoCount": "元に戻す：{count}",
       "undoCountTitle": "{count} 手戻せます（Ctrl+Z で元に戻す、Ctrl+Y でやり直し）",
+      "autosave": "自動保存",
+      "autosaveTitle": "未保存の変更がある間、マップを自動保存します。保存に失敗すると自動的にオフになります。",
       "undo": "Undo",
       "undoTitle": "直前の変更を元に戻す（Ctrl+Z）",
       "redo": "Redo",
@@ -2072,7 +2074,8 @@ export const ja_JP: EnTranslations = {
       "autosaveFailed": "自動保存に失敗しました（ブラウザのストレージが満杯かブロックされています）。バックアップとしてマップをエクスポートしてください。",
       "terrainCapReached": "地形編集の上限に達しました（{max}）。超過分のスカルプトは追加されませんでした。",
       "placementCapReached": "配置数の上限に達しました（{max}）。超過分のアセットは追加されませんでした。",
-      "blockerCapReached": "ブロッカー壁の上限（{max}）に達しました。新しい壁は追加されませんでした。"
+      "blockerCapReached": "ブロッカー壁の上限（{max}）に達しました。新しい壁は追加されませんでした。",
+      "autosaveOff": "自動保存をオフにしました：{reason} 手動で保存してから、再度オンにしてください。"
     },
     "confirm": {
       "ok": "OK",

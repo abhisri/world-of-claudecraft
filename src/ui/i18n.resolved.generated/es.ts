@@ -1825,6 +1825,8 @@ export const es: EnTranslations = {
       "view2dTitle": "Edit on the symbolic overhead map",
       "undoCount": "Undo: {count}",
       "undoCountTitle": "{count} undoable steps (Ctrl+Z to undo, Ctrl+Y to redo)",
+      "autosave": "Autosave",
+      "autosaveTitle": "Automatically save the map while there are unsaved changes. Turns itself off if a save fails.",
       "undo": "Undo",
       "undoTitle": "Undo the last change (Ctrl+Z)",
       "redo": "Redo",
@@ -2072,7 +2074,8 @@ export const es: EnTranslations = {
       "autosaveFailed": "Autosave failed (browser storage is full or blocked). Export the map to keep a backup.",
       "terrainCapReached": "Terrain edit limit reached ({max}). Extra sculpt stamps were not added.",
       "placementCapReached": "Placement limit reached ({max}). Extra assets were not added.",
-      "blockerCapReached": "Blocker wall limit reached ({max}). The new wall was not added."
+      "blockerCapReached": "Blocker wall limit reached ({max}). The new wall was not added.",
+      "autosaveOff": "Autosave turned off: {reason} Save manually, then turn it back on."
     },
     "confirm": {
       "ok": "OK",

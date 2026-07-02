@@ -5011,6 +5011,9 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'editor.topbar.view2dTitle': '俯瞰の記号マップで編集',
   'editor.topbar.undoCount': '元に戻す：{count}',
   'editor.topbar.undoCountTitle': '{count} 手戻せます（Ctrl+Z で元に戻す、Ctrl+Y でやり直し）',
+  'editor.topbar.autosave': '自動保存',
+  'editor.topbar.autosaveTitle':
+    '未保存の変更がある間、マップを自動保存します。保存に失敗すると自動的にオフになります。',
   'editor.topbar.undoTitle': '直前の変更を元に戻す（Ctrl+Z）',
   'editor.topbar.redoTitle': '元に戻した変更をやり直す（Ctrl+Y）',
   'editor.topbar.offline': 'オフライン',
@@ -5224,6 +5227,8 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'editor.status.deleted': 'マップを削除しました。',
   'editor.status.assetPlacedFirst': '先にブラウザーでアセットを選んでください。',
   'editor.status.loading3d': 'ワールドを読み込み中...',
+  'editor.status.autosaveOff':
+    '自動保存をオフにしました：{reason} 手動で保存してから、再度オンにしてください。',
   'editor.status.playtestLaunch': 'プレイテストを起動中...',
   'editor.status.playtestFailed':
     'プレイテストを開始できませんでした（ストレージがブロックされています）。',

@@ -1825,6 +1825,8 @@ export const zh_TW: EnTranslations = {
       "view2dTitle": "在俯視示意圖上編輯",
       "undoCount": "復原：{count}",
       "undoCountTitle": "可復原 {count} 步（Ctrl+Z 復原，Ctrl+Y 重做）",
+      "autosave": "自動儲存",
+      "autosaveTitle": "有未儲存的變更時自動儲存地圖。儲存失敗時會自動關閉。",
       "undo": "Undo",
       "undoTitle": "復原上一次變更（Ctrl+Z）",
       "redo": "Redo",
@@ -2072,7 +2074,8 @@ export const zh_TW: EnTranslations = {
       "autosaveFailed": "自動儲存失敗（瀏覽器儲存空間已滿或被封鎖）。請匯出地圖以保留備份。",
       "terrainCapReached": "已達到地形編輯上限（{max}）。多餘的雕刻印記未被加入。",
       "placementCapReached": "已達到放置上限（{max}）。多餘的資源未被加入。",
-      "blockerCapReached": "已達到空氣牆上限（{max}）。新牆未被加入。"
+      "blockerCapReached": "已達到空氣牆上限（{max}）。新牆未被加入。",
+      "autosaveOff": "自動儲存已關閉：{reason} 請手動儲存後再重新開啟。"
     },
     "confirm": {
       "ok": "確定",

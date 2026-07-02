@@ -5019,6 +5019,9 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'editor.topbar.view2dTitle': '기호로 표시된 조감도에서 편집',
   'editor.topbar.undoCount': '실행 취소: {count}',
   'editor.topbar.undoCountTitle': '{count}단계 되돌릴 수 있음 (Ctrl+Z 실행 취소, Ctrl+Y 다시 실행)',
+  'editor.topbar.autosave': '자동 저장',
+  'editor.topbar.autosaveTitle':
+    '저장하지 않은 변경이 있는 동안 맵을 자동으로 저장합니다. 저장에 실패하면 자동으로 꺼집니다.',
   'editor.topbar.undoTitle': '마지막 변경 실행 취소 (Ctrl+Z)',
   'editor.topbar.redoTitle': '실행 취소한 변경 다시 실행 (Ctrl+Y)',
   'editor.topbar.offline': '오프라인',
@@ -5225,6 +5228,7 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'editor.status.deleted': '맵이 삭제되었습니다.',
   'editor.status.assetPlacedFirst': '먼저 브라우저에서 에셋을 선택하세요.',
   'editor.status.loading3d': '월드 불러오는 중...',
+  'editor.status.autosaveOff': '자동 저장이 꺼졌습니다: {reason} 수동으로 저장한 뒤 다시 켜세요.',
   'editor.status.playtestLaunch': '플레이테스트 시작 중...',
   'editor.status.playtestFailed': '플레이테스트를 시작할 수 없습니다 (저장소가 차단됨).',
   'editor.status.draftSaved': '초안이 자동 저장되었습니다.',

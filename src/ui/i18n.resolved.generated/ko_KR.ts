@@ -1825,6 +1825,8 @@ export const ko_KR: EnTranslations = {
       "view2dTitle": "기호로 표시된 조감도에서 편집",
       "undoCount": "실행 취소: {count}",
       "undoCountTitle": "{count}단계 되돌릴 수 있음 (Ctrl+Z 실행 취소, Ctrl+Y 다시 실행)",
+      "autosave": "자동 저장",
+      "autosaveTitle": "저장하지 않은 변경이 있는 동안 맵을 자동으로 저장합니다. 저장에 실패하면 자동으로 꺼집니다.",
       "undo": "Undo",
       "undoTitle": "마지막 변경 실행 취소 (Ctrl+Z)",
       "redo": "Redo",
@@ -2072,7 +2074,8 @@ export const ko_KR: EnTranslations = {
       "autosaveFailed": "자동 저장에 실패했습니다(브라우저 저장 공간이 가득 찼거나 차단됨). 백업을 위해 맵을 내보내세요.",
       "terrainCapReached": "지형 편집 한도에 도달했습니다({max}). 초과된 스컬프트 스탬프는 추가되지 않았습니다.",
       "placementCapReached": "배치 한도에 도달했습니다({max}). 초과된 에셋은 추가되지 않았습니다.",
-      "blockerCapReached": "차단벽 한도({max})에 도달했습니다. 새 벽이 추가되지 않았습니다."
+      "blockerCapReached": "차단벽 한도({max})에 도달했습니다. 새 벽이 추가되지 않았습니다.",
+      "autosaveOff": "자동 저장이 꺼졌습니다: {reason} 수동으로 저장한 뒤 다시 켜세요."
     },
     "confirm": {
       "ok": "확인",
