@@ -94,7 +94,11 @@ each agent ONLY the Explore summary, not the planning docs.
   - EXEMPT every declared non-JSON route via the Phase 3 content-type classification: the binary card
     upload, the HTML email/unsubscribe page, the Discord redirect callback, and any beacon endpoint
     (site-presence, perf-report) whose audited Content-Type is not application/json. Read the
-    classification from the matched RouteDef metadata; do NOT hardcode a path list.
+    classification from the matched RouteDef metadata; do NOT hardcode a path list. DELEGATE-SERVED
+    CARVE-OUT: a route with no RouteDef (any 18b remainder plus the deliberately off-table shapes:
+    the oauth GET HTML pages, HEAD-to-GET, the daily-rewards prefix-arm oddities) never matches, so
+    the 415 and Origin gates cannot see it; enforcement flips only cover the registered surface.
+    Land Phase 18b BEFORE flipping enforce mode, or record the uncovered delegate set with the flag.
   - Flipping the flag to ENFORCE returns 415 (Unsupported Media Type) with a STABLE CODE on a wrong
     Content-Type for a JSON route. Append the code to error_codes.ts (frozen, append-only) and add its
     English apiError.* catalog entry in the SAME change. Tests cover: log-only passes through and emits
@@ -147,7 +151,7 @@ OUT OF SCOPE (do not touch; each is a later phase or an explicit deferral)
 - CORS itself: the top-level CORS + OPTIONS-204 wrapper already exists (Phase 9). Do NOT re-implement
   CORS; only add the security-headers wrapper alongside it and mirror its placement.
 - Rate-limiter rework (Phase 19), market realm-scope fix (Phase 20), flag-default flip (Phase 25), and
-  every per-domain handler migration (Phases 10 to 18).
+  every per-domain handler migration (Phases 10 to 18 plus the 18b late arrivals).
 
 STEP 3 - VALIDATION + MULTI-AGENT REVIEW
 Validation (server-only code change that adds player-facing codes):

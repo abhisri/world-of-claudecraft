@@ -6,12 +6,17 @@ and observability, not concurrency scaling (the single-threaded 20 Hz world loop
 real per-realm ceiling and is a separate, out-of-scope workstream), not a gameplay change,
 and not a WebSocket wire change. No heavy web framework, zero new runtime dependencies (the
 one weighed exception is `prom-client`, and only when the `/metrics` exporter lands in Phase
-23). Delivery is a stacked PR chain: 25 implementation phases, each paired with a QA phase,
-each its own green and bisectable PR that keeps the suite green at every commit and stays
-under a roughly 40%-context-per-phase bound. The new pipeline sits in front of the old
-`handleApi` ladder via a per-path catch-all delegate so partially migrated states stay
-correct, and the old ladder is retained until Phase 25 names the metric exit criteria for
-its deletion in a later release.
+23). Delivery is a stacked PR chain: 26 implementation phases (25 planned plus the 18b
+late-arrivals insert), each paired with a QA phase, each its own green and bisectable PR
+that keeps the suite green at every commit and stays under a roughly 40%-context-per-phase
+bound. The new pipeline sits in front of the old ladders via per-path catch-all delegates
+(four flag-gated dispatchers as of Phase 18: /api, /admin/api, /oauth, and /internal, whose
+delegate is the composite that tries the daily-rewards ops sub-dispatcher first) so
+partially migrated states stay correct, and the old ladders are retained until Phase 25
+names the metric exit criteria for their deletion in a later release. Route families that
+arrive via release merges AFTER their would-have-been migration wave (github at v0.18.0;
+desktop-login and daily-rewards at v0.19.0) are owned by Phase 18b, which must land before
+Phase 25's deletion (and ideally before Phase 19's limiter rework).
 
 ## Start here (cross-phase docs)
 
@@ -55,6 +60,7 @@ so in their own file when the session runs hot.
 | 16 | [Migrate Discord family (server/discord.ts), net-new since the SPEC](phase-16-discord.md) | [QA](phase-16-qa.md) | medium |
 | 17 | [Migrate Admin API onto the shared seam (server/admin.ts)](phase-17-admin.md) | [QA](phase-17-qa.md) | high |
 | 18 | [Migrate OAuth JSON + Internal onto the shared seam (oauth.ts + internal.ts)](phase-18-oauth-internal.md) | [QA](phase-18-qa.md) | medium |
+| 18b | [Migrate the late-arrival families: github, desktop-login, daily-rewards (net-new via release merges)](phase-18b-late-arrivals.md) | [QA](phase-18b-qa.md) | medium |
 | 19 | [Two-tier rate limiter + ratelimit_db (cross-cutting, deep)](phase-19-rate-limiter.md) | [QA](phase-19-qa.md) | medium |
 | 20 | [World Market realm-scope fix + partitioned backfill (own PR, migration-safety)](phase-20-market-realm-fix.md) | [QA](phase-20-qa.md) | medium |
 | 21 | [Security headers top-level wrapper + Content-Type/Origin enforcement](phase-21-security-headers.md) | [QA](phase-21-qa.md) | low |

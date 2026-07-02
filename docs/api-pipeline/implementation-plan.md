@@ -22,7 +22,7 @@ only when the `/metrics` exporter lands in Phase 23).
 4. [Code hygiene](#code-hygiene)
 5. [Agent scaling](#agent-scaling)
 6. [Phase ordering principles](#phase-ordering-principles)
-7. [The 25 phases (summary table)](#the-25-phases-summary-table)
+7. [The 26 phases (summary table)](#the-26-phases-summary-table)
 
 ## Delivery model
 
@@ -41,7 +41,10 @@ only when the `/metrics` exporter lands in Phase 23).
 - **Accepted tradeoff (chosen knowingly):** a flag flip reverts the hardening too (new
   limiters, BOLA loaders, the bearer-gap close, security headers, the em-dash fix all live
   on the new path). The old ladder is deleted in the NEXT release once Phase 25's metric
-  exit criteria are clean.
+  exit criteria are clean. PRECONDITION for that deletion: the Phase 18b late-arrival
+  families (github, desktop-login, daily-rewards, brought in by release merges after their
+  would-have-been waves) must be migrated or recorded as permanent delegates first;
+  otherwise the old-path metric never goes quiet and the deletion drops live routes.
 - **CORS, the OPTIONS-204 short-circuit, and the security-headers wrapper stay as top-level
   `createServer` wrappers** covering BOTH the old and new paths, so a routing rollback can
   never drop CORS, preflight, or security headers. They are not inside the per-route onion
@@ -185,7 +188,8 @@ Opus 4.8 under-spawns by default, so fan out deliberately, then review for cover
   onion, validator, error model, middleware, registry, Phases 4 to 9) land before any route
   moves.
 - **One domain per migration phase, behind the flag, with parity tests.** Each migration
-  phase (Phases 10 to 18) ports a single domain onto RouteDefs, diffs every route against
+  phase (Phases 10 to 18, plus the 18b late-arrivals insert for the families release merges
+  added after the fact) ports a single domain onto RouteDefs, diffs every route against
   the Phase 3 golden fixtures, and keeps the new path behind the dispatch flag with the
   old ladder reachable via the catch-all delegate. Lowest-risk reads migrate first
   (Phase 10), the heaviest sub-router (admin, Phase 17) later.
@@ -202,7 +206,7 @@ Opus 4.8 under-spawns by default, so fan out deliberately, then review for cover
   retained behind the flag), names the old-ladder deletion exit criteria for a next-release
   follow-up, and its QA phase offers packet teardown once the chain has merged.
 
-## The 25 phases (summary table)
+## The 26 phases (summary table)
 
 Each implementation phase `phase-NN-<slug>.md` is paired with its QA phase `phase-NN-qa.md`.
 The `ctx` column is the synthesis context-risk estimate; every phase must stay under roughly
@@ -228,6 +232,7 @@ The `ctx` column is the synthesis context-risk estimate; every phase must stay u
 | 16 [(QA)](phase-16-qa.md) | [Migrate Discord family (net-new)](phase-16-discord.md) | medium | Port Discord, wire schema | OAuth parity, ip-block+turnstile, redirect not json |
 | 17 [(QA)](phase-17-qa.md) | [Migrate Admin API](phase-17-admin.md) | high | Port admin sub-router | Envelope frozen, page/limit, enum routes validated |
 | 18 [(QA)](phase-18-qa.md) | [Migrate OAuth JSON + Internal](phase-18-oauth-internal.md) | medium | Port OAuth JSON + internal | RFC 6749 envelope, secret gate, GET pages served |
+| 18b [(QA)](phase-18b-qa.md) | [Migrate late arrivals: github, desktop-login, daily-rewards](phase-18b-late-arrivals.md) | medium | Port the release-merge families | 12 routes parity-clean, fail-closed ops gate, fused budget kept |
 | 19 [(QA)](phase-19-qa.md) | [Two-tier rate limiter + ratelimit_db](phase-19-rate-limiter.md) | medium | Two-tier limiter, ratelimit_db | {remaining,resetSeconds}, tier order, DDL re-run |
 | 20 [(QA)](phase-20-qa.md) | [World Market realm-scope fix + backfill](phase-20-market-realm-fix.md) | medium | Realm-scope market, partitioned backfill | Both writers realm-keyed, idempotent partition |
 | 21 [(QA)](phase-21-qa.md) | [Security headers wrapper + enforcement](phase-21-security-headers.md) | low | Top-level header wrapper, 415 | Headers everywhere, no COEP, 415 log-only |

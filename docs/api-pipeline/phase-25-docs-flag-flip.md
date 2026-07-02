@@ -97,16 +97,25 @@ give each ONLY the Explore summary (not the raw files):
 - Agent C (the flag-default flip + exit criteria, owns the dispatch-default test):
   - Flip the dispatch-flag DEFAULT (the config field from Phase 24) so the new pipeline is the
     production default; keep the old ladders reachable when the flag is set back to the old value.
-    Do NOT change the per-path catch-all delegate semantics; only the default changes.
+    Do NOT change the per-path catch-all delegate semantics; only the default changes. The flip
+    covers ALL FOUR flag-gated entries (`setApiDispatchMode` recomputes apiEntry, adminApiEntry,
+    oauthApiEntry, and internalApiEntry, whose delegate is the composite that tries
+    handleDailyRewardInternalApi first), not just the /api handleApi entry.
   - A test (tests/server/http/dispatch_default.test.ts) asserting BOTH: default config routes a
-    migrated path through the new pipeline, and the old value still reaches the old `handleApi`.
+    migrated path through the new pipeline on each of the four entries, and the old value still
+    reaches each legacy delegate (handleApi, handleAdminApi, handleOAuth, the internal composite).
   - Designate one early migration commit (by hash and the domain module it added, e.g. the first
     authenticated endpoint) as the canonical "add one authenticated endpoint" example, and
     reference it from Agent A's recipe.
   - Write the old-ladder deletion EXIT CRITERIA into docs/api-pipeline/state.md (and link from
     server/http/CLAUDE.md): a concrete metric gate (for example zero requests on the old-path
     metric label for N days and zero unexplained 404 delta), a threshold, and a named owner,
-    tracked as a next-release follow-up PR. The old ladder is RETAINED this phase.
+    tracked as a next-release follow-up PR. The old ladder is RETAINED this phase. The criteria
+    MUST carve out the deliberately delegate-served shapes, which legitimately keep the old-path
+    label warm under flag 'new' (the oauthInternalOffTable405 set, HEAD-to-GET delegation, and
+    any 18b off-table remainder); a naive zero-requests gate is unreachable otherwise. Also name
+    the expiry of the Phase 18/18b dual-edit MAINTENANCE RULE (ladder branch + RouteDef twin) as
+    part of the deletion follow-up.
 There is no documented a/b split for this phase. It is low context; do not split.
 
 INVARIANTS THIS PHASE MUST KEEP
@@ -131,8 +140,17 @@ INVARIANTS THIS PHASE MUST KEEP
 OUT OF SCOPE (do not do these here)
 - DELETING the old ladder. This phase only NAMES the exit criteria; the deletion is a separate
   next-release PR.
-- Migrating, adding, or changing any endpoint (all domains migrated in Phases 10 to 18). The
-  scaffold emits a STUB only.
+- Migrating, adding, or changing any endpoint (all domains migrated in Phases 10 to 18 plus the
+  Phase 18b late arrivals: github, desktop-login, daily-rewards). The scaffold emits a STUB only.
+  PRECONDITION: Phase 18b MUST have landed before this phase runs; if any route family in server
+  source still lacks either a RouteDef or a recorded permanent-delegate decision, STOP (see the
+  stopping rules). The `oauthInternalOffTable405` deviation directs THIS phase to decide the off-table
+  shapes it names at the deletion boundary (the GET /oauth/authorize + /oauth/device HTML pages:
+  migrate onto `meta.envelope 'html'` RouteDefs or retain a delegate; the restart-countdown
+  wrong-method 404-vs-405 shape), and phase-18b-late-arrivals.md hands THIS phase the analogous
+  post-18b decisions it instructs 18b to record: the daily-rewards prefix-arm oddities (the
+  ladder's auth-then-404 on wrong method / unknown subpath / the no-slash '/api/daily-rewardsX'
+  shape) plus the ops family's family-wide pre-path 401.
 - Changing the dispatch or coexistence model itself (locked in Phase 9), the metrics or logging
   (Phase 23), the config or timeouts or perf gate (Phase 24).
 - The deferred API conventions A (versioning), D (ETag), F (Deprecation/Sunset), G (OpenAPI), and
@@ -204,8 +222,10 @@ STEP 5 - ACCEPTANCE CRITERIA (verifiable)
       code APPENDED to error_codes.ts, an English `apiError.*` entry, and a paired FakeDb-based
       test, auto-attaching `requireOwned*` on `:id` routes; the emitted output type-checks and its
       emitted test passes (golden test green).
-- [ ] the dispatch-flag DEFAULT now routes a migrated path through the new pipeline; the old value
-      still reaches the old `handleApi`; a test asserts BOTH.
+- [ ] the dispatch-flag DEFAULT now routes a migrated path through the new pipeline on each of
+      the FOUR flag-gated entries (api, admin, oauth, internal); the old value still reaches each
+      legacy delegate (`handleApi`, `handleAdminApi`, `handleOAuth`, the internal composite); a
+      test asserts both directions for all four.
 - [ ] the per-path catch-all delegate behavior for un-migrated paths is unchanged (Phase 9 parity
       harness and registry-completeness test stay green).
 - [ ] docs name the old-ladder deletion exit criteria (concrete metric gate, threshold, owner) as
@@ -233,6 +253,11 @@ old-ladder deletion follow-up PR and its exit criteria); a one-line handoff to "
 STOPPING RULES
 - STOP if flipping the flag default would alter the per-path catch-all delegate semantics for
   un-migrated paths (only the default may change).
+- STOP if any route family present in server source (sweep ALL of server/ for dispatched path
+  literals, not just the four dispatcher files: the daily-rewards family hid behind a startsWith
+  prefix in server/daily_rewards.ts once) lacks BOTH a RouteDef and a recorded permanent-delegate
+  decision: that family would silently break at the next-release ladder deletion. Phase 18b is the
+  precondition that clears today's known set (github, desktop-login, daily-rewards).
 - STOP if a migrated route's parity fixture diffs after the default flip without a documented
   knownDeviation.
 - STOP if any change would alter the WS wire protocol.

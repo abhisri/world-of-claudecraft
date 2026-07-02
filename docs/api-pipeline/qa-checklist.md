@@ -43,6 +43,14 @@ hardening only, never gameplay resolution.
 One sim runs the offline browser world, the online server, and the RL env. This packet is
 server-only, so all three hosts must be byte-for-byte unaffected in sim behavior.
 
+- [ ] ROUTE-FAMILY COVERAGE (the release-merge drift gate): every route family present in server
+      SOURCE (sweep ALL of server/ for dispatched path literals, incl. prefix-delegated
+      sub-dispatcher modules like server/daily_rewards.ts, not just the four dispatcher files) is
+      either migrated onto RouteDefs or recorded as DELIBERATELY delegate-served, AND has
+      `SURFACE_INVENTORY` rows + (for /api) `API_CONTENT_TYPE` entries. A release merge that adds
+      routes must file rows at the merge and assign an owning phase (the v0.19.0 daily-rewards
+      merge filed neither: caught only by the 2026-07-02 drift audit, owned by Phase 18b).
+
 - [ ] The sim is untouched: `git diff --name-only main..HEAD` lists no file under `src/sim/`.
 - [ ] `tests/architecture.test.ts` is green (sim purity and determinism guard: no DOM/Three imports,
       no imports from render/ui/game/net, no `Math.random`/`Date.now`/`performance.now` in `src/sim/`).
@@ -98,7 +106,11 @@ The server stays language-agnostic and emits stable CODES re-localized at the cl
 
 - [ ] Every server-emitted error code resolves in EVERY locale: the per-surface code-parity Vitest
       asserts each code maps to a client `apiError.*` entry present in all locales (append-only
-      frozen), and it covers the ~30 to 45 EXISTING REST strings plus the new Discord/guild codes.
+      frozen), and it covers the ~30 to 45 EXISTING REST strings plus the new Discord/guild codes,
+      the desktop-login arm (`errors.api.desktopCodeInvalid`, live in `userFacingApiError` since
+      the v0.19.0 merge), and whatever Phase 22 adjudicated for the 18b prose families (the
+      daily-rewards bodies are provably discarded client-side; 'this token is read-only' needs a
+      code). Prose-only 18b routes BLOCK the prose-fallback removal until the ladder deletion.
 - [ ] `userFacingApiError` (`src/main.ts`) looks up emitted codes DIRECTLY in the client catalog
       (not reverse-matching English prose) and keeps its dual REST + WS-disconnect-reason role;
       parametric cases (suspended-until {date}, the {seconds} rate-limit families) carry `{code, params}`
@@ -147,6 +159,11 @@ Two-tier: an in-memory IP gate first, a pg-backed global-keyed backstop second.
 - [ ] Handler-level checks are preserved: `authThrottled` (per-username, failed-only, clears on
       success, 15m/10-fail) and `rateLimitedPerfReport` (returns 200 BY DESIGN) keep their behavior
       as documented knownDeviations.
+- [ ] The FUSED register/login/desktop-login per-IP budget is still ONE bucket with
+      limiter-before-auth ordering (a per-policy split is an explicit maintainer decision, never a
+      rework side effect), and the daily-rewards spin no-limiter decision (Phase 18b parity; the
+      one-spin-per-day 409 plus the wallet-eligibility 403 are the only guards, no throttle) is
+      either preserved or consciously revisited in Phase 19.
 
 ## 8. Security headers
 
@@ -197,9 +214,10 @@ No realtime regression. The pipeline runs on the same event loop as the 20 Hz wo
       and `/livez` + `/readyz` respond (`/readyz` reports NOT-ready during the SIGTERM drain).
 - [ ] The active dispatch path is logged at boot, and an alert fires if the OLD path is active in
       prod (the new path is the default per Phase 25's flag-default flip).
-- [ ] The old ladder is still reachable when the flag is flipped back: a flag-off boot serves the
-      migrated routes through the old `handleApi` ladder, with CORS/preflight and security headers
-      still present (because both are top-level wrappers).
+- [ ] The old ladders are still reachable when the flag is flipped back: a flag-off boot serves the
+      migrated routes through all four legacy delegates (`handleApi`, `handleAdminApi`,
+      `handleOAuth`, and the /internal composite that tries the daily-rewards ops sub-dispatcher
+      first), with CORS/preflight and security headers still present (both are top-level wrappers).
 
 ---
 

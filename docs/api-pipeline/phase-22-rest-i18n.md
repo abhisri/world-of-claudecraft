@@ -3,8 +3,9 @@
 Phase 22 closes the last localization gap the migration opened: the live REST error matcher
 `userFacingApiError` in the game CLIENT (`src/main.ts`) still reverse-matches English prose and is
 currently UNGUARDED (the S3 guard `tests/localization_fixes.test.ts` scans only the WS path via
-`server/game.ts`). This phase reworks the matcher to look up the stable machine CODES that the
-prior migration phases now emit in `application/problem+json`, ports the parametric cases
+`server/game.ts`). This phase INTRODUCES the stable machine CODES on the migrated surfaces (the
+waves shipped PARITY-FIRST PROSE per the ratified canonical rule, so this phase owns coded
+emission, not just consumption) and reworks the matcher to look them up, porting the parametric cases
 (account-suspended `{date}`, the `{seconds}` rate-limit families) to `{code, params}` formatted
 client-side, adds an `apiError.*` English catalog domain, and adds a per-surface code-parity Vitest
 that asserts every server-emitted code resolves to a client entry in every locale (append-only
@@ -12,9 +13,9 @@ frozen), covering the ~30 to 45 EXISTING REST strings plus the new Discord and g
 
 It is sized to stay under 40% context because the surface is narrow: one client function
 (`userFacingApiError`), one declarative catalog domain (data-as-code, exempt from the
-logic-monolith concern), and one focused test sweep. It CONSUMES the codes the migration phases
-already emit (it designs no new server codes), so the work is wiring and verification, not new
-behavior. There is no documented a/b split for this phase.
+logic-monolith concern), one bounded server-side coded-emission pass over the already-migrated
+handlers (flag-gated, parity-pinned), and one focused test sweep. There is no documented a/b
+split for this phase.
 
 The implementation Starter Prompt below is self-contained. A fresh Claude Code session can paste
 and run it without reading this table of contents.
@@ -40,7 +41,8 @@ STEP 0 - PRE-FLIGHT
   tests/api_error_code_parity.test.ts, tests/main_api_error.test.ts, docs/api-pipeline/), STOP and
   ask before touching anything.
 - Confirm the prior phases shipped on the base branch: the error model + error_codes.ts catalog
-  (Phase 7), the migration phases that EMIT codes in problem+json (Phases 10 to 18), and the
+  (Phase 7), the migration phases' parity-first PROSE surfaces (Phases 10 to 18b; they do NOT
+  emit codes yet, that premise shifted and this phase owns coded emission), and the
   account-portal em-dash fix that ALREADY landed in Phase 13 (the U+2014 rate-limit strings are
   already commas and userFacingApiError already resolves them). If server/http/error_codes.ts does
   not exist, STOP: this phase consumes it.
@@ -60,10 +62,23 @@ src/main.ts is ~6.4k lines and churns):
   calls. Return EVERY current branch: the parametric `^This account is suspended until (.+)\.$`
   case, the `startsWith('too many attempts')` and `startsWith('too many failed attempts')` cases,
   every exact-prose case and the t() key it maps to (errors.api.*, hudChrome.account.*), the
-  WS-disconnect-reason branches (loading.connectionLost / loading.connectionRejected, the tServer
-  moderation.* kicks), and the diagnostic branches that intentionally stay English. Also return how
-  a caught REST error currently carries (or does NOT carry) the problem+json `code` field on the
-  thrown object: name the field the migration phases put the code in.
+  desktop-login arm (errors.api.desktopCodeInvalid, added with the v0.19.0 desktop feature and fed
+  by loginError(userFacingApiError(err)) in both desktop flows), the WS-disconnect-reason branches
+  (loading.connectionLost / loading.connectionRejected, the tServer moderation.* kicks), and the
+  diagnostic branches that intentionally stay English. Also return how a caught REST error
+  currently carries (or does NOT carry) the problem+json `code` field on the thrown object: name
+  the field the migration phases put the code in. KNOWN ADJUDICATIONS THIS PHASE OWNS: (a) the
+  Phase 18b families are parity-first PROSE (no codes), so they are prose-fallback dependents that
+  BLOCK the fallback removal until the ladder deletion; (b) the daily-rewards prose family
+  ('daily rewards are locked for this wallet', 'daily spin already claimed', the family 404
+  'unknown endpoint') deliberately has NO matcher arm because the client provably discards the
+  bodies (src/net/online.ts dailyRewards()/spinDailyReward() + the window's generic
+  hudChrome.dailyRewards.error card): record the out-of-scope adjudication with those citations,
+  or add the arms if a surface starts rendering the prose; (c) 'this token is read-only'
+  (bearerActiveAccount's 403 on every full-scope route) has NO matcher arm anywhere: unreachable
+  from the game client today, but it deserves a code + apiError.* entry in this phase's sweep; (d)
+  the suspended-until `{date}` param is the server's raw toUTCString English date: the {code,
+  params} port should format it client-side via formatDateTime.
 - server/http/error_codes.ts: the as-const (domain, reason) catalog and its param keys, plus its
   append-only test, so the parity guard can enumerate EVERY server-emitted code from the single
   source of truth.
@@ -180,9 +195,13 @@ OUT OF SCOPE (do not do these here)
 - The em-dash rate-limit string fix and the account-portal prose mapping: ALREADY shipped in Phase
   13. Here, only ensure the already-comma'd rate-limit strings still resolve under code-lookup with
   prose fallback; do NOT re-edit those strings.
-- Adding NEW server endpoints or NEW error_codes.ts codes: the migration phases (10 to 18) own code
-  emission. If a server code lacks a client entry, ADD the apiError.* English entry; do NOT change
-  the server to make it resolve.
+- Adding NEW server endpoints: the migration phases (10 to 18b) own the route surface. NOTE the
+  premise shift ratified during the migration waves: the phases shipped PARITY-FIRST PROSE, not
+  coded emission, so THIS phase owns introducing the coded emission on the migrated surfaces plus
+  the apiError.* entries (the canonical rule in state.md wins over this file's older
+  "consumes-only" framing). The Phase 18b late arrivals (github, desktop-login, daily-rewards) are
+  prose-only until this phase codes them or records their adjudication (see the known-adjudications
+  list in STEP 1).
 - The WS-only server_i18n / sim_i18n matchers: those localize WS sim/server text and are guarded by
   S3 already. Preserve userFacingApiError's existing WS-disconnect branches, but do NOT rework
   server_i18n or sim_i18n here.

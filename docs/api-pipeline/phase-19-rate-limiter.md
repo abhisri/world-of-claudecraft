@@ -48,7 +48,15 @@ numbers. Tell the Explore agent to summarize, not dump, these files:
 - Every CALL SITE of `rateLimited` / `recordSlidingWindowAttempt` across server/ (grep both symbols):
   the Phase 8 thin adapter, the auth handler (authThrottled), the perf-report handler, the wallet
   handlers, and any other direct caller. Return the full list with the boolean-consuming expression
-  at each site.
+  at each site. KNOWN SHARED-BUDGET CONSTRAINT: the main.ts fused `rateLimited(req)` condition is
+  ONE deliberate per-IP budget covering FOUR paths (register, login, desktop-login/create,
+  desktop-login/exchange; the in-code comment records why: exchange is unauthenticated
+  defense-in-depth, create bounds the code-store growth). The two-tier rework must PRESERVE that
+  shared keying (or split it as an explicit maintainer decision); a naive per-policy
+  `auth.login`/`auth.register` isolation would silently change all four budgets. Also note POST
+  /api/daily-rewards/spin carries NO limiter by the Phase 18b parity decision (the one-spin-per-day
+  409 and the wallet-eligibility 403 are the only guards, neither a throttle); adding one is a
+  maintainer fork for THIS phase, not a silent add.
 - server/db.ts: how `ensureSchema` assembles its statement list and runs each under
   `pg_advisory_xact_lock`, plus the `DISCORD_SCHEMA` wiring precedent (PR #1044/#1075) so this phase
   wires RATELIMIT_SCHEMA the same proven way.
@@ -137,7 +145,10 @@ OUT OF SCOPE (do not let these creep in)
 - The validated loadConfig and the no-magic-values sweep (Phase 24).
 - The World Market realm-scope fix and backfill (Phase 20).
 - Adding new limiter SURFACES beyond discord/character/reports (already decided in their migration
-  phases); this phase only promotes them into the two-tier resolver.
+  phases); this phase only promotes them into the two-tier resolver. The Phase 18b families arrive
+  with their legacy limiter facts fixed (github: githubRateLimited; desktop-login: the shared
+  register/login per-IP budget; daily-rewards: none): promoting or changing those is the explicit
+  fork above, not scope creep.
 - Any change to a route table, the dispatcher, the WS wire protocol, or WS snapshots.
 
 STEP 3 - VALIDATION + MULTI-AGENT REVIEW
