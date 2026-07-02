@@ -1196,6 +1196,12 @@ async function startGame(
   // Gamepad: a separate remappable button profile drives the same dispatch the
   // keyboard/touch paths use. Edge-button actions route through this dispatcher;
   // movement/camera/jump are applied to Input directly by the manager.
+  const inputMeter = new InputActivityMeter();
+  installInputActivityTracking(inputMeter, window, () => performance.now());
+  const APM_BEAT_MS = 10_000;
+  window.setInterval(() => {
+    world.reportTelemetry('apm', { count: inputMeter.drainCount(), periodMs: APM_BEAT_MS });
+  }, APM_BEAT_MS);
   const gamepadBindings = new GamepadBindings();
   const canUseGameKeysNow = () => !hud.isModalOpen() && chatInput.style.display !== 'block';
   function dispatchGamepadAction(id: string): void {
@@ -1264,6 +1270,7 @@ async function startGame(
   }
   const gamepad = new GamepadManager(input, gamepadBindings, {
     onAction: (id) => dispatchGamepadAction(id),
+    onInputEdge: () => inputMeter.record(performance.now()),
     isPointerMode: () => hud.isWindowOpen(),
     getPlayerHealth: () => (world.player.dead ? 0 : world.player.hp),
   });
@@ -2156,14 +2163,6 @@ async function startGame(
   // online-only and null offline; Chromium-only sources (heap, connection) report
   // null elsewhere so their rows simply hide. The pure assembly lives in
   // perf_metrics_sampler.ts; here we inject the live sources.
-  // Input-activity meter for the overlay APM readout
-  const inputMeter = new InputActivityMeter();
-  installInputActivityTracking(inputMeter, window, () => performance.now());
-  const APM_BEAT_MS = 10_000;
-  window.setInterval(() => {
-    world.reportTelemetry('apm', { count: inputMeter.drainCount(), periodMs: APM_BEAT_MS });
-  }, APM_BEAT_MS);
-
   const sampleMetrics = createMetricsSampler({
     renderer,
     meter: perfMeter,
