@@ -38,6 +38,7 @@
     "pretest": "npm run i18n:build && npm run i18n:admin && npm run i18n:scan && npm run wiki:content",
     "test": "vitest run",
     "test:browser": "vitest run --config vitest.browser.config.ts",
+    "gate": "node scripts/gate.mjs",
     "security:scan": "node scripts/malware_scan.mjs",
     "security:gate": "node scripts/malware_scan.mjs --gate",
     "i18n:build": "node scripts/i18n_build.mjs",
