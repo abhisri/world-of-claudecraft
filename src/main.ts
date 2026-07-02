@@ -53,6 +53,7 @@ import {
   Settings,
 } from './game/settings';
 import { sfx } from './game/sfx';
+import { type SpawnCinematic, spawnCinematicFor, spawnCinematicPose } from './game/spawn_cinematic';
 import { resolveUiEffectsProfile } from './game/ui_effects_profile';
 import { currentUtcDay } from './game/utc_day';
 import { voice } from './game/voice';
@@ -844,6 +845,7 @@ async function startGame(
   offlineSim: Sim | null,
   online: ClientWorld | null,
   keybindScope: string,
+  playIntro = false,
 ): Promise<void> {
   // Model/texture/HDRI fetches were kicked off at module import; the renderer
   // builds its scene synchronously, so everything must be resolved first.
@@ -2235,8 +2237,9 @@ async function startGame(
     syncPerfOverlay(frameDt, now);
 
     // freeze movement while the game menu is up so WASD doesn't walk the
-    // character behind it (other windows stay non-modal, as before)
-    input.suspendMovement = !gameInputReady || hud.isModalOpen();
+    // character behind it (other windows stay non-modal, as before); the
+    // first-spawn intro cinematic holds movement the same way until it lands
+    input.suspendMovement = !gameInputReady || hud.isModalOpen() || intro !== null;
     perf.trace('input.updateTouchLook', () => input.updateTouchLook(frameDt), {
       frameDtMs: frameDt * 1000,
     });
@@ -2244,7 +2247,7 @@ async function startGame(
     perf.trace('input.hoverCursor', () => updateHoverCursor(), { active: input.hoverActive });
     perf.markInputFrame(performance.now());
 
-    const mouselook = input.isMouselookActive() && !world.player.dead;
+    const mouselook = intro === null && input.isMouselookActive() && !world.player.dead;
     const controllerFacing = input.controllerFacingOverride();
     const renderFacing = renderFacingOverride();
     // On the frame mouselook is released, latch the final camera yaw so the player
@@ -2302,6 +2305,7 @@ async function startGame(
           frameDtMs: frameDt * 1000,
         },
       );
+      introCameraTick(now);
       renderer.camYaw = input.camYaw;
       renderer.camPitch = input.camPitch;
       renderer.camDist = input.camDist;
@@ -2396,6 +2400,7 @@ async function startGame(
         lastSnapAge: net.lastSnapAt > 0 ? performance.now() - net.lastSnapAt : -1,
       },
     );
+    introCameraTick(now);
     renderer.camYaw = input.camYaw;
     renderer.camPitch = input.camPitch;
     renderer.camDist = input.camDist;
@@ -2436,6 +2441,73 @@ async function startGame(
       input.clearControllerMoveInput();
     },
   };
+  // First-spawn intro cinematic: a newly created character's first entry opens
+  // with the camera high over the spawn, circling it once before settling into
+  // the gameplay pose; the HUD stays hidden until the camera lands, and any key
+  // or click skips straight to the end. Seen-state persists per character so it
+  // plays exactly once; reduce-motion players go straight to gameplay.
+  const INTRO_SEEN_KEY = `woc_spawn_intro_seen:${keybindScope}`;
+  let introSeen = true;
+  try {
+    introSeen = localStorage.getItem(INTRO_SEEN_KEY) === '1';
+  } catch {
+    // storage unavailable: the seen marker can't persist, so treat the intro as
+    // seen rather than replaying it on every boot
+  }
+  let intro: { cinematic: SpawnCinematic; startedAt: number | null } | null = null;
+  const setIntroUiHidden = (hidden: boolean): void => {
+    const display = hidden ? 'none' : '';
+    const ui = document.getElementById('ui');
+    if (ui) ui.style.display = display;
+    nameplates.style.display = display;
+  };
+  const finishIntro = (skipToEnd: boolean): void => {
+    if (!intro) return;
+    const end = intro.cinematic.end;
+    intro = null;
+    if (skipToEnd) {
+      input.camYaw = end.yaw;
+      input.camPitch = end.pitch;
+      input.camDist = end.dist;
+    }
+    setIntroUiHidden(false);
+    window.removeEventListener('keydown', skipIntro, true);
+    window.removeEventListener('pointerdown', skipIntro, true);
+    try {
+      localStorage.setItem(INTRO_SEEN_KEY, '1');
+    } catch {
+      // storage unavailable: worst case the intro replays next session
+    }
+  };
+  const skipIntro = (e: Event): void => {
+    e.stopPropagation();
+    if (e.type === 'keydown') e.preventDefault();
+    finishIntro(true);
+  };
+  // Applied each frame between the follow-camera update and the renderer read,
+  // so the cinematic pose wins over mouse/follow input while it runs.
+  const introCameraTick = (now: number): void => {
+    if (!intro) return;
+    const elapsed = intro.startedAt === null ? 0 : (now - intro.startedAt) / 1000;
+    const pose = spawnCinematicPose(elapsed, intro.cinematic);
+    input.camYaw = pose.yaw;
+    input.camPitch = pose.pitch;
+    input.camDist = pose.dist;
+    if (pose.done) finishIntro(false);
+  };
+  if (playIntro && !introSeen && world.player.level <= 1 && !settings.get('reduceMotion')) {
+    intro = {
+      cinematic: spawnCinematicFor({
+        yaw: input.camYaw,
+        pitch: input.camPitch,
+        dist: input.camDist,
+      }),
+      startedAt: null,
+    };
+    setIntroUiHidden(true);
+    window.addEventListener('keydown', skipIntro, true);
+    window.addEventListener('pointerdown', skipIntro, true);
+  }
   input.suspendMovement = true;
   await nextPaint();
   try {
@@ -2450,6 +2522,9 @@ async function startGame(
   requestAnimationFrame(() =>
     requestAnimationFrame(() => {
       hideLoadingScreen();
+      // Start the intro clock as the loading screen begins to fade: the camera
+      // holds the opening pose until now, so the fade doubles as the cut in.
+      if (intro) intro.startedAt = performance.now();
       window.setTimeout(() => {
         gameInputReady = true;
         perf.reset();
@@ -2552,7 +2627,8 @@ async function startOffline(playerClass: PlayerClass, name: string, skin = 0): P
   }
   // Offline characters are not persisted (a fresh name is typed each session),
   // so the only stable handle is class + name. Keybinds scope to that pair.
-  void startGame(sim, sim, null, `offline:${playerClass}:${name}`);
+  // Editor play-tests (a custom `world`) skip the first-spawn intro cinematic.
+  void startGame(sim, sim, null, `offline:${playerClass}:${name}`, !world);
 }
 
 // ---------------------------------------------------------------------------
@@ -3905,7 +3981,7 @@ async function enterWorld(c: CharacterSummary, button?: HTMLButtonElement): Prom
   const poll = setInterval(() => {
     if (world.connected && world.entities.has(world.playerId)) {
       clearInterval(poll);
-      void startGame(world, null, world, `char:${c.id}`);
+      void startGame(world, null, world, `char:${c.id}`, true);
     } else if (Date.now() - waitStart > 10000) {
       clearInterval(poll);
       world.close();
