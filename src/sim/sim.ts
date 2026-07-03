@@ -1,11 +1,13 @@
 import type {
   AccountCosmetics,
   DailyRewardHistory,
+  DailyRewardLeaderboardPage,
   DailyRewardSpinResult,
   DailyRewardStatus,
   DelveCompanionInfo,
   DelveRunInfo,
   LockpickView,
+  PlayerProfessionsView,
 } from '../world_api';
 import * as bagsMod from './bags';
 import { addStacked, BAG_SOCKETS, bagCapacity, canAddItem } from './bags';
@@ -268,6 +270,7 @@ import {
   angleTo,
   armorReduction,
   type CrowdControlDrCategory,
+  cloneInvSlot,
   DELVE_COMPANION_HEAL_INTERVAL,
   type DelveDef,
   type DelveModuleDef,
@@ -283,6 +286,7 @@ import {
   FISHING_CAST_TIME,
   GCD,
   type InvSlot,
+  type ItemInstancePayload,
   isConsuming,
   isPetClass,
   isQuestTurnInNpc,
@@ -1236,7 +1240,7 @@ export class Sim {
         for (const id of s.unlockedMilestones) meta.unlockedMilestones.add(id);
       meta.copper = s.copper;
       meta.equipment = { ...s.equipment };
-      meta.inventory = s.inventory.map((i) => ({ ...i }));
+      meta.inventory = s.inventory.map(cloneInvSlot);
       // Pre-bag saves have no bags array (and their inventory may exceed the
       // backpack budget); load them as-is with empty sockets. Over-capacity is
       // tolerated: it only blocks NEW pickups until space is freed.
@@ -1244,7 +1248,7 @@ export class Sim {
         const id = s.bags?.[i];
         meta.bags[i] = id && ITEMS[id]?.kind === 'bag' ? id : null;
       }
-      meta.vendorBuyback = (s.vendorBuyback ?? []).map((i) => ({ ...i }));
+      meta.vendorBuyback = (s.vendorBuyback ?? []).map(cloneInvSlot);
       for (const q of s.questLog) {
         if (q.state !== 'done')
           meta.questLog.set(q.questId, {
@@ -1449,9 +1453,9 @@ export class Sim {
       pos: { x: e.pos.x, z: e.pos.z },
       facing: e.facing,
       equipment: { ...meta.equipment },
-      inventory: meta.inventory.map((i) => ({ ...i })),
+      inventory: meta.inventory.map(cloneInvSlot),
       bags: [...meta.bags],
-      vendorBuyback: meta.vendorBuyback.map((i) => ({ ...i })),
+      vendorBuyback: meta.vendorBuyback.map(cloneInvSlot),
       questLog: [...meta.questLog.values()].map((q) => ({
         questId: q.questId,
         counts: [...q.counts],
@@ -1740,6 +1744,21 @@ export class Sim {
       spin: { claimed: false, points: null, outcomeKey: null, claimedAt: null },
       tasks: [],
       leaderboard: [],
+      leaderboardTotal: 0,
+    });
+  }
+
+  dailyRewardLeaderboard(
+    page = 0,
+    pageSize = LEADERBOARD_PAGE_SIZE,
+  ): Promise<DailyRewardLeaderboardPage> {
+    return Promise.resolve({
+      day: '1970-01-01',
+      leaders: [],
+      page: Math.max(0, Math.floor(page)),
+      pageCount: 1,
+      total: 0,
+      pageSize,
     });
   }
 
@@ -2066,6 +2085,7 @@ export class Sim {
       removeItem: sim.removeItem.bind(sim),
       // B1 bags capacity pre-check (stays on Sim next to the inventory hub).
       canAddItem: sim.canAddItem.bind(sim),
+      removeFungibleItem: sim.removeFungibleItem.bind(sim),
       partyOf: sim.partyOf.bind(sim),
       removeFromParty: (pid: number, verb: string) => sim.party.removeFromParty(pid, verb),
       // dropPartyMarkers flips to the T1 marker store (targeting); lazy arrow since
@@ -2080,6 +2100,7 @@ export class Sim {
       onInventoryChangedForQuests: (meta) => onInventoryChangedForQuests(sim.ctx, meta),
       checkQuestReady: (qp, meta) => checkQuestReady(sim.ctx, qp, meta),
       countItem: sim.countItem.bind(sim),
+      countFungibleItem: sim.countFungibleItem.bind(sim),
       completeQuestForDev: (questId, pid) => completeQuestForDev(sim.ctx, questId, pid),
       completeCurrentQuestsForDev: (pid) => completeCurrentQuestsForDev(sim.ctx, pid),
       // I1 dungeon instancing now lives in instances/dungeons.ts; these route through
@@ -4311,10 +4332,22 @@ export class Sim {
     return n;
   }
 
-  // Grants are stack-aware (bags.ts) but NEVER capacity-capped here: a grant
-  // that reaches this hub always lands, so an async award (loot roll, master
-  // loot, delve rewards) can't destroy items. Capacity is enforced by
-  // canAddItem pre-checks at the command boundaries instead.
+  // Fungible-only count for `itemId` (excludes per-instance slots, #1165). The
+  // World Market lists/escrows against this, never the instanced count, so an
+  // instanced copy is never sold as if it were a plain stack member.
+  countFungibleItem(itemId: string, pid?: number): number {
+    const r = this.resolve(pid);
+    if (!r) return 0;
+    let n = 0;
+    for (const s of r.meta.inventory) if (s.itemId === itemId && !s.instance) n += s.count;
+    return n;
+  }
+
+  // Grants are stack-aware (bags.ts addStacked, which never merges into an
+  // instanced slot, #1165) but NEVER capacity-capped here: a grant that reaches
+  // this hub always lands, so an async award (loot roll, master loot, delve
+  // rewards) can't destroy items. Capacity is enforced by canAddItem pre-checks
+  // at the command boundaries instead.
   addItem(itemId: string, count: number, pid?: number): void {
     const r = this.resolve(pid);
     if (!r) return;
@@ -4333,6 +4366,23 @@ export class Sim {
     }
   }
 
+  // Grant a single non-fungible copy of `itemId` carrying an instance payload
+  // (#1165: signer/charges/rolled/boundTo). Always its own slot entry (count 1),
+  // never merged with an existing plain or differently-instanced stack.
+  addItemInstance(itemId: string, instance: ItemInstancePayload, pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r) return;
+    const { meta } = r;
+    const def = ITEMS[itemId];
+    meta.inventory.push({ itemId, count: 1, instance });
+    this.emit({
+      type: 'loot',
+      text: `You receive: ${def?.name ?? itemId}.`,
+      pid: meta.entityId,
+    });
+    this.ctx.onInventoryChangedForQuests(meta);
+  }
+
   removeItem(itemId: string, count: number, pid?: number): void {
     const r = this.resolve(pid);
     if (!r) return;
@@ -4340,6 +4390,24 @@ export class Sim {
     for (let i = meta.inventory.length - 1; i >= 0 && count > 0; i--) {
       const s = meta.inventory[i];
       if (s.itemId !== itemId) continue;
+      const take = Math.min(s.count, count);
+      s.count -= take;
+      count -= take;
+      if (s.count <= 0) meta.inventory.splice(i, 1);
+    }
+    this.ctx.onInventoryChangedForQuests(meta);
+  }
+
+  // Fungible-only removal (#1165): skips instanced slots entirely, so a market
+  // listing/escrow can never consume a signed/rolled/bound copy even when the
+  // caller only checked countFungibleItem beforehand.
+  removeFungibleItem(itemId: string, count: number, pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r) return;
+    const { meta } = r;
+    for (let i = meta.inventory.length - 1; i >= 0 && count > 0; i--) {
+      const s = meta.inventory[i];
+      if (s.itemId !== itemId || s.instance) continue;
       const take = Math.min(s.count, count);
       s.count -= take;
       count -= take;
@@ -5841,6 +5909,12 @@ export class Sim {
 
   get delveDaily(): { date: string; firstClearXp: string[]; markClears: number } {
     return this.delveDailyWire(this.primaryId);
+  }
+
+  // Stub read surface for #1164: professions skill tracking + recipes land in
+  // later issues (#1119/#1120). Always empty until then.
+  get professionsState(): PlayerProfessionsView {
+    return { skills: [] };
   }
 }
 

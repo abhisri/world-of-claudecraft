@@ -203,6 +203,8 @@ export const ru_RU: EnTranslations = {
       "spinButton": "Крутить",
       "tasks": "Задания",
       "leaderboard": "Ежедневная таблица лидеров",
+      "totalPlayer": "Сегодня {count} игрок",
+      "totalPlayers": "Сегодня {count} игроков",
       "history": "Прошлые победители",
       "noLeaders": "Пока нет очков.",
       "noHistory": "Пока нет выплат.",

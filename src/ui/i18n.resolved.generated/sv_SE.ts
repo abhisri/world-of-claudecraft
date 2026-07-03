@@ -203,6 +203,8 @@ export const sv_SE: EnTranslations = {
       "spinButton": "Snurra",
       "tasks": "Uppgifter",
       "leaderboard": "Daglig topplista",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Tidigare vinnare",
       "noLeaders": "Inga poäng ännu.",
       "noHistory": "Inga utbetalningar ännu.",

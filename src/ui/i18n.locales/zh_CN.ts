@@ -35,6 +35,8 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinButton': '转动',
   'hudChrome.dailyRewards.tasks': '任务',
   'hudChrome.dailyRewards.leaderboard': '每日排行榜',
+  'hudChrome.dailyRewards.totalPlayer': '今天 {count} 名玩家',
+  'hudChrome.dailyRewards.totalPlayers': '今天 {count} 名玩家',
   'hudChrome.dailyRewards.history': '往期获奖者',
   'hudChrome.dailyRewards.noLeaders': '暂无积分。',
   'hudChrome.dailyRewards.noHistory': '暂无派奖记录。',

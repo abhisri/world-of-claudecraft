@@ -21,6 +21,15 @@ export interface DailyRewardLeaderboardEntry {
   me: boolean;
 }
 
+export interface DailyRewardLeaderboardPage {
+  day: string;
+  leaders: DailyRewardLeaderboardEntry[];
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
 export interface DailyRewardPayoutLogEntry {
   day: string;
   rank: number;
@@ -54,6 +63,7 @@ export interface DailyRewardStatus {
   spin: DailyRewardSpinView;
   tasks: DailyRewardTaskView[];
   leaderboard: DailyRewardLeaderboardEntry[];
+  leaderboardTotal: number;
 }
 
 export interface DailyRewardSpinResult extends DailyRewardStatus {
@@ -67,6 +77,7 @@ export interface DailyRewardHistory {
 
 export interface IWorldDailyRewards {
   dailyRewards(): Promise<DailyRewardStatus>;
+  dailyRewardLeaderboard(page?: number, pageSize?: number): Promise<DailyRewardLeaderboardPage>;
   spinDailyReward(): Promise<DailyRewardSpinResult>;
   dailyRewardHistory(): Promise<DailyRewardHistory>;
 }

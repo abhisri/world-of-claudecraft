@@ -35,6 +35,8 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinButton': 'Крутить',
   'hudChrome.dailyRewards.tasks': 'Задания',
   'hudChrome.dailyRewards.leaderboard': 'Ежедневная таблица лидеров',
+  'hudChrome.dailyRewards.totalPlayer': 'Сегодня {count} игрок',
+  'hudChrome.dailyRewards.totalPlayers': 'Сегодня {count} игроков',
   'hudChrome.dailyRewards.history': 'Прошлые победители',
   'hudChrome.dailyRewards.noLeaders': 'Пока нет очков.',
   'hudChrome.dailyRewards.noHistory': 'Пока нет выплат.',

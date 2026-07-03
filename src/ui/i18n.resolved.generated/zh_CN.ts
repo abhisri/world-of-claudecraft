@@ -203,6 +203,8 @@ export const zh_CN: EnTranslations = {
       "spinButton": "转动",
       "tasks": "任务",
       "leaderboard": "每日排行榜",
+      "totalPlayer": "今天 {count} 名玩家",
+      "totalPlayers": "今天 {count} 名玩家",
       "history": "往期获奖者",
       "noLeaders": "暂无积分。",
       "noHistory": "暂无派奖记录。",

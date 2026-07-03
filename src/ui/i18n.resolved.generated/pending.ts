@@ -15,6 +15,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -24,6 +26,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -33,6 +37,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -42,6 +48,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -52,6 +60,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -61,6 +71,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -90,6 +102,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -104,6 +118,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -113,6 +129,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -122,6 +140,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -131,6 +151,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -140,6 +162,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -149,6 +173,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ],
@@ -158,6 +184,8 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.bags.capacityAria",
     "hudChrome.bags.socketEmpty",
     "hudChrome.bags.unequipHint",
+    "hudChrome.dailyRewards.totalPlayer",
+    "hudChrome.dailyRewards.totalPlayers",
     "itemUi.kind.bag",
     "itemUi.tooltip.bagSlots"
   ]

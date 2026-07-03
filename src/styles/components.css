@@ -1198,6 +1198,12 @@
   .lb-row.lb-daily {
     grid-template-columns: 44px 1fr 96px;
   }
+  .lb-total,
+  .dr-leaderboard-total {
+    margin: 2px 0 8px;
+    color: #b9ac82;
+    font-size: 12px;
+  }
   .lb-members {
     text-align: center;
     color: var(--color-text-muted);

@@ -203,6 +203,8 @@ export const ko_KR: EnTranslations = {
       "spinButton": "돌리기",
       "tasks": "과제",
       "leaderboard": "일일 순위표",
+      "totalPlayer": "오늘 플레이어 {count}명",
+      "totalPlayers": "오늘 플레이어 {count}명",
       "history": "지난 당첨자",
       "noLeaders": "아직 포인트가 없습니다.",
       "noHistory": "아직 지급 내역이 없습니다.",

@@ -203,6 +203,8 @@ export const id_ID: EnTranslations = {
       "spinButton": "Putar",
       "tasks": "Tugas",
       "leaderboard": "Papan Peringkat Harian",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Pemenang Sebelumnya",
       "noLeaders": "Belum ada poin.",
       "noHistory": "Belum ada pembayaran.",

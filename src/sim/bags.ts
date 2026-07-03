@@ -63,7 +63,9 @@ export function usedBagSlots(inventory: readonly InvSlot[]): number {
 }
 
 /** How many of `count` copies of an item would fit: existing stacks absorb up
- *  to their stackSize, then each free slot holds one fresh stack. */
+ *  to their stackSize, then each free slot holds one fresh stack. An instanced
+ *  slot (#1165 per-instance payload) is never a merge target, so it offers no
+ *  top-up room; it still occupies a slot in the `inventory.length` used count. */
 export function countFit(
   inventory: readonly InvSlot[],
   capacity: number,
@@ -74,7 +76,7 @@ export function countFit(
   const stack = stackSizeOf(def);
   let room = 0;
   for (const s of inventory) {
-    if (s.itemId === itemId && s.count < stack) room += stack - s.count;
+    if (s.itemId === itemId && !s.instance && s.count < stack) room += stack - s.count;
   }
   const freeSlots = Math.max(0, capacity - inventory.length);
   room += freeSlots * stack;
@@ -107,15 +109,17 @@ export function fitsAll(
 }
 
 /** Stack-aware add: top up existing stacks to their stackSize, then append
- *  fresh stacks. Applies NO capacity cap (capacity is a pre-check concern);
- *  callers on a gated path check canAddItem/fitsAll first. */
+ *  fresh stacks. Never merges into an instanced slot (#1165: signer/charges/
+ *  rolled/boundTo copies keep their own slot). Applies NO capacity cap
+ *  (capacity is a pre-check concern); callers on a gated path check
+ *  canAddItem/fitsAll first. */
 export function addStacked(inventory: InvSlot[], itemId: string, count: number): void {
   const def = ITEMS[itemId];
   const stack = stackSizeOf(def);
   let remaining = count;
   for (const s of inventory) {
     if (remaining <= 0) return;
-    if (s.itemId !== itemId || s.count >= stack) continue;
+    if (s.itemId !== itemId || s.instance || s.count >= stack) continue;
     const take = Math.min(stack - s.count, remaining);
     s.count += take;
     remaining -= take;
@@ -127,9 +131,10 @@ export function addStacked(inventory: InvSlot[], itemId: string, count: number):
   }
 }
 
-/** Stack-aware removal mirroring the Sim hub's removeItem walk (from the end),
- *  for capacity simulations on a scratch copy (e.g. "after handing in the
- *  collect items, does the quest reward fit?"). */
+/** Stack-aware removal mirroring the Sim hub's removeItem walk (from the end,
+ *  instanced slots included, exactly like removeItem), for capacity simulations
+ *  on a scratch copy (e.g. "after handing in the collect items, does the quest
+ *  reward fit?"). */
 export function removeStacked(inventory: InvSlot[], itemId: string, count: number): void {
   let remaining = count;
   for (let i = inventory.length - 1; i >= 0 && remaining > 0; i--) {

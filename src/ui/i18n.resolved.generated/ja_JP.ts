@@ -203,6 +203,8 @@ export const ja_JP: EnTranslations = {
       "spinButton": "スピン",
       "tasks": "タスク",
       "leaderboard": "デイリーランキング",
+      "totalPlayer": "本日のプレイヤー {count} 人",
+      "totalPlayers": "本日のプレイヤー {count} 人",
       "history": "過去の当選者",
       "noLeaders": "まだポイントがありません。",
       "noHistory": "まだ支払いがありません。",

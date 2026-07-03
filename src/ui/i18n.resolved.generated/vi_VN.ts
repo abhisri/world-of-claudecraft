@@ -203,6 +203,8 @@ export const vi_VN: EnTranslations = {
       "spinButton": "Quay",
       "tasks": "Nhiệm Vụ",
       "leaderboard": "Bảng Xếp Hạng Hằng Ngày",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Người Thắng Trước Đây",
       "noLeaders": "Chưa có điểm nào.",
       "noHistory": "Chưa có khoản chi trả nào.",

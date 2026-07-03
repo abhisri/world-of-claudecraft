@@ -203,6 +203,8 @@ export const da_DK: EnTranslations = {
       "spinButton": "Drej",
       "tasks": "Opgaver",
       "leaderboard": "Daglig resultattavle",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Tidligere vindere",
       "noLeaders": "Ingen point endnu.",
       "noHistory": "Ingen udbetalinger endnu.",

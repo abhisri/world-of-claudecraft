@@ -203,6 +203,8 @@ export const tr_TR: EnTranslations = {
       "spinButton": "Çevir",
       "tasks": "Görevler",
       "leaderboard": "Günlük Lider Tablosu",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Geçmiş Kazananlar",
       "noLeaders": "Henüz puan yok.",
       "noHistory": "Henüz ödeme yok.",

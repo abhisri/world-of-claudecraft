@@ -3,6 +3,7 @@ import type * as http from 'node:http';
 import type {
   DailyRewardHistory,
   DailyRewardLeaderboardEntry,
+  DailyRewardLeaderboardPage,
   DailyRewardSpinResult,
   DailyRewardStatus,
 } from '../src/world_api';
@@ -386,13 +387,13 @@ function pickSpinOutcome(seed = Math.random()): (typeof SPIN_OUTCOMES)[number] {
 
 function leaderboardView(
   rows: Awaited<ReturnType<DailyRewardDb['leaderboard']>>,
-  accountId: number,
+  accountId: number | null,
 ): DailyRewardLeaderboardEntry[] {
   return rows.map((row) => ({
     rank: row.rank,
     name: row.username,
     points: row.points,
-    me: row.accountId === accountId,
+    me: accountId !== null && row.accountId === accountId,
   }));
 }
 
@@ -462,13 +463,19 @@ export class DailyRewardService {
     await this.db.ensureDay(day, config.prizePoolUsd, config.wocUsdPrice);
     await this.db.seedTasks(day, config.tasks);
     const eligibility = await dailyRewardEligibility(accountId, config);
-    const [score, rank, spin, tasks, leaders] = await Promise.all([
+    const [score, rank, spin, tasks, leaders, leaderboardTotal] = await Promise.all([
       this.db.scoreForAccount(day, accountId),
       this.db.rankForAccount(day, accountId),
       this.db.spinForAccount(day, accountId),
       this.db.tasksForAccount(day, accountId),
       this.db.leaderboard(day, accountId, 10),
+      this.db.leaderboardTotal(day),
     ]);
+    const leaderboardRows = [...leaders];
+    if (rank !== null && rank > 10) {
+      const viewerRow = await this.db.leaderboardRowForAccount(day, accountId);
+      if (viewerRow) leaderboardRows.push(viewerRow);
+    }
     return {
       day,
       resetAt: nextUtcResetIso(day, config.dayStartUtcMinutes),
@@ -486,7 +493,25 @@ export class DailyRewardService {
           }
         : { claimed: false, points: null, outcomeKey: null, claimedAt: null },
       tasks: tasks.map((task) => ({ ...task, id: task.taskId, locked: !eligibility.eligible })),
-      leaderboard: leaderboardView(leaders, accountId),
+      leaderboard: leaderboardView(leaderboardRows, accountId),
+      leaderboardTotal,
+    };
+  }
+
+  async leaderboardPage(
+    day: string,
+    page: number,
+    pageSize: number,
+    accountId: number | null = null,
+  ): Promise<DailyRewardLeaderboardPage> {
+    const pageData = await this.db.leaderboardPage(day, page, pageSize);
+    return {
+      day,
+      leaders: leaderboardView(pageData.rows, accountId),
+      page: pageData.page,
+      pageSize: pageData.pageSize,
+      pageCount: pageData.pageCount,
+      total: pageData.total,
     };
   }
 
@@ -695,6 +720,19 @@ export async function handleDailyRewardApi(
   if (req.method === 'GET' && url.pathname === '/api/daily-rewards') {
     return json(res, 200, await dailyRewardService.status(accountId));
   }
+  if (req.method === 'GET' && url.pathname === '/api/daily-rewards/leaderboard') {
+    const { day } = await dailyRewardClock();
+    return json(
+      res,
+      200,
+      await dailyRewardService.leaderboardPage(
+        day,
+        Number(url.searchParams.get('page')) || 0,
+        Number(url.searchParams.get('pageSize')) || 20,
+        accountId,
+      ),
+    );
+  }
   if (req.method === 'POST' && url.pathname === '/api/daily-rewards/spin') {
     const result = await dailyRewardService.spin(accountId);
     if ('error' in result) return json(res, result.status, { error: result.error });
@@ -730,6 +768,17 @@ export async function handleDailyRewardInternalApi(
   if (req.method === 'POST' && url.pathname === '/internal/daily-rewards/payout-history') {
     const data = await dailyRewardService.payoutHistory(
       Number(url.searchParams.get('limit')) || 100,
+    );
+    json(res, 200, { success: true, data, error: null });
+    return true;
+  }
+  if (req.method === 'POST' && url.pathname === '/internal/daily-rewards/leaderboard') {
+    const requestedDay = url.searchParams.get('day') || '';
+    const { day } = requestedDay ? { day: requestedDay } : await dailyRewardClock();
+    const data = await dailyRewardService.leaderboardPage(
+      day,
+      Number(url.searchParams.get('page')) || 0,
+      Number(url.searchParams.get('pageSize')) || 50,
     );
     json(res, 200, { success: true, data, error: null });
     return true;

@@ -203,6 +203,8 @@ export const en_XA: EnTranslations = {
       "spinButton": "[Šþíñ]",
       "tasks": "[Ţášķš]",
       "leaderboard": "[Ðáíļý Ļéáðéŕƀóáŕð]",
+      "totalPlayer": "[{count} þļáýéŕ ţóðáý]",
+      "totalPlayers": "[{count} þļáýéŕš ţóðáý]",
       "history": "[Þášţ Ŵíññéŕš]",
       "noLeaders": "[Ñó þóíñţš ýéţ.]",
       "noHistory": "[Ñó þáýóúţš ýéţ.]",

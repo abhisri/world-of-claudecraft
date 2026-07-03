@@ -203,6 +203,8 @@ export const en_CA: EnTranslations = {
       "spinButton": "Spin",
       "tasks": "Tasks",
       "leaderboard": "Daily Leaderboard",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Past Winners",
       "noLeaders": "No points yet.",
       "noHistory": "No payouts yet.",

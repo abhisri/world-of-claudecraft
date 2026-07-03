@@ -203,6 +203,8 @@ export const nl_NL: EnTranslations = {
       "spinButton": "Draaien",
       "tasks": "Taken",
       "leaderboard": "Dagelijkse ranglijst",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Eerdere winnaars",
       "noLeaders": "Nog geen punten.",
       "noHistory": "Nog geen uitbetalingen.",

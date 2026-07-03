@@ -203,6 +203,8 @@ export const fr_FR: EnTranslations = {
       "spinButton": "Tourner",
       "tasks": "Tâches",
       "leaderboard": "Classement quotidien",
+      "totalPlayer": "{count} player today",
+      "totalPlayers": "{count} players today",
       "history": "Anciens gagnants",
       "noLeaders": "Aucun point pour l'instant.",
       "noHistory": "Aucun versement pour l'instant.",
