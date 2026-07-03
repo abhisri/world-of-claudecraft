@@ -1,5 +1,6 @@
 // Core shared types for the simulation. The sim layer has zero DOM/rendering deps.
 
+import type { GatheringProfessionId } from './content/professions';
 import type { LockSession, LootTier, PickAction, StepResult, VisibleCell } from './lockpick';
 
 export const TICK_RATE = 20; // sim ticks per second
@@ -266,7 +267,12 @@ export type ItemUse =
   | { type: 'mechChroma'; chromaId: string }
   // Opens the client-side event skin-select overlay. The server rolls a rank on
   // use (see Sim.openSkinSelect) and the player locks one in via claimEventSkin.
-  | { type: 'skinSelect'; catalog?: SkinCatalog };
+  | { type: 'skinSelect'; catalog?: SkinCatalog }
+  // A base gathering tool (see #1123). `tier` gates which node/material tiers
+  // it can gather: see src/sim/professions/tools.ts (canGatherTier). This item
+  // type never carries a durability field (this repo has no durability
+  // mechanic anywhere), so a base tool can never become unusable.
+  | { type: 'gatherTool'; professionId: GatheringProfessionId; tier: number };
 
 // Rarity ranks for the cosmetic skin-select event, ordered low → high. A rolled
 // rank unlocks its own tier and every tier below it (epic unlocks rare+uncommon).

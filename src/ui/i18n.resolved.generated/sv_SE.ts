@@ -4954,6 +4954,33 @@ export const sv_SE: EnTranslations = {
       "monarch_crown_helm": {
         "name": "Monarkens krona"
       },
+      "copper_mining_pick": {
+        "name": "Kopparhacka"
+      },
+      "iron_mining_pick": {
+        "name": "Järnhacka"
+      },
+      "mithril_mining_pick": {
+        "name": "Mithrilhacka"
+      },
+      "handaxe": {
+        "name": "Handyxa"
+      },
+      "felling_axe": {
+        "name": "Fällyxa"
+      },
+      "ironbark_axe": {
+        "name": "Järnbarksyxa"
+      },
+      "gathering_sickle": {
+        "name": "Skördeskära"
+      },
+      "bronze_sickle": {
+        "name": "Bronsskära"
+      },
+      "silverleaf_sickle": {
+        "name": "Silverbladsskära"
+      },
       "bristleback_maul": {
         "name": "Borstryggens klubba"
       },

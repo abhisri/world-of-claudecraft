@@ -4954,6 +4954,33 @@ export const ja_JP: EnTranslations = {
       "monarch_crown_helm": {
         "name": "君主の王冠"
       },
+      "copper_mining_pick": {
+        "name": "銅の採掘ピック"
+      },
+      "iron_mining_pick": {
+        "name": "鉄の採掘ピック"
+      },
+      "mithril_mining_pick": {
+        "name": "ミスリルの採掘ピック"
+      },
+      "handaxe": {
+        "name": "ハンドアックス"
+      },
+      "felling_axe": {
+        "name": "伐採斧"
+      },
+      "ironbark_axe": {
+        "name": "鉄皮の斧"
+      },
+      "gathering_sickle": {
+        "name": "採集の鎌"
+      },
+      "bronze_sickle": {
+        "name": "青銅の鎌"
+      },
+      "silverleaf_sickle": {
+        "name": "銀葉の鎌"
+      },
       "bristleback_maul": {
         "name": "ブリストルバックの大槌"
       },

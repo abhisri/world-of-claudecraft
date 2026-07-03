@@ -4954,6 +4954,33 @@ export const pl_PL: EnTranslations = {
       "monarch_crown_helm": {
         "name": "Korona monarchy"
       },
+      "copper_mining_pick": {
+        "name": "Miedziany Kilof Górniczy"
+      },
+      "iron_mining_pick": {
+        "name": "Żelazny Kilof Górniczy"
+      },
+      "mithril_mining_pick": {
+        "name": "Mithrilowy Kilof Górniczy"
+      },
+      "handaxe": {
+        "name": "Toporek"
+      },
+      "felling_axe": {
+        "name": "Siekiera Drwala"
+      },
+      "ironbark_axe": {
+        "name": "Toporek z Żelaznej Kory"
+      },
+      "gathering_sickle": {
+        "name": "Sierp do Zbioru"
+      },
+      "bronze_sickle": {
+        "name": "Brązowy Sierp"
+      },
+      "silverleaf_sickle": {
+        "name": "Sierp Srebrnolistny"
+      },
       "bristleback_maul": {
         "name": "Tłuk szczeciniastych"
       },

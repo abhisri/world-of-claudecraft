@@ -4954,6 +4954,33 @@ export const da_DK: EnTranslations = {
       "monarch_crown_helm": {
         "name": "Monarkens Krone"
       },
+      "copper_mining_pick": {
+        "name": "Kobberminehakke"
+      },
+      "iron_mining_pick": {
+        "name": "Jernminehakke"
+      },
+      "mithril_mining_pick": {
+        "name": "Mithrilminehakke"
+      },
+      "handaxe": {
+        "name": "Håndøkse"
+      },
+      "felling_axe": {
+        "name": "Fældeøkse"
+      },
+      "ironbark_axe": {
+        "name": "Jernbarksøkse"
+      },
+      "gathering_sickle": {
+        "name": "Høstsegl"
+      },
+      "bronze_sickle": {
+        "name": "Bronzesegl"
+      },
+      "silverleaf_sickle": {
+        "name": "Sølvbladsegl"
+      },
       "bristleback_maul": {
         "name": "Børsterygs-Lemlæster"
       },

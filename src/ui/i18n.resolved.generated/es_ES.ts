@@ -4954,6 +4954,33 @@ export const es_ES: EnTranslations = {
       "monarch_crown_helm": {
         "name": "Corona del Monarca"
       },
+      "copper_mining_pick": {
+        "name": "Pico de Minería de Cobre"
+      },
+      "iron_mining_pick": {
+        "name": "Pico de Minería de Hierro"
+      },
+      "mithril_mining_pick": {
+        "name": "Pico de Minería de Mithril"
+      },
+      "handaxe": {
+        "name": "Hacha de Mano"
+      },
+      "felling_axe": {
+        "name": "Hacha de Tala"
+      },
+      "ironbark_axe": {
+        "name": "Hacha de Corteza de Hierro"
+      },
+      "gathering_sickle": {
+        "name": "Hoz de Recolección"
+      },
+      "bronze_sickle": {
+        "name": "Hoz de Bronce"
+      },
+      "silverleaf_sickle": {
+        "name": "Hoz de Hoja de Plata"
+      },
       "bristleback_maul": {
         "name": "Maza Bristleback"
       },

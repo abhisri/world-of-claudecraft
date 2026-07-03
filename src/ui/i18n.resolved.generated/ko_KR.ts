@@ -4954,6 +4954,33 @@ export const ko_KR: EnTranslations = {
       "monarch_crown_helm": {
         "name": "군주의 왕관"
       },
+      "copper_mining_pick": {
+        "name": "구리 채광 곡괭이"
+      },
+      "iron_mining_pick": {
+        "name": "철 채광 곡괭이"
+      },
+      "mithril_mining_pick": {
+        "name": "미스릴 채광 곡괭이"
+      },
+      "handaxe": {
+        "name": "손도끼"
+      },
+      "felling_axe": {
+        "name": "벌목 도끼"
+      },
+      "ironbark_axe": {
+        "name": "철피 도끼"
+      },
+      "gathering_sickle": {
+        "name": "채집 낫"
+      },
+      "bronze_sickle": {
+        "name": "청동 낫"
+      },
+      "silverleaf_sickle": {
+        "name": "은엽 낫"
+      },
       "bristleback_maul": {
         "name": "뻣센등뼈 철퇴"
       },

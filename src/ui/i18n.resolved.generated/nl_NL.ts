@@ -4954,6 +4954,33 @@ export const nl_NL: EnTranslations = {
       "monarch_crown_helm": {
         "name": "Monarchenkroon"
       },
+      "copper_mining_pick": {
+        "name": "Koperen Mijnpik"
+      },
+      "iron_mining_pick": {
+        "name": "IJzeren Mijnpik"
+      },
+      "mithril_mining_pick": {
+        "name": "Mithril Mijnpik"
+      },
+      "handaxe": {
+        "name": "Handbijl"
+      },
+      "felling_axe": {
+        "name": "Velbijl"
+      },
+      "ironbark_axe": {
+        "name": "IJzerschors Bijl"
+      },
+      "gathering_sickle": {
+        "name": "Oogstsikkel"
+      },
+      "bronze_sickle": {
+        "name": "Bronzen Sikkel"
+      },
+      "silverleaf_sickle": {
+        "name": "Zilverbladsikkel"
+      },
       "bristleback_maul": {
         "name": "Borstelrug-Strijdhamer"
       },
