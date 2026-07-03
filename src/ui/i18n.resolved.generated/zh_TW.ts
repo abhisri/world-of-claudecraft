@@ -154,6 +154,11 @@ export const zh_TW: EnTranslations = {
     "spectate": {
       "banner": "正在觀察 {name}"
     },
+    "death": {
+      "resurrectAtCorpse": "在屍體旁復活",
+      "resurrectAtHealer": "靈魂醫者（復活虛弱）",
+      "spiritHealerAlive": "靈魂醫者只看護逝者。你仍是生者。"
+    },
     "emotes": {
       "wave": "揮手",
       "laugh": "大笑",
@@ -801,6 +806,7 @@ export const zh_TW: EnTranslations = {
         "spi": "精神降低 {value}",
         "allStats": "所有屬性降低 {value}"
       },
+      "allStatsPctReduce": "所有屬性降低 {pct}%",
       "dodge": "閃躲機率提高 {pct}%",
       "dodgeReduce": "閃避機率降低 {pct}%",
       "armorFlat": "護甲降低 {value}",
@@ -6475,6 +6481,11 @@ export const zh_TW: EnTranslations = {
         "name": "哈爾文修士",
         "title": "聖物庫守護人",
         "greeting": "下方的聖物庫又移位了。"
+      },
+      "spirit_healer": {
+        "name": "靈魂醫者",
+        "title": "亡者的守護者",
+        "greeting": "安息吧，靈魂。我可以讓你重返軀體，但歸途會讓你變得虛弱。"
       },
       "tidewatcher_ondrel": {
         "name": "翁德瑞爾·韋恩",

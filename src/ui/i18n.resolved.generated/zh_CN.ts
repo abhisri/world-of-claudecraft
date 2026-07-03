@@ -154,6 +154,11 @@ export const zh_CN: EnTranslations = {
     "spectate": {
       "banner": "正在观察 {name}"
     },
+    "death": {
+      "resurrectAtCorpse": "在尸体旁复活",
+      "resurrectAtHealer": "灵魂医者（复活后遗症）",
+      "spiritHealerAlive": "灵魂医者只看护逝者。你仍是生者。"
+    },
     "emotes": {
       "wave": "挥手",
       "laugh": "大笑",
@@ -801,6 +806,7 @@ export const zh_CN: EnTranslations = {
         "spi": "精神降低 {value}",
         "allStats": "所有属性降低 {value}"
       },
+      "allStatsPctReduce": "所有属性降低 {pct}%",
       "dodge": "躲闪几率提高 {pct}%",
       "dodgeReduce": "躲闪几率降低 {pct}%",
       "armorFlat": "护甲降低 {value}",
@@ -6475,6 +6481,11 @@ export const zh_CN: EnTranslations = {
         "name": "哈尔文修士",
         "title": "圣物库守护人",
         "greeting": "下方的圣物库又移位了。"
+      },
+      "spirit_healer": {
+        "name": "灵魂医者",
+        "title": "亡者的守护者",
+        "greeting": "安息吧，灵魂。我可以让你重返躯体，但归途会让你变得虚弱。"
       },
       "tidewatcher_ondrel": {
         "name": "翁德雷尔·凡恩",

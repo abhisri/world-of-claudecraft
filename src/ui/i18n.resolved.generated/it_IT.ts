@@ -154,6 +154,11 @@ export const it_IT: EnTranslations = {
     "spectate": {
       "banner": "Stai osservando {name}"
     },
+    "death": {
+      "resurrectAtCorpse": "Resurrect at Corpse",
+      "resurrectAtHealer": "The Pale Keeper (Keeper's Toll)",
+      "spiritHealerAlive": "The Pale Keeper watches over the dead. You are still among the living."
+    },
     "emotes": {
       "wave": "Saluta",
       "laugh": "Ridi",
@@ -801,6 +806,7 @@ export const it_IT: EnTranslations = {
         "spi": "Riduce lo spirito di {value}",
         "allStats": "Riduce tutti gli attributi di {value}"
       },
+      "allStatsPctReduce": "Reduces all attributes by {pct}%",
       "dodge": "Aumenta la probabilità di schivata del {pct}%",
       "dodgeReduce": "Riduce la probabilità di schivata del {pct}%",
       "armorFlat": "Riduce l'armatura di {value}",
@@ -6475,6 +6481,11 @@ export const it_IT: EnTranslations = {
         "name": "Fratello Halven",
         "title": "Custode del Reliquiario",
         "greeting": "Il reliquiario sottostante si è spostato di nuovo."
+      },
+      "spirit_healer": {
+        "name": "The Pale Keeper",
+        "title": "Warden of the Dead",
+        "greeting": "Rest now, spirit. I can return you to your body, but the crossing back leaves you weak."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",

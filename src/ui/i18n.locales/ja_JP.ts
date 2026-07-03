@@ -2488,6 +2488,13 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.warlock_imp.name': '炎の魔物',
   'entities.mobs.warlock_voidwalker.name': '虚無の魔物',
   'entities.mobs.ysolei.name': 'イソレイ、溺月の化身',
+  'hudChrome.death.resurrectAtCorpse': '亡骸で復活',
+  'hudChrome.death.resurrectAtHealer': '霊魂の癒し手（復活の後遺症）',
+  'hudChrome.death.spiritHealerAlive': '霊魂の癒し手は死者を見守っている。あなたはまだ生者だ。',
+  'entities.npcs.spirit_healer.name': '霊魂の癒し手',
+  'entities.npcs.spirit_healer.title': '死者の番人',
+  'entities.npcs.spirit_healer.greeting':
+    '安らかに、魂よ。亡骸に戻すことはできるが、戻る道のりで弱ってしまうだろう。',
   'entities.npcs.the_merchant.name': '商人',
   'entities.npcs.the_merchant.title': '世界市場の守り手',
   'entities.npcs.the_merchant.greeting':
@@ -4897,6 +4904,7 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.auraEffect.reduce.sta': '耐久力を{value}低下させる',
   'hudChrome.auraEffect.reduce.spi': '精神力を{value}低下させる',
   'hudChrome.auraEffect.reduce.allStats': 'すべての能力値を{value}低下させる',
+  'hudChrome.auraEffect.allStatsPctReduce': 'すべての能力値を{pct}%低下させる',
   'hudChrome.auraEffect.dodge': '回避率を{pct}%上昇させる',
   'hudChrome.auraEffect.dodgeReduce': '回避率を{pct}%低下させる',
   'hudChrome.auraEffect.armorFlat': '防御力を{value}低下させる',

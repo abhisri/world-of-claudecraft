@@ -444,6 +444,12 @@ const trackMetaPixel = (eventName: string, data?: Record<string, unknown>): void
 };
 // The HUD's i18n + number-formatting surface, handed to the pure stat-tooltip
 // view so it can render localized breakdowns without importing the i18n runtime.
+// Ghost-mode display thresholds, mirroring src/sim/spirit.ts (CORPSE_REZ_RANGE and
+// SPIRIT_HEALER_RANGE). The server re-validates both ranges; these only decide whether
+// the death-overlay resurrect buttons are shown, so keep them in sync.
+const GHOST_CORPSE_REZ_RANGE = 35;
+const GHOST_HEALER_RANGE = 8;
+
 const STAT_VIEW_DEPS: StatTooltipI18n = {
   t: (key, params) => t(key as TranslationKey, params),
   fmt: (value, opts) => formatNumber(value, opts),
@@ -887,6 +893,9 @@ export class Hud {
   private swingLabelEl = this.swingbarEl.querySelector('.label') as HTMLElement;
   private deathOverlayEl = $('#death-overlay');
   private releaseSpiritBtnEl = $('#release-btn');
+  private ghostPromptEl = $('#ghost-prompt');
+  private resurrectCorpseBtnEl = $('#resurrect-corpse-btn');
+  private resurrectHealerBtnEl = $('#resurrect-healer-btn');
   // Cached once (was re-queried every frame): the near-death screen-edge overlay.
   private lowHealthVignetteEl = document.getElementById('low-health-vignette');
   private hotWriteCache = new Map<HTMLElement, string>();
@@ -1213,6 +1222,8 @@ export class Hud {
       if (this.sim.arenaInfo?.match) return;
       this.sim.releaseSpirit();
     });
+    this.resurrectCorpseBtnEl.addEventListener('click', () => this.sim.resurrectAtCorpse());
+    this.resurrectHealerBtnEl.addEventListener('click', () => this.sim.resurrectAtSpiritHealer());
     document.addEventListener('pointerdown', (ev) => {
       const target = ev.target as Node | null;
       if (!target) return;
@@ -5409,9 +5420,34 @@ export class Hud {
     // returns immediately, so this costs nothing at steady state.
     this.fctPainter.step(now);
 
+    // Death UI. A fresh corpse (dead, spirit not yet released) gets the full-screen
+    // Release overlay (a corpse cannot move, so a modal is fine; suppressed in arena).
+    // A ghost runs FREELY (no blocking overlay) and the world drains to greyscale; a
+    // small non-blocking prompt appears only when in reach of its corpse or a Spirit
+    // Healer, carrying just the relevant button. The server re-checks both ranges.
+    const ghost = p.dead && p.ghost;
     const deadInArena = p.dead && !!this.sim.arenaInfo?.match;
-    this.setDisplay(this.deathOverlayEl, p.dead ? 'flex' : 'none');
-    this.setDisplay(this.releaseSpiritBtnEl, deadInArena ? 'none' : '');
+    document.body.classList.toggle('spirit-mode', ghost);
+    this.setDisplay(this.deathOverlayEl, p.dead && !ghost && !deadInArena ? 'flex' : 'none');
+    if (ghost) {
+      const corpseInRange = !!p.corpsePos && dist2d(p.pos, p.corpsePos) <= GHOST_CORPSE_REZ_RANGE;
+      let healerNearby = false;
+      for (const ent of this.sim.entities.values()) {
+        if (
+          ent.kind === 'npc' &&
+          ent.templateId === 'spirit_healer' &&
+          dist2d(ent.pos, p.pos) <= GHOST_HEALER_RANGE
+        ) {
+          healerNearby = true;
+          break;
+        }
+      }
+      this.setDisplay(this.ghostPromptEl, corpseInRange || healerNearby ? 'flex' : 'none');
+      this.setDisplay(this.resurrectCorpseBtnEl, corpseInRange ? '' : 'none');
+      this.setDisplay(this.resurrectHealerBtnEl, healerNearby ? '' : 'none');
+    } else {
+      this.setDisplay(this.ghostPromptEl, 'none');
+    }
 
     const inDungeon = p.pos.x > DUNGEON_X_THRESHOLD;
     const currentZone = zoneAt(p.pos.z);

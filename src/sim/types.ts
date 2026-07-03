@@ -162,6 +162,10 @@ export type AuraKind =
   | 'imbue'
   | 'buff_sta'
   | 'buff_allstats'
+  // Percentage drain on the whole stat block (value is a signed fraction, e.g.
+  // -0.75 = stats reduced to 25%). Resurrection Sickness uses it; see
+  // src/sim/spirit.ts and recalcPlayerStats.
+  | 'buff_allstats_pct'
   | 'thorns'
   | 'form_bear'
   | 'form_cat'
@@ -1552,6 +1556,15 @@ export interface Entity {
   dungeonId: string | null; // set on dungeon door/exit portals
   // misc
   dead: boolean;
+  // Ghost/spirit state for the WoW-style death -> corpse-run -> resurrect loop.
+  // `ghost` is true once the player has released their spirit: `dead` stays true
+  // (a ghost still cannot fight or be attacked) but the spirit CAN move, runs at a
+  // boosted speed, and is rendered translucent. `corpsePos` marks where the body
+  // fell so the client can draw a corpse marker and the server can gate
+  // resurrect-at-corpse on range. Both inert (false / null) for the living and for
+  // every non-player entity. Owned by src/sim/spirit.ts.
+  ghost: boolean;
+  corpsePos: Vec3 | null;
   scale: number;
   color: number;
   skinCatalog: SkinCatalog; // player appearance catalog: class texture set or cosmetic body.

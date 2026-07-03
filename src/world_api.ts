@@ -300,6 +300,8 @@ export const COMMAND_NAMES = [
   'guild_event_create',
   'guild_event_remove',
   'autoloot',
+  'resurrect_corpse',
+  'resurrect_healer',
 ] as const;
 
 // The union both the send path (`online.ts`) and the dispatch switch
@@ -374,6 +376,10 @@ export const COMMAND_FACETS = {
   attack: 'IWorldCombat',
   stopattack: 'IWorldCombat',
   release: 'IWorldCombat',
+  // Ghost resurrection: run the spirit to its corpse, or accept the Spirit Healer's
+  // resurrection (with Resurrection Sickness). Wire strings are snake_case by design.
+  resurrect_corpse: 'IWorldCombat',
+  resurrect_healer: 'IWorldCombat',
   // IWorldTargeting: target selection + tab cycling.
   target: 'IWorldTargeting',
   tab: 'IWorldTargeting',

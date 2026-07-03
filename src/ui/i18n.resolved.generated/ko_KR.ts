@@ -154,6 +154,11 @@ export const ko_KR: EnTranslations = {
     "spectate": {
       "banner": "{name} 관전 중"
     },
+    "death": {
+      "resurrectAtCorpse": "시신에서 부활",
+      "resurrectAtHealer": "영혼 치유사 (부활의 후유증)",
+      "spiritHealerAlive": "영혼 치유사는 죽은 자를 지킵니다. 당신은 아직 산 자입니다."
+    },
     "emotes": {
       "wave": "손인사",
       "laugh": "ㅋㅋ",
@@ -801,6 +806,7 @@ export const ko_KR: EnTranslations = {
         "spi": "정신력을 {value} 감소시킵니다",
         "allStats": "모든 능력치를 {value} 감소시킵니다"
       },
+      "allStatsPctReduce": "모든 능력치를 {pct}% 감소시킵니다",
       "dodge": "회피 확률을 {pct}% 증가시킵니다",
       "dodgeReduce": "회피 확률을 {pct}% 감소시킵니다",
       "armorFlat": "방어도를 {value} 감소시킵니다",
@@ -6475,6 +6481,11 @@ export const ko_KR: EnTranslations = {
         "name": "브라더 할벤",
         "title": "성물실 관리인",
         "greeting": "아래의 성물실이 또 움직였소."
+      },
+      "spirit_healer": {
+        "name": "영혼 치유사",
+        "title": "죽은 자의 수호자",
+        "greeting": "편히 쉬게, 영혼이여. 그대를 육신으로 돌려보낼 수 있으나, 돌아오는 길은 그대를 약하게 만들 것이네."
       },
       "tidewatcher_ondrel": {
         "name": "온드렐 베인",

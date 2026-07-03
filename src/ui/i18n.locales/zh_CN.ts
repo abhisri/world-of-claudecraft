@@ -2381,6 +2381,13 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.warlock_imp.name': '火焰恶魔',
   'entities.mobs.warlock_voidwalker.name': '虚空恶魔',
   'entities.mobs.ysolei.name': '伊索蕾，溺月化身',
+  'hudChrome.death.resurrectAtCorpse': '在尸体旁复活',
+  'hudChrome.death.resurrectAtHealer': '灵魂医者（复活后遗症）',
+  'hudChrome.death.spiritHealerAlive': '灵魂医者只看护逝者。你仍是生者。',
+  'entities.npcs.spirit_healer.name': '灵魂医者',
+  'entities.npcs.spirit_healer.title': '亡者的守护者',
+  'entities.npcs.spirit_healer.greeting':
+    '安息吧，灵魂。我可以让你重返躯体，但归途会让你变得虚弱。',
   'entities.npcs.the_merchant.name': '商人',
   'entities.npcs.the_merchant.title': '世界市场守护者',
   'entities.npcs.the_merchant.greeting':
@@ -4648,6 +4655,7 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'hudChrome.auraEffect.reduce.sta': '耐力降低 {value}',
   'hudChrome.auraEffect.reduce.spi': '精神降低 {value}',
   'hudChrome.auraEffect.reduce.allStats': '所有属性降低 {value}',
+  'hudChrome.auraEffect.allStatsPctReduce': '所有属性降低 {pct}%',
   'hudChrome.auraEffect.dodge': '躲闪几率提高 {pct}%',
   'hudChrome.auraEffect.dodgeReduce': '躲闪几率降低 {pct}%',
   'hudChrome.auraEffect.armorFlat': '护甲降低 {value}',

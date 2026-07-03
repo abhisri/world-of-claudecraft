@@ -835,6 +835,8 @@ function blankEntity(id: number): Entity {
     objectItemId: null,
     dungeonId: null,
     dead: false,
+    ghost: false,
+    corpsePos: null,
     scale: 1,
     color: 0xffffff,
     skinCatalog: 'class',
@@ -1388,6 +1390,7 @@ export class ClientWorld implements IWorld {
       e.overheadEmoteUntil = e.overheadEmoteId ? Number.POSITIVE_INFINITY : 0;
       if (typeof w.emoSeq === 'number') e.overheadEmoteSeq = w.emoSeq;
       e.dead = nowDead;
+      e.ghost = !!w.gh; // released spirit: rendered translucent, runs faster
       e.lootable = !!w.loot;
       e.hostile = !!w.h;
       e.castingAbility = w.cast ?? null;
@@ -1506,6 +1509,9 @@ export class ClientWorld implements IWorld {
       e.resourceType = s.rtype;
       // delta fields: the server omits them while unchanged, so only the
       // snapshots that carry them rebuild the local structures
+      // corpse position while a ghost (null once resurrected). Delta-guarded: kept
+      // unchanged when the server omits it; drives the corpse marker + resurrect button.
+      if (s.corpse !== undefined) e.corpsePos = s.corpse ?? null;
       if (s.cds !== undefined) {
         // in-place rebuild (same result as `new Map(Object.entries(...))`): no
         // intermediate entry arrays and no Map churn on the 20 Hz self record
@@ -1734,6 +1740,12 @@ export class ClientWorld implements IWorld {
   }
   releaseSpirit(): void {
     this.cmd({ cmd: 'release' });
+  }
+  resurrectAtCorpse(): void {
+    this.cmd({ cmd: 'resurrect_corpse' });
+  }
+  resurrectAtSpiritHealer(): void {
+    this.cmd({ cmd: 'resurrect_healer' });
   }
 
   // --- IWorldTargeting: target selection + tab cycling ---

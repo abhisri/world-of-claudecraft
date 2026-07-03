@@ -154,6 +154,11 @@ export const en_CA: EnTranslations = {
     "spectate": {
       "banner": "Spectating {name}"
     },
+    "death": {
+      "resurrectAtCorpse": "Resurrect at Corpse",
+      "resurrectAtHealer": "The Pale Keeper (Keeper's Toll)",
+      "spiritHealerAlive": "The Pale Keeper watches over the dead. You are still among the living."
+    },
     "emotes": {
       "wave": "Wave",
       "laugh": "LOL",
@@ -801,6 +806,7 @@ export const en_CA: EnTranslations = {
         "spi": "Reduces Spirit by {value}",
         "allStats": "Reduces all attributes by {value}"
       },
+      "allStatsPctReduce": "Reduces all attributes by {pct}%",
       "dodge": "Increases dodge chance by {pct}%",
       "dodgeReduce": "Reduces dodge chance by {pct}%",
       "armorFlat": "Reduces armor by {value}",
@@ -6475,6 +6481,11 @@ export const en_CA: EnTranslations = {
         "name": "Brother Halven",
         "title": "Reliquary Keeper",
         "greeting": "The reliquary below has shifted again."
+      },
+      "spirit_healer": {
+        "name": "The Pale Keeper",
+        "title": "Warden of the Dead",
+        "greeting": "Rest now, spirit. I can return you to your body, but the crossing back leaves you weak."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",

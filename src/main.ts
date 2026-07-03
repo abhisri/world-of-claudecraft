@@ -1833,7 +1833,7 @@ async function startGame(
     // destination (OSRS's yellow "walking here" X) and an entity you target or walk to
     // (OSRS's red interaction X). A plain ground click that only deselects gets nothing.
     const wantClickFeedback = settings.get('clickFeedback') && !world.player.dead;
-    const clickToMove = settings.get('clickToMove') > 0 && !world.player.dead;
+    const clickToMove = settings.get('clickToMove') > 0 && !movementFrozen();
     const clickToMoveButton = normalizeClickMoveButton(settings.get('clickToMoveButton'));
     const isClickMoveButton = clickToMove && button === clickToMoveButton;
     if (id === null) {
@@ -1964,12 +1964,18 @@ async function startGame(
   function playerImmobilized(): boolean {
     return world.player.auras.some((a) => IMMOBILE_AURA_KINDS.has(a.kind));
   }
+  // A released spirit (ghost) moves, turns, and drives the camera like the living; only
+  // a corpse that has not yet released its spirit is frozen. Combat stays gated by
+  // `dead` (and re-validated server-side), so this only unlocks locomotion for ghosts.
+  function movementFrozen(): boolean {
+    return world.player.dead && !world.player.ghost;
+  }
 
   // Pop a "Can't move!" note over the player when a movement command lands while
   // immobilized, so the freeze is legible. Throttled so it doesn't spam per tick.
   let lastImmobileNoteAt = -Infinity;
   function maybeShowImmobileNote(nowMs: number): void {
-    if (world.player.dead || !playerImmobilized()) return;
+    if (movementFrozen() || !playerImmobilized()) return;
     const mi = input.readMoveInput();
     const tryingToMove =
       !!input.clickMoveTarget ||
@@ -2065,7 +2071,7 @@ async function startGame(
   let pendingReleaseFacing: number | null = null;
   function updateCamera(frameDt: number, interpFacing: number): void {
     const mi = input.readMoveInput();
-    const clickMoving = !!input.clickMoveTarget && !input.suspendMovement && !world.player.dead;
+    const clickMoving = !!input.clickMoveTarget && !input.suspendMovement && !movementFrozen();
     // When click-to-move ends, the player's facing snaps from the (camera-lagging)
     // travel bearing to camYaw in the same frame. lastInterpFacing still holds the
     // old travel bearing, so the rigid follow term would inject that whole stale
@@ -2117,7 +2123,7 @@ async function startGame(
       const action = resolveClickMoveAction(mi, {
         mouselook,
         movementSuspended: input.suspendMovement,
-        playerDead: world.player.dead,
+        playerDead: movementFrozen(),
         enabled: settings.get('clickToMove') > 0 || settings.get('attackMove'),
       });
       if (action === 'cancel') {
@@ -2244,11 +2250,13 @@ async function startGame(
   }
 
   function renderFacingOverride(): number | null {
+    // A ghost (dead && ghost) is not movement-frozen and keeps camera-driven
+    // facing; only a corpse-bound dead player loses it, so pass movementFrozen().
     return isCameraDrivenFacingActive(
       input.isMouseCameraMode(),
       cameraMoveActive(),
       input.isMouselookActive(),
-      world.player.dead,
+      movementFrozen(),
     )
       ? input.camYaw
       : null;
@@ -2257,7 +2265,7 @@ async function startGame(
   function cameraMoveActive(): boolean {
     if (!input.isMouseCameraMode()) return false;
     const mi = input.readMoveInput();
-    return !!(mi.forward || mi.back || mi.strafeLeft || mi.strafeRight) && !world.player.dead;
+    return !!(mi.forward || mi.back || mi.strafeLeft || mi.strafeRight) && !movementFrozen();
   }
 
   // Feed the frame meter every frame (so stats stay warm even when hidden) and,
@@ -2303,7 +2311,7 @@ async function startGame(
     perf.trace('input.hoverCursor', () => updateHoverCursor(), { active: input.hoverActive });
     perf.markInputFrame(performance.now());
 
-    const mouselook = intro === null && input.isMouselookActive() && !world.player.dead;
+    const mouselook = intro === null && input.isMouselookActive() && !movementFrozen();
     const controllerFacing = input.controllerFacingOverride();
     const renderFacing = renderFacingOverride();
     // On the frame the camera lets go of the player's heading (classic mouselook
@@ -2315,7 +2323,7 @@ async function startGame(
       input.isMouseCameraMode(),
       cameraMoveActive(),
       input.isMouselookActive(),
-      world.player.dead,
+      movementFrozen(),
     );
     const edgeReleaseFacing = mouselookReleaseFacing(
       prevCameraDrivenFacing,
@@ -2328,7 +2336,9 @@ async function startGame(
     } else if (edgeReleaseFacing !== null) {
       pendingReleaseFacing = edgeReleaseFacing;
     }
-    const movementFacing = !world.player.dead
+    // A ghost (dead && ghost) is not movement-frozen and keeps its facing; only a
+    // corpse-bound dead player (dead && !ghost) loses it.
+    const movementFacing = !movementFrozen()
       ? (renderFacing ?? controllerFacing ?? pendingReleaseFacing)
       : null;
 

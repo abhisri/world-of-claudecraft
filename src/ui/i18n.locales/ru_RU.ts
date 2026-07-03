@@ -2518,6 +2518,13 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.warlock_imp.name': 'Огненный демон',
   'entities.mobs.warlock_voidwalker.name': 'Демон Пустоты',
   'entities.mobs.ysolei.name': 'Изолея, Воплощение Утонувшей луны',
+  'hudChrome.death.resurrectAtCorpse': 'Воскреснуть у тела',
+  'hudChrome.death.resurrectAtHealer': 'Целитель душ (болезнь воскрешения)',
+  'hudChrome.death.spiritHealerAlive': 'Целитель душ оберегает мёртвых. Вы всё ещё среди живых.',
+  'entities.npcs.spirit_healer.name': 'Целитель душ',
+  'entities.npcs.spirit_healer.title': 'Хранитель мёртвых',
+  'entities.npcs.spirit_healer.greeting':
+    'Покойся, дух. Я могу вернуть тебя в тело, но обратный путь оставит тебя ослабленным.',
   'entities.npcs.the_merchant.name': 'Торговец',
   'entities.npcs.the_merchant.title': 'Хранитель мирового рынка',
   'entities.npcs.the_merchant.greeting':
@@ -4995,6 +5002,7 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.auraEffect.reduce.sta': 'Снижает выносливость на {value}',
   'hudChrome.auraEffect.reduce.spi': 'Снижает дух на {value}',
   'hudChrome.auraEffect.reduce.allStats': 'Снижает все характеристики на {value}',
+  'hudChrome.auraEffect.allStatsPctReduce': 'Снижает все характеристики на {pct}%',
   'hudChrome.auraEffect.dodge': 'Повышает шанс уклонения на {pct}%',
   'hudChrome.auraEffect.dodgeReduce': 'Снижает шанс уклонения на {pct}%',
   'hudChrome.auraEffect.armorFlat': 'Снижает броню на {value}',

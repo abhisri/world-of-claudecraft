@@ -909,6 +909,9 @@ const NPC_KEYS: Record<string, string> = {
   provisioner_hale: 'npc_villager',
   quartermaster_bree: 'npc_villager',
   brother_halven: 'npc_reliquary_keeper',
+  // The graveyard angel: a robed figure, rendered translucent (ethereal) with a
+  // holy shimmer by the renderer (see the spirit_healer branches there).
+  spirit_healer: 'npc_villager_robed',
 };
 
 export function visualKeyFor(e: Entity): string {

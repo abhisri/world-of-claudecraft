@@ -110,6 +110,7 @@ const NPC_IDS = [
   'auctioneer_voss', // second World Market auctioneer (Highwatch, zone 3)
   'brother_aldric_raid', // dynamically-spawned raid turn-in NPC (Crypt of Nythraxis)
   'brother_halven', // Collapsed Reliquary delve board NPC
+  'spirit_healer', // the graveyard angel (spawned at every graveyard + dungeon entry)
 ] as const;
 
 const QUEST_IDS = [

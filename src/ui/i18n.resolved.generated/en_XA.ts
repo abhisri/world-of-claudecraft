@@ -154,6 +154,11 @@ export const en_XA: EnTranslations = {
     "spectate": {
       "banner": "[Šþéçţáţíñĝ {name}]"
     },
+    "death": {
+      "resurrectAtCorpse": "[Ŕéšúŕŕéçţ áţ Çóŕþšé]",
+      "resurrectAtHealer": "[Ţĥé Þáļé Ķééþéŕ (Ķééþéŕ'š Ţóļļ)]",
+      "spiritHealerAlive": "[Ţĥé Þáļé Ķééþéŕ ŵáţçĥéš óʋéŕ ţĥé ðéáð. Ýóú áŕé šţíļļ áɱóñĝ ţĥé ļíʋíñĝ.]"
+    },
     "emotes": {
       "wave": "[Ŵáʋé]",
       "laugh": "[ĻÓĻ]",
@@ -801,6 +806,7 @@ export const en_XA: EnTranslations = {
         "spi": "[Ŕéðúçéš Šþíŕíţ ƀý {value}]",
         "allStats": "[Ŕéðúçéš áļļ áţţŕíƀúţéš ƀý {value}]"
       },
+      "allStatsPctReduce": "[Ŕéðúçéš áļļ áţţŕíƀúţéš ƀý {pct}%]",
       "dodge": "[Íñçŕéášéš ðóðĝé çĥáñçé ƀý {pct}%]",
       "dodgeReduce": "[Ŕéðúçéš ðóðĝé çĥáñçé ƀý {pct}%]",
       "armorFlat": "[Ŕéðúçéš áŕɱóŕ ƀý {value}]",
@@ -6475,6 +6481,11 @@ export const en_XA: EnTranslations = {
         "name": "[Ɓŕóţĥéŕ Ĥáļʋéñ]",
         "title": "[Ŕéļíɋúáŕý Ķééþéŕ]",
         "greeting": "[Ţĥé ŕéļíɋúáŕý ƀéļóŵ ĥáš šĥíƒţéð áĝáíñ.]"
+      },
+      "spirit_healer": {
+        "name": "[Ţĥé Þáļé Ķééþéŕ]",
+        "title": "[Ŵáŕðéñ óƒ ţĥé Ðéáð]",
+        "greeting": "[Ŕéšţ ñóŵ, šþíŕíţ. Í çáñ ŕéţúŕñ ýóú ţó ýóúŕ ƀóðý, ƀúţ ţĥé çŕóššíñĝ ƀáçķ ļéáʋéš ýóú ŵéáķ.]"
       },
       "tidewatcher_ondrel": {
         "name": "[Óñðŕéļ Ʋáñé]",
