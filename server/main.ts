@@ -115,6 +115,7 @@ import {
 } from './github';
 import { topContributors } from './github_contributors';
 import { pruneGitHubOAuthStates } from './github_db';
+import { createAccessLogSink } from './http/access_log';
 import { handleClientError } from './http/client_error';
 import { DEFAULT_DISPATCH, type DispatchMode, loadConfig } from './http/config';
 import {
@@ -123,6 +124,10 @@ import {
   createApiDispatcher,
   selectApiEntry,
 } from './http/dispatch';
+import { handleLivez, handleMetrics, handleReadyz, markDraining } from './http/health';
+import { logger } from './http/logger';
+import { createHttpMetrics } from './http/metrics';
+import { teeMetricSink } from './http/middleware/metric_sink';
 import { withSecurityHeaders } from './http/middleware/security_headers';
 import { apiRegistry } from './http/registry';
 import { isUniqueViolation, json, moderationErrorBody, readBody } from './http_util';
@@ -769,11 +774,11 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
         accountId: account.id,
         username: account.username,
         ...requestMetadata(req),
-      }).catch((err) => console.error('suspicious registration report failed:', err));
+      }).catch((err) => logger.error({ err }, 'suspicious registration report failed'));
       // Capture the referral when this account signed up via a card link
       // (?ref=<slug>). Best-effort: never block or fail registration on it.
       void captureReferral(account.id, body.ref).catch((err) =>
-        console.error('referral capture failed:', err),
+        logger.error({ err }, 'referral capture failed'),
       );
       return json(res, 200, { token, username: account.username });
     }
@@ -1584,7 +1589,7 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
     }
     json(res, 404, { error: 'unknown endpoint' });
   } catch (err: any) {
-    console.error('api error:', err);
+    logger.error({ err }, 'api error');
     json(res, 500, { error: 'internal error' });
   }
 }
@@ -1711,10 +1716,24 @@ configureInternalRuntime(game);
 // to tier-1-only limiting rather than failing requests.
 setRateLimitTier2Store(createPgRateLimitStore({ pool }));
 
+// The RED /metrics exporter (Phase 23): ONE prom-client registry with the default
+// process/runtime metrics attached, paired with the structured access-log sink
+// into ONE composite tee. Every migrated route records through this composite, so
+// each request both increments the Prometheus counter/histogram and emits one
+// structured access line; the route :param TEMPLATE bounds the metric cardinality
+// and disambiguates the four surfaces, which is why all four dispatchers below
+// share this single registry and access-log stream.
+const httpMetrics = createHttpMetrics({ defaultMetrics: true });
+const httpMetricSink = teeMetricSink(createAccessLogSink(logger), httpMetrics.sink);
+
 // The in-house dispatcher that fronts the legacy handleApi ladder via a per-path
 // delegate. Built once; a path the registry owns (Phase 10 migrated the public
 // reads) runs the onion, every un-migrated path delegates to handleApi UNCHANGED.
-const apiDispatcher = createApiDispatcher({ registry: apiRegistry, delegate: handleApi });
+const apiDispatcher = createApiDispatcher({
+  registry: apiRegistry,
+  delegate: handleApi,
+  metricSink: httpMetricSink,
+});
 
 // The bound /api entry for the current dispatch mode, recomputed only when the
 // mode changes (boot + tests), never per request. It starts at the config default
@@ -1730,7 +1749,11 @@ let apiEntry: ApiDispatcher = selectApiEntry(DEFAULT_DISPATCH, apiDispatcher, ha
 // unmatched admin path (an unknown endpoint, a wrong method, a HEAD) delegates to
 // handleAdminApi UNCHANGED, so behavior stays byte-identical until Phase 25 removes it.
 const adminLegacy: ApiDelegate = (req, res) => handleAdminApi(req, res, game);
-const adminApiDispatcher = createApiDispatcher({ registry: apiRegistry, delegate: adminLegacy });
+const adminApiDispatcher = createApiDispatcher({
+  registry: apiRegistry,
+  delegate: adminLegacy,
+  metricSink: httpMetricSink,
+});
 let adminApiEntry: ApiDispatcher = selectApiEntry(
   DEFAULT_DISPATCH,
   adminApiDispatcher,
@@ -1743,7 +1766,11 @@ let adminApiEntry: ApiDispatcher = selectApiEntry(
 // table), HEAD, unknown /oauth paths, and wrong-method requests all keep their
 // legacy behavior byte-identically until Phase 25.
 const oauthLegacy: ApiDelegate = (req, res) => handleOAuth(req, res);
-const oauthApiDispatcher = createApiDispatcher({ registry: apiRegistry, delegate: oauthLegacy });
+const oauthApiDispatcher = createApiDispatcher({
+  registry: apiRegistry,
+  delegate: oauthLegacy,
+  metricSink: httpMetricSink,
+});
 let oauthApiEntry: ApiDispatcher = selectApiEntry(
   DEFAULT_DISPATCH,
   oauthApiDispatcher,
@@ -1763,6 +1790,7 @@ const internalLegacy: ApiDelegate = async (req, res) => {
 const internalApiDispatcher = createApiDispatcher({
   registry: apiRegistry,
   delegate: internalLegacy,
+  metricSink: httpMetricSink,
 });
 let internalApiEntry: ApiDispatcher = selectApiEntry(
   DEFAULT_DISPATCH,
@@ -1838,7 +1866,15 @@ export function routeHttpRequest(req: http.IncomingMessage, res: http.ServerResp
   // other /api route keeps the narrow realm/native allowlist.
   const publicCorsPath = isPublicCorsPath(path);
   if (applyCorsAndPreflight(req, res, isApi, publicCorsPath)) return;
-  if (url.startsWith('/internal/')) {
+  // Operational health + metrics endpoints, ahead of the /internal/ arm so they
+  // answer even while the rest of the surface drains. GET-only exact matches on
+  // the query-stripped path (mirroring the /sitemap-characters.xml arm below);
+  // other methods fall through to serveStatic. They inherit the top-level
+  // security headers set above and carry their own Cache-Control: no-store.
+  if (req.method === 'GET' && path === '/livez') handleLivez(res);
+  else if (req.method === 'GET' && path === '/readyz') handleReadyz(res);
+  else if (req.method === 'GET' && path === '/metrics') void handleMetrics(res, httpMetrics);
+  else if (url.startsWith('/internal/')) {
     // The flag-gated internal dispatcher; its delegate is the exact pre-Phase-18
     // composite (daily-rewards ops tried first, then handleInternalApi), so the
     // 'legacy' mode and every unmatched path stay byte-identical.
@@ -1980,6 +2016,10 @@ export async function startServer(): Promise<http.Server> {
   });
 
   const shutdown = async () => {
+    // Flip readiness to draining FIRST so /readyz answers 503 and a load balancer
+    // sheds new traffic before we stop the loop and persist (in-flight requests and
+    // /livez keep working through the drain).
+    markDraining();
     console.log('shutting down: saving characters...');
     game.stop();
     await game.saveAll('shutdown');
