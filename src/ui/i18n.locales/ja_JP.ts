@@ -34,7 +34,11 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinResult': '+{points} ポイント',
   'hudChrome.dailyRewards.spinButton': 'スピン',
   'hudChrome.dailyRewards.tasks': 'タスク',
+  'hudChrome.dailyRewards.taskMultiplier': '{multiplier}倍倍率',
+  'hudChrome.dailyRewards.pointsGained': '{points} デイリー報酬ポイントを獲得しました。',
   'hudChrome.dailyRewards.leaderboard': 'デイリーランキング',
+  'hudChrome.dailyRewards.totalPlayer': '本日のプレイヤー {count} 人',
+  'hudChrome.dailyRewards.totalPlayers': '本日のプレイヤー {count} 人',
   'hudChrome.dailyRewards.history': '過去の当選者',
   'hudChrome.dailyRewards.noLeaders': 'まだポイントがありません。',
   'hudChrome.dailyRewards.noHistory': 'まだ支払いがありません。',
@@ -582,6 +586,8 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
     'ホルダー特典が有効です。署名や支払いが必要なときはアプリを接続してください。',
   'wallet.helpLinkedDisconnectedWithBalance':
     'ホルダー特典が有効です。署名や支払いが必要なときはアプリを接続してください。',
+  'wallet.extensionHelp':
+    'ここにウォレットを表示するには、Solflare Wallet などのブラウザ用ウォレット拡張機能を有効にしておいてください。',
   'wallet.flowConnect': 'ウォレットを選択してください。認証は自動的に続行されます。',
   'wallet.flowSign':
     'ウォレットアプリで認証メッセージに署名してください。トランザクションや SOL は不要です。',

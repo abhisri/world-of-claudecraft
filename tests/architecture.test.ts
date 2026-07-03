@@ -158,6 +158,7 @@ const UI_PURE_CORES = [
   'src/ui/minimap_markers.ts',
   'src/ui/fct_core.ts',
   'src/ui/fct_event.ts',
+  'src/ui/window_resize_core.ts',
   'src/ui/focus_order.ts',
   'src/ui/roving_index.ts',
   'src/ui/live_region_politeness.ts',

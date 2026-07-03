@@ -1,11 +1,13 @@
 import type {
   AccountCosmetics,
   DailyRewardHistory,
+  DailyRewardLeaderboardPage,
   DailyRewardSpinResult,
   DailyRewardStatus,
   DelveCompanionInfo,
   DelveRunInfo,
   LockpickView,
+  PlayerProfessionsView,
 } from '../world_api';
 import { lineOfSightClear, resolveMovement, resolvePosition } from './colliders';
 import { auraAffectsStats, removeCancelableAura } from './combat/aura_cancel';
@@ -266,6 +268,7 @@ import {
   angleTo,
   armorReduction,
   type CrowdControlDrCategory,
+  cloneInvSlot,
   DELVE_COMPANION_HEAL_INTERVAL,
   type DelveDef,
   type DelveModuleDef,
@@ -281,6 +284,7 @@ import {
   FISHING_CAST_TIME,
   GCD,
   type InvSlot,
+  type ItemInstancePayload,
   isConsuming,
   isPetClass,
   isQuestTurnInNpc,
@@ -310,7 +314,13 @@ import {
   virtualLevel,
   xpToReachLevel,
 } from './types';
-import { groundHeight, WATER_LEVEL } from './world';
+import {
+  groundHeight,
+  nearSteepWalls,
+  terrainDownhill,
+  terrainSteepnessAt,
+  WATER_LEVEL,
+} from './world';
 
 // TRIVIAL_LEVEL_GAP moved to mob/targeting.ts (used only by isTrivialTo).
 // CORPSE_DURATION moved to combat/damage.ts (C1; used only by the death path).
@@ -411,7 +421,15 @@ const DELVE_COMPANION_LEVEL_PCT = [0, 0.5, 0.75, 1.0]; // index = rank
 // re-exported from there so external importers (src/ui/sim_i18n.ts, tests) are unchanged.
 export { DELVE_IMPLEMENTED_AFFIXES, DELVE_MODULE_NAMES } from './delves/runs';
 
-const MAX_CLIMB_SLOPE = PLAYER_MAX_CLIMB_SLOPE; // rise/run above which a ground move is blocked (cliffs, world rim)
+// Rise/run above which ground is unwalkable (cliffs, mountain walls, the world
+// rim). Uphill steps are blocked both along the step direction AND by the true
+// terrain steepness at the destination (terrainSteepness), so a diagonal
+// switchback cannot beat the limit; airborne movement is gated the same way so
+// jump-spam cannot climb a face; and a player standing on ground steeper than
+// this slides downhill (STEEP_SLIDE_SPEED) and cannot jump until footing is
+// walkable again.
+const MAX_CLIMB_SLOPE = PLAYER_MAX_CLIMB_SLOPE;
+const STEEP_SLIDE_SPEED = RUN_SPEED; // yd/s a player skids downhill off unwalkable ground
 
 // How far a mob pulls same-family neighbours into a fight ("social aggro").
 // Murlocs (the clustered water mobs players call "frogs") used to pull too much,
@@ -1227,8 +1245,8 @@ export class Sim {
         for (const id of s.unlockedMilestones) meta.unlockedMilestones.add(id);
       meta.copper = s.copper;
       meta.equipment = { ...s.equipment };
-      meta.inventory = s.inventory.map((i) => ({ ...i }));
-      meta.vendorBuyback = (s.vendorBuyback ?? []).map((i) => ({ ...i }));
+      meta.inventory = s.inventory.map(cloneInvSlot);
+      meta.vendorBuyback = (s.vendorBuyback ?? []).map(cloneInvSlot);
       for (const q of s.questLog) {
         if (q.state !== 'done')
           meta.questLog.set(q.questId, {
@@ -1433,8 +1451,8 @@ export class Sim {
       pos: { x: e.pos.x, z: e.pos.z },
       facing: e.facing,
       equipment: { ...meta.equipment },
-      inventory: meta.inventory.map((i) => ({ ...i })),
-      vendorBuyback: meta.vendorBuyback.map((i) => ({ ...i })),
+      inventory: meta.inventory.map(cloneInvSlot),
+      vendorBuyback: meta.vendorBuyback.map(cloneInvSlot),
       questLog: [...meta.questLog.values()].map((q) => ({
         questId: q.questId,
         counts: [...q.counts],
@@ -1717,6 +1735,21 @@ export class Sim {
       spin: { claimed: false, points: null, outcomeKey: null, claimedAt: null },
       tasks: [],
       leaderboard: [],
+      leaderboardTotal: 0,
+    });
+  }
+
+  dailyRewardLeaderboard(
+    page = 0,
+    pageSize = LEADERBOARD_PAGE_SIZE,
+  ): Promise<DailyRewardLeaderboardPage> {
+    return Promise.resolve({
+      day: '1970-01-01',
+      leaders: [],
+      page: Math.max(0, Math.floor(page)),
+      pageCount: 1,
+      total: 0,
+      pageSize,
     });
   }
 
@@ -2041,6 +2074,7 @@ export class Sim {
       // healingThreat/countItem are bound elsewhere in this host (C4a/C2/C3/Q1) - deduped.
       spendResource: sim.spendResource.bind(sim),
       removeItem: sim.removeItem.bind(sim),
+      removeFungibleItem: sim.removeFungibleItem.bind(sim),
       partyOf: sim.partyOf.bind(sim),
       removeFromParty: (pid: number, verb: string) => sim.party.removeFromParty(pid, verb),
       // dropPartyMarkers flips to the T1 marker store (targeting); lazy arrow since
@@ -2055,6 +2089,7 @@ export class Sim {
       onInventoryChangedForQuests: (meta) => onInventoryChangedForQuests(sim.ctx, meta),
       checkQuestReady: (qp, meta) => checkQuestReady(sim.ctx, qp, meta),
       countItem: sim.countItem.bind(sim),
+      countFungibleItem: sim.countFungibleItem.bind(sim),
       completeQuestForDev: (questId, pid) => completeQuestForDev(sim.ctx, questId, pid),
       completeCurrentQuestsForDev: (pid) => completeCurrentQuestsForDev(sim.ctx, pid),
       // I1 dungeon instancing now lives in instances/dungeons.ts; these route through
@@ -2714,7 +2749,13 @@ export class Sim {
     const h0 = groundHeight(p.pos.x, p.pos.z, this.cfg.seed);
     const h1 = groundHeight(nx, nz, this.cfg.seed);
     if (h1 < WATER_LEVEL - SWIM_DEPTH) return done(false);
-    if (h1 > h0 && (h1 - h0) / step > MAX_CLIMB_SLOPE) return done(false);
+    if (
+      h1 > h0 &&
+      ((h1 - h0) / step > MAX_CLIMB_SLOPE ||
+        terrainSteepnessAt(nx, nz, this.cfg.seed) > MAX_CLIMB_SLOPE)
+    ) {
+      return done(false);
+    }
     const resolved = this.resolveMove(p.pos.x, p.pos.z, nx, nz, BODY_RADIUS, p);
     p.pos.x = resolved.x;
     p.pos.z = resolved.z;
@@ -2776,7 +2817,14 @@ export class Sim {
     const h0 = groundHeight(p.pos.x, p.pos.z, this.cfg.seed);
     const h1 = groundHeight(nx, nz, this.cfg.seed);
     if (h1 < WATER_LEVEL - SWIM_DEPTH) return true; // don't trail into deep water
-    if (h1 > h0 && step > 1e-5 && (h1 - h0) / step > MAX_CLIMB_SLOPE) return true; // wall/cliff
+    if (
+      h1 > h0 &&
+      step > 1e-5 &&
+      ((h1 - h0) / step > MAX_CLIMB_SLOPE ||
+        terrainSteepnessAt(nx, nz, this.cfg.seed) > MAX_CLIMB_SLOPE)
+    ) {
+      return true; // wall/cliff
+    }
     const resolved = this.resolveMove(p.pos.x, p.pos.z, nx, nz, BODY_RADIUS, p);
     p.pos.x = resolved.x;
     p.pos.z = resolved.z;
@@ -2824,8 +2872,13 @@ export class Sim {
     if (wantsMove && p.sitting) this.standUp(p);
 
     const hasMoveInput = mx !== 0 || mz !== 0;
-    const moving = hasMoveInput && !isRooted(p);
     const swimming = this.isSwimming(p);
+    // Standing on unwalkably steep ground: no control, no jump, slide downhill.
+    const steepGround =
+      p.onGround &&
+      !swimming &&
+      terrainSteepnessAt(p.pos.x, p.pos.z, this.cfg.seed) > MAX_CLIMB_SLOPE;
+    const moving = hasMoveInput && !isRooted(p) && !steepGround;
     let wishX = 0,
       wishZ = 0,
       wishSpeed = 0;
@@ -2854,20 +2907,46 @@ export class Sim {
     }
 
     const movingOnGround = moving && (p.onGround || swimming);
-    if (movingOnGround || (!p.onGround && (p.vx !== 0 || p.vz !== 0))) {
-      const stepX = movingOnGround ? wishX * wishSpeed : p.vx;
-      const stepZ = movingOnGround ? wishZ * wishSpeed : p.vz;
+    const slide = steepGround ? terrainDownhill(p.pos.x, p.pos.z, this.cfg.seed) : null;
+    if (slide || movingOnGround || (!p.onGround && (p.vx !== 0 || p.vz !== 0))) {
+      if (slide && p.castingAbility) this.cancelCast(p);
+      const stepX = slide ? slide.x * STEEP_SLIDE_SPEED : movingOnGround ? wishX * wishSpeed : p.vx;
+      const stepZ = slide ? slide.z * STEEP_SLIDE_SPEED : movingOnGround ? wishZ * wishSpeed : p.vz;
       let nx = p.pos.x + stepX * DT;
       let nz = p.pos.z + stepZ * DT;
-      // cliffs and the world rim are walls, not ramps
+      // cliffs, steep mountainsides, and the world rim are walls, not ramps:
+      // an uphill step is blocked when the step itself is too steep OR when it
+      // lands on ground whose true gradient is unwalkable (so approaching at an
+      // angle cannot cheat the limit)
       if (p.onGround && !swimming) {
         const h0 = groundHeight(p.pos.x, p.pos.z, this.cfg.seed);
         const h1 = groundHeight(nx, nz, this.cfg.seed);
         const run = Math.hypot(nx - p.pos.x, nz - p.pos.z);
-        if (h1 > h0 && run > 1e-5 && (h1 - h0) / run > MAX_CLIMB_SLOPE) {
+        if (
+          h1 > h0 &&
+          run > 1e-5 &&
+          ((h1 - h0) / run > MAX_CLIMB_SLOPE ||
+            terrainSteepnessAt(nx, nz, this.cfg.seed) > MAX_CLIMB_SLOPE)
+        ) {
           nx = p.pos.x;
           nz = p.pos.z;
-          if (!p.onGround) {
+        }
+      } else if (!p.onGround) {
+        // Airborne, the same wall rule applies: terrain rising above the body
+        // that could not be walked up cannot be jumped into either. The player
+        // drops at the base of the face instead of beaching partway up it.
+        const h1 = groundHeight(nx, nz, this.cfg.seed);
+        if (h1 > p.pos.y) {
+          const h0 = groundHeight(p.pos.x, p.pos.z, this.cfg.seed);
+          const run = Math.hypot(nx - p.pos.x, nz - p.pos.z);
+          if (
+            h1 > h0 &&
+            run > 1e-5 &&
+            ((h1 - h0) / run > MAX_CLIMB_SLOPE ||
+              terrainSteepnessAt(nx, nz, this.cfg.seed) > MAX_CLIMB_SLOPE)
+          ) {
+            nx = p.pos.x;
+            nz = p.pos.z;
             p.vx = 0;
             p.vz = 0;
           }
@@ -2909,7 +2988,7 @@ export class Sim {
       }
       return;
     }
-    if (inp.jump && p.onGround && !isRooted(p)) {
+    if (inp.jump && p.onGround && !isRooted(p) && !steepGround) {
       p.vy = JUMP_VELOCITY * this.jumpMult(p);
       p.vx = wishX * wishSpeed;
       p.vz = wishZ * wishSpeed;
@@ -3224,7 +3303,13 @@ export class Sim {
       const h0 = groundHeight(cx, cz, this.cfg.seed);
       const h1 = groundHeight(nx, nz, this.cfg.seed);
       if (h1 < WATER_LEVEL - SWIM_DEPTH) break; // would land in deep water
-      if (h1 > h0 && (h1 - h0) / adv > MAX_CLIMB_SLOPE) break; // would slam into a cliff
+      if (
+        h1 > h0 &&
+        ((h1 - h0) / adv > MAX_CLIMB_SLOPE ||
+          terrainSteepnessAt(nx, nz, this.cfg.seed) > MAX_CLIMB_SLOPE)
+      ) {
+        break; // would slam into a cliff
+      }
       cx = nx;
       cz = nz;
       moved += adv;
@@ -3921,12 +4006,26 @@ export class Sim {
     let bestX = e.pos.x,
       bestZ = e.pos.z,
       bestProgress = 1e-3;
+    // Swimmers ride the water surface, so slope checks clamp submerged ground
+    // to the waterline (a sloped lake bed is not a wall; see pathfind rideHeight).
+    const ride = (h: number): number => (canSwim && h < WATER_LEVEL ? WATER_LEVEL : h);
+    let h0 = Number.NaN; // lazily sampled: only steep cells pay for heights
     for (const off of MOVE_SLIDE_FAN) {
       const a = desired + off;
       const nx = e.pos.x + Math.sin(a) * step;
       const nz = e.pos.z + Math.cos(a) * step;
       // landlocked creatures stop at the waterline instead of walking under it
       if (!canSwim && groundHeight(nx, nz, this.cfg.seed) < WATER_LEVEL - SWIM_DEPTH) continue;
+      // Mobs, pets, and feared players obey the wall rule too: no uphill step
+      // onto unwalkably steep ground. Screened to the wall bands so the hot
+      // open-world fan pays nothing; inside a band the memoized cell steepness
+      // screens next, and only actual wall cells pay for exact heights. This
+      // is a NEW gate for these movers, so the finer per-step cliff check
+      // players get is not replicated here.
+      if (nearSteepWalls(nx, nz) && terrainSteepnessAt(nx, nz, this.cfg.seed) > MAX_CLIMB_SLOPE) {
+        if (Number.isNaN(h0)) h0 = ride(groundHeight(e.pos.x, e.pos.z, this.cfg.seed));
+        if (ride(groundHeight(nx, nz, this.cfg.seed)) > h0) continue;
+      }
       const r = this.resolveMovePoint(nx, nz, BODY_RADIUS, e);
       const progress = d - Math.hypot(r.x - dest.x, r.z - dest.z);
       if (progress > bestProgress) {
@@ -4286,12 +4385,25 @@ export class Sim {
     return n;
   }
 
+  // Fungible-only count for `itemId` (excludes per-instance slots, #1165). The
+  // World Market lists/escrows against this, never the instanced count, so an
+  // instanced copy is never sold as if it were a plain stack member.
+  countFungibleItem(itemId: string, pid?: number): number {
+    const r = this.resolve(pid);
+    if (!r) return 0;
+    let n = 0;
+    for (const s of r.meta.inventory) if (s.itemId === itemId && !s.instance) n += s.count;
+    return n;
+  }
+
   addItem(itemId: string, count: number, pid?: number): void {
     const r = this.resolve(pid);
     if (!r) return;
     const { meta } = r;
     const def = ITEMS[itemId];
-    const existing = meta.inventory.find((s) => s.itemId === itemId);
+    // Never merge into (or split off of) an instanced slot: instanced copies keep
+    // their own signer/charges/rolled/boundTo payload, each in its own slot (#1165).
+    const existing = meta.inventory.find((s) => s.itemId === itemId && !s.instance);
     if (existing) existing.count += count;
     else meta.inventory.push({ itemId, count });
     this.emit({
@@ -4306,6 +4418,23 @@ export class Sim {
     }
   }
 
+  // Grant a single non-fungible copy of `itemId` carrying an instance payload
+  // (#1165: signer/charges/rolled/boundTo). Always its own slot entry (count 1),
+  // never merged with an existing plain or differently-instanced stack.
+  addItemInstance(itemId: string, instance: ItemInstancePayload, pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r) return;
+    const { meta } = r;
+    const def = ITEMS[itemId];
+    meta.inventory.push({ itemId, count: 1, instance });
+    this.emit({
+      type: 'loot',
+      text: `You receive: ${def?.name ?? itemId}.`,
+      pid: meta.entityId,
+    });
+    this.ctx.onInventoryChangedForQuests(meta);
+  }
+
   removeItem(itemId: string, count: number, pid?: number): void {
     const r = this.resolve(pid);
     if (!r) return;
@@ -4313,6 +4442,24 @@ export class Sim {
     for (let i = meta.inventory.length - 1; i >= 0 && count > 0; i--) {
       const s = meta.inventory[i];
       if (s.itemId !== itemId) continue;
+      const take = Math.min(s.count, count);
+      s.count -= take;
+      count -= take;
+      if (s.count <= 0) meta.inventory.splice(i, 1);
+    }
+    this.ctx.onInventoryChangedForQuests(meta);
+  }
+
+  // Fungible-only removal (#1165): skips instanced slots entirely, so a market
+  // listing/escrow can never consume a signed/rolled/bound copy even when the
+  // caller only checked countFungibleItem beforehand.
+  removeFungibleItem(itemId: string, count: number, pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r) return;
+    const { meta } = r;
+    for (let i = meta.inventory.length - 1; i >= 0 && count > 0; i--) {
+      const s = meta.inventory[i];
+      if (s.itemId !== itemId || s.instance) continue;
       const take = Math.min(s.count, count);
       s.count -= take;
       count -= take;
@@ -5787,6 +5934,12 @@ export class Sim {
 
   get delveDaily(): { date: string; firstClearXp: string[]; markClears: number } {
     return this.delveDailyWire(this.primaryId);
+  }
+
+  // Stub read surface for #1164: professions skill tracking + recipes land in
+  // later issues (#1119/#1120). Always empty until then.
+  get professionsState(): PlayerProfessionsView {
+    return { skills: [] };
   }
 }
 

@@ -289,6 +289,8 @@ export const en = {
       'Holder perks are active. Connect the app when you need to sign or spend.',
     helpLinkedDisconnectedWithBalance:
       'Holder perks are active. Connect the app when you need to sign or spend.',
+    extensionHelp:
+      'To see a wallet here, keep a browser wallet extension such as Solflare Wallet active.',
     flowConnect: 'Choose a wallet. Verification continues automatically.',
     flowSign: 'Sign the verification message in your wallet app. No transaction or SOL required.',
     flowVerify: 'Verifying wallet ownership...',

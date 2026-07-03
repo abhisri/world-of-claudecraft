@@ -16,7 +16,7 @@
   /* ---------- delve board ---------- */
   #delve-board {
     width: 360px;
-    padding: 14px;
+    --window-pad: 14px;
   }
   #delve-board .delve-board-name {
     font-family: var(--title-font);
@@ -210,7 +210,7 @@
   #lockpick-panel {
     width: 420px;
     max-width: 92vw;
-    padding: 14px;
+    --window-pad: 14px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -1194,6 +1194,12 @@
   .lb-row.lb-daily {
     grid-template-columns: 44px 1fr 96px;
   }
+  .lb-total,
+  .dr-leaderboard-total {
+    margin: 2px 0 8px;
+    color: #b9ac82;
+    font-size: 12px;
+  }
   .lb-members {
     text-align: center;
     color: var(--color-text-muted);
@@ -1362,6 +1368,14 @@
   .dr-tasks small {
     color: var(--color-text-muted);
     font-size: 11px;
+  }
+  .dr-tasks small {
+    display: grid;
+    gap: 2px;
+  }
+  .dr-tasks small em {
+    color: #ffe27a;
+    font-style: normal;
   }
   .dr-intro {
     margin: 0 0 10px;
@@ -2444,7 +2458,7 @@
     top: 50%;
     transform: translate(-50%, -50%);
     width: 360px;
-    padding: 14px;
+    --window-pad: 14px;
     z-index: 60;
   }
   #confirm-dialog .cd-body {
@@ -3254,7 +3268,7 @@
   /* ---------- map ---------- */
   /* map */
   #map-window {
-    padding: 14px;
+    --window-pad: 14px;
   }
   /* zoom controls, matching the micro-menu button look */
   #map-zoom {
@@ -3298,7 +3312,7 @@
   /* ---------- Ashen Coliseum (arena) ---------- */
   #arena-window {
     width: 360px;
-    padding: 14px;
+    --window-pad: 14px;
   }
   .arena-sub {
     font-family: var(--title-font);

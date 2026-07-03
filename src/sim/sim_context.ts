@@ -280,6 +280,8 @@ export interface SimContextCallbacks {
   // (feedPet consumes the inventory hub; L2 dedupes when it adds the identical decl).
   spendResource(p: Entity, cost: number): void;
   removeItem(itemId: string, count: number, pid?: number): void;
+  // Fungible-only removal (#1165), skips instanced slots; market.ts escrows with this.
+  removeFungibleItem(itemId: string, count: number, pid?: number): void;
 
   // A1/T1 raid markers + party; Q1 quest-credit trio (kill/collect/turn-in credit,
   // foreign-called from handleDeath + the inventory hub + the interaction/crypt
@@ -296,6 +298,9 @@ export interface SimContextCallbacks {
   onInventoryChangedForQuests(meta: PlayerMeta): void;
   checkQuestReady(qp: QuestProgress, meta: PlayerMeta): void;
   countItem(itemId: string, pid?: number): number;
+  // Fungible-only count (excludes per-instance slots, #1165); market.ts uses this
+  // instead of countItem so an instanced copy is never listed as a plain stack member.
+  countFungibleItem(itemId: string, pid?: number): number;
   completeQuestForDev(questId: string, pid?: number): boolean;
   completeCurrentQuestsForDev(pid?: number): number;
 
@@ -766,6 +771,7 @@ export function createSimContext(host: SimContextHost): SimContext {
     // already passed through elsewhere - deduped, not re-added).
     spendResource: host.spendResource,
     removeItem: host.removeItem,
+    removeFungibleItem: host.removeFungibleItem,
     clearEntityMarker: host.clearEntityMarker,
     partyOf: host.partyOf,
     removeFromParty: host.removeFromParty,
@@ -774,6 +780,7 @@ export function createSimContext(host: SimContextHost): SimContext {
     onInventoryChangedForQuests: host.onInventoryChangedForQuests,
     checkQuestReady: host.checkQuestReady,
     countItem: host.countItem,
+    countFungibleItem: host.countFungibleItem,
     completeQuestForDev: host.completeQuestForDev,
     completeCurrentQuestsForDev: host.completeCurrentQuestsForDev,
     addEntity: host.addEntity,

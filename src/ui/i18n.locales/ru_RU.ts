@@ -34,7 +34,11 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinResult': '+{points} очков',
   'hudChrome.dailyRewards.spinButton': 'Крутить',
   'hudChrome.dailyRewards.tasks': 'Задания',
+  'hudChrome.dailyRewards.taskMultiplier': 'Множитель x{multiplier}',
+  'hudChrome.dailyRewards.pointsGained': 'Получено {points} очков ежедневных наград.',
   'hudChrome.dailyRewards.leaderboard': 'Ежедневная таблица лидеров',
+  'hudChrome.dailyRewards.totalPlayer': 'Сегодня {count} игрок',
+  'hudChrome.dailyRewards.totalPlayers': 'Сегодня {count} игроков',
   'hudChrome.dailyRewards.history': 'Прошлые победители',
   'hudChrome.dailyRewards.noLeaders': 'Пока нет очков.',
   'hudChrome.dailyRewards.noHistory': 'Пока нет выплат.',
@@ -595,6 +599,8 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
     'Привилегии держателя активны. Подключайте приложение, когда нужно подписать или потратить.',
   'wallet.helpLinkedDisconnectedWithBalance':
     'Привилегии держателя активны. Подключайте приложение, когда нужно подписать или потратить.',
+  'wallet.extensionHelp':
+    'Чтобы кошелек появился здесь, держите активным браузерное расширение кошелька, например Solflare Wallet.',
   'wallet.flowConnect': 'Выберите кошелек. Подтверждение продолжится автоматически.',
   'wallet.flowSign':
     'Подпишите сообщение подтверждения в приложении кошелька. Транзакция и SOL не требуются.',

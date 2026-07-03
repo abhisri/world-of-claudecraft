@@ -1505,11 +1505,6 @@
     width: 320px;
     z-index: 95;
   }
-  #report-window .panel-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
   #report-window [data-close] {
     background: transparent;
     border: 0;

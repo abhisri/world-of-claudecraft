@@ -34,7 +34,11 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinResult': '+{points} 포인트',
   'hudChrome.dailyRewards.spinButton': '돌리기',
   'hudChrome.dailyRewards.tasks': '과제',
+  'hudChrome.dailyRewards.taskMultiplier': '{multiplier}배 배율',
+  'hudChrome.dailyRewards.pointsGained': '{points} 일일 보상 포인트를 획득했습니다.',
   'hudChrome.dailyRewards.leaderboard': '일일 순위표',
+  'hudChrome.dailyRewards.totalPlayer': '오늘 플레이어 {count}명',
+  'hudChrome.dailyRewards.totalPlayers': '오늘 플레이어 {count}명',
   'hudChrome.dailyRewards.history': '지난 당첨자',
   'hudChrome.dailyRewards.noLeaders': '아직 포인트가 없습니다.',
   'hudChrome.dailyRewards.noHistory': '아직 지급 내역이 없습니다.',
@@ -579,6 +583,8 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
     '보유자 혜택이 활성화되었습니다. 서명이나 지출이 필요할 때 앱을 연결하세요.',
   'wallet.helpLinkedDisconnectedWithBalance':
     '보유자 혜택이 활성화되었습니다. 서명이나 지출이 필요할 때 앱을 연결하세요.',
+  'wallet.extensionHelp':
+    '여기에 지갑이 표시되려면 Solflare Wallet 같은 브라우저 지갑 확장 프로그램이 활성화되어 있어야 합니다.',
   'wallet.flowConnect': '지갑을 선택하세요. 인증은 자동으로 계속됩니다.',
   'wallet.flowSign': '지갑 앱에서 인증 메시지에 서명하세요. 트랜잭션이나 SOL은 필요 없습니다.',
   'wallet.flowVerify': '지갑 소유권 인증 중...',
