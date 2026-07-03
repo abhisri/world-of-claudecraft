@@ -910,7 +910,6 @@ export class ClientWorld implements IWorld {
   lockpickState: LockpickView | null = null;
   delveMarks = 0;
   companionUpgrades: Record<string, number> = {};
-  gatheringProficiency: Record<string, number> = {};
   // Per-delve clears (key `${delveId}:${tierId}`), mirrored from the self-wire so
   // delveShopOffers can resolve the shop lock badge client-side.
   delveClears: Record<string, number> = {};

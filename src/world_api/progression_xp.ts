@@ -53,11 +53,6 @@ export interface IWorldProgressionXp {
   unlockedMilestones: string[];
   // Classic Rested XP pool (inn-rested kill-XP bonus); 0 when not rested.
   restedXp: number;
-  // Gathering profession proficiency (Mining/Logging/Herbalism), keyed by
-  // profession id. Independent, additive counters: gaining one never changes
-  // another. Minimal read stub for issue #1119; reconcile with issue #1164
-  // (a broader professions facet) once that lands.
-  gatheringProficiency: Record<string, number>;
   // Post-cap progression: the realm-scoped lifetime-XP leaderboard, and the
   // opt-in cosmetic prestige action. Paged server-side (a realm can hold far
   // more than one page of max-level players); page is 0-based.
