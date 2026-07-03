@@ -790,8 +790,6 @@ export interface CharacterState {
   // contract (src/sim/professions/CLAUDE.md, #1164) parallel to the existing
   // `delveDaily`/`companionUpgrades` persisted fields.
   professions?: Partial<Record<string, number>>;
-  // load cleanly, defaulting every profession to 0).
-  gatheringProficiency?: Partial<Record<string, number>>;
   copper: number;
   hp: number;
   resource: number;

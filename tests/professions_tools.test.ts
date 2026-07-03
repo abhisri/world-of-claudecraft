@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ITEMS } from '../src/sim/data';
+import { ITEMS, NPCS } from '../src/sim/data';
 import { canGatherTier, gatherToolTier, isGatherToolUse } from '../src/sim/professions/tools';
 
 describe('gathering tool tier gating (#1123)', () => {
@@ -33,6 +33,23 @@ describe('gathering tool tier gating (#1123)', () => {
       expect(tools.every(Boolean)).toBe(true);
       const tiers = tools.map((item) => gatherToolTier(item, profession));
       expect(tiers).toEqual([1, 2, 3]);
+    }
+  });
+
+  it('the base tools are actually stocked by Trader Wilkes', () => {
+    const stock = NPCS.trader_wilkes.vendorItems ?? [];
+    for (const toolId of [
+      'copper_mining_pick',
+      'iron_mining_pick',
+      'mithril_mining_pick',
+      'handaxe',
+      'felling_axe',
+      'ironbark_axe',
+      'gathering_sickle',
+      'bronze_sickle',
+      'silverleaf_sickle',
+    ]) {
+      expect(stock).toContain(toolId);
     }
   });
 
