@@ -2505,17 +2505,23 @@
     box-shadow: 0 0 10px var(--class-color);
   }
 
-  /* WoW-style full-screen character creation (the offline panel carries the
-     cs-wow class). Desktop only: below 900px the classic card layout above
-     stays. The wrappers collapse via display:contents so every piece anchors
+  /* WoW-style full-screen character screens (the offline panel plus the two
+     online panels carry the cs-wow class). Desktop only: below 900px the
+     classic card layout above stays, and the ONLINE panels additionally keep
+     their card layout on touch bodies (the body.mobile-touch blocks below own
+     that styling), hence the body:not(.mobile-touch) prefix on their arms.
+     The wrappers collapse via display:contents so every piece anchors
      against the FIXED full-viewport panel: the 3D turntable fills the center
      over the landing backdrop, the class icons become the classic round
      bottom rail (gold ring on the pick, name under each), the skin swatches
      stand in as the left "race" column, the class summary docks right, the
-     name floats top-center, and the actions sit in the corners. All the ids /
-     buttons / rows stay untouched, so the main.ts wiring is unchanged. */
+     name floats top-center, and the actions sit in the corners. On the
+     roster (#charselect-panel) the character list docks right instead, WoW
+     style, and the summary docks left. All the ids / buttons / rows stay
+     untouched, so the main.ts wiring is unchanged. */
   @media (min-width: 900px) {
-    #offline-select.cs-wow {
+    #offline-select.cs-wow,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow {
       position: fixed;
       inset: 0;
       z-index: 60;
@@ -2534,14 +2540,33 @@
       box-shadow: none;
       overflow: hidden;
     }
+    /* The online panels' card layout is a grid, and grid-placement on an
+       absolutely-positioned child would anchor it to its grid AREA rather
+       than the full-screen panel: flatten to a block. */
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow {
+      display: block;
+    }
     #offline-select.cs-wow .charselect-layout,
     #offline-select.cs-wow .charselect-col-left,
     #offline-select.cs-wow .charselect-col-right,
     #offline-select.cs-wow .char-create,
-    #offline-select.cs-wow .auth-actions {
+    #offline-select.cs-wow .auth-actions,
+    body:not(.mobile-touch)
+      #charcreate-panel.cs-wow
+      :is(
+        .cs-head,
+        .cs-body-create,
+        .cs-create-col,
+        .cs-detail-col,
+        .char-create,
+        .skin-picker,
+        .cs-form-actions
+      ),
+    body:not(.mobile-touch) #charselect-panel.cs-wow :is(.cs-body, .cs-detail-col) {
       display: contents;
     }
-    #offline-select.cs-wow .auth-title {
+    #offline-select.cs-wow .auth-title,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .auth-title {
       position: absolute;
       top: 18px;
       left: 50%;
@@ -2552,8 +2577,13 @@
       text-shadow: 0 2px 8px #000;
       z-index: 3;
     }
-    /* The 3D turntable IS the stage: full viewport, chrome-free, behind the UI. */
-    #offline-select.cs-wow .char-preview-container {
+    /* The 3D turntable IS the stage: full viewport, chrome-free, behind the
+       UI. The online arms pin the container ids so this outranks the id-less
+       body:not(.mobile-touch) #charselect-panel .cs-preview sizing below. */
+    #offline-select.cs-wow .char-preview-container,
+    body:not(.mobile-touch)
+      :is(#charselect-panel, #charcreate-panel).cs-wow
+      :is(#online-preview-container, #charcreate-preview-container) {
       position: absolute;
       inset: 0;
       height: auto;
@@ -2571,7 +2601,8 @@
       z-index: 3;
       text-shadow: 0 1px 4px #000;
     }
-    #offline-select.cs-wow .char-input-group {
+    #offline-select.cs-wow .char-input-group,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .char-input-group {
       position: absolute;
       top: 82px;
       left: 50%;
@@ -2579,13 +2610,20 @@
       width: 300px;
       z-index: 3;
     }
-    #offline-select.cs-wow .char-input-group input {
+    #offline-select.cs-wow .char-input-group input,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .char-input-group input {
       text-align: center;
       background: #10101acc;
     }
+    /* The create form's Name / Class captions have no seat in the WoW layout. */
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .cs-section-header,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .skin-picker-header {
+      display: none;
+    }
     /* The classic bottom class rail: round portrait medallions, gold ring on
        the selection, the class name beneath in its class color. */
-    #offline-select.cs-wow .mini-class-row {
+    #offline-select.cs-wow .mini-class-row,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class-row {
       position: absolute;
       left: 50%;
       bottom: 26px;
@@ -2599,7 +2637,8 @@
       width: max-content;
       justify-content: center;
     }
-    #offline-select.cs-wow .mini-class {
+    #offline-select.cs-wow .mini-class,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2610,7 +2649,8 @@
       background: transparent;
       box-shadow: none;
     }
-    #offline-select.cs-wow .mini-class .mini-class-portrait {
+    #offline-select.cs-wow .mini-class .mini-class-portrait,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class .mini-class-portrait {
       width: 62px;
       height: 62px;
       border-radius: 50%;
@@ -2624,41 +2664,63 @@
         transform var(--transition-speed);
     }
     #offline-select.cs-wow .mini-class:hover .mini-class-portrait,
-    #offline-select.cs-wow .mini-class:focus-visible .mini-class-portrait {
+    #offline-select.cs-wow .mini-class:focus-visible .mini-class-portrait,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class:hover .mini-class-portrait,
+    body:not(.mobile-touch)
+      #charcreate-panel.cs-wow
+      .mini-class:focus-visible
+      .mini-class-portrait {
       border-color: var(--class-color);
       box-shadow: 0 0 12px var(--class-color);
     }
-    #offline-select.cs-wow .mini-class:focus-visible {
+    #offline-select.cs-wow .mini-class:focus-visible,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class:focus-visible {
       outline: 2px solid var(--color-border-focus);
       outline-offset: 3px;
       border-radius: 8px;
     }
-    #offline-select.cs-wow .mini-class.sel .mini-class-portrait {
+    #offline-select.cs-wow .mini-class.sel .mini-class-portrait,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class.sel .mini-class-portrait {
       border-color: var(--gold, #d4af37);
       box-shadow:
         0 0 0 2px #000,
         0 0 16px var(--gold, #d4af37);
     }
-    #offline-select.cs-wow .mini-class .mini-class-label {
+    #offline-select.cs-wow .mini-class .mini-class-label,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class .mini-class-label {
       font-size: 12px;
       color: var(--class-color);
       text-shadow: 0 1px 3px #000;
     }
-    #offline-select.cs-wow .mini-class.sel .mini-class-label {
+    #offline-select.cs-wow .mini-class.sel .mini-class-label,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .mini-class.sel .mini-class-label {
       color: #ffd100;
     }
-    /* Appearance swatches as the left column (the "race" slot: one race, many looks). */
-    #offline-select.cs-wow .skin-row {
+    /* Appearance swatches as the left column (the "race" slot: one race, many
+       looks). display:flex is restated because the create panel's base
+       .cs-create-col .skin-row is a 4-up grid. */
+    #offline-select.cs-wow .skin-row,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .skin-row {
       position: absolute;
       left: 26px;
       top: 50%;
       transform: translateY(-50%);
+      display: flex;
       flex-direction: column;
       gap: 12px;
+      width: auto;
       z-index: 3;
     }
+    /* The create panel's portrait swatches size to their grid cell; give them
+       a fixed medallion size in the column. */
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .skin-swatch-portrait {
+      width: 56px;
+      height: 56px;
+      aspect-ratio: auto;
+    }
     /* Class summary docks on the right, translucent so the stage shows through. */
-    #offline-select.cs-wow .class-details-panel {
+    #offline-select.cs-wow .class-details-panel,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .class-details-panel {
       position: absolute;
       right: 26px;
       top: 110px;
@@ -2686,8 +2748,117 @@
       z-index: 3;
       min-width: 140px;
     }
-    #offline-select.cs-wow .auth-error {
+    body:not(.mobile-touch) #charcreate-panel.cs-wow #btn-create-char {
+      position: absolute;
+      right: 26px;
+      bottom: 30px;
+      z-index: 3;
+      min-width: 180px;
+    }
+    body:not(.mobile-touch) #charcreate-panel.cs-wow #btn-charcreate-back {
+      position: absolute;
+      left: 26px;
+      bottom: 30px;
+      z-index: 3;
+      min-width: 140px;
+    }
+    #offline-select.cs-wow .auth-error,
+    body:not(.mobile-touch) #charcreate-panel.cs-wow .auth-error {
       text-align: center;
+    }
+
+    /* While a full-screen cs-wow panel is up, the landing chrome (sticky nav,
+       footer, SEO hero copy) would bleed through the translucent stage: park
+       it. The online arms keep the touch gate, matching their layout arms. */
+    body[data-start-panel="offline-select"] :is(
+        .homepage-header,
+        .homepage-footer,
+        .official-site-copy
+      ),
+    body:not(.mobile-touch)[data-start-panel="charselect-panel"]
+      :is(.homepage-header, .homepage-footer, .official-site-copy),
+    body:not(.mobile-touch)[data-start-panel="charcreate-panel"]
+      :is(.homepage-header, .homepage-footer, .official-site-copy) {
+      visibility: hidden;
+    }
+
+    /* The roster: the account chrome (realm / sort / wallet) stays a top bar,
+       the character list docks right (WoW style) with its actions at its
+       foot, and the selected character's summary docks left. display:flex is
+       restated because the card layout below unwraps .cs-head / .cs-head-row
+       with display:contents. */
+    body:not(.mobile-touch) #charselect-panel.cs-wow .cs-head {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      background: #0d0d16cc;
+      border-bottom: 1px solid var(--color-border-default);
+      padding: 10px 26px;
+      margin: 0;
+    }
+    body:not(.mobile-touch) #charselect-panel.cs-wow .cs-title {
+      margin: 0;
+      font-size: 20px;
+    }
+    body:not(.mobile-touch) #charselect-panel.cs-wow .cs-head-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      flex: 1 1 auto;
+      justify-content: flex-end;
+      margin: 0;
+    }
+    body:not(.mobile-touch) #charselect-panel.cs-wow .cs-wallet-help {
+      max-width: 300px;
+      font-size: 10px;
+    }
+    body:not(.mobile-touch) #charselect-panel.cs-wow .cs-list-col {
+      position: absolute;
+      right: 26px;
+      top: 150px;
+      bottom: 96px;
+      width: 340px;
+      /* The card layout gives the column height:100%; the dock stretches via
+         top/bottom instead. */
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #0d0d16d9;
+      border: 1px solid var(--color-border-default);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      z-index: 2;
+    }
+    body:not(.mobile-touch) #charselect-panel.cs-wow #char-list {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+    body:not(.mobile-touch) #charselect-panel.cs-wow .cs-list-actions {
+      margin-top: auto;
+      flex-shrink: 0;
+    }
+    body:not(.mobile-touch) #charselect-panel.cs-wow .class-details-panel {
+      position: absolute;
+      left: 26px;
+      top: 150px;
+      bottom: 96px;
+      width: 300px;
+      overflow-y: auto;
+      background: #0d0d16d9;
+      border: 1px solid var(--color-border-default);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      z-index: 2;
     }
   }
 
