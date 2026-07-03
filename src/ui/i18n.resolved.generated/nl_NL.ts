@@ -204,6 +204,8 @@ export const nl_NL: EnTranslations = {
       "tasks": "Taken",
       "taskMultiplier": "x{multiplier} multiplier",
       "pointsGained": "{points} daily rewards points gained.",
+      "showChestButton": "Show Chest",
+      "hideChestButton": "Hide Chest",
       "leaderboard": "Dagelijkse ranglijst",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",
@@ -401,7 +403,8 @@ export const nl_NL: EnTranslations = {
       "showItemLevel": "Itemniveau tonen",
       "itemLevelLine": "Itemniveau {level}",
       "itemScoreLine": "Score {score}",
-      "showSecondaryActionBar": "Secundaire actiebalk tonen"
+      "showSecondaryActionBar": "Secundaire actiebalk tonen",
+      "showDailyRewardsChest": "Show Daily Rewards Chest"
     },
     "controller": {
       "title": "Controller",

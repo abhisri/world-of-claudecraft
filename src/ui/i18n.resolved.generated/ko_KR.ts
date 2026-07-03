@@ -204,6 +204,8 @@ export const ko_KR: EnTranslations = {
       "tasks": "과제",
       "taskMultiplier": "{multiplier}배 배율",
       "pointsGained": "{points} 일일 보상 포인트를 획득했습니다.",
+      "showChestButton": "보물상자 표시",
+      "hideChestButton": "보물상자 숨기기",
       "leaderboard": "일일 순위표",
       "totalPlayer": "오늘 플레이어 {count}명",
       "totalPlayers": "오늘 플레이어 {count}명",
@@ -401,7 +403,8 @@ export const ko_KR: EnTranslations = {
       "showItemLevel": "아이템 레벨 표시",
       "itemLevelLine": "아이템 레벨 {level}",
       "itemScoreLine": "점수 {score}",
-      "showSecondaryActionBar": "보조 액션 바 표시"
+      "showSecondaryActionBar": "보조 액션 바 표시",
+      "showDailyRewardsChest": "일일 보상 보물상자 표시"
     },
     "controller": {
       "title": "컨트롤러",

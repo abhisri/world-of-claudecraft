@@ -1774,9 +1774,17 @@
     color: #ffe27a;
     text-align: right;
   }
+  .dr-chest-toggle {
+    margin-top: 8px;
+  }
   .dr-ranks {
     display: grid;
     gap: 4px;
+  }
+  .dr-leaderboard-ranks {
+    max-height: 222px;
+    overflow-y: auto;
+    padding-right: 2px;
   }
   .dr-rank span {
     color: var(--color-text-muted);

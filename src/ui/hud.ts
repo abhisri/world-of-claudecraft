@@ -1244,9 +1244,9 @@ export class Hud {
     } else if (dailyRewardsButton) {
       this.dailyRewardsButtonEl = dailyRewardsButton;
       dailyRewardsButton.innerHTML =
-        `<img class="daily-rewards-icon" src="/ui/daily-rewards/treasure_chest.webp" alt="" draggable="false" decoding="async">` +
-        `<span class="daily-rewards-label" data-i18n="hudChrome.dailyRewards.title">${t('hudChrome.dailyRewards.title')}</span>`;
+        '<img class="daily-rewards-icon" src="/ui/daily-rewards/treasure_chest.webp" alt="" draggable="false" decoding="async">';
       dailyRewardsButton.classList.remove('spin-ready');
+      this.applyDailyRewardsChestButtonVisibility();
       dailyRewardsButton.addEventListener('pointerdown', (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -3203,6 +3203,8 @@ export class Hud {
     onWalletConnect: () => {
       window.dispatchEvent(new CustomEvent('woc:wallet-verify'));
     },
+    showChestButton: () => this.showDailyRewardsChestButton(),
+    setShowChestButton: (show) => this.setDailyRewardsChestButtonPreference(show),
     ...this.windowFocus('#daily-rewards-window'),
     onVisibilityChange: () => this.syncAnyWindowOpenState(),
   });
@@ -4978,10 +4980,41 @@ export class Hud {
     );
   }
 
+  private showDailyRewardsChestButton(): boolean {
+    return this.optionsHooks?.settings.get('showDailyRewardsChest') ?? true;
+  }
+
+  private applyDailyRewardsChestButtonVisibility(show = this.showDailyRewardsChestButton()): void {
+    const button = this.dailyRewardsButtonEl;
+    if (!button) return;
+    const visible = this.dailyRewardsEnabled() && show;
+    button.toggleAttribute('hidden', !visible);
+    if (!visible) button.classList.remove('spin-ready');
+  }
+
+  private setDailyRewardsChestButtonPreference(show: boolean): void {
+    if (this.optionsHooks) {
+      this.optionsHooks.onSettingChange('showDailyRewardsChest', show);
+      return;
+    }
+    this.setDailyRewardsChestButtonVisible(show);
+  }
+
+  setDailyRewardsChestButtonVisible(show: boolean): void {
+    this.applyDailyRewardsChestButtonVisibility(show);
+    if (show) this.refreshDailyRewardsLauncher(true);
+  }
+
   private applyDailyRewardsLauncherStatus(status: DailyRewardStatus): void {
     if (!this.dailyRewardsEnabled()) return;
     const button = this.dailyRewardsButtonEl;
     if (!button) return;
+    if (!this.showDailyRewardsChestButton()) {
+      button.hidden = true;
+      button.classList.remove('spin-ready');
+      return;
+    }
+    button.hidden = false;
     button.classList.toggle('spin-ready', !status.eligibility.eligible || !status.spin.claimed);
   }
 
@@ -4989,6 +5022,8 @@ export class Hud {
     if (!this.dailyRewardsEnabled()) return;
     const button = this.dailyRewardsButtonEl;
     if (!button) return;
+    this.applyDailyRewardsChestButtonVisibility();
+    if (!this.showDailyRewardsChestButton()) return;
     const now = performance.now();
     if (!force && now - this.lastDailyRewardsLauncherRefreshAt < 60_000) return;
     this.lastDailyRewardsLauncherRefreshAt = now;

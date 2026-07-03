@@ -27,6 +27,8 @@ export interface DailyRewardsWindowDeps {
   onVisibilityChange?(): void;
   onStatus?(status: DailyRewardStatus): void;
   onWalletConnect?(): void;
+  showChestButton?(): boolean;
+  setShowChestButton?(show: boolean): void;
 }
 
 export class DailyRewardsWindow {
@@ -142,6 +144,10 @@ export class DailyRewardsWindow {
       ?.addEventListener('click', () => {
         this.deps.onWalletConnect?.();
       });
+    body.querySelector<HTMLButtonElement>('[data-chest-toggle]')?.addEventListener('click', () => {
+      this.deps.setShowChestButton?.(!this.showChestButton());
+      this.paint(view);
+    });
   }
 
   private async spin(): Promise<void> {
@@ -332,7 +338,19 @@ export class DailyRewardsWindow {
         return `<li class="${task.completed ? 'done' : ''}"><span>${esc(task.title)}</span><small><span>${esc(task.description)}</span>${multiplier}</small><b>${formatNumber(task.points, { maximumFractionDigits: 0 })}</b></li>`;
       })
       .join('');
-    return `<section class="dr-section"><h3>${esc(t('hudChrome.dailyRewards.tasks'))}</h3><ul class="dr-tasks">${rows}</ul></section>`;
+    const chestToggle = this.showChestButton()
+      ? t('hudChrome.dailyRewards.hideChestButton')
+      : t('hudChrome.dailyRewards.showChestButton');
+    return (
+      `<section class="dr-section"><h3>${esc(t('hudChrome.dailyRewards.tasks'))}</h3>` +
+      `<ul class="dr-tasks">${rows}</ul>` +
+      `<button type="button" class="lb-page-btn dr-chest-toggle" data-chest-toggle>${esc(chestToggle)}</button>` +
+      `</section>`
+    );
+  }
+
+  private showChestButton(): boolean {
+    return this.deps.showChestButton?.() ?? true;
   }
 
   private leaderboardHtml(status: DailyRewardStatus): string {
@@ -350,7 +368,7 @@ export class DailyRewardsWindow {
                 `<div class="dr-rank${row.me ? ' mine' : ''}"><span>${row.rank}</span><b>${esc(row.name)}</b><strong>${formatNumber(row.points, { maximumFractionDigits: 0 })}</strong></div>`,
             )
             .join('');
-    return `<section class="dr-section"><h3>${esc(t('hudChrome.dailyRewards.leaderboard'))}</h3>${total}<div class="dr-ranks">${rows}</div></section>`;
+    return `<section class="dr-section"><h3>${esc(t('hudChrome.dailyRewards.leaderboard'))}</h3>${total}<div class="dr-ranks dr-leaderboard-ranks">${rows}</div></section>`;
   }
 
   private historyHtml(history: DailyRewardHistory): string {

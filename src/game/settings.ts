@@ -233,6 +233,9 @@ export const BOOL_SETTINGS = {
   // applied in main.ts. Purely a display preference; the slots stay reachable via
   // their keybinds either way, so the row being hidden never disables those abilities.
   showSecondaryActionBar: { def: false },
+  // on by default: keep the Daily Rewards chest launcher visible on the HUD. Hiding
+  // it only removes the shortcut; rewards, eligibility, and the panel remain available.
+  showDailyRewardsChest: { def: true },
   // internal, never shown in the options UI: set true once main.ts has persisted a
   // device-appropriate graphicsPreset on a player's first run (a CONCLUSIVE detection).
   // It gates firstRunGraphicsPreset so a recognized device is classified at most once and

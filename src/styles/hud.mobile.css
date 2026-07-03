@@ -550,9 +550,6 @@
     height: 50px;
     pointer-events: auto;
   }
-  body.mobile-touch #daily-rewards-button .daily-rewards-label {
-    display: none;
-  }
   body.native-app.mobile-touch #daily-rewards-button,
   body.native-app.mobile-touch #daily-rewards-window {
     display: none !important;

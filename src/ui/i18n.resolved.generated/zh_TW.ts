@@ -204,6 +204,8 @@ export const zh_TW: EnTranslations = {
       "tasks": "任務",
       "taskMultiplier": "{multiplier}倍倍率",
       "pointsGained": "已獲得 {points} 每日獎勵點數。",
+      "showChestButton": "顯示寶箱",
+      "hideChestButton": "隱藏寶箱",
       "leaderboard": "每日排行榜",
       "totalPlayer": "今天 {count} 名玩家",
       "totalPlayers": "今天 {count} 名玩家",
@@ -401,7 +403,8 @@ export const zh_TW: EnTranslations = {
       "showItemLevel": "顯示物品等級",
       "itemLevelLine": "物品等級 {level}",
       "itemScoreLine": "評分 {score}",
-      "showSecondaryActionBar": "顯示副動作列"
+      "showSecondaryActionBar": "顯示副動作列",
+      "showDailyRewardsChest": "顯示每日獎勵寶箱"
     },
     "controller": {
       "title": "手把",

@@ -204,6 +204,8 @@ export const en_XA: EnTranslations = {
       "tasks": "[Ţášķš]",
       "taskMultiplier": "[ẋ{multiplier} ɱúļţíþļíéŕ]",
       "pointsGained": "[{points} ðáíļý ŕéŵáŕðš þóíñţš ĝáíñéð.]",
+      "showChestButton": "[Šĥóŵ Çĥéšţ]",
+      "hideChestButton": "[Ĥíðé Çĥéšţ]",
       "leaderboard": "[Ðáíļý Ļéáðéŕƀóáŕð]",
       "totalPlayer": "[{count} þļáýéŕ ţóðáý]",
       "totalPlayers": "[{count} þļáýéŕš ţóðáý]",
@@ -401,7 +403,8 @@ export const en_XA: EnTranslations = {
       "showItemLevel": "[Šĥóŵ Íţéɱ Ļéʋéļ]",
       "itemLevelLine": "[Íţéɱ Ļéʋéļ {level}]",
       "itemScoreLine": "[Šçóŕé {score}]",
-      "showSecondaryActionBar": "[Šĥóŵ Šéçóñðáŕý Áçţíóñ Ɓáŕ]"
+      "showSecondaryActionBar": "[Šĥóŵ Šéçóñðáŕý Áçţíóñ Ɓáŕ]",
+      "showDailyRewardsChest": "[Šĥóŵ Ðáíļý Ŕéŵáŕðš Çĥéšţ]"
     },
     "controller": {
       "title": "[Çóñţŕóļļéŕ]",

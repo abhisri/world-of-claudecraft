@@ -2196,7 +2196,7 @@
     border-radius: 8px;
     margin-bottom: 14px;
     background: transparent;
-    border: 2px solid transparent;
+    border: 0;
     box-shadow: none;
     color: #f6c15b;
     overflow: visible;
@@ -2205,12 +2205,8 @@
       filter 0.16s;
   }
   #daily-rewards-button.spin-ready {
-    border-color: var(--gold);
-    box-shadow: 0 0 5px #ffd10066;
+    box-shadow: none;
     color: #fff;
-    animation: tal-pulse 1.6s ease-in-out infinite;
-    animation-duration: calc(1.6s * var(--motion-scale, 1));
-    animation-play-state: var(--fx-ambient-anim, running);
   }
   #daily-rewards-button.spin-ready .daily-rewards-icon {
     animation: daily-rewards-icon-pulse 1.6s ease-in-out infinite;
@@ -2218,66 +2214,39 @@
     animation-play-state: var(--fx-ambient-anim, running);
   }
   #daily-rewards-button::before {
-    content: none;
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffe08a99 0%, #ffd10066 34%, #ffd10000 72%);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+    pointer-events: none;
+    z-index: 0;
   }
   #daily-rewards-button::after {
     content: none;
   }
+  #daily-rewards-button.spin-ready::before {
+    animation: daily-rewards-glow-pulse 1.6s ease-in-out infinite;
+    animation-duration: calc(1.6s * var(--motion-scale, 1));
+    animation-play-state: var(--fx-ambient-anim, running);
+  }
   #daily-rewards-button .daily-rewards-icon {
     position: relative;
     z-index: 1;
-    width: 58px;
-    height: 58px;
+    width: 64px;
+    height: 64px;
     display: block;
     object-fit: contain;
     pointer-events: none;
     filter: drop-shadow(0 2px 2px #000b) drop-shadow(0 0 4px #ffd56d55);
   }
-  #daily-rewards-button .daily-rewards-label {
-    position: absolute;
-    right: calc(100% - 6px);
-    top: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    max-width: 0;
-    padding: 0;
-    overflow: hidden;
-    opacity: 0;
-    white-space: nowrap;
-    font-family: var(--font-ui);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    line-height: 1;
-    color: var(--color-text-muted);
-    background: radial-gradient(circle at 35% 30%, #2c2c3a, #15151f);
-    border: 2px solid #4a3d1d;
-    border-right: none;
-    border-radius: 5px 0 0 5px;
-    box-shadow:
-      inset 0 1px 0 #ffffff18,
-      0 2px 4px #0009;
-    pointer-events: none;
-    z-index: -1;
-    transition:
-      max-width 0.2s ease,
-      opacity 0.15s ease,
-      padding 0.2s ease,
-      border-color 0.12s ease,
-      color 0.12s ease;
-  }
-  #daily-rewards-button:hover .daily-rewards-label,
-  #daily-rewards-button:focus-visible .daily-rewards-label {
-    max-width: 220px;
-    opacity: 1;
-    padding: 0 18px 0 12px;
-  }
   #daily-rewards-button:hover,
-  #daily-rewards-button:focus-visible,
-  #daily-rewards-button:hover .daily-rewards-label,
-  #daily-rewards-button:focus-visible .daily-rewards-label {
+  #daily-rewards-button:focus-visible {
     border-color: #ffe08a;
     outline: none;
     color: #fff;
@@ -2299,6 +2268,17 @@
     50% {
       filter: drop-shadow(0 2px 2px #000b) drop-shadow(0 0 14px #ffe08acc) brightness(1.16)
         saturate(1.12);
+    }
+  }
+  @keyframes daily-rewards-glow-pulse {
+    0%,
+    100% {
+      opacity: 0.34;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    50% {
+      opacity: 0.82;
+      transform: translate(-50%, -50%) scale(1.18);
     }
   }
   /* the lockout panel rows inside the shared tooltip box */

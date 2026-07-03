@@ -204,6 +204,8 @@ export const ja_JP: EnTranslations = {
       "tasks": "タスク",
       "taskMultiplier": "{multiplier}倍倍率",
       "pointsGained": "{points} デイリー報酬ポイントを獲得しました。",
+      "showChestButton": "宝箱を表示",
+      "hideChestButton": "宝箱を隠す",
       "leaderboard": "デイリーランキング",
       "totalPlayer": "本日のプレイヤー {count} 人",
       "totalPlayers": "本日のプレイヤー {count} 人",
@@ -401,7 +403,8 @@ export const ja_JP: EnTranslations = {
       "showItemLevel": "アイテムレベルを表示",
       "itemLevelLine": "アイテムレベル {level}",
       "itemScoreLine": "スコア {score}",
-      "showSecondaryActionBar": "セカンダリアクションバーを表示"
+      "showSecondaryActionBar": "セカンダリアクションバーを表示",
+      "showDailyRewardsChest": "デイリー報酬の宝箱を表示"
     },
     "controller": {
       "title": "コントローラー",

@@ -204,6 +204,8 @@ export const tr_TR: EnTranslations = {
       "tasks": "Görevler",
       "taskMultiplier": "x{multiplier} multiplier",
       "pointsGained": "{points} daily rewards points gained.",
+      "showChestButton": "Show Chest",
+      "hideChestButton": "Hide Chest",
       "leaderboard": "Günlük Lider Tablosu",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",
@@ -401,7 +403,8 @@ export const tr_TR: EnTranslations = {
       "showItemLevel": "Eşya Seviyesini Göster",
       "itemLevelLine": "Eşya Seviyesi {level}",
       "itemScoreLine": "Puan {score}",
-      "showSecondaryActionBar": "İkincil Eylem Çubuğunu Göster"
+      "showSecondaryActionBar": "İkincil Eylem Çubuğunu Göster",
+      "showDailyRewardsChest": "Show Daily Rewards Chest"
     },
     "controller": {
       "title": "Oyun Kolu",

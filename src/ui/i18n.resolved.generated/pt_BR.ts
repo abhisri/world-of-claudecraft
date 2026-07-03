@@ -204,6 +204,8 @@ export const pt_BR: EnTranslations = {
       "tasks": "Tarefas",
       "taskMultiplier": "x{multiplier} multiplier",
       "pointsGained": "{points} daily rewards points gained.",
+      "showChestButton": "Show Chest",
+      "hideChestButton": "Hide Chest",
       "leaderboard": "Classificação Diária",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",
@@ -401,7 +403,8 @@ export const pt_BR: EnTranslations = {
       "showItemLevel": "Mostrar nível do item",
       "itemLevelLine": "Nível do item {level}",
       "itemScoreLine": "Pontuação {score}",
-      "showSecondaryActionBar": "Mostrar Barra de Ação Secundária"
+      "showSecondaryActionBar": "Mostrar Barra de Ação Secundária",
+      "showDailyRewardsChest": "Show Daily Rewards Chest"
     },
     "controller": {
       "title": "Controle",

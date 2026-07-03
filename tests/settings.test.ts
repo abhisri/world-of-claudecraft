@@ -238,6 +238,7 @@ describe('Interface & Comfort settings pack', () => {
     expect(s.get('showWalletOnCharacterScreen')).toBe(true);
     expect(s.get('showWalletOnPlayerCard')).toBe(true);
     expect(s.get('showDevBadges')).toBe(true);
+    expect(s.get('showDailyRewardsChest')).toBe(true);
     expect(s.get('invertLookY')).toBe(false);
   });
 

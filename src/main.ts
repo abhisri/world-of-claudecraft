@@ -1344,6 +1344,10 @@ async function startGame(
       );
       return;
     }
+    if (key === 'showDailyRewardsChest') {
+      hud.setDailyRewardsChestButtonVisible(settings.set('showDailyRewardsChest', !!value));
+      return;
+    }
     if (key === 'browserEffects') {
       applyBrowserEffects(settings.set('browserEffects', value as number));
       return;
