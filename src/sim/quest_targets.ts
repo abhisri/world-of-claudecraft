@@ -130,7 +130,9 @@ export function questObjectiveAreas(
   };
   const pushMobCamps = (ref: QuestObjectiveRef, mobId: string): void => {
     for (const camp of CAMPS) {
-      if (camp.mobId === mobId) push(ref, camp.center, camp.radius + CAMP_AREA_PAD);
+      // fresh {x,z}: never alias the shared CAMPS content the sim spawns from
+      if (camp.mobId === mobId)
+        push(ref, { x: camp.center.x, z: camp.center.z }, camp.radius + CAMP_AREA_PAD);
     }
   };
   // One enclosing circle per ground-object definition: centroid of its spawn
@@ -160,7 +162,8 @@ export function questObjectiveAreas(
     } else if (obj.type === 'interact') {
       if (obj.targetObjectItemId) pushObjectCluster(ref, obj.targetObjectItemId);
       const npc = obj.targetNpcId ? NPCS[obj.targetNpcId] : undefined;
-      if (npc) push(ref, npc.pos, POINT_AREA_RADIUS);
+      // fresh {x,z}: never alias the shared NPCS content the sim places from
+      if (npc) push(ref, { x: npc.pos.x, z: npc.pos.z }, POINT_AREA_RADIUS);
     }
   }
   return out;
