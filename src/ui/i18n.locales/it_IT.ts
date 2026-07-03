@@ -1396,6 +1396,10 @@ export const it_IT: Partial<Record<TranslationKey, string>> = {
   'abilityUi.cast.demonHeal': 'Cura demoniaca',
   'questUi.tracker.title': 'Missioni',
   'questUi.tracker.complete': 'Completata',
+
+  'questUi.tracker.showOnMap': 'Mostra {name} sulla mappa',
+
+  'questUi.tracker.hideFromMap': 'Nascondi {name} dalla mappa',
   'questUi.log.title': 'Registro missioni',
   'questUi.log.close': 'Chiudi registro missioni',
   'questUi.log.summary': 'Attive: {active} / Completate: {completed}',

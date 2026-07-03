@@ -63,6 +63,12 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.spellbook.removeFromBarAria': 'Убрать {name} с панели действий',
   'hudChrome.nameplate.mob': '[{level}] {name}',
   'hudChrome.nameplate.mobElite': '[{level}+] {name}',
+  'hudChrome.mobTooltip.familyDemon': 'Демон',
+  'hudChrome.mobTooltip.levelFamily': 'Уровень {level} {family}',
+  'hudChrome.mobTooltip.hostile': 'Враждебный',
+  'hudChrome.mobTooltip.friendly': 'Дружественный',
+  'hudChrome.targetFrame.unlock': 'Переместить рамку цели',
+  'hudChrome.targetFrame.lock': 'Закрепить рамку цели',
   'hud.core.mapCanvasLabel': 'Карта',
   'hud.core.mapSummary': 'Карта зоны {zone}.',
   'hudChrome.castBar.playerAria': 'Ваша полоса применения',
@@ -318,6 +324,7 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.options.footstepSounds': 'Звуки шагов',
   'hudChrome.options.clickFeedback': 'Метка клика',
   'hudChrome.options.startAttackOnAbility': 'Автоатака при использовании способности',
+  'hudChrome.options.walkByAutoloot': 'Автосбор добычи при проходе',
   'hudChrome.options.lockCursorOnRotate': 'Блокировать курсор при вращении',
   'hudChrome.options.keybindHelpLockCursorOnRotate':
     'Удерживает курсор мыши внутри окна, пока вы вращаете камеру перетаскиванием, чтобы он не достигал края экрана и не переходил на другой монитор. Отключите, если предпочитаете свободный курсор.',
@@ -1453,6 +1460,8 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'abilityUi.cast.demonHeal': 'Исцеление демона',
   'questUi.tracker.title': 'Задания',
   'questUi.tracker.complete': 'Готово',
+  'questUi.tracker.showOnMap': 'Показать {name} на карте',
+  'questUi.tracker.hideFromMap': 'Скрыть {name} с карты',
   'questUi.log.title': 'Журнал заданий',
   'questUi.log.close': 'Закрыть журнал заданий',
   'questUi.log.summary': 'Активно: {active} / Завершено: {completed}',
@@ -2822,6 +2831,24 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'entities.quests.q_stalker_pelts.completion':
     'Толстые, как моя рука. В этом году дозор не замерзнет.',
   'entities.quests.q_stalker_pelts.objectives.0.label': 'Шкура хребтового охотника',
+  'entities.quests.q_stalkers_return.title': 'Охотники возвращаются',
+  'entities.quests.q_stalkers_return.text':
+    'Двенадцать мертвы, а хребет кишит ими гуще прежнего, {playerName}. Звери не бросаются на стену от голода: что-то на верхнем хребте гонит их вниз. Пока не узнаю что, отстрел не прекратится. Еще четырнадцать.',
+  'entities.quests.q_stalkers_return.completion':
+    'Еще четырнадцать, а патрули по утрам все равно считают свежие следы. Моя разведчица вернулась с верхнего хребта белая, как снеговая линия: отпечатки размером со щит, говорит она, и добыча, какую ни один охотник не бросил бы. То, что там ходит, не простая кошка.',
+  'entities.quests.q_stalkers_return.objectives.0.label': 'Хребтовый охотник: убито',
+  'entities.quests.q_stalker_cloaks.title': 'Плащи для дозора',
+  'entities.quests.q_stalker_cloaks.text':
+    'Восемь шкур утеплили плащи офицеров, и теперь каждый солдат на стене хочет такой же, {playerName}. И правильно хочет: зима первым делом забирает пальцы и не слушает извинений. Еще десять шкур с хребтов к югу от ворот, и весь дозор будет спать в тепле.',
+  'entities.quests.q_stalker_cloaks.completion':
+    'Десять добрых шкур, толще некуда... нет, взгляните, {playerName}. Половина разодрана, и не клинком и не копьем. Следы когтей шириной с мою ладонь, насквозь через зимний мех. Что-то на том хребте терзает собственный род.',
+  'entities.quests.q_stalker_cloaks.objectives.0.label': 'Шкура хребтового охотника',
+  'entities.quests.q_old_cragmaw.title': 'Старый Крэгмо',
+  'entities.quests.q_old_cragmaw.text':
+    'Горцы знают имя тому, чьи следы нашла моя разведчица: Старый Крэгмо, покрытый шрамами кот-тиран, переживший три поколения собственной стаи. Это из-за него охотники заполонили мою дорогу, {playerName}. Его логово на западном хребте над южной дорогой. Возьмите напарника и покончите со старым дьяволом.',
+  'entities.quests.q_old_cragmaw.completion':
+    'Наконец-то он пал. Горцы клялись, что этот кот переживет саму стену. Теперь охотники останутся в своих высоких снегах, {playerName}, и мои патрули пройдут по дороге, не проливая крови. Весь хребет затих благодаря вам.',
+  'entities.quests.q_old_cragmaw.objectives.0.label': 'Старый Крэгмо: убит',
   'entities.quests.q_kobold_tunnels.title': 'Беда Глубокоскалья',
   'entities.quests.q_kobold_tunnels.text':
     'Кобольды Глубокоскалья роют прямо вниз, словно их зовут из-под стены. Их туннели идут под нашей стеной, {playerName}. Убейте 12 туннельщиков.',

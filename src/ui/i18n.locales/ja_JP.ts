@@ -66,6 +66,12 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.spellbook.removeFromBarAria': '{name}をアクションバーから削除',
   'hudChrome.nameplate.mob': '[{level}] {name}',
   'hudChrome.nameplate.mobElite': '[{level}+] {name}',
+  'hudChrome.mobTooltip.familyDemon': 'デーモン',
+  'hudChrome.mobTooltip.levelFamily': 'レベル{level} {family}',
+  'hudChrome.mobTooltip.hostile': '敵対',
+  'hudChrome.mobTooltip.friendly': '味方',
+  'hudChrome.targetFrame.unlock': 'ターゲットフレームを移動',
+  'hudChrome.targetFrame.lock': 'ターゲットフレームを固定',
   'hud.core.mapCanvasLabel': 'マップ',
   'hud.core.mapSummary': '{zone}のマップ。',
   'hudChrome.castBar.playerAria': 'あなたの詠唱バー',
@@ -308,6 +314,7 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.options.footstepSounds': '足音',
   'hudChrome.options.clickFeedback': 'クリックマーカー',
   'hudChrome.options.startAttackOnAbility': 'アビリティ使用時に自動攻撃',
+  'hudChrome.options.walkByAutoloot': '通りがかり自動ルート',
   'hudChrome.options.lockCursorOnRotate': '回転中はカーソルを固定',
   'hudChrome.options.keybindHelpLockCursorOnRotate':
     'ドラッグでカメラを回転させている間、マウスカーソルをウィンドウ内に固定し、画面の端や別のモニターに移動しないようにします。自由なカーソルを好む場合はオフにしてください。',
@@ -1433,6 +1440,8 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'abilityUi.cast.demonHeal': '悪魔の治癒',
   'questUi.tracker.title': 'クエスト',
   'questUi.tracker.complete': '完了',
+  'questUi.tracker.showOnMap': '{name}をマップに表示',
+  'questUi.tracker.hideFromMap': '{name}をマップから隠す',
   'questUi.log.title': 'クエストログ',
   'questUi.log.close': 'クエストログを閉じる',
   'questUi.log.summary': '進行中: {active} / 完了: {completed}',
@@ -2792,6 +2801,24 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'entities.quests.q_stalker_pelts.completion':
     '腕ほど厚い毛皮です。今年の見張りは凍えずに済みます。',
   'entities.quests.q_stalker_pelts.objectives.0.label': '尾根の追跡者の毛皮',
+  'entities.quests.q_stalkers_return.title': '追跡者、再び',
+  'entities.quests.q_stalkers_return.text':
+    '十二頭倒しても、尾根の追跡者はむしろ増えています、{playerName}。獣が飢えだけで壁に挑むはずがありません。高い尾根の何かが追い下ろしているのです。正体が知れるまで、狩りは続きます。あと十四頭。',
+  'entities.quests.q_stalkers_return.completion':
+    'さらに十四頭。それでも朝ごとに新しい足跡が見つかります。高い尾根から戻った斥候は雪線のように蒼白でした。盾ほどの足跡と、追跡者では有り得ない獲物の残骸があったと。上を歩くものは、ただの猫ではありません。',
+  'entities.quests.q_stalkers_return.objectives.0.label': '尾根の追跡者を討伐',
+  'entities.quests.q_stalker_cloaks.title': '見張りの外套',
+  'entities.quests.q_stalker_cloaks.text':
+    '八枚の毛皮で士官の外套を裏打ちしたら、壁の兵がみな同じものを欲しがっています、{playerName}。当然の望みです。冬はまず指を奪い、詫びは聞きません。門の南の尾根であと十枚。それで見張り全員が暖かく眠れます。',
+  'entities.quests.q_stalker_cloaks.completion':
+    '十枚とも上等な毛皮……いや、これを見てください、{playerName}。半分は裂けています。刃や槍の傷ではありません。私の手ほど幅のある爪痕が、冬毛を貫いている。あの尾根の何かが、同族を食い荒らしているのです。',
+  'entities.quests.q_stalker_cloaks.objectives.0.label': '尾根の追跡者の毛皮',
+  'entities.quests.q_old_cragmaw.title': '老いたるクラッグモウ',
+  'entities.quests.q_old_cragmaw.text':
+    '山の民は、斥候が見つけた足跡の主を知っていました。老いたるクラッグモウ。傷だらけの毛皮をまとい、群れの三世代を生き延びた暴君の大猫です。追跡者が街道に溢れるのはこいつのせいです、{playerName}。ねぐらは南街道を見下ろす西の尾根。仲間を連れて、あの老いた悪魔を仕留めてください。',
+  'entities.quests.q_old_cragmaw.completion':
+    'ついに倒れましたか。山の民は、あの猫は壁より長生きすると誓っていたものです。これで追跡者は高い雪に留まるでしょう、{playerName}。巡察も血を流さずに街道を歩けます。あなたの働きで、尾根全体が静かになりました。',
+  'entities.quests.q_old_cragmaw.objectives.0.label': '老いたるクラッグモウを討伐',
   'entities.quests.q_kobold_tunnels.title': 'ディープロックの問題',
   'entities.quests.q_kobold_tunnels.text':
     'ディープロックのコボルドは、壁の下から呼ばれているように真下へ掘っています。{playerName}、坑夫を12体倒してください。',

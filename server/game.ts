@@ -2286,6 +2286,9 @@ export class GameServer {
       case 'loot':
         if (typeof msg.id === 'number') sim.lootCorpse(msg.id, pid);
         break;
+      case 'autoloot':
+        if (typeof msg.id === 'number') sim.autoLoot(msg.id, pid);
+        break;
       case 'lootRoll':
         if (
           typeof msg.rollId === 'number' &&

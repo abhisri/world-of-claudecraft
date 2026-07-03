@@ -4,6 +4,7 @@
 import './styles/index.css';
 import { syncAppViewport as syncAppViewportShared } from './game/app_viewport';
 import { audio } from './game/audio';
+import { AutoLoot } from './game/autoloot';
 import {
   BROWSER_BODY_CLASSES,
   browserBodyClasses,
@@ -947,6 +948,7 @@ async function startGame(
   uiEffectsApplier.applyNow();
   let renderer!: Renderer;
   let hud!: Hud;
+  const autoLoot = new AutoLoot();
   const perf = createPerfMonitor(null);
   try {
     renderer = new Renderer(world, canvas, nameplates);
@@ -2181,15 +2183,24 @@ async function startGame(
   function updateHoverCursor(): void {
     if (!input.hoverActive || input.isDragging() || hud.isModalOpen()) {
       input.setHoverCursor('default');
+      hud.clearMobHoverTooltip();
       return;
     }
     if (hoverPickGate.shouldPick(input.hoverX, input.hoverY, performance.now())) {
       hoverPickedId = renderer.pick(input.hoverX, input.hoverY);
     }
     const entity = hoverPickedId !== null ? world.entities.get(hoverPickedId) : undefined;
-    input.setHoverCursor(
-      hoverCursorKind(entity, world.playerId, partyMemberIds(), activePvpOpponentIds(world)),
-    );
+    const pvpOpponents = activePvpOpponentIds(world);
+    input.setHoverCursor(hoverCursorKind(entity, world.playerId, partyMemberIds(), pvpOpponents));
+    // WoW-style mouseover tooltip (name / level / creature type) for a mob under
+    // the cursor, reusing the same (gated) pick this function already does for
+    // the hover-cursor kind above; the tooltip content still re-resolves every
+    // frame from live entity state, so counts and death update without a re-pick.
+    if (entity && entity.kind === 'mob' && !entity.dead) {
+      hud.showMobHoverTooltip(entity, pvpOpponents);
+    } else {
+      hud.clearMobHoverTooltip();
+    }
   }
 
   function renderFacingOverride(): number | null {
@@ -2334,6 +2345,7 @@ async function startGame(
       );
       perf.trace('ui.clickMoveMarker', () => updateClickMoveMarker());
       perf.markInputVisible(performance.now());
+      if (settings.get('walkByAutoloot')) autoLoot.run(world, now);
       perf.time('hud', () => perf.trace('hud.update', () => hud.update(), { mode: 'offline' }));
       perf.tick(now);
       return;
@@ -2439,6 +2451,7 @@ async function startGame(
     perf.trace('ui.clickMoveMarker', () => updateClickMoveMarker());
     maybeShowImmobileNote(now);
     perf.markInputVisible(performance.now());
+    if (settings.get('walkByAutoloot')) autoLoot.run(world, now);
     perf.time('hud', () => perf.trace('hud.update', () => hud.update(), { mode: 'online' }));
     perf.tick(now);
   }

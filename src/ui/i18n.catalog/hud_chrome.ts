@@ -366,6 +366,8 @@ export const hudChromeStrings = {
     // Interface panel toggle: also engage auto-attack when using an offensive
     // ability, so white swings start without a separate Attack press (on by default).
     startAttackOnAbility: 'Auto-Attack on Ability Use',
+    // Interface panel toggle: loot corpses by walking past them (off by default).
+    walkByAutoloot: 'Walk-by Autoloot',
     groundReticle: 'Ground-Targeting Reticle',
     // Interface panel toggle + the item-tooltip lines it reveals (off by default).
     showItemLevel: 'Show Item Level',
@@ -915,6 +917,31 @@ export const hudChromeStrings = {
   nameplate: {
     mob: '[{level}] {name}',
     mobElite: '[{level}+] {name}',
+  },
+  // World mouseover tooltip shown when hovering a mob (mob_tooltip_view.ts):
+  // name (colored by the nameplate con-color), then "Level N <type>" ({family}
+  // reuses the existing guide.family.<id>.name bestiary labels), then a
+  // Friendly/Hostile reaction line (green/red, from Entity.hostile). All three
+  // values below are wordy (M16): filled in the five non-Latin locales in this
+  // same change.
+  mobTooltip: {
+    levelFamily: 'Level {level} {family}',
+    // The one MobFamily with no guide.family.* bestiary entry (demons are
+    // warlock-pet / zone encounter mobs, out of scope for the public wiki
+    // bestiary generator), so it needs its own word here.
+    familyDemon: 'Demon',
+    hostile: 'Hostile',
+    friendly: 'Friendly',
+  },
+  // Movable target frame: the small corner toggle that unlocks the frame for
+  // dragging and locks it back in place (target_frame_pos.ts + hud.ts wiring).
+  // The one button swaps its accessible name with its pressed state; both values
+  // are wordy (M16), filled in the five non-Latin locales in this same change.
+  targetFrame: {
+    // aria-label / title while LOCKED (aria-pressed=false): press to move it.
+    unlock: 'Move target frame',
+    // aria-label / title while UNLOCKED (aria-pressed=true): press to fix it.
+    lock: 'Lock target frame',
   },
   // Item tooltip: the minimum character level needed to equip a piece (classic
   // "Requires Level N"). Shown red when the viewer is below it. {level} runs

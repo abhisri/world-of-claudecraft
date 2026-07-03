@@ -1738,6 +1738,9 @@ export class ClientWorld implements IWorld {
   lootCorpse(id: number): void {
     this.cmd({ cmd: 'loot', id });
   }
+  autoLoot(id: number): void {
+    this.cmd({ cmd: 'autoloot', id });
+  }
   // --- IWorldLoot: need-greed roll submit + HUD reconcile read ---
   submitLootRoll(rollId: number, choice: LootRollChoice): void {
     this.cmd({ cmd: 'lootRoll', rollId, choice });

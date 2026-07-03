@@ -483,6 +483,7 @@ export interface Party {
   raid: boolean;
   raidGroups: Map<number, 1 | 2>; // pid -> raid subgroup
   lootStrategies: LootStrategies;
+  lootTurn: number; // round-robin common-item cursor; advances once per awarded item
 }
 
 export interface TradeSession {
@@ -4639,6 +4640,14 @@ export class Sim {
   // on Sim (W4) and is reached through two append-only SimContext callbacks.
   lootCorpse(mobId: number, pid?: number): void {
     interaction.lootCorpse(this.ctx, mobId, pid);
+  }
+
+  // Walk-by autoloot: the passive counterpart to lootCorpse, called every
+  // frame as the trigger nears a corpse. Silent on ineligibility (see
+  // interaction.ts); the widened `pid?` overload lets tests drive a
+  // non-primary party member the same way lootCorpse does.
+  autoLoot(mobId: number, pid?: number): void {
+    interaction.autoLootForParty(this.ctx, mobId, pid ?? this.primaryId);
   }
 
   pickUpObject(objId: number, pid?: number): void {

@@ -97,6 +97,7 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
     loot: [
       { copper: 60, chance: 1 },
       { itemId: 'ridge_stalker_pelt', chance: 0.6, questId: 'q_stalker_pelts' },
+      { itemId: 'ridge_stalker_pelt', chance: 0.6, questId: 'q_stalker_cloaks' },
     ],
     scale: 0.95,
     color: 0x8c8270,
@@ -804,6 +805,8 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
     questIds: [
       'q_highwatch_summons',
       'q_stalkers',
+      'q_stalkers_return',
+      'q_old_cragmaw',
       'q_ogre_bounty',
       'q_crushers',
       'q_drogmar',
@@ -875,7 +878,7 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
     pos: { x: -5, z: 668 },
     facing: 1.6,
     color: 0xca8a2a,
-    questIds: ['q_stalker_pelts', 'q_glowing_wax'],
+    questIds: ['q_stalker_pelts', 'q_stalker_cloaks', 'q_glowing_wax'],
     vendorItems: [
       'trail_hardtack',
       'meltwater_flask',
@@ -984,6 +987,57 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
       mage: 'ridgestalker_treads',
       rogue: 'ridgestalker_treads',
     },
+  },
+  q_stalkers_return: {
+    id: 'q_stalkers_return',
+    name: 'The Stalkers Return',
+    giverNpcId: 'captain_thessaly',
+    turnInNpcId: 'captain_thessaly',
+    text: 'Twelve dead, and the ridge crawls thicker than the day you started, $N. Beasts do not throw themselves at a wall out of hunger. Something on the high ridge is pushing them down, and until I know what, the culling does not stop. Fourteen more.',
+    completionText:
+      'Fourteen more, and still my patrols count fresh tracks by morning. My scout came back from the high ridge white as the snowline: prints the size of a shield, she says, and old kills no stalker would leave. Whatever walks up there is no ordinary cat.',
+    objectives: [
+      { type: 'kill', targetMobId: 'ridge_stalker', count: 14, label: 'Ridge Stalker slain' },
+    ],
+    xpReward: 2400,
+    copperReward: 1100,
+    itemRewards: {},
+    requiresQuest: 'q_stalkers',
+    minLevel: 13,
+  },
+  q_stalker_cloaks: {
+    id: 'q_stalker_cloaks',
+    name: 'Cloaks for the Watch',
+    giverNpcId: 'quartermaster_bree',
+    turnInNpcId: 'quartermaster_bree',
+    text: "Eight pelts lined the officers' cloaks, and now every soldier on the wall wants the same, $N. They are right to want it: winter takes fingers first and apologies never. Ten more pelts from the ridges south of the gate, and the whole watch sleeps warm.",
+    completionText:
+      'Ten good pelts, thick as any I have... no, look at these, $N. Torn, half of them, and by no blade or spear. Claw marks wide as my hand, right through the winter coat. Something on that ridge is savaging its own kind.',
+    objectives: [
+      { type: 'collect', itemId: 'ridge_stalker_pelt', count: 10, label: 'Ridge Stalker Pelt' },
+    ],
+    xpReward: 2400,
+    copperReward: 1200,
+    itemRewards: {},
+    requiresQuest: 'q_stalker_pelts',
+    minLevel: 13,
+  },
+  q_old_cragmaw: {
+    id: 'q_old_cragmaw',
+    name: 'Old Cragmaw',
+    giverNpcId: 'captain_thessaly',
+    turnInNpcId: 'captain_thessaly',
+    text: 'The mountain folk put a name to the prints my scout found: Old Cragmaw, a scar-pelted tyrant of a cat that has outlived three generations of its own pack. It is the reason the stalkers flood my road, $N. Its den sits on the western ridge above the road south. Bring a friend, and put the old devil down.',
+    completionText:
+      'Down at last. The mountain folk swore that cat would outlive the wall itself. The stalkers will keep to their high snows now, $N, and my patrols will walk the road without bleeding for it. The whole ridge is quieter for your work.',
+    objectives: [
+      { type: 'kill', targetMobId: 'old_cragmaw', count: 1, label: 'Old Cragmaw slain' },
+    ],
+    xpReward: 2700,
+    copperReward: 1500,
+    itemRewards: {},
+    requiresQuest: 'q_stalkers_return',
+    suggestedPlayers: 2,
   },
   q_kobold_tunnels: {
     id: 'q_kobold_tunnels',
@@ -1539,6 +1593,9 @@ export const ZONE3_QUEST_ORDER = [
   'q_highwatch_summons',
   'q_stalkers',
   'q_stalker_pelts',
+  'q_stalkers_return',
+  'q_stalker_cloaks',
+  'q_old_cragmaw',
   'q_kobold_tunnels',
   'q_glowing_wax',
   'q_ogre_edges',

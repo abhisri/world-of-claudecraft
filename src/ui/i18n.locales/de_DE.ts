@@ -1402,6 +1402,10 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'abilityUi.cast.demonHeal': 'Dämonenheilung',
   'questUi.tracker.title': 'Quests',
   'questUi.tracker.complete': 'Abgeschlossen',
+
+  'questUi.tracker.showOnMap': '{name} auf der Karte anzeigen',
+
+  'questUi.tracker.hideFromMap': '{name} auf der Karte ausblenden',
   'questUi.log.title': 'Questlog',
   'questUi.log.close': 'Questlog schließen',
   'questUi.log.summary': 'Aktiv: {active} / Abgeschlossen: {completed}',

@@ -1433,6 +1433,24 @@
     min-height: 40px;
     box-sizing: border-box;
   }
+  /* the quest side list has no room beside the small mobile map: flow it
+     under the canvas inside the window instead, and raise its track toggle
+     to the 40x40 touch floor */
+  body.mobile-touch #map-quests {
+    position: static;
+    width: auto;
+    max-height: 26vh;
+    margin-top: 8px;
+  }
+  body.mobile-touch #map-quests-toggle {
+    min-height: 40px;
+    box-sizing: border-box;
+  }
+  body.mobile-touch .mapq-track {
+    min-width: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
+  }
   body.mobile-touch #controls-hint {
     max-width: min(360px, 92vw);
     margin-top: 18px;

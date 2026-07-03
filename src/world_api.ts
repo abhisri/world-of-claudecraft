@@ -9,7 +9,7 @@
 // keep resolving to THIS file, never the sibling directory.
 //
 // ---------------------------------------------------------------------------
-// FACET MAP: the 22 domain facets (each IWorld member assigned exactly once; 150
+// FACET MAP: the 22 domain facets (each IWorld member assigned exactly once; 151
 // total). One interface per file under ./world_api/; aux types travel with their
 // facet. The authoritative member-per-facet split is the W0c parity test.
 //
@@ -41,7 +41,7 @@
 //                                          ALL_DELTA_KEYS (25) + TERSE_TO_IWORLD mapping.
 //   tests/command_schema.test.ts   (W0b)  COMMAND_NAMES universe; ClientWorld send-set
 //                                          subset-of dispatch-set; DISPATCH_ONLY (7).
-//   tests/world_api_parity.test.ts (W0c)  IWORLD_MEMBERS (150) present + same-kind on
+//   tests/world_api_parity.test.ts (W0c)  IWORLD_MEMBERS (151) present + same-kind on
 //                                          Sim + ClientWorld; aggregate == disjoint
 //                                          union of the 21 facets.
 // ---------------------------------------------------------------------------
@@ -286,6 +286,7 @@ export const COMMAND_NAMES = [
   'lockpick_abort',
   'collect_delve_chest_loot',
   'telemetry',
+  'autoloot',
 ] as const;
 
 // The union both the send path (`online.ts`) and the dispatch switch

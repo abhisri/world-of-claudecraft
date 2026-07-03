@@ -1413,6 +1413,10 @@ export const fr_FR: Partial<Record<TranslationKey, string>> = {
   'abilityUi.cast.demonHeal': 'Soin démoniaque',
   'questUi.tracker.title': 'Quêtes',
   'questUi.tracker.complete': 'Terminée',
+
+  'questUi.tracker.showOnMap': 'Afficher {name} sur la carte',
+
+  'questUi.tracker.hideFromMap': 'Masquer {name} sur la carte',
   'questUi.log.title': 'Journal de quêtes',
   'questUi.log.close': 'Fermer le journal de quêtes',
   'questUi.log.summary': 'Actives : {active} / Terminées : {completed}',

@@ -60,6 +60,12 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'hudChrome.spellbook.removeFromBarAria': '將 {name} 從動作列移除',
   'hudChrome.nameplate.mob': '[{level}] {name}',
   'hudChrome.nameplate.mobElite': '[{level}+] {name}',
+  'hudChrome.mobTooltip.familyDemon': '惡魔',
+  'hudChrome.mobTooltip.levelFamily': '等級 {level} {family}',
+  'hudChrome.mobTooltip.hostile': '敵對',
+  'hudChrome.mobTooltip.friendly': '友方',
+  'hudChrome.targetFrame.unlock': '移動目標框',
+  'hudChrome.targetFrame.lock': '鎖定目標框',
   'hud.core.mapCanvasLabel': '地圖',
   'hud.core.mapSummary': '{zone}的地圖。',
   'hudChrome.castBar.playerAria': '你的施法條',
@@ -293,6 +299,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'hudChrome.options.footstepSounds': '腳步聲',
   'hudChrome.options.clickFeedback': '點擊標記',
   'hudChrome.options.startAttackOnAbility': '使用技能時自動攻擊',
+  'hudChrome.options.walkByAutoloot': '路過自動拾取',
   'hudChrome.options.lockCursorOnRotate': '旋轉時鎖定游標',
   'hudChrome.options.keybindHelpLockCursorOnRotate':
     '拖曳旋轉鏡頭時將滑鼠游標保持在視窗內，使其無法到達螢幕邊緣或移動到另一台顯示器。若你偏好自由游標，請關閉此選項。',
@@ -1365,6 +1372,8 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'abilityUi.cast.demonHeal': '惡魔治療',
   'questUi.tracker.title': '任務',
   'questUi.tracker.complete': '完成',
+  'questUi.tracker.showOnMap': '在地圖上顯示{name}',
+  'questUi.tracker.hideFromMap': '在地圖上隱藏{name}',
   'questUi.log.title': '任務日誌',
   'questUi.log.close': '關閉任務日誌',
   'questUi.log.summary': '進行中：{active} / 已完成：{completed}',
@@ -2664,6 +2673,24 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
     '{playerName}，這座山的冬天不會敲門，它會踹門。8張山脊潛獵者皮能為守牆披風加襯。',
   'entities.quests.q_stalker_pelts.completion': '厚得像我的手臂。今年守望者不會凍死。',
   'entities.quests.q_stalker_pelts.objectives.0.label': '山脊潛獵者毛皮',
+  'entities.quests.q_stalkers_return.title': '潛獵者去而復返',
+  'entities.quests.q_stalkers_return.text':
+    '死了十二隻，山脊上的潛獵者反而更多了，{playerName}。野獸不會因為飢餓就往城牆上撲，是高脊上有什麼東西把牠們趕下來。查清之前，獵殺不停。再殺十四隻。',
+  'entities.quests.q_stalkers_return.completion':
+    '又殺了十四隻，可巡邏隊每天清晨仍數得出新的足跡。我的斥候從高脊回來時臉白得像雪線：她說那些爪印有盾牌那麼大，還有潛獵者絕不會留下的獵殺痕跡。在上面遊蕩的絕不是普通的山貓。',
+  'entities.quests.q_stalkers_return.objectives.0.label': '擊敗山脊潛獵者',
+  'entities.quests.q_stalker_cloaks.title': '守望者的披風',
+  'entities.quests.q_stalker_cloaks.text':
+    '八張皮給軍官的披風加了襯，現在牆上每個士兵都想要一件，{playerName}。他們想得沒錯：寒冬先奪手指，從不聽道歉。再從大門以南的山脊取十張皮，整支守望隊都能睡個暖覺。',
+  'entities.quests.q_stalker_cloaks.completion':
+    '十張好皮，厚實得沒話說……不對，你看這些，{playerName}。一半都撕裂了，可不是刀槍的痕跡。爪痕有我手掌那麼寬，直接穿透了冬毛。山脊上有什麼東西在殘殺自己的同類。',
+  'entities.quests.q_stalker_cloaks.objectives.0.label': '山脊潛獵者毛皮',
+  'entities.quests.q_old_cragmaw.title': '老裂顎',
+  'entities.quests.q_old_cragmaw.text':
+    '山民給我斥候找到的爪印起過名字：老裂顎，一隻滿身傷疤的暴君巨貓，熬死了自己族群的三代。潛獵者湧上我的道路，就是因為牠，{playerName}。牠的巢穴在南路上方的西側山脊。帶個幫手去，了結那老魔頭。',
+  'entities.quests.q_old_cragmaw.completion':
+    '牠終於倒下了。山民曾發誓那隻貓會比城牆活得還久。如今潛獵者會守在高處的雪原了，{playerName}，我的巡邏隊走這條路也不必再流血。整條山脊都因你安靜了下來。',
+  'entities.quests.q_old_cragmaw.objectives.0.label': '擊敗老裂顎',
   'entities.quests.q_kobold_tunnels.title': '深岩麻煩',
   'entities.quests.q_kobold_tunnels.text':
     '深岩的狗頭人往不該挖的深處直挖，像有東西在呼喚。牠們的隧道穿過我們的城牆下，{playerName}。殺12個深岩掘地者。',

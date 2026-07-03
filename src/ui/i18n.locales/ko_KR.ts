@@ -64,6 +64,12 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.spellbook.removeFromBarAria': '{name}을(를) 행동 단축바에서 제거',
   'hudChrome.nameplate.mob': '[{level}] {name}',
   'hudChrome.nameplate.mobElite': '[{level}+] {name}',
+  'hudChrome.mobTooltip.familyDemon': '악마',
+  'hudChrome.mobTooltip.levelFamily': '{level}레벨 {family}',
+  'hudChrome.mobTooltip.hostile': '적대',
+  'hudChrome.mobTooltip.friendly': '아군',
+  'hudChrome.targetFrame.unlock': '대상 프레임 이동',
+  'hudChrome.targetFrame.lock': '대상 프레임 고정',
   'hud.core.mapCanvasLabel': '지도',
   'hud.core.mapSummary': '{zone}의 지도.',
   'hudChrome.castBar.playerAria': '내 시전 막대',
@@ -309,6 +315,7 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.options.footstepSounds': '발소리',
   'hudChrome.options.clickFeedback': '클릭 표시',
   'hudChrome.options.startAttackOnAbility': '스킬 사용 시 자동 공격',
+  'hudChrome.options.walkByAutoloot': '지나가며 자동 획득',
   'hudChrome.options.lockCursorOnRotate': '회전 중 커서 고정',
   'hudChrome.options.keybindHelpLockCursorOnRotate':
     '드래그하여 카메라를 회전하는 동안 마우스 커서를 창 안에 유지하여 화면 가장자리에 닿거나 다른 모니터로 이동하지 않도록 합니다. 자유로운 커서를 원하면 끄세요.',
@@ -1421,6 +1428,8 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'abilityUi.cast.demonHeal': '악마 치유',
   'questUi.tracker.title': '퀘스트',
   'questUi.tracker.complete': '완료',
+  'questUi.tracker.showOnMap': '{name} 지도에 표시',
+  'questUi.tracker.hideFromMap': '{name} 지도에서 숨기기',
   'questUi.log.title': '퀘스트 기록',
   'questUi.log.close': '퀘스트 기록 닫기',
   'questUi.log.summary': '진행 중: {active} / 완료: {completed}',
@@ -2786,6 +2795,24 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'entities.quests.q_stalker_pelts.completion':
     '내 팔만큼 두껍습니다. 올해 경비대는 얼지 않겠습니다.',
   'entities.quests.q_stalker_pelts.objectives.0.label': '산등성이 추적자 가죽',
+  'entities.quests.q_stalkers_return.title': '추적자들의 귀환',
+  'entities.quests.q_stalkers_return.text':
+    '열두 마리를 잡았는데도 산등성이는 처음보다 더 들끓습니다, {playerName}. 짐승이 굶주림만으로 성벽에 몸을 던질 리 없습니다. 높은 산마루의 무언가가 그들을 몰아내리고 있습니다. 정체를 알기 전까지 사냥은 계속됩니다. 열네 마리 더.',
+  'entities.quests.q_stalkers_return.completion':
+    '열네 마리를 더 잡았는데도 순찰대는 아침마다 새 발자국을 셉니다. 높은 산마루에서 돌아온 정찰병은 설선처럼 하얗게 질려 있었습니다. 방패만 한 발자국에, 추적자라면 절대 남기지 않을 사냥 흔적이 있었다고 합니다. 저 위를 걷는 것은 평범한 고양이가 아닙니다.',
+  'entities.quests.q_stalkers_return.objectives.0.label': '산등성이 추적자 처치',
+  'entities.quests.q_stalker_cloaks.title': '경비대의 망토',
+  'entities.quests.q_stalker_cloaks.text':
+    '가죽 여덟 장으로 장교들 망토를 덧댔더니, 이제 성벽의 병사 모두가 같은 것을 원합니다, {playerName}. 당연한 바람입니다. 겨울은 손가락부터 앗아 가고 사과는 듣지 않으니까요. 성문 남쪽 산등성이에서 열 장만 더 구해 오면 경비대 전원이 따뜻하게 잘 수 있습니다.',
+  'entities.quests.q_stalker_cloaks.completion':
+    '좋은 가죽 열 장, 더없이 두툼한... 아니, 이걸 보십시오, {playerName}. 절반이 찢겨 있는데 칼이나 창의 흔적이 아닙니다. 내 손바닥만 한 발톱 자국이 겨울 털가죽을 꿰뚫었습니다. 그 산등성이의 무언가가 제 동족을 물어뜯고 있습니다.',
+  'entities.quests.q_stalker_cloaks.objectives.0.label': '산등성이 추적자 가죽',
+  'entities.quests.q_old_cragmaw.title': '늙은 크래그모',
+  'entities.quests.q_old_cragmaw.text':
+    '산사람들은 정찰병이 찾은 발자국의 주인을 알고 있었습니다. 늙은 크래그모, 제 무리의 세 세대를 먼저 보낸 흉터투성이 폭군 고양이입니다. 추적자들이 내 길로 쏟아지는 것도 그놈 때문입니다, {playerName}. 굴은 남쪽 길 위 서편 산등성이에 있습니다. 동료를 데리고 가서 그 늙은 악마를 처치하십시오.',
+  'entities.quests.q_old_cragmaw.completion':
+    '마침내 쓰러졌군요. 산사람들은 그 고양이가 성벽보다 오래 살 거라 장담했었습니다. 이제 추적자들은 높은 설원에 머물 겁니다, {playerName}. 내 순찰대도 피 흘리지 않고 길을 걷겠지요. 당신 덕분에 산등성이 전체가 조용해졌습니다.',
+  'entities.quests.q_old_cragmaw.objectives.0.label': '늙은 크래그모 처치',
   'entities.quests.q_kobold_tunnels.title': '깊은바위 문제',
   'entities.quests.q_kobold_tunnels.text':
     '딥록 코볼트들이 성벽 아래에서 부르는 것처럼 곧장 아래로 파고 있습니다. {playerName}이여, 굴꾼 12마리를 처치하십시오.',
