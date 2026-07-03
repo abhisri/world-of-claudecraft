@@ -720,7 +720,8 @@ export const vi_VN: EnTranslations = {
       "summaryGroup": "Cài Đặt Chiến Lợi Phẩm: Chiến Lợi Phẩm Nhóm."
     },
     "party": {
-      "promoteLeader": "Thăng Làm Đội Trưởng"
+      "promoteLeader": "Thăng Làm Đội Trưởng",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Cài Đặt Chiến Lợi Phẩm",

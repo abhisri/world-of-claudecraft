@@ -15,7 +15,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 393,
-      "state": "d1c2e345",
+      "state": "e54bdd93",
       "events": "741638a5",
       "rng": {
         "draws": 0,
@@ -31,6 +31,7 @@
           "cls": "rogue",
           "companionUpgrades": {},
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -105,7 +106,7 @@
       "tick": 20,
       "time": 1,
       "nextId": 394,
-      "state": "4e6182eb",
+      "state": "d5f78971",
       "events": "5853da21",
       "rng": {
         "draws": 9,
@@ -116,7 +117,7 @@
       "tick": 40,
       "time": 2,
       "nextId": 394,
-      "state": "640c020b",
+      "state": "f777fb51",
       "events": "9247ebc2",
       "rng": {
         "draws": 15,
@@ -127,7 +128,7 @@
       "tick": 60,
       "time": 3,
       "nextId": 394,
-      "state": "6dda6d9b",
+      "state": "53860521",
       "events": "b00879de",
       "rng": {
         "draws": 90,
@@ -138,7 +139,7 @@
       "tick": 72,
       "time": 3.6,
       "nextId": 394,
-      "state": "f5c3f66f",
+      "state": "45cc2e9d",
       "events": "741638a5",
       "rng": {
         "draws": 143,
@@ -157,6 +158,7 @@
             "damageDealt": 79,
             "damageTaken": 9
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,

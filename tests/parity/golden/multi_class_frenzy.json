@@ -30,7 +30,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 396,
-      "state": "6451508f",
+      "state": "0c0f0113",
       "events": "c1ccd481",
       "rng": {
         "draws": 3,
@@ -47,6 +47,7 @@
           "counters": {
             "damageDealt": 30
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -71,6 +72,7 @@
           "counters": {
             "damageDealt": 30
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 393,
@@ -95,6 +97,7 @@
           "counters": {
             "damageDealt": 30
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 394,
@@ -342,7 +345,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 396,
-      "state": "fb196acc",
+      "state": "6f2f5a9c",
       "events": "1be213e7",
       "rng": {
         "draws": 6,
@@ -359,6 +362,7 @@
           "counters": {
             "damageDealt": 60
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -383,6 +387,7 @@
           "counters": {
             "damageDealt": 60
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 393,
@@ -407,6 +412,7 @@
           "counters": {
             "damageDealt": 60
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 394,
@@ -654,7 +660,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 396,
-      "state": "c36d3da8",
+      "state": "a6cd5c02",
       "events": "1be213e7",
       "rng": {
         "draws": 9,
@@ -671,6 +677,7 @@
           "counters": {
             "damageDealt": 90
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -695,6 +702,7 @@
           "counters": {
             "damageDealt": 90
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 393,
@@ -719,6 +727,7 @@
           "counters": {
             "damageDealt": 90
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 394,
@@ -966,7 +975,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 396,
-      "state": "bfcc07bd",
+      "state": "530df30d",
       "events": "1be213e7",
       "rng": {
         "draws": 12,
@@ -983,6 +992,7 @@
           "counters": {
             "damageDealt": 120
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -1007,6 +1017,7 @@
           "counters": {
             "damageDealt": 120
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 393,
@@ -1031,6 +1042,7 @@
           "counters": {
             "damageDealt": 120
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 394,
@@ -1278,7 +1290,7 @@
       "tick": 5,
       "time": 0.25,
       "nextId": 396,
-      "state": "b430a655",
+      "state": "4befa1f5",
       "events": "df04a8fd",
       "rng": {
         "draws": 15,
@@ -1289,7 +1301,7 @@
       "tick": 10,
       "time": 0.5,
       "nextId": 396,
-      "state": "7e79ec58",
+      "state": "d1bb161e",
       "events": "741638a5",
       "rng": {
         "draws": 15,
@@ -1300,7 +1312,7 @@
       "tick": 10,
       "time": 0.5,
       "nextId": 396,
-      "state": "7e79ec58",
+      "state": "d1bb161e",
       "events": "741638a5",
       "rng": {
         "draws": 15,
@@ -1318,6 +1330,7 @@
             "damageDealt": 120,
             "damageTaken": 13
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -1342,6 +1355,7 @@
           "counters": {
             "damageDealt": 120
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 393,
@@ -1366,6 +1380,7 @@
           "counters": {
             "damageDealt": 120
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 394,

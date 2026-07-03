@@ -720,7 +720,8 @@ export const en_XA: EnTranslations = {
       "summaryGroup": "[Ļóóţ Šéţţíñĝš: Ĝŕóúþ Ļóóţ.]"
     },
     "party": {
-      "promoteLeader": "[Þŕóɱóţé ţó Ļéáðéŕ]"
+      "promoteLeader": "[Þŕóɱóţé ţó Ļéáðéŕ]",
+      "inviteUsage": "[Íñʋíţé ŵĥóɱ? Úšáĝé: /íñʋíţé <ñáɱé>.]"
     },
     "lootSettings": {
       "title": "[Ļóóţ Šéţţíñĝš]",

@@ -720,7 +720,8 @@ export const da_DK: EnTranslations = {
       "summaryGroup": "Bytteindstillinger: Gruppebytte."
     },
     "party": {
-      "promoteLeader": "Forfrem til leder"
+      "promoteLeader": "Forfrem til leder",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Bytteindstillinger",

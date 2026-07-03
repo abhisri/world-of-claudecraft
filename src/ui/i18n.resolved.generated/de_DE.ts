@@ -720,7 +720,8 @@ export const de_DE: EnTranslations = {
       "summaryGroup": "Beute-Einstellungen: Gruppenbeute."
     },
     "party": {
-      "promoteLeader": "Zum Anführer befördern"
+      "promoteLeader": "Zum Anführer befördern",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Beute-Einstellungen",

@@ -720,7 +720,8 @@ export const pt_BR: EnTranslations = {
       "summaryGroup": "Configurações de Saque: Saque em Grupo."
     },
     "party": {
-      "promoteLeader": "Promover a Líder"
+      "promoteLeader": "Promover a Líder",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Configurações de Saque",

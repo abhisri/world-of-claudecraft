@@ -720,7 +720,8 @@ export const es: EnTranslations = {
       "summaryGroup": "Ajustes de botín: botín de grupo."
     },
     "party": {
-      "promoteLeader": "Promover a líder"
+      "promoteLeader": "Promover a líder",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Ajustes de botín",

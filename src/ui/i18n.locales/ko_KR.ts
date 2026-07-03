@@ -131,6 +131,7 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.masterLoot.looterLabel': '분배 담당자',
   'hudChrome.masterLoot.leaderOption': '파티장',
   'hudChrome.party.promoteLeader': '파티장으로 지정',
+  'hudChrome.party.inviteUsage': '누구를 초대하시겠습니까? 사용법: /invite <이름>.',
   'hudChrome.masterLoot.thresholdLabel': '품질 기준',
   'hudChrome.masterLoot.thresholdUncommon': '고급 이상',
   'hudChrome.masterLoot.thresholdRare': '희귀 이상',

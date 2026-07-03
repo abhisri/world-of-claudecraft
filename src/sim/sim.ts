@@ -189,6 +189,12 @@ import {
   normalizeGatheringProficiency,
 } from './professions/gathering';
 import {
+  craftSkillsFor,
+  emptyCraftSkills,
+  gainCraftSkill,
+  normalizeCraftSkills,
+} from './professions/wheel';
+import {
   applyTalentAllocation,
   deleteTalentLoadout,
   respecTalents,
@@ -755,6 +761,10 @@ export interface PlayerMeta {
   // so the player can page through and filter the WHOLE market a window at a time.
   // Never persisted, resets on login.
   marketQuery: MarketQuery;
+  // Flat per-craft skill tracking (#1126): one independent, additive-only skill
+  // value per craft on the ten-craft ring (see professions/wheel.ts). Persisted
+  // in CharacterState.
+  craftSkills: Record<string, number>;
   // One-time Ravenpost welcome letter sent (persisted in CharacterState, so
   // existing characters get the service announcement exactly once).
   mailWelcomed: boolean;
@@ -852,6 +862,9 @@ export interface CharacterState {
   // World-boss daily loot record. Optional so saves from before world bosses load
   // cleanly (addPlayer falls back to an empty record).
   worldBossDaily?: { date: string; looted: string[] };
+  // Flat per-craft skill tracking (#1126; JSONB, additive back-compat: absent or
+  // partial on older saves loads the missing crafts as 0, see normalizeCraftSkills).
+  craftSkills?: Record<string, number>;
 }
 
 export interface PetState {
@@ -1371,6 +1384,7 @@ export class Sim {
       raidLockouts: new Map(),
       away: null,
       marketQuery: defaultMarketQuery(),
+      craftSkills: emptyCraftSkills(),
       mailWelcomed: false,
       delveMarks: 0,
       delveClears: {},
@@ -1440,6 +1454,7 @@ export class Sim {
           if (Number.isFinite(until) && until > now) meta.raidLockouts.set(dungeonId, until);
         }
       }
+      meta.craftSkills = normalizeCraftSkills(s.craftSkills);
       meta.mailWelcomed = s.mailWelcomed === true;
       meta.delveMarks = s.delveMarks ?? 0;
       meta.delveClears = { ...(s.delveClears ?? {}) };
@@ -1656,6 +1671,7 @@ export class Sim {
       pendingSkinRank: meta.pendingSkinRank,
       pendingSkinCatalog: meta.pendingSkinCatalog,
       pendingSkinItemId: meta.pendingSkinItemId,
+      craftSkills: { ...meta.craftSkills },
       delveMarks: meta.delveMarks,
       delveClears: { ...meta.delveClears },
       companionUpgrades: { ...meta.companionUpgrades },
@@ -2253,6 +2269,7 @@ export class Sim {
       removeItem: sim.removeItem.bind(sim),
       removeFungibleItem: sim.removeFungibleItem.bind(sim),
       partyOf: sim.partyOf.bind(sim),
+      partyInvite: (targetPid: number, pid?: number) => sim.party.partyInvite(targetPid, pid),
       removeFromParty: (pid: number, verb: string) => sim.party.removeFromParty(pid, verb),
       // dropPartyMarkers flips to the T1 marker store (targeting); lazy arrow since
       // sim.targeting is built after ctx. The T1 selectors consume isHostileTo/
@@ -6196,6 +6213,18 @@ export class Sim {
     return runsMod.companionUpgradesFor(this.ctx, pid);
   }
 
+  craftSkillsFor(pid: number): Record<string, number> {
+    return craftSkillsFor(this.ctx, pid);
+  }
+
+  /** Additive-only skill gain for exactly one craft; never affects any other craft
+   *  (see professions/wheel.ts). No-op for an unknown pid or craft id. */
+  gainCraftSkill(pid: number, craftId: string, amount: number): void {
+    const meta = this.players.get(pid);
+    if (!meta) return;
+    gainCraftSkill(meta.craftSkills, craftId, amount);
+  }
+
   delveDailyWire(pid: number): { date: string; firstClearXp: string[]; markClears: number } {
     return runsMod.delveDailyWire(this.ctx, pid);
   }
@@ -6222,6 +6251,10 @@ export class Sim {
 
   get companionUpgrades(): Record<string, number> {
     return this.companionUpgradesFor(this.primaryId);
+  }
+
+  get craftSkills(): Record<string, number> {
+    return this.craftSkillsFor(this.primaryId);
   }
 
   delveShopOffers(delveId: string): DelveShopOffer[] {

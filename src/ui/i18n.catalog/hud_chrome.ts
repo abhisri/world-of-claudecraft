@@ -782,6 +782,9 @@ export const hudChromeStrings = {
   // itself is a sim emit re-localized through localizeSystemText (hud.logs.partyLeader).
   party: {
     promoteLeader: 'Promote to Leader',
+    // The global "/invite <name>" usage hint shown when the command is typed
+    // without a name (the invite itself has no proximity gate).
+    inviteUsage: 'Invite whom? Usage: /invite <name>.',
   },
   lootSettings: {
     title: 'Loot Settings',

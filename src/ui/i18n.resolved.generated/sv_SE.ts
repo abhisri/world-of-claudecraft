@@ -720,7 +720,8 @@ export const sv_SE: EnTranslations = {
       "summaryGroup": "Byteinställningar: Gruppbyte."
     },
     "party": {
-      "promoteLeader": "Befordra till ledare"
+      "promoteLeader": "Befordra till ledare",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Byteinställningar",

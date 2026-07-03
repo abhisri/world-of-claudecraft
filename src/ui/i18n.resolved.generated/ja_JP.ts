@@ -720,7 +720,8 @@ export const ja_JP: EnTranslations = {
       "summaryGroup": "分配設定：グループルート。"
     },
     "party": {
-      "promoteLeader": "パーティリーダーに指定"
+      "promoteLeader": "パーティリーダーに指定",
+      "inviteUsage": "誰を招待しますか？使用法：/invite <名前>。"
     },
     "lootSettings": {
       "title": "分配設定",

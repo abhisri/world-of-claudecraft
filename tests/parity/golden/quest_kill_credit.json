@@ -16,7 +16,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 393,
-      "state": "65802200",
+      "state": "b58fb2fe",
       "events": "741638a5",
       "rng": {
         "draws": 0,
@@ -32,6 +32,7 @@
           "cls": "warrior",
           "companionUpgrades": {},
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -104,7 +105,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 393,
-      "state": "c0e5e867",
+      "state": "8e3eb5cf",
       "events": "5f459d47",
       "rng": {
         "draws": 0,
@@ -120,6 +121,7 @@
           "cls": "warrior",
           "companionUpgrades": {},
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -205,7 +207,7 @@
       "tick": 8,
       "time": 0.4,
       "nextId": 401,
-      "state": "798c99e1",
+      "state": "0293dbcf",
       "events": "2fad2100",
       "rng": {
         "draws": 32,
@@ -225,6 +227,7 @@
             "kills": 8,
             "questProgress": 8
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -311,7 +314,7 @@
       "tick": 8,
       "time": 0.4,
       "nextId": 401,
-      "state": "0a6d7806",
+      "state": "779b1746",
       "events": "f846efa3",
       "rng": {
         "draws": 32,
@@ -334,6 +337,7 @@
             "questsCompleted": 1,
             "xpGained": 250
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -412,7 +416,7 @@
       "tick": 10,
       "time": 0.5,
       "nextId": 401,
-      "state": "7e6b664e",
+      "state": "0fe23a5e",
       "events": "741638a5",
       "rng": {
         "draws": 32,
@@ -435,6 +439,7 @@
             "questsCompleted": 1,
             "xpGained": 250
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,

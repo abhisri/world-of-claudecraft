@@ -7871,6 +7871,7 @@ export class Hud {
       'You have nothing to collect.': 'itemUi.errors.nothingToCollect',
       "You can't assist yourself.": 'hud.errors.assistSelf',
       'Assist whom? Target a player or use /assist <name>.': 'hud.errors.assistWhom',
+      'Invite whom? Usage: /invite <name>.': 'hudChrome.party.inviteUsage',
     };
     const key = exact[text];
     if (key) return t(key);

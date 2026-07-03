@@ -720,7 +720,8 @@ export const ko_KR: EnTranslations = {
       "summaryGroup": "전리품 설정: 파티 분배."
     },
     "party": {
-      "promoteLeader": "파티장으로 지정"
+      "promoteLeader": "파티장으로 지정",
+      "inviteUsage": "누구를 초대하시겠습니까? 사용법: /invite <이름>."
     },
     "lootSettings": {
       "title": "전리품 설정",

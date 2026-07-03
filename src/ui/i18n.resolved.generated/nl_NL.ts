@@ -720,7 +720,8 @@ export const nl_NL: EnTranslations = {
       "summaryGroup": "Buitinstellingen: Groepsbuit."
     },
     "party": {
-      "promoteLeader": "Bevorderen tot leider"
+      "promoteLeader": "Bevorderen tot leider",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Buitinstellingen",

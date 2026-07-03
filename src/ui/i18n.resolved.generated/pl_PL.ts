@@ -720,7 +720,8 @@ export const pl_PL: EnTranslations = {
       "summaryGroup": "Ustawienia łupów: Łup grupowy."
     },
     "party": {
-      "promoteLeader": "Mianuj przywódcą"
+      "promoteLeader": "Mianuj przywódcą",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Ustawienia łupów",

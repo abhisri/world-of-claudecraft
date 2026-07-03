@@ -16,7 +16,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 393,
-      "state": "d1c2e345",
+      "state": "e54bdd93",
       "events": "741638a5",
       "rng": {
         "draws": 0,
@@ -32,6 +32,7 @@
           "cls": "rogue",
           "companionUpgrades": {},
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -106,7 +107,7 @@
       "tick": 10,
       "time": 0.5,
       "nextId": 404,
-      "state": "9dfb9fc7",
+      "state": "eb0551ab",
       "events": "9e34e27d",
       "rng": {
         "draws": 3,
@@ -117,7 +118,7 @@
       "tick": 20,
       "time": 1,
       "nextId": 404,
-      "state": "b8c52ba7",
+      "state": "1f857d4b",
       "events": "1bd10bbf",
       "rng": {
         "draws": 3,
@@ -128,7 +129,7 @@
       "tick": 30,
       "time": 1.5,
       "nextId": 404,
-      "state": "fb5c13a9",
+      "state": "f93cfee9",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -139,7 +140,7 @@
       "tick": 40,
       "time": 2,
       "nextId": 404,
-      "state": "da466df7",
+      "state": "f023e39b",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -150,7 +151,7 @@
       "tick": 50,
       "time": 2.5,
       "nextId": 404,
-      "state": "84e4b05d",
+      "state": "f0c23595",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -161,7 +162,7 @@
       "tick": 60,
       "time": 3,
       "nextId": 404,
-      "state": "1cd7b8d3",
+      "state": "0392227f",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -172,7 +173,7 @@
       "tick": 69,
       "time": 3.45,
       "nextId": 405,
-      "state": "ecf40da9",
+      "state": "193b0ce9",
       "events": "1344a4b5",
       "rng": {
         "draws": 3,
@@ -192,6 +193,7 @@
             "kills": 1,
             "xpGained": 198
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -305,7 +307,7 @@
       "tick": 70,
       "time": 3.5,
       "nextId": 405,
-      "state": "ff758999",
+      "state": "934d0fd9",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -316,7 +318,7 @@
       "tick": 71,
       "time": 3.55,
       "nextId": 405,
-      "state": "0446cb9d",
+      "state": "6bf15fd5",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -336,6 +338,7 @@
             "kills": 1,
             "xpGained": 198
           },
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,

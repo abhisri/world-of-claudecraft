@@ -125,6 +125,7 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'hudChrome.masterLoot.looterLabel': '分配者',
   'hudChrome.masterLoot.leaderOption': '队长',
   'hudChrome.party.promoteLeader': '提升为队长',
+  'hudChrome.party.inviteUsage': '邀请谁？用法：/invite <名称>。',
   'hudChrome.masterLoot.thresholdLabel': '品质门槛',
   'hudChrome.masterLoot.thresholdUncommon': '优秀及以上',
   'hudChrome.masterLoot.thresholdRare': '稀有及以上',

@@ -720,7 +720,8 @@ export const ru_RU: EnTranslations = {
       "summaryGroup": "Настройки добычи: групповая добыча."
     },
     "party": {
-      "promoteLeader": "Назначить лидером"
+      "promoteLeader": "Назначить лидером",
+      "inviteUsage": "Кого пригласить? Использование: /invite <имя>."
     },
     "lootSettings": {
       "title": "Настройки добычи",

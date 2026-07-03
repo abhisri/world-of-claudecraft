@@ -720,7 +720,8 @@ export const zh_CN: EnTranslations = {
       "summaryGroup": "拾取设置：小队拾取。"
     },
     "party": {
-      "promoteLeader": "提升为队长"
+      "promoteLeader": "提升为队长",
+      "inviteUsage": "邀请谁？用法：/invite <名称>。"
     },
     "lootSettings": {
       "title": "拾取设置",

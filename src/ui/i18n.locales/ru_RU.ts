@@ -131,6 +131,7 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.masterLoot.looterLabel': 'Мастер добычи',
   'hudChrome.masterLoot.leaderOption': 'Лидер группы',
   'hudChrome.party.promoteLeader': 'Назначить лидером',
+  'hudChrome.party.inviteUsage': 'Кого пригласить? Использование: /invite <имя>.',
   'hudChrome.masterLoot.thresholdLabel': 'Порог качества',
   'hudChrome.masterLoot.thresholdUncommon': 'Необычное и выше',
   'hudChrome.masterLoot.thresholdRare': 'Редкое и выше',

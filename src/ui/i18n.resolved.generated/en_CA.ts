@@ -720,7 +720,8 @@ export const en_CA: EnTranslations = {
       "summaryGroup": "Loot Settings: Group Loot."
     },
     "party": {
-      "promoteLeader": "Promote to Leader"
+      "promoteLeader": "Promote to Leader",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Loot Settings",

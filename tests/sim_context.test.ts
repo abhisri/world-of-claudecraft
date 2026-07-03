@@ -408,6 +408,7 @@ function makeFakeHost() {
     isHostileTo: vi.fn(() => false),
     lineOfSightBlocked: vi.fn(() => false),
     stopFollow: vi.fn(),
+    partyInvite: vi.fn(),
     tameError: vi.fn(() => null),
     standUp: vi.fn(),
     breakGhostWolf: vi.fn(),

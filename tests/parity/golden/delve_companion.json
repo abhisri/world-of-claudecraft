@@ -16,7 +16,7 @@
       "tick": 0,
       "time": 0,
       "nextId": 393,
-      "state": "65802200",
+      "state": "b58fb2fe",
       "events": "741638a5",
       "rng": {
         "draws": 0,
@@ -32,6 +32,7 @@
           "cls": "warrior",
           "companionUpgrades": {},
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -104,7 +105,7 @@
       "tick": 5,
       "time": 0.25,
       "nextId": 402,
-      "state": "b3b2afe1",
+      "state": "13a8d997",
       "events": "795d50be",
       "rng": {
         "draws": 4,
@@ -115,7 +116,7 @@
       "tick": 10,
       "time": 0.5,
       "nextId": 402,
-      "state": "5b584e76",
+      "state": "79dd3386",
       "events": "741638a5",
       "rng": {
         "draws": 4,
@@ -126,7 +127,7 @@
       "tick": 15,
       "time": 0.75,
       "nextId": 402,
-      "state": "7b912276",
+      "state": "2e39ef86",
       "events": "741638a5",
       "rng": {
         "draws": 4,
@@ -137,7 +138,7 @@
       "tick": 20,
       "time": 1,
       "nextId": 402,
-      "state": "8af05051",
+      "state": "58e4b687",
       "events": "1bd10bbf",
       "rng": {
         "draws": 4,
@@ -148,7 +149,7 @@
       "tick": 25,
       "time": 1.25,
       "nextId": 402,
-      "state": "6fef9ed0",
+      "state": "7ad5f56c",
       "events": "741638a5",
       "rng": {
         "draws": 4,
@@ -159,7 +160,7 @@
       "tick": 30,
       "time": 1.5,
       "nextId": 402,
-      "state": "f8d0d101",
+      "state": "738a9877",
       "events": "741638a5",
       "rng": {
         "draws": 4,
@@ -170,7 +171,7 @@
       "tick": 35,
       "time": 1.75,
       "nextId": 402,
-      "state": "2c00611e",
+      "state": "c8a3cbde",
       "events": "3a3cdaf4",
       "rng": {
         "draws": 6,
@@ -181,7 +182,7 @@
       "tick": 40,
       "time": 2,
       "nextId": 402,
-      "state": "ea462060",
+      "state": "5bb666fc",
       "events": "741638a5",
       "rng": {
         "draws": 6,
@@ -192,7 +193,7 @@
       "tick": 40,
       "time": 2,
       "nextId": 402,
-      "state": "ea462060",
+      "state": "5bb666fc",
       "events": "741638a5",
       "rng": {
         "draws": 6,
@@ -210,6 +211,7 @@
             "companion_tessa": 2
           },
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -365,7 +367,7 @@
       "tick": 41,
       "time": 2.05,
       "nextId": 402,
-      "state": "77ba80fb",
+      "state": "3b50eaa5",
       "events": "36d2135a",
       "rng": {
         "draws": 8,
@@ -383,6 +385,7 @@
             "companion_tessa": 2
           },
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -552,7 +555,7 @@
       "tick": 45,
       "time": 2.25,
       "nextId": 402,
-      "state": "06d7c8eb",
+      "state": "c56faa55",
       "events": "741638a5",
       "rng": {
         "draws": 8,
@@ -563,7 +566,7 @@
       "tick": 49,
       "time": 2.45,
       "nextId": 402,
-      "state": "61683b1d",
+      "state": "c50d9afb",
       "events": "741638a5",
       "rng": {
         "draws": 8,
@@ -581,6 +584,7 @@
             "companion_tessa": 2
           },
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -694,7 +698,7 @@
       "tick": 50,
       "time": 2.5,
       "nextId": 402,
-      "state": "b669e882",
+      "state": "f34d6a5a",
       "events": "741638a5",
       "rng": {
         "draws": 8,
@@ -705,7 +709,7 @@
       "tick": 51,
       "time": 2.55,
       "nextId": 402,
-      "state": "054c0159",
+      "state": "166d667f",
       "events": "741638a5",
       "rng": {
         "draws": 8,
@@ -723,6 +727,7 @@
             "companion_tessa": 2
           },
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,
@@ -837,7 +842,7 @@
       "tick": 51,
       "time": 2.55,
       "nextId": 402,
-      "state": "054c0159",
+      "state": "166d667f",
       "events": "741638a5",
       "rng": {
         "draws": 8,
@@ -855,6 +860,7 @@
             "companion_tessa": 2
           },
           "counters": {},
+          "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
           "entityId": 392,

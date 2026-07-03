@@ -720,7 +720,8 @@ export const id_ID: EnTranslations = {
       "summaryGroup": "Pengaturan Jarahan: Jarahan Kelompok."
     },
     "party": {
-      "promoteLeader": "Angkat jadi Pemimpin"
+      "promoteLeader": "Angkat jadi Pemimpin",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Pengaturan Jarahan",

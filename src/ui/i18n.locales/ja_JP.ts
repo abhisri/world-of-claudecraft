@@ -134,6 +134,7 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.masterLoot.looterLabel': '分配担当',
   'hudChrome.masterLoot.leaderOption': 'パーティリーダー',
   'hudChrome.party.promoteLeader': 'パーティリーダーに指定',
+  'hudChrome.party.inviteUsage': '誰を招待しますか？使用法：/invite <名前>。',
   'hudChrome.masterLoot.thresholdLabel': '品質しきい値',
   'hudChrome.masterLoot.thresholdUncommon': 'アンコモン以上',
   'hudChrome.masterLoot.thresholdRare': 'レア以上',

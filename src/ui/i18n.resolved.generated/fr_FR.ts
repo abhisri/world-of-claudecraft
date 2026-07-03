@@ -720,7 +720,8 @@ export const fr_FR: EnTranslations = {
       "summaryGroup": "Réglages de butin : Butin de groupe."
     },
     "party": {
-      "promoteLeader": "Promouvoir chef"
+      "promoteLeader": "Promouvoir chef",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Réglages de butin",

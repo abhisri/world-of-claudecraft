@@ -295,6 +295,9 @@ export interface SimContextCallbacks {
   // delegate; partyOf stays on Sim (A1's thin delegate -> social/party).
   clearEntityMarker(entityId: number): void;
   partyOf(pid: number): Party | null;
+  // Invite a player to the actor's party by pid (delegates to the PartyMachine);
+  // used by the chat "/invite <name>" command in social/chat.ts.
+  partyInvite(targetPid: number, pid?: number): void;
   removeFromParty(pid: number, verb: string): void;
   // Drop a disbanded party's whole raid-marker set (points at T1's targeting store).
   dropPartyMarkers(partyId: number): void;
@@ -784,6 +787,7 @@ export function createSimContext(host: SimContextHost): SimContext {
     removeFungibleItem: host.removeFungibleItem,
     clearEntityMarker: host.clearEntityMarker,
     partyOf: host.partyOf,
+    partyInvite: host.partyInvite,
     removeFromParty: host.removeFromParty,
     dropPartyMarkers: host.dropPartyMarkers,
     onMobKilledForQuests: host.onMobKilledForQuests,

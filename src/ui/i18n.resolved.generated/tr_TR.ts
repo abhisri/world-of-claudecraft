@@ -720,7 +720,8 @@ export const tr_TR: EnTranslations = {
       "summaryGroup": "Ganimet Ayarları: Grup Ganimeti."
     },
     "party": {
-      "promoteLeader": "Lider Yap"
+      "promoteLeader": "Lider Yap",
+      "inviteUsage": "Invite whom? Usage: /invite <name>."
     },
     "lootSettings": {
       "title": "Ganimet Ayarları",
