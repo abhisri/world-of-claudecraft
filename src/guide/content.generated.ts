@@ -1751,6 +1751,30 @@ export const GUIDE_DELVES: GuideDelve[] = [
       "Unstable Roof",
       "Cult Remnants"
     ]
+  },
+  {
+    "id": "drowned_litany",
+    "name": "The Drowned Litany",
+    "theme": "ruin",
+    "minLevel": 12,
+    "suggestedPlayers": 2,
+    "keeper": {
+      "name": "Brother Halven",
+      "title": "Reliquary Keeper"
+    },
+    "companion": {
+      "name": "Edda Reedhand",
+      "role": "healer"
+    },
+    "tiers": [
+      "Normal",
+      "Heroic"
+    ],
+    "affixes": [
+      "High Water",
+      "Lively Choir",
+      "Belligerent Dead"
+    ]
   }
 ];
 

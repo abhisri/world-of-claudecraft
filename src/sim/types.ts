@@ -542,6 +542,9 @@ export interface MobTemplate {
   worldBoss?: boolean;
   // Elite scaling, classic-style: ~2.3x health, ~1.5x damage, double XP.
   elite?: boolean;
+  // Kill-XP multiplier (default 1). 0 marks a puzzle-object mob (e.g. the 1 HP
+  // spider egg-sac) that must not pay full kill XP for a single hit.
+  xpMult?: number;
   // Rare/miniboss controls.
   canSwim?: boolean;
   ccImmune?: boolean;
@@ -1539,6 +1542,10 @@ export interface Entity {
   /** GM character: invulnerable (dealDamage no-ops). Server-set from the
    *  characters.is_gm column; never user-settable. */
   gm?: boolean;
+  /** True for a mob spawned BY a delve affix (e.g. Restless Graves' Raised
+   *  Bonewalker). Affix re-trigger checks exclude these so an affix-spawned mob's
+   *  own death can never re-trigger the same affix (would otherwise chain forever). */
+  affixSpawned?: boolean;
   respawnTimer: number;
   corpseTimer: number;
   lootFfaTimer: number; // seconds of owner-lock left before tap loot opens to all (FFA); Infinity until rollLoot starts it
@@ -1858,7 +1865,7 @@ export type SimEvent = { pid?: number } & (
   | { type: 'delveComplete'; delveId: string; tierId: string }
   | { type: 'delveFailed'; delveId: string; tierId: string }
   | { type: 'delveLoreUnlock'; loreId: string }
-  | { type: 'companionBark'; barkId: string; pid?: number }
+  | { type: 'companionBark'; barkId: string; companionId: string; pid?: number }
   // Lockpicking minigame ("Tumbler's Path"). All personal (pid-scoped). The sim
   // emits structured data only, the client builds every visible string. Cells
   // are always limited to the fog window (anti-cheat: the full lock is never
@@ -1901,6 +1908,20 @@ export type SimEvent = { pid?: number } & (
     }
   | { type: 'lockpickBonus'; tier: LootTier; marks: number; copper: number }
   | { type: 'delveChestLoot'; chestId: number; items: { itemId: string; count: number }[] }
+  // Carries the shrine as `entityId` so the server's eventAnchor interest-scopes
+  // the pulse to players near the apse instead of broadcasting it realm-wide
+  // (the HUD closes the rite popup on the first pulse).
+  | { type: 'delveRitePulse'; entityId: number; shrineKind: RiteShrineKind }
+  | {
+      type: 'delveRiteFeedback';
+      shrineId: number;
+      shrineKind: RiteShrineKind;
+      correct: boolean;
+    }
+  // Personal cue (carries `pid`) to open the rite difficulty popup when a player
+  // interacts with the risen reliquary before choosing. Text-free: the client
+  // renders its own localized copy, so no sim/server i18n matcher rule is needed.
+  | { type: 'delveRiteChoosePrompt'; reliquaryId: number }
   // personal cue (carries `pid`) to open the cosmetic skin-select overlay with
   // the server-rolled rank. Text-free on purpose — the client renders its own
   // localized copy, so no sim/server i18n matcher rule is needed.
@@ -2068,6 +2089,11 @@ export const PARTY_XP_RANGE = 80; // yards: members this close share kill xp/cre
 // boss death) and the still-on-Sim encounter logic; N1 may re-home it when it owns
 // the encounter. Kept here as the neutral shared seam in the meantime.
 export const NYTHRAXIS_BOSS_ID = 'nythraxis_scourge_of_thornpeak';
+// The Drowned Litany finale boss. Used by the drowned_litany_boss driver.
+export const SISTER_NHALIA_BOSS_ID = 'sister_nhalia_drowned_canticle';
+// The Tolling Bells projectile mob (Drowned Litany finale): moved exclusively by
+// the boss driver. Shared with mob/locomotion.ts so the AI dispatcher skips it.
+export const TOLLING_BELL_TEMPLATE_ID = 'tolling_bell';
 
 export function xpForLevel(level: number): number {
   return XP_TABLE[Math.min(level - 1, XP_TABLE.length - 1)];
@@ -2376,6 +2402,22 @@ export interface DelveInteractableSlot {
   variants: string[];
 }
 
+// A static environmental hazard circle (instance-local coords), e.g. the Drowned
+// Litany's Blackwater pools. Standing players take damage on a fixed interval; it
+// is NOT a collider (mobs/companions walk through, pathing ignores it), it only
+// shapes where players choose to stand.
+export interface DelveHazardZone {
+  x: number;
+  z: number;
+  r: number;
+  // An authored ellipse (e.g. the apse moat, wider along x than z to fit
+  // between its flanking islands): rx/rz win over r for both the damage
+  // check and every visual (map, render). Omit for a plain circle of radius r.
+  rx?: number;
+  rz?: number;
+  tier?: 'shallow' | 'deep';
+}
+
 export interface DelveModuleDef {
   id: string;
   interior: 'crypt' | 'cave' | 'mine';
@@ -2384,6 +2426,8 @@ export interface DelveModuleDef {
   spawnSets: DelveSpawnSet[];
   interactableSlots: DelveInteractableSlot[];
   sideRoom?: { chance: number; moduleId: string };
+  // Static Blackwater (or similar) hazard zones for this module, instance-local.
+  hazards?: DelveHazardZone[];
 }
 
 export interface DelveDef {
@@ -2393,6 +2437,8 @@ export interface DelveDef {
   index: number;
   minLevel: number;
   suggestedPlayers: number;
+  // Hard cap: a party larger than this may not enter (delves are solo/duo content).
+  maxPlayers: number;
   doorPos: { x: number; z: number };
   modules: string[];
   moduleCount: [number, number];
@@ -2441,7 +2487,14 @@ export interface DelveRun {
   raiseDeadChannel: DelveRaiseDeadChannel | null;
   restlessPending: DelveRestlessPending[];
   badAirTimer: number;
+  /** Accumulates DT for the static Blackwater hazard pulse (damage every interval
+   * a player stands in a module hazard zone). Reset on run start / module change. */
+  blackwaterTimer: number;
   companionBarks: string[];
+  /** Rank 3 boon: set once the once-per-run ally revive has been spent. Lives on
+   * the run (like companionBarks), not on the companion state, so leaving and
+   * re-entering mid-run cannot recharge it. */
+  companionReviveUsed: boolean;
   /** True when the current module exit portal is active (trash cleared + plate if any). */
   exitPortalOpen: boolean;
   /** §7.6, this run rolled Bountiful (ultra-rare): the reward chest is a purple
@@ -2454,6 +2507,22 @@ export interface DelveRun {
   surfaceExitId: number | null;
   /** Active lockpicking attempt on the finale chest (single interactor, v1), or null. In-memory only. */
   lockpick: LockSession | null;
+  /** Sister Nhalia boss mechanics (The Drowned Litany finale only). */
+  nhaliaBoss?: DrownedLitanyBossState;
+  /** Drowned Reliquary Rite shrine puzzle (The Drowned Litany finale only). */
+  drownedLitanyRite?: DrownedLitanyRiteState;
+  /** Sinkhole Baptistry wave progression (egg-sacs gated until wave 3). */
+  litanyBaptistry?: DrownedLitanyBaptistryState;
+}
+
+export interface DrownedLitanyBaptistryState {
+  /** Index of the active wave in BAPTISTRY_WAVES (0..2). */
+  wave: number;
+  eggsEnabled: boolean;
+  /** Mob ids of the spawned spider_egg_sac adds (set once, at spawn time). */
+  eggSacIds: number[];
+  /** Subset of eggSacIds whose death burst has already fired, so a kill is processed once. */
+  burstIds: number[];
 }
 
 export interface DelveDailyState {
@@ -2493,6 +2562,10 @@ export interface DelveObjectState {
   pendingLoot?: { itemId: string; count: number }[];
   /** Entity id of the player who picked the lock; only they may collect the loot. */
   lootOwnerId?: number;
+  // Drowned Reliquary loot (kind === 'drowned_reliquary'): each party member rolls
+  // and collects their own items independently, so there is no single owner to
+  // front-run. Keyed by pid; emptied per member as they collect.
+  partyLoot?: Record<number, { itemId: string; count: number }[]>;
 }
 
 export interface DelveRaiseDeadChannel {
@@ -2501,6 +2574,88 @@ export interface DelveRaiseDeadChannel {
   mobId: string;
   count: number;
   remaining: number;
+}
+
+/** A boss-spawned Blackwater Mark puddle (world coords, instance-local). */
+export interface DrownedLitanyBlackwaterMark {
+  x: number;
+  z: number;
+  remaining: number;
+  tickTimer: number;
+}
+
+/** A single Tolling Bell projectile entity in flight (entity id + expiry timer). */
+export interface TollingBellEntity {
+  /** Entity id of the mob entity representing this bell. */
+  entityId: number;
+  /** Seconds until the bell expires (travels out of bounds). */
+  remaining: number;
+  /** Velocity direction: unit vector (dx, dz). */
+  vx: number;
+  vz: number;
+}
+
+/** Per-run Sister Nhalia encounter state (DelveRun.nhaliaBoss). */
+export interface DrownedLitanyBossState {
+  markTimer: number;
+  marks: DrownedLitanyBlackwaterMark[];
+  firedCantorPhases: number;
+  /** Entity ids from the active Cantor phase; shield drops when all are dead. */
+  cantorShieldAdds: number[];
+  finalBellFired: boolean;
+  /** Countdown until the next Tolling Bells volley (seconds). */
+  bellVolleyTimer: number;
+  /** Currently in-flight bell projectile entities. */
+  bells: TollingBellEntity[];
+}
+
+export type RiteShrineKind =
+  | 'rite_shrine_bell'
+  | 'rite_shrine_candle'
+  | 'rite_shrine_reed'
+  | 'rite_shrine_skull';
+
+export const RITE_SHRINE_KINDS: RiteShrineKind[] = [
+  'rite_shrine_bell',
+  'rite_shrine_candle',
+  'rite_shrine_reed',
+  'rite_shrine_skull',
+];
+
+/** Player-chosen rite difficulty: more playbacks + shorter for Easy, fewer + longer
+ * for Hard. Loot ceiling rises with difficulty (Easy=low, Medium=medium, Hard=premium). */
+export type RiteIntensity = 'easy' | 'medium' | 'hard';
+
+export const RITE_INTENSITIES: RiteIntensity[] = ['easy', 'medium', 'hard'];
+
+/** Per-run Drowned Reliquary Rite puzzle state (DelveRun.drownedLitanyRite). */
+export interface DrownedLitanyRiteState {
+  /** True after the reliquary rises until the player picks a difficulty; the
+   * sequence is empty and playback has not started while this is set. */
+  awaitingChoice: boolean;
+  /** The chosen difficulty, or null while awaitingChoice. */
+  intensity: RiteIntensity | null;
+  sequence: RiteShrineKind[];
+  currentIndex: number;
+  mistakes: number;
+  /** How many wrong touches are tolerated before the reliquary opens on low loot.
+   * Equals tries - 1: a wrong touch fails the current try and (if tries remain)
+   * replays the sequence from the top. */
+  mistakesAllowed: number;
+  /** Full attempts the player gets at repeating the sequence (Easy 3, Medium 2,
+   * Hard 1). Each wrong touch consumes a try. */
+  tries: number;
+  /** How many times the full sequence is shown before input is accepted. */
+  playbacks: number;
+  /** Which playback pass (0-based) is currently showing. */
+  playbackLoop: number;
+  puzzleActive: boolean;
+  sequencePlaying: boolean;
+  playbackIndex: number;
+  playbackTimer: number;
+  shrineEntityIds: Record<RiteShrineKind, number>;
+  reliquaryId: number;
+  opened: boolean;
 }
 
 export interface DelveRestlessPending {

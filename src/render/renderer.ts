@@ -515,6 +515,10 @@ export interface EntityView {
   sparkle?: THREE.Sprite; // ground objects
   objectMesh?: THREE.Object3D;
   objectPoolKey: string | null;
+  /** templateId the object mesh was built from. The sim swaps delve interactable
+   *  templates in place (plate -> triggered, rope -> pulled); diffing this each
+   *  frame drops the stale view so it rebuilds with the new mesh. */
+  builtTemplateId?: string;
   portal?: THREE.Mesh; // dungeon door swirl
   objectCasters: THREE.Object3D[]; // object-view shadow meshes, distance-gated
   viewLights: THREE.PointLight[]; // point lights this view contributes to the budget
@@ -2844,6 +2848,27 @@ export class Renderer {
       case 'delveEntered':
         this.prebuildDelveInteriors(ev.delveId);
         break;
+      case 'delveRitePulse': {
+        // The Drowned Reliquary Rite plays its sequence by pulsing each shrine
+        // in turn; a school-coloured nova on the shrine entity shows which one
+        // (colour matches the shrine's accent so the sequence is readable).
+        const school =
+          ev.shrineKind === 'rite_shrine_candle'
+            ? 'fire'
+            : ev.shrineKind === 'rite_shrine_reed'
+              ? 'nature'
+              : ev.shrineKind === 'rite_shrine_skull'
+                ? 'shadow'
+                : 'holy';
+        this.vfx.nova(ev.entityId, school);
+        break;
+      }
+      case 'delveRiteFeedback':
+        // A correct touch answers with a green up-glow; a wrong one with a dark
+        // shadow burst on the shrine the player pressed.
+        if (ev.correct) this.vfx.healGlow(ev.shrineId);
+        else this.vfx.nova(ev.shrineId, 'shadow');
+        break;
       case 'fiestaPowerup':
         // Big celebratory pop on grab, plus a lingering coloured glow.
         this.vfx.levelUpPillar(ev.entityId);
@@ -3162,6 +3187,12 @@ export class Renderer {
       if (
         e.templateId !== 'delve_pressure_plate' &&
         e.templateId !== 'delve_pressure_plate_triggered' &&
+        !e.templateId.startsWith('delve_sluice_valve') &&
+        !e.templateId.startsWith('delve_grave_tablet') &&
+        !e.templateId.startsWith('delve_corpse_candle') &&
+        // A pullable rope IS an F-interactable, so it keeps the sparkle until
+        // pulled (unlike the flush walk-on plates above).
+        e.templateId !== 'delve_bell_rope_pulled' &&
         e.templateId !== 'delve_locked_door' &&
         e.templateId !== 'delve_destructible_wall'
       ) {
@@ -3391,6 +3422,7 @@ export class Renderer {
       sparkle,
       objectMesh,
       objectPoolKey,
+      builtTemplateId: e.kind === 'object' ? e.templateId : undefined,
       portal,
       nameplateDisplay: 'none',
       nameplateTransform: '',
@@ -4070,6 +4102,17 @@ export class Renderer {
       v.group.rotation.y = facing;
 
       if (e.kind === 'object') {
+        // The sim swaps delve interactable templates in place (pressure plate ->
+        // triggered, bell rope -> pulled). Rebuild the view from the new template
+        // right here rather than leaving it to the budgeted create pass: that
+        // pass never collects past the create radius, so a bare remove could
+        // strand the object invisible through the whole 80-96yd hysteresis band
+        // if the viewer retreats before the rebuild lands.
+        if (v.builtTemplateId !== undefined && v.builtTemplateId !== e.templateId) {
+          this.removeView(id);
+          this.createView(e);
+          continue;
+        }
         const isPortalObject = isPersistentPortalObject(e);
         const vis = e.lootable && (!isPortalObject || d2 <= ENTITY_VIEW_CREATE_RANGE_SQ);
         v.group.visible = vis;

@@ -125,6 +125,7 @@ const baseEnTable = {
   'error.notInChannel': 'You are not in the {channel} channel.',
   'error.notInChannelJoin': 'You are not in the {channel} channel. Type /join {channel} first.',
   'log.bossUnleashes': '{name} unleashes {mechanic}!',
+  'log.mobChannels': '{name} channels {mechanic}.',
   'aura.tamed': 'Tamed',
   'aura.causticSpores': 'Caustic Spores',
   'aura.elixirBear': 'Might of the Bear',
@@ -133,6 +134,17 @@ const baseEnTable = {
   'mechanic.bansheesWail': 'Keening Wail',
   'mechanic.crushingSweep': 'Crushing Sweep',
   'mechanic.rallyingBanner': 'Rallying Banner',
+  'mechanic.finalBell': 'Final Bell',
+  'mechanic.blackwaterMark': 'Blackwater Mark',
+  'mechanic.litanyPulse': 'Litany Pulse',
+  'mechanic.siltWard': 'Silt Ward',
+  'mechanic.siltHide': 'Silt Hide',
+  'mechanic.sumpStomp': 'Sump Stomp',
+  'mechanic.bellShock': 'Bell Shock',
+  'mechanic.eggSacBurst': 'Egg-Sac Burst',
+  'mechanic.tollingBell': 'Tolling Bell',
+  'log.nhaliaTollsBells': '{name} tolls the bells!',
+  'aura.drownedCanticle': 'Drowned Canticle',
   'mechanic.tectonicHeave': 'Tectonic Heave',
   'mechanic.seismicStomp': 'Seismic Stomp',
   'mechanic.mountainhide': 'Mountainhide',
@@ -174,12 +186,15 @@ const baseEnTable = {
   'aura.crackedGuard': 'Cracked Guard',
   'aura.offBalance': 'Off-Balance',
   'aura.numbingChill': 'Numbing Chill',
+  'aura.webSnare': 'Web Snare',
+  'aura.feedingFrenzy': 'Feeding Frenzy',
   'aura.demoralized': 'Demoralized',
   'aura.resurrectionSickness': "The Keeper's Toll",
 } as const;
 
 const petEnTable = {
   'error.noPet': 'You have no pet.',
+  'error.petsNotAllowedInDelves': 'Pets are not allowed inside the delves.',
   'error.petAlreadyAlive': 'Your pet is already alive.',
   'error.permanentPetAbandonFrame': 'Permanent pets can only be abandoned from the pet frame.',
   'error.summonUnavailable': 'That summon is unavailable.',
@@ -227,9 +242,9 @@ type BaseSimMessageKey = keyof typeof baseEnTable;
 type PetSimMessageKey = keyof typeof petEnTable;
 export type SimMessageKey = keyof typeof enTable;
 
-// Per-locale table. Typed Record<SupportedLanguage, Record<...>> so tsc fails on
-// a missing locale OR a missing/renamed key (stronger than the server DICT).
-const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = {
+// Per-locale table. Contributors add English only; non-English omissions fall
+// back to English here until the release localization pass fills them.
+const BASE_DICT: Record<SupportedLanguage, Partial<Record<BaseSimMessageKey, string>>> = {
   en: {
     'error.lineOfSight': 'Line of sight.',
     'error.bagsFull': 'Your bags are full.',
@@ -330,6 +345,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': 'You are not in the {channel} channel.',
     'error.notInChannelJoin': 'You are not in the {channel} channel. Type /join {channel} first.',
     'log.bossUnleashes': '{name} unleashes {mechanic}!',
+    'log.mobChannels': '{name} channels {mechanic}.',
     'aura.tamed': 'Tamed',
     'aura.causticSpores': 'Caustic Spores',
     'aura.elixirBear': 'Might of the Bear',
@@ -379,6 +395,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Cracked Guard',
     'aura.offBalance': 'Off-Balance',
     'aura.numbingChill': 'Numbing Chill',
+    'aura.webSnare': 'Web Snare',
+    'aura.feedingFrenzy': 'Feeding Frenzy',
+    'mechanic.litanyPulse': 'Litany Pulse',
+    'mechanic.siltHide': 'Silt Hide',
     'aura.demoralized': 'Demoralized',
     'aura.resurrectionSickness': "The Keeper's Toll",
   },
@@ -411,6 +431,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': 'No estás en el canal {channel}.',
     'error.notInChannelJoin': 'No estás en el canal {channel}. Escribe /join {channel} primero.',
     'log.bossUnleashes': '¡{name} desata {mechanic}!',
+    'log.mobChannels': '¡{name} canaliza {mechanic}!',
     'mechanic.warStomp': 'Pisotón de guerra',
     'mechanic.boneCarapace': 'Caparazón de hueso',
     'mechanic.bansheesWail': 'Lamento de banshee',
@@ -457,6 +478,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Guardia resquebrajada',
     'aura.offBalance': 'Desequilibrado',
     'aura.numbingChill': 'Frío entumecedor',
+    'aura.webSnare': 'Trampa de telaraña',
+    'aura.feedingFrenzy': 'Frenesí devorador',
+    'mechanic.litanyPulse': 'Pulso de letanía',
+    'mechanic.siltHide': 'Piel de limo',
     'aura.demoralized': 'Desmoralizado',
     'aura.resurrectionSickness': 'Mal de resurrección',
     'error.lineOfSight': 'Sin línea de visión.',
@@ -564,6 +589,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': 'No estás en el canal {channel}.',
     'error.notInChannelJoin': 'No estás en el canal {channel}. Escribe /join {channel} primero.',
     'log.bossUnleashes': '¡{name} desata {mechanic}!',
+    'log.mobChannels': '¡{name} canaliza {mechanic}!',
     'mechanic.warStomp': 'Pisotón de guerra',
     'mechanic.boneCarapace': 'Caparazón de hueso',
     'mechanic.bansheesWail': 'Lamento de banshee',
@@ -610,6 +636,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Guardia resquebrajada',
     'aura.offBalance': 'Desequilibrado',
     'aura.numbingChill': 'Frío entumecedor',
+    'aura.webSnare': 'Trampa de telaraña',
+    'aura.feedingFrenzy': 'Frenesí devorador',
+    'mechanic.litanyPulse': 'Pulso de letanía',
+    'mechanic.siltHide': 'Piel de limo',
     'aura.demoralized': 'Desmoralizado',
     'aura.resurrectionSickness': 'Mal de resurrección',
     'error.lineOfSight': 'Sin línea de visión.',
@@ -718,6 +748,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannelJoin':
       "Vous n'êtes pas dans le canal {channel}. Tapez d'abord /join {channel}.",
     'log.bossUnleashes': '{name} déchaîne {mechanic} !',
+    'log.mobChannels': '{name} canalise {mechanic}.',
     'mechanic.warStomp': 'Piétinement de guerre',
     'mechanic.boneCarapace': "Carapace d'os",
     'mechanic.bansheesWail': 'Lamentation de la banshee',
@@ -764,6 +795,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Garde brisée',
     'aura.offBalance': 'Déséquilibré',
     'aura.numbingChill': 'Froid engourdissant',
+    'aura.webSnare': 'Piège de toile',
+    'aura.feedingFrenzy': 'Frénésie dévorante',
+    'mechanic.litanyPulse': 'Pouls de litanie',
+    'mechanic.siltHide': 'Peau de vase',
     'aura.demoralized': 'Démoralisé',
     'aura.resurrectionSickness': 'Mal de résurrection',
     'error.lineOfSight': 'Pas de ligne de vue.',
@@ -873,6 +908,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannelJoin':
       "Vous n'êtes pas dans le canal {channel}. Tapez d'abord /join {channel}.",
     'log.bossUnleashes': '{name} déchaîne {mechanic} !',
+    'log.mobChannels': '{name} canalise {mechanic}.',
     'mechanic.warStomp': 'Piétinement de guerre',
     'mechanic.boneCarapace': "Carapace d'os",
     'mechanic.bansheesWail': 'Lamentation de la banshee',
@@ -919,6 +955,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Garde brisée',
     'aura.offBalance': 'Déséquilibré',
     'aura.numbingChill': 'Froid engourdissant',
+    'aura.webSnare': 'Piège de toile',
+    'aura.feedingFrenzy': 'Frénésie dévorante',
+    'mechanic.litanyPulse': 'Pouls de litanie',
+    'mechanic.siltHide': 'Peau de vase',
     'aura.demoralized': 'Démoralisé',
     'aura.resurrectionSickness': 'Mal de résurrection',
     'error.lineOfSight': 'Pas de ligne de vue.',
@@ -1027,6 +1067,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': 'You are not in the {channel} channel.',
     'error.notInChannelJoin': 'You are not in the {channel} channel. Type /join {channel} first.',
     'log.bossUnleashes': '{name} unleashes {mechanic}!',
+    'log.mobChannels': '{name} channels {mechanic}.',
     'mechanic.warStomp': 'Shuddering Stomp',
     'mechanic.boneCarapace': 'Bone Carapace',
     'mechanic.bansheesWail': 'Keening Wail',
@@ -1073,6 +1114,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Cracked Guard',
     'aura.offBalance': 'Off-Balance',
     'aura.numbingChill': 'Numbing Chill',
+    'aura.webSnare': 'Web Snare',
+    'aura.feedingFrenzy': 'Feeding Frenzy',
+    'mechanic.litanyPulse': 'Litany Pulse',
+    'mechanic.siltHide': 'Silt Hide',
     'aura.demoralized': 'Demoralized',
     'aura.resurrectionSickness': "The Keeper's Toll",
     'error.lineOfSight': 'Line of sight.',
@@ -1180,6 +1225,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': 'Non sei nel canale {channel}.',
     'error.notInChannelJoin': 'Non sei nel canale {channel}. Digita prima /join {channel}.',
     'log.bossUnleashes': '{name} scatena {mechanic}!',
+    'log.mobChannels': '{name} incanala {mechanic}.',
     'mechanic.warStomp': 'Pestone di Guerra',
     'mechanic.boneCarapace': "Carapace d'Ossa",
     'mechanic.bansheesWail': 'Lamento della Banshee',
@@ -1226,6 +1272,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Guardia Incrinata',
     'aura.offBalance': 'Sbilanciato',
     'aura.numbingChill': 'Gelo Intorpidente',
+    'aura.webSnare': 'Trappola di ragnatela',
+    'aura.feedingFrenzy': 'Frenesia famelica',
+    'mechanic.litanyPulse': 'Impulso della litania',
+    'mechanic.siltHide': 'Pelle di limo',
     'aura.demoralized': 'Demoralizzato',
     'aura.resurrectionSickness': 'Mal di resurrezione',
     'error.lineOfSight': 'Nessuna linea di vista.',
@@ -1333,6 +1383,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': 'Ihr seid nicht im Kanal {channel}.',
     'error.notInChannelJoin': 'Ihr seid nicht im Kanal {channel}. Schreibt zuerst /join {channel}.',
     'log.bossUnleashes': '{name} entfesselt {mechanic}!',
+    'log.mobChannels': '{name} kanalisiert {mechanic}.',
     'mechanic.warStomp': 'Kriegsdonner',
     'mechanic.boneCarapace': 'Knochenpanzer',
     'mechanic.bansheesWail': 'Klageschrei der Banshee',
@@ -1379,6 +1430,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Gebrochene Deckung',
     'aura.offBalance': 'Aus dem Gleichgewicht',
     'aura.numbingChill': 'Betäubende Kälte',
+    'aura.webSnare': 'Netzfalle',
+    'aura.feedingFrenzy': 'Fressrausch',
+    'mechanic.litanyPulse': 'Litaneipuls',
+    'mechanic.siltHide': 'Schlickhaut',
     'aura.demoralized': 'Demoralisiert',
     'aura.resurrectionSickness': 'Wiederbelebungskrankheit',
     'error.lineOfSight': 'Kein Sichtkontakt.',
@@ -1486,6 +1541,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': '你不在{channel}频道中。',
     'error.notInChannelJoin': '你不在{channel}频道中。请先输入 /join {channel}。',
     'log.bossUnleashes': '{name}释放了{mechanic}！',
+    'log.mobChannels': '{name}正在引导{mechanic}。',
     'mechanic.warStomp': '战争践踏',
     'mechanic.boneCarapace': '白骨甲壳',
     'mechanic.bansheesWail': '女妖之嚎',
@@ -1532,6 +1588,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': '护甲破损',
     'aura.offBalance': '失衡',
     'aura.numbingChill': '麻痹寒意',
+    'aura.webSnare': '蛛网缠缚',
+    'aura.feedingFrenzy': '噬食狂乱',
+    'mechanic.litanyPulse': '连祷脉动',
+    'mechanic.siltHide': '淤泥之皮',
     'aura.demoralized': '士气低落',
     'aura.resurrectionSickness': '复活后遗症',
     'error.lineOfSight': '目标不在视线内。',
@@ -1637,6 +1697,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': '你不在「{channel}」頻道中。',
     'error.notInChannelJoin': '你不在「{channel}」頻道中。請先輸入 /join {channel}。',
     'log.bossUnleashes': '{name}釋放出{mechanic}！',
+    'log.mobChannels': '{name}正在引導{mechanic}。',
     'mechanic.warStomp': '戰爭踐踏',
     'mechanic.boneCarapace': '骸骨甲殼',
     'mechanic.bansheesWail': '女妖哀嚎',
@@ -1683,6 +1744,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': '破裂防禦',
     'aura.offBalance': '失去平衡',
     'aura.numbingChill': '麻痺寒意',
+    'aura.webSnare': '蛛網纏縛',
+    'aura.feedingFrenzy': '噬食狂亂',
+    'mechanic.litanyPulse': '連禱脈動',
+    'mechanic.siltHide': '淤泥之皮',
     'aura.demoralized': '士氣低落',
     'aura.resurrectionSickness': '復活虛弱',
     'error.lineOfSight': '目標不在視線內。',
@@ -1789,6 +1854,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannelJoin':
       '{channel} 채널에 있지 않습니다. 먼저 /join {channel}을(를) 입력하세요.',
     'log.bossUnleashes': '{name}이(가) {mechanic}을(를) 시전합니다!',
+    'log.mobChannels': '{name}이(가) {mechanic}을(를) 시전합니다.',
     'mechanic.warStomp': '전투 발구르기',
     'mechanic.boneCarapace': '뼈 갑각',
     'mechanic.bansheesWail': '밴시의 통곡',
@@ -1835,6 +1901,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': '갈라진 방어',
     'aura.offBalance': '균형 상실',
     'aura.numbingChill': '마비의 냉기',
+    'aura.webSnare': '거미줄 올가미',
+    'aura.feedingFrenzy': '포식 광란',
+    'mechanic.litanyPulse': '연도의 고동',
+    'mechanic.siltHide': '침니 껍질',
     'aura.demoralized': '사기 저하',
     'aura.resurrectionSickness': '부활의 후유증',
     'error.lineOfSight': '시야가 막혀 있습니다.',
@@ -1944,6 +2014,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannelJoin':
       '「{channel}」チャンネルに参加していません。まず/join {channel}と入力してください。',
     'log.bossUnleashes': '{name}が「{mechanic}」を発動！',
+    'log.mobChannels': '{name}が「{mechanic}」を唱えている。',
     'mechanic.warStomp': '大震脚',
     'mechanic.boneCarapace': '骨甲殻',
     'mechanic.bansheesWail': 'バンシーの号哭',
@@ -1990,6 +2061,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': '崩れた防御',
     'aura.offBalance': '体勢崩し',
     'aura.numbingChill': '痺れる悪寒',
+    'aura.webSnare': '蜘蛛糸の罠',
+    'aura.feedingFrenzy': '貪食の狂乱',
+    'mechanic.litanyPulse': '連祷の脈動',
+    'mechanic.siltHide': '沈泥の皮殻',
     'aura.demoralized': '意気消沈',
     'aura.resurrectionSickness': '復活の後遺症',
     'error.lineOfSight': '視線が通っていません。',
@@ -2097,6 +2172,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannel': 'Você não está no canal {channel}.',
     'error.notInChannelJoin': 'Você não está no canal {channel}. Digite /join {channel} primeiro.',
     'log.bossUnleashes': '{name} desencadeia {mechanic}!',
+    'log.mobChannels': '{name} canaliza {mechanic}.',
     'mechanic.warStomp': 'Pisão de Guerra',
     'mechanic.boneCarapace': 'Carapaça de Ossos',
     'mechanic.bansheesWail': 'Lamento da Banshee',
@@ -2143,6 +2219,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Guarda Quebrada',
     'aura.offBalance': 'Desequilibrado',
     'aura.numbingChill': 'Frio Entorpecente',
+    'aura.webSnare': 'Armadilha de teia',
+    'aura.feedingFrenzy': 'Frenesi voraz',
+    'mechanic.litanyPulse': 'Pulso da ladainha',
+    'mechanic.siltHide': 'Pele de lodo',
     'aura.demoralized': 'Desmoralizado',
     'aura.resurrectionSickness': 'Mal da Ressurreição',
     'error.lineOfSight': 'Sem linha de visão.',
@@ -2252,6 +2332,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'error.notInChannelJoin':
       'Вы не состоите в канале «{channel}». Сначала введите /join {channel}.',
     'log.bossUnleashes': '{name} обрушивает {mechanic}!',
+    'log.mobChannels': '{name} направляет {mechanic}.',
     'mechanic.warStomp': 'Боевой топот',
     'mechanic.boneCarapace': 'Костяной панцирь',
     'mechanic.bansheesWail': 'Вопль банши',
@@ -2298,6 +2379,10 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     'aura.crackedGuard': 'Пробитая защита',
     'aura.offBalance': 'Потеря равновесия',
     'aura.numbingChill': 'Сковывающий холод',
+    'aura.webSnare': 'Паутинные силки',
+    'aura.feedingFrenzy': 'Бешеный жор',
+    'mechanic.litanyPulse': 'Пульс литании',
+    'mechanic.siltHide': 'Иловая шкура',
     'aura.demoralized': 'Деморализация',
     'aura.resurrectionSickness': 'Болезнь воскрешения',
     'error.lineOfSight': 'Нет прямой видимости.',
@@ -2381,6 +2466,7 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
 
 const PET_DICT_EN: Record<PetSimMessageKey, string> = {
   'error.noPet': 'You have no pet.',
+  'error.petsNotAllowedInDelves': 'Pets are not allowed inside the delves.',
   'error.petAlreadyAlive': 'Your pet is already alive.',
   'error.permanentPetAbandonFrame': 'Permanent pets can only be abandoned from the pet frame.',
   'error.summonUnavailable': 'That summon is unavailable.',
@@ -2424,6 +2510,7 @@ const PET_DICT_EN: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_ES: Record<PetSimMessageKey, string> = {
   'error.noPet': 'No tienes una mascota.',
+  'error.petsNotAllowedInDelves': 'No se permiten mascotas dentro de las expediciones.',
   'error.petAlreadyAlive': 'Tu mascota ya está viva.',
   'error.permanentPetAbandonFrame':
     'Las mascotas permanentes solo se pueden abandonar desde el marco de mascota.',
@@ -2469,6 +2556,7 @@ const PET_DICT_ES: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_FR: Record<PetSimMessageKey, string> = {
   'error.noPet': "Vous n'avez pas de familier.",
+  'error.petsNotAllowedInDelves': 'Les familiers ne sont pas autorisés dans les plongées.',
   'error.petAlreadyAlive': 'Votre familier est déjà en vie.',
   'error.permanentPetAbandonFrame':
     'Les familiers permanents ne peuvent être abandonnés que depuis le cadre du familier.',
@@ -2514,6 +2602,7 @@ const PET_DICT_FR: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_IT: Record<PetSimMessageKey, string> = {
   'error.noPet': 'Non hai una mascotte.',
+  'error.petsNotAllowedInDelves': 'Le mascotte non sono ammesse nelle incursioni.',
   'error.petAlreadyAlive': 'La tua mascotte è già viva.',
   'error.permanentPetAbandonFrame':
     'Le mascotte permanenti possono essere abbandonate solo dal riquadro della mascotte.',
@@ -2560,6 +2649,7 @@ const PET_DICT_IT: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_DE: Record<PetSimMessageKey, string> = {
   'error.noPet': 'Du hast kein Begleittier.',
+  'error.petsNotAllowedInDelves': 'Begleittiere sind in Tiefgängen nicht erlaubt.',
   'error.petAlreadyAlive': 'Dein Begleittier lebt bereits.',
   'error.permanentPetAbandonFrame':
     'Dauerhafte Begleiter können nur über das Begleiterfenster aufgegeben werden.',
@@ -2606,6 +2696,7 @@ const PET_DICT_DE: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_ZH_CN: Record<PetSimMessageKey, string> = {
   'error.noPet': '你没有宠物。',
+  'error.petsNotAllowedInDelves': '探秘中不允许携带宠物。',
   'error.petAlreadyAlive': '你的宠物已经活着。',
   'error.permanentPetAbandonFrame': '永久宠物只能从宠物框架中放弃。',
   'error.summonUnavailable': '该召唤不可用。',
@@ -2648,6 +2739,7 @@ const PET_DICT_ZH_CN: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_ZH_TW: Record<PetSimMessageKey, string> = {
   'error.noPet': '你沒有寵物。',
+  'error.petsNotAllowedInDelves': '秘探中不允許攜帶寵物。',
   'error.petAlreadyAlive': '你的寵物已經活著。',
   'error.permanentPetAbandonFrame': '永久寵物只能從寵物框架中放棄。',
   'error.summonUnavailable': '該召喚不可用。',
@@ -2690,6 +2782,7 @@ const PET_DICT_ZH_TW: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_KO: Record<PetSimMessageKey, string> = {
   'error.noPet': '소환수가 없습니다.',
+  'error.petsNotAllowedInDelves': '탐굴 안에서는 펫을 데려갈 수 없습니다.',
   'error.petAlreadyAlive': '소환수가 이미 살아 있습니다.',
   'error.permanentPetAbandonFrame': '영구 소환수는 소환수 창에서만 포기할 수 있습니다.',
   'error.summonUnavailable': '그 소환은 사용할 수 없습니다.',
@@ -2734,6 +2827,7 @@ const PET_DICT_KO: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_JA: Record<PetSimMessageKey, string> = {
   'error.noPet': 'ペットがいません。',
+  'error.petsNotAllowedInDelves': 'デルヴの中ではペットを連れて行けません。',
   'error.petAlreadyAlive': 'ペットはすでに生きています。',
   'error.permanentPetAbandonFrame': '永続ペットはペットフレームからのみ放棄できます。',
   'error.summonUnavailable': 'その召喚は使用できません。',
@@ -2777,6 +2871,7 @@ const PET_DICT_JA: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_PT: Record<PetSimMessageKey, string> = {
   'error.noPet': 'Você não tem mascote.',
+  'error.petsNotAllowedInDelves': 'Mascotes não são permitidos dentro das incursões.',
   'error.petAlreadyAlive': 'Seu mascote já está vivo.',
   'error.permanentPetAbandonFrame':
     'Mascotes permanentes só podem ser abandonados pela moldura do mascote.',
@@ -2821,6 +2916,7 @@ const PET_DICT_PT: Record<PetSimMessageKey, string> = {
 
 const PET_DICT_RU: Record<PetSimMessageKey, string> = {
   'error.noPet': 'У вас нет питомца.',
+  'error.petsNotAllowedInDelves': 'Питомцы не допускаются внутрь вылазок.',
   'error.petAlreadyAlive': 'Ваш питомец уже жив.',
   'error.permanentPetAbandonFrame':
     'Постоянных питомцев можно оставить только через рамку питомца.',
@@ -2882,7 +2978,10 @@ const PET_DICT: Record<SupportedLanguage, Record<PetSimMessageKey, string>> = {
 };
 
 export const DICT: Record<SupportedLanguage, Record<SimMessageKey, string>> = Object.fromEntries(
-  supportedLanguages.map((lang) => [lang, { ...BASE_DICT[lang], ...PET_DICT[lang] }]),
+  supportedLanguages.map((lang) => [
+    lang,
+    { ...baseEnTable, ...BASE_DICT[lang], ...PET_DICT[lang] },
+  ]),
 ) as Record<SupportedLanguage, Record<SimMessageKey, string>>;
 
 function interpolate(template: string, params?: InterpolationValues): string {
@@ -2972,6 +3071,16 @@ const AURA_NAME_KEY: Record<string, SimMessageKey> = {
   'Keening Wail': 'mechanic.bansheesWail',
   'Crushing Sweep': 'mechanic.crushingSweep',
   'Rallying Banner': 'mechanic.rallyingBanner',
+  'Final Bell': 'mechanic.finalBell',
+  'Blackwater Mark': 'mechanic.blackwaterMark',
+  'Tolling Bell': 'mechanic.tollingBell',
+  'Litany Pulse': 'mechanic.litanyPulse',
+  'Silt Ward': 'mechanic.siltWard',
+  'Silt Hide': 'mechanic.siltHide',
+  'Sump Stomp': 'mechanic.sumpStomp',
+  'Bell Shock': 'mechanic.bellShock',
+  'Egg-Sac Burst': 'mechanic.eggSacBurst',
+  'Drowned Canticle': 'aura.drownedCanticle',
   'Tectonic Heave': 'mechanic.tectonicHeave',
   'Seismic Stomp': 'mechanic.seismicStomp',
   Mountainhide: 'mechanic.mountainhide',
@@ -3015,6 +3124,8 @@ const AURA_NAME_KEY: Record<string, SimMessageKey> = {
   'Cracked Guard': 'aura.crackedGuard',
   'Off-Balance': 'aura.offBalance',
   'Numbing Chill': 'aura.numbingChill',
+  'Web Snare': 'aura.webSnare',
+  'Feeding Frenzy': 'aura.feedingFrenzy',
   Demoralized: 'aura.demoralized',
   'Resurrection Sickness': 'aura.resurrectionSickness',
 };
@@ -4461,6 +4572,57 @@ const RULES: Rule[] = [
     build: () => t('sim.delve.bossChest'),
   },
   {
+    re: /^Sister Nhalia falls silent\. The Drowned Reliquary rises from the blackwater\. Approach it to begin the rite\.$/,
+    build: () => t('sim.delve.drownedLitanyReliquaryRise'),
+  },
+  {
+    re: /^The bell rope snaps taut\. Drowned Cantors reel from the shock\.$/,
+    build: () => t('sim.delve.bellRopeShock'),
+  },
+  {
+    re: /^The egg-sac bursts\. Spiderlings skitter free across the baptistry rim\.$/,
+    build: () => t('sim.delve.eggSacBurst'),
+  },
+  {
+    re: /^The baptistry falls quiet\. Spider egg-sacs cling wetly to the rim\.$/,
+    build: () => t('sim.delve.baptistryEggs'),
+  },
+  {
+    re: /^You should try to destroy the spider sacs\.$/,
+    build: () => t('sim.delve.baptistrySpidersSealed'),
+  },
+  {
+    re: /^You need to open the seal by applying pressure somewhere in the room\.$/,
+    build: () => t('sim.delve.puzzleSealed'),
+  },
+  {
+    re: /^You should try pulling the bell ropes\.$/,
+    build: () => t('sim.delve.ropesSealed'),
+  },
+  {
+    re: /^Something stirs in the black baptistry water\.$/,
+    build: () => t('sim.delve.baptistryWave'),
+  },
+  {
+    re: /^The shrines fall dark\. Repeat the sequence\.$/,
+    build: () => t('sim.delve.riteSequenceReady'),
+  },
+  {
+    re: /^The shrines replay the rite\. Wait\.$/,
+    build: () => t('sim.delve.riteSequencePlaying'),
+  },
+  { re: /^A soft chime answers your touch\.$/, build: () => t('sim.delve.riteCorrect') },
+  {
+    re: /^A harsh bell crack\. Black water splashes at your feet\.$/,
+    build: () => t('sim.delve.riteWrong'),
+  },
+  { re: /^The Drowned Reliquary opens\.$/, build: () => t('sim.delve.riteReliquaryOpen') },
+  {
+    re: /^Complete the shrine rite to open the reliquary\.$/,
+    build: () => t('sim.delve.riteReliquaryLocked'),
+  },
+  { re: /^The reliquary is empty\.$/, build: () => t('sim.delve.riteReliquaryEmpty') },
+  {
     re: /^A stairway to the surface opens\. Press F at the stairs to leave\.$/,
     build: () => t('sim.delve.surfaceStairs'),
   },
@@ -4492,6 +4654,7 @@ const RULES: Rule[] = [
   { re: /^The passage is sealed\.$/, build: () => t('sim.delve.passageSealed') },
   { re: /^Move closer to the passage\.$/, build: () => t('sim.delve.moveCloserPassage') },
   { re: /^Move closer to the chest\.$/, build: () => t('sim.delve.moveCloserChest') },
+  { re: /^Move closer to the reliquary\.$/, build: () => t('sim.delve.moveCloserReliquary') },
   { re: /^There is nothing left to take\.$/, build: () => t('sim.delve.nothingToTake') },
   { re: /^The way out is not yet open\.$/, build: () => t('sim.delve.wayOutNotOpen') },
   { re: /^Move closer to the stairs\.$/, build: () => t('sim.delve.moveCloserStairs') },
@@ -4529,12 +4692,25 @@ const RULES: Rule[] = [
     re: /^You must be level (\d+) to enter (.+)\.$/,
     build: (m) => t('sim.delve.levelRequired', { level: m[1], name: m[2] }),
   },
+  {
+    re: /^(.+) is meant for solo or duo delves\. Parties of (\d+) or more may not enter\.$/,
+    build: (m) => t('sim.delve.partyTooLarge', { name: m[1], max: m[2] }),
+  },
   // "All instances of X are busy" is handled by the hud-local localizeErrorText
   // arm (it runs first and resolves the dungeon-or-delve name), so no rule here.
   { re: /^(.+) run failed\.$/, build: (m) => t('sim.delve.runFailed', { name: locDelve(m[1]) }) },
   {
     re: /^(.+) begins Raise Dead\.$/,
     build: (m) => t('sim.delve.raiseDead', { name: locMob(m[1]) }),
+  },
+  {
+    re: /^(.+) marks (.+) with Blackwater!$/,
+    build: (m) => t('sim.delve.nhaliaBlackwaterMark', { name: locMob(m[1]), player: m[2] }),
+  },
+  { re: /^Cantors, hold the note!$/, build: () => t('sim.delve.nhaliaCantorShield') },
+  {
+    re: /^(.+) tolls the bells!$/,
+    build: (m) => tSim('log.nhaliaTollsBells', { name: locMob(m[1]) }),
   },
   {
     re: /^You need (.+) Delve Marks to upgrade (.+)\.$/,
@@ -4603,6 +4779,10 @@ const RULES: Rule[] = [
   },
   // Boss/mob mechanic broadcast. Broad (two open captures), so it MUST stay last -
   // after every more-specific "{X} {verb}!" rule above (awakens, enraged, calls for aid).
+  {
+    re: /^(.+) channels (.+)\.$/,
+    build: (m) => tSim('log.mobChannels', { name: locMob(m[1]), mechanic: locBossMechanic(m[2]) }),
+  },
   {
     re: /^(.+) unleashes (.+)!$/,
     build: (m) =>

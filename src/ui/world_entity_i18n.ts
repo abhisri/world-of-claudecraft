@@ -82,6 +82,18 @@ const MOB_IDS = [
   'reliquary_saintless_effigy',
   'deacon_varric',
   'acolyte_tessa',
+  // Drowned Litany delve mobs (Mirefen Marsh)
+  'drowned_cantor',
+  'reedbound_acolyte',
+  'deepfen_spearjaw',
+  'mirefen_widowling',
+  'spider_egg_sac',
+  'grave_silt_bulwark',
+  'sump_troll_devourer',
+  'choir_thrall',
+  'sister_nhalia_drowned_canticle',
+  'edda_reedhand',
+  'tolling_bell',
   // Thornpeak Heights world boss + its summoned adds
   'thunzharr_waking_peak',
   'thunzharr_stormling',
@@ -110,6 +122,7 @@ const NPC_IDS = [
   'auctioneer_voss', // second World Market auctioneer (Highwatch, zone 3)
   'brother_aldric_raid', // dynamically-spawned raid turn-in NPC (Crypt of Nythraxis)
   'brother_halven', // Collapsed Reliquary delve board NPC
+  'brother_halven_marsh', // Drowned Litany delve board NPC (same character, marsh camp)
   'spirit_healer', // the graveyard angel (spawned at every graveyard + dungeon entry)
 ] as const;
 
@@ -198,7 +211,7 @@ const DUNGEON_IDS = [
   'nythraxis_crypt',
   'nythraxis_boss_arena',
 ] as const;
-const DELVE_IDS = ['collapsed_reliquary'] as const;
+const DELVE_IDS = ['collapsed_reliquary', 'drowned_litany'] as const;
 // Ravenpost authored letters (src/sim/content/letters.ts): the welcome letter
 // plus every quest thank-you letter, keyed by letterId.
 const LETTER_IDS = [
@@ -245,6 +258,11 @@ type WorldEntityTranslations = {
     delveLockedChestInteract: string;
     delveRewardChestInteract: string;
     delveSurfaceExitInteract: string;
+    delveReliquaryInteract: string;
+    delveRiteShrineBellInteract: string;
+    delveRiteShrineCandleInteract: string;
+    delveRiteShrineReedInteract: string;
+    delveRiteShrineSkullInteract: string;
     mailboxName: string;
   };
   entities: {
@@ -353,6 +371,11 @@ function makeEnglishWorldEntities(): WorldEntityTranslations {
       delveLockedChestInteract: 'Press F to pick the lock',
       delveRewardChestInteract: 'Press F to claim spoils',
       delveSurfaceExitInteract: 'Press F to climb',
+      delveReliquaryInteract: 'Drowned Reliquary: Press F to begin the rite',
+      delveRiteShrineBellInteract: 'Bell Shrine: Press F to ring it',
+      delveRiteShrineCandleInteract: 'Candle Shrine: Press F to touch it',
+      delveRiteShrineReedInteract: 'Reed Shrine: Press F to touch it',
+      delveRiteShrineSkullInteract: 'Skull Shrine: Press F to touch it',
       mailboxName: 'Mailbox',
     },
     entities: { mobs, npcs, quests, zones, dungeons, delves, letters },

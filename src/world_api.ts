@@ -290,6 +290,7 @@ export const COMMAND_NAMES = [
   'lockpick_action',
   'lockpick_abort',
   'collect_delve_chest_loot',
+  'delve_rite_choose',
   'telemetry',
   'equip_bag',
   'unequip_bag',
@@ -501,4 +502,5 @@ export const COMMAND_FACETS = {
   lockpick_action: 'IWorldDelves',
   lockpick_abort: 'IWorldDelves',
   collect_delve_chest_loot: 'IWorldDelves',
+  delve_rite_choose: 'IWorldDelves',
 } as const satisfies Partial<Record<ClientCommand, WorldFacet>>;

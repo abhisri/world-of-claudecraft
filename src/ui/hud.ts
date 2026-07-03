@@ -91,6 +91,7 @@ import {
   isQuestTurnInNpc,
   MAX_LEVEL,
   MILESTONES,
+  type RiteIntensity,
   type SimEvent,
   virtualLevel,
   xpUntilNextPrestige,
@@ -300,6 +301,7 @@ import { QuestLogWindow } from './questlog_window';
 import { lockoutParts, lockoutShape } from './raid_lockout';
 import { type RaidLockoutI18n, raidLockoutPanelHtml } from './raid_lockout_view';
 import { restView } from './rest_indicator';
+import { RiteWindow } from './rite_window';
 import { localizeServerText } from './server_i18n';
 import { localizeSimAuraName, localizeSimText } from './sim_i18n';
 import { SocialWindow } from './social_window';
@@ -1000,6 +1002,13 @@ export class Hud {
     onAbort: () => this.submitLockpickAbort(),
     onClose: () => this.closeLockpick(),
   });
+  // Drowned Reliquary Rite difficulty popup. Opened on the delveRiteChoosePrompt
+  // cue (approaching the risen reliquary), closed once playback starts.
+  private riteTrap: FocusTrapHandle | null = null;
+  private readonly riteWindow = new RiteWindow({
+    onChoose: (intensity) => this.submitRiteChoose(intensity),
+    onClose: () => this.closeRitePanel(),
+  });
   private openGossipNpcId: number | null = null;
   private openQuestDetailId: string | null = null;
   private pendingChatLinks = new Map<string, string>(); // display "[Name]" -> [[q:id]]/[[i:id]] token
@@ -1388,7 +1397,7 @@ export class Hud {
     // Quests toggle, per-quest track buttons, zoom, and close included). Stop
     // propagation (but NOT the default, so the button's native activation still
     // fires) when a panel button has focus, mirroring the quest-tracker guard above.
-    for (const panelId of ['#delve-board', '#lockpick-panel', '#map-window']) {
+    for (const panelId of ['#delve-board', '#lockpick-panel', '#delve-rite-panel', '#map-window']) {
       $(panelId).addEventListener('keydown', (e) => {
         if ((e.target as HTMLElement).tagName !== 'BUTTON') return;
         if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') e.stopPropagation();
@@ -5823,7 +5832,9 @@ export class Hud {
       return;
     }
     const delveName = delveDisplayName(delve.id);
-    const canEnter = this.sim.player.level >= delve.minLevel;
+    const partySize = this.sim.partyInfo?.members.length ?? 1;
+    const partyTooLarge = partySize > delve.maxPlayers;
+    const canEnter = this.sim.player.level >= delve.minLevel && !partyTooLarge;
     const tierNormal = t('delveUi.board.tier.normal');
     const tierHeroic = t('delveUi.board.tier.heroic');
     const marks = formatNumber(this.sim.delveMarks, { maximumFractionDigits: 0 });
@@ -5834,28 +5845,26 @@ export class Hud {
     if (tab === 'shop') {
       body = this.delveShopBodyHtml(delve.id);
     } else {
-      const tessaRank = this.sim.companionUpgrades.companion_tessa ?? 1;
-      const tessaRankLabel = t('delveUi.board.companion.rank', {
-        rank: formatNumber(tessaRank, { maximumFractionDigits: 0 }),
+      const companionId = delve.autoCompanionId ?? 'companion_tessa';
+      const companionRank = this.sim.companionUpgrades[companionId] ?? 1;
+      const companionRankLabel = t('delveUi.board.companion.rank', {
+        rank: formatNumber(companionRank, { maximumFractionDigits: 0 }),
       });
-      // Companion rank-up: max rank is the highest cost tier; the next rank's
-      // Marks cost is shown on the button so the upgrade path is visible, and the
-      // button only enables when the player can afford it (the buy is re-checked
-      // sim-side regardless). Mirrors the Marks-shop affordability gating.
       const companionMaxRank = Math.max(...Object.keys(COMPANION_UPGRADE_COSTS).map(Number));
-      const nextRank = tessaRank + 1;
+      const nextRank = companionRank + 1;
       const nextCost = COMPANION_UPGRADE_COSTS[nextRank];
-      const tessaName = t('delveUi.board.companion.tessa');
+      const companionNameKey = companionId === 'companion_edda' ? 'edda' : 'tessa';
+      const companionName = t(`delveUi.board.companion.${companionNameKey}` as TranslationKey);
       let companionAction: string;
-      if (tessaRank >= companionMaxRank || !nextCost) {
+      if (companionRank >= companionMaxRank || !nextCost) {
         companionAction = `<div class="delve-companion-max quest-muted">${esc(t('delveUi.board.companion.maxRank'))}</div>`;
       } else {
         const costMarks = formatNumber(nextCost.marks, { maximumFractionDigits: 0 });
         const nextRankLabel = formatNumber(nextRank, { maximumFractionDigits: 0 });
         const affordable = this.sim.delveMarks >= nextCost.marks;
         companionAction =
-          `<button type="button" class="btn delve-companion-upgrade" data-companion-upgrade` +
-          ` aria-label="${esc(t('delveUi.board.companion.upgradeAria', { name: tessaName, rank: nextRankLabel, marks: costMarks }))}"` +
+          `<button type="button" class="btn delve-companion-upgrade" data-companion-upgrade="${esc(companionId)}"` +
+          ` aria-label="${esc(t('delveUi.board.companion.upgradeAria', { name: companionName, rank: nextRankLabel, marks: costMarks }))}"` +
           `${affordable ? '' : ' disabled'}>${esc(t('delveUi.board.companion.upgrade', { rank: nextRankLabel, marks: costMarks }))}</button>`;
       }
       const tierRow = ['normal', 'heroic']
@@ -5866,10 +5875,10 @@ export class Hud {
         })
         .join('');
       body =
-        `<div class="delve-board-greeting">${esc(t('delveUi.npc.halven.greeting', { playerName: this.sim.player.name }))}</div>` +
+        `<div class="delve-board-greeting">${esc(t(delve.id === 'drowned_litany' ? 'delveUi.npc.halvenMarsh.greeting' : 'delveUi.npc.halven.greeting', { playerName: this.sim.player.name }))}</div>` +
         `<div class="delve-tier-row">${tierRow}</div>` +
         `<div class="delve-companion-row"><div class="delve-companion-label">${esc(t('delveUi.board.companion.pick'))}</div>` +
-        `<div class="delve-companion-name">${esc(tessaName)} <span class="quest-muted">(${esc(tessaRankLabel)})</span></div>` +
+        `<div class="delve-companion-name">${esc(companionName)} <span class="quest-muted">(${esc(companionRankLabel)})</span></div>` +
         `<div class="delve-companion-boon quest-muted">${esc(t('delveUi.board.companion.boon'))}</div>` +
         `${companionAction}</div>` +
         `<button type="button" class="btn delve-enter-btn" data-delve-enter aria-label="${esc(t('delveUi.board.enterAria', { delve: delveName, tier: this.selectedDelveTier === 'heroic' ? tierHeroic : tierNormal }))}"${canEnter ? '' : ' disabled'}>${esc(t('delveUi.board.enter'))}</button>`;
@@ -5878,7 +5887,8 @@ export class Hud {
       `<div class="panel-title"><span>${esc(t('delveUi.board.title'))}</span><button type="button" class="x-btn" data-close aria-label="${esc(t('questUi.dialog.close'))}">${svgIcon('close')}</button></div>` +
       `<div class="delve-board-name">${esc(delveName)}</div>` +
       `<div class="delve-board-meta">${esc(t('delveUi.board.marks', { count: marks }))}</div>` +
-      `<div class="delve-board-req${canEnter ? '' : ' req-unmet'}">${esc(t('delveUi.board.minLevel', { level: formatNumber(delve.minLevel, { maximumFractionDigits: 0 }) }))}</div>` +
+      `<div class="delve-board-req${this.sim.player.level >= delve.minLevel ? '' : ' req-unmet'}">${esc(t('delveUi.board.minLevel', { level: formatNumber(delve.minLevel, { maximumFractionDigits: 0 }) }))}</div>` +
+      `<div class="delve-board-req${partyTooLarge ? ' req-unmet' : ''}">${esc(t('delveUi.board.partyTooLarge', { max: formatNumber(delve.maxPlayers, { maximumFractionDigits: 0 }) }))}</div>` +
       `<div class="delve-tabs" role="tablist" aria-label="${esc(t('delveUi.board.title'))}">${tabBtn('delve', t('delveUi.board.tabDelve'))}${tabBtn('shop', t('delveUi.board.tabShop'))}</div>` +
       `<div class="delve-board-body" role="tabpanel">${body}</div>`;
     el.querySelectorAll('[data-board-tab]').forEach((btn) => {
@@ -5898,8 +5908,11 @@ export class Hud {
           this.renderDelveBoard(true);
         });
       });
-      el.querySelector('[data-companion-upgrade]')?.addEventListener('click', () => {
-        this.sim.companionUpgrade('companion_tessa');
+      el.querySelector('[data-companion-upgrade]')?.addEventListener('click', (ev) => {
+        const btn = ev.currentTarget as HTMLElement;
+        const id = btn.dataset.companionUpgrade;
+        if (!id) return;
+        this.sim.companionUpgrade(id);
         this.renderDelveBoard(true);
       });
       el.querySelector('[data-delve-enter]')?.addEventListener('click', () => {
@@ -6141,6 +6154,31 @@ export class Hud {
     this.lockpickTrap = null;
   }
 
+  // Drowned Reliquary Rite: the difficulty popup opens when a player interacts
+  // with the risen reliquary (delveRiteChoosePrompt) and closes once the chosen
+  // sequence starts playing (the first delveRitePulse) or on dismiss.
+  private openRitePanel(): void {
+    const el = $('#delve-rite-panel');
+    if (el.style.display !== 'block')
+      this.riteTrap = this.focusManager.open({ root: () => $('#delve-rite-panel') });
+    el.style.display = 'block';
+    this.riteWindow.render();
+    this.riteTrap?.focusFirst('.lp-ante-btn');
+  }
+
+  private submitRiteChoose(intensity: RiteIntensity): void {
+    this.sim.delveRiteChoose(intensity);
+    this.closeRitePanel();
+  }
+
+  private closeRitePanel(restoreFocus = true): void {
+    const el = $('#delve-rite-panel');
+    if (el.style.display === 'none') return;
+    el.style.display = 'none';
+    this.riteTrap?.release(restoreFocus);
+    this.riteTrap = null;
+  }
+
   private delveObjectiveLine(run: DelveRunInfo): string {
     const isFinale = run.moduleIndex >= run.moduleCount - 1;
     if (!isFinale) return t('delveUi.objective.clear_room');
@@ -6165,8 +6203,17 @@ export class Hud {
       this.lastDelveTrackerSig = '';
       if (el.innerHTML !== '') el.innerHTML = '';
       el.style.display = 'none';
+      // The run ended (walk-out, death release, completion teardown) while the
+      // difficulty popup could still be up; do not leave it floating over the
+      // outdoor world.
+      this.closeRitePanel(false);
       return;
     }
+    // State-driven close: the popup is only valid while the rite awaits a
+    // choice. The first pulse event also closes it, but that event is
+    // interest-scoped to the apse, so a party member elsewhere in the delve
+    // relies on this wire-state check instead.
+    if (run.rite && run.rite.phase !== 'choose') this.closeRitePanel(false);
     const sig = JSON.stringify([
       run.delveId,
       run.tierId,
@@ -6177,6 +6224,7 @@ export class Hud {
       run.affixes,
       run.completed,
       run.exitPortalOpen,
+      run.rite,
       this.sim.delveMarks,
     ]);
     if (sig === this.lastDelveTrackerSig) return;
@@ -6206,6 +6254,23 @@ export class Hud {
       affixHtml += '</div>';
     }
     const marks = formatNumber(this.sim.delveMarks, { maximumFractionDigits: 0 });
+    // Drowned Reliquary Rite: a phase-by-phase guidance line so the player
+    // always knows the next step (approach, watch, repeat with F, claim).
+    let riteHint = '';
+    if (run.rite) {
+      const riteText =
+        run.rite.phase === 'choose'
+          ? t('delveUi.tracker.riteChoose')
+          : run.rite.phase === 'playback'
+            ? t('delveUi.tracker.ritePlayback')
+            : run.rite.phase === 'input'
+              ? t('delveUi.tracker.riteInput', {
+                  current: formatNumber(run.rite.current, { maximumFractionDigits: 0 }),
+                  total: formatNumber(run.rite.total, { maximumFractionDigits: 0 }),
+                })
+              : t('delveUi.tracker.riteOpen');
+      riteHint = `<div class="dt-obj dt-hint">-> ${esc(riteText)}</div>`;
+    }
     let exitHint = '';
     if (run.moduleIndex < run.moduleCount - 1) {
       if (run.exitPortalOpen) {
@@ -6219,6 +6284,7 @@ export class Hud {
       `<div class="dt-title">${esc(delveName)} <span class="dt-tier">${esc(tierLabel)}</span>${complete}</div>` +
       `<div class="dt-obj">- ${esc(moduleLine)}${modName ? `: ${esc(modName)}` : ''}</div>` +
       `<div class="dt-obj${run.objective.complete ? ' done' : ''}">- ${esc(t('delveUi.tracker.objective'))}: ${esc(objectiveLine)}</div>` +
+      riteHint +
       exitHint +
       `<div class="dt-obj">- ${esc(t('delveUi.tracker.marks', { count: marks }))}</div>` +
       affixHtml;
@@ -7692,6 +7758,13 @@ export class Hud {
           this.combatLog(t('sim.lockpick.lockYields', { tier }), '#ffdd88');
           break;
         }
+        case 'delveRiteChoosePrompt':
+          this.openRitePanel();
+          break;
+        case 'delveRitePulse':
+          // The chosen sequence is playing; the difficulty popup is no longer needed.
+          this.closeRitePanel(false);
+          break;
         case 'delveChestLoot':
           this.openDelveLoot(ev.chestId, ev.items);
           break;
@@ -7704,15 +7777,30 @@ export class Hud {
         case 'companionBark': {
           // Acolyte Tessa's voice line: overhead bubble over her (when on-screen),
           // plus an attributed combat-log line so it is never missed off-screen.
-          const KNOWN_BARKS = ['combat_start', 'low_hp', 'trap_spotted', 'boss_pull', 'completion'];
+          const KNOWN_BARKS = [
+            'run_start',
+            'combat_start',
+            'low_hp',
+            'trap_spotted',
+            'boss_pull',
+            'ally_revive',
+            'completion',
+          ];
           if (!KNOWN_BARKS.includes(ev.barkId)) break;
-          const line = t(`delveUi.companion.tessa.${ev.barkId}` as TranslationKey, {
+          // The event carries the speaker: companionState can be momentarily
+          // null online (event/snapshot ordering), which used to fall back to
+          // Tessa's name and lines during an Edda run.
+          const companionKey = ev.companionId === 'companion_edda' ? 'edda' : 'tessa';
+          const line = t(`delveUi.companion.${companionKey}.${ev.barkId}` as TranslationKey, {
             playerName: this.sim.player.name,
           });
           const companion = this.sim.companionState;
           if (companion) this.renderer.showChatBubble(companion.entityId, line, false);
           this.combatLog(
-            t('delveUi.companion.barkLine', { name: t('delveUi.board.companion.tessa'), line }),
+            t('delveUi.companion.barkLine', {
+              name: t(`delveUi.board.companion.${companionKey}` as TranslationKey),
+              line,
+            }),
             '#c9a6e0',
           );
           break;
@@ -8793,7 +8881,11 @@ export class Hud {
       html += `<button type="button" class="qd-list-item" data-market="1" aria-label="${esc(t('questUi.dialog.worldMarketAria'))}"><span class="gold">${svgIcon('market')}</span> ${esc(t('questUi.dialog.worldMarket'))}</button>`;
     }
     if (Object.values(DELVES).some((d) => d.boardNpcId === npc.templateId)) {
-      html += `<button type="button" class="qd-list-item" data-delve-board="1" aria-label="${esc(t('delveUi.board.openDelveAria', { name: npcName }))}"><span class="gold">${svgIcon('skull')}</span> ${esc(t('delveUi.board.openDelve'))}</button>`;
+      const delveForNpc = Object.values(DELVES).find((d) => d.boardNpcId === npc.templateId);
+      const openLabel = delveForNpc
+        ? delveDisplayName(delveForNpc.id)
+        : t('delveUi.board.openDelve');
+      html += `<button type="button" class="qd-list-item" data-delve-board="1" aria-label="${esc(t('delveUi.board.openDelveAria', { name: npcName }))}"><span class="gold">${svgIcon('skull')}</span> ${esc(openLabel)}</button>`;
     }
     el.innerHTML = html;
     el.querySelectorAll('[data-quest]').forEach((item) => {
@@ -11972,6 +12064,10 @@ export class Hud {
     }
     if (this.emoteWheelOpen) {
       this.hideEmoteWheel();
+      return true;
+    }
+    if ($('#delve-rite-panel').style.display === 'block') {
+      this.closeRitePanel();
       return true;
     }
     const top = this.topmostOpenWindow();

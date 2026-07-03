@@ -339,6 +339,7 @@ import {
   type PlayerClass,
   type QuestProgress,
   type QuestState,
+  type RiteIntensity,
   RUN_SPEED,
   type SimConfig,
   type SimEvent,
@@ -1211,7 +1212,9 @@ export class Sim {
           raiseDeadChannel: null,
           restlessPending: [],
           badAirTimer: 0,
+          blackwaterTimer: 0,
           companionBarks: [],
+          companionReviveUsed: false,
           exitPortalOpen: false,
           bountiful: false,
           rewardChestId: null,
@@ -3429,7 +3432,12 @@ export class Sim {
   }
 
   private hasLineOfSight(source: Entity, target: Entity): boolean {
-    return lineOfSightClear(this.cfg.seed, source.pos, target.pos);
+    const run =
+      this.delveRunForMob(source.id) ??
+      this.delveRunForMob(target.id) ??
+      this.delveRunForPlayer(source.id) ??
+      this.delveRunForPlayer(target.id);
+    return lineOfSightClear(this.cfg.seed, source.pos, target.pos, 0.05, run?.modules);
   }
 
   private lineOfSightBlocked(source: Entity, target: Entity, ability: AbilityDef): boolean {
@@ -6067,10 +6075,17 @@ export class Sim {
     return runsMod.delveRunForMob(this.ctx, mobId);
   }
 
+  // Party membership alone is NOT "in this delve run": a party member who never
+  // walked through the door (e.g. AFK back in town) must not be swept into
+  // module-advance / eject / reward teleports meant for players who are actually
+  // inside. Every caller of this is delve-scoped, so gate on physical presence.
   private partyMembersForKey(key: string): number[] {
     const out: number[] = [];
     for (const meta of this.players.values()) {
-      if (this.instanceKeyFor(meta.entityId) === key) out.push(meta.entityId);
+      if (this.instanceKeyFor(meta.entityId) !== key) continue;
+      const e = this.entities.get(meta.entityId);
+      if (!e || !isDelvePos(e.pos.x)) continue;
+      out.push(meta.entityId);
     }
     return out;
   }
@@ -6268,6 +6283,7 @@ export class Sim {
     mob.wanderTimer = DELVE_COMPANION_HEAL_INTERVAL;
     this.addEntity(mob);
     run.companion = { companionId, entityId: mob.id };
+    this.maybeCompanionBark(run, pid, 'run_start');
   }
 
   private despawnDelveCompanion(run: DelveRun): void {
@@ -6279,7 +6295,9 @@ export class Sim {
   private maybeCompanionBark(run: DelveRun, pid: number, barkId: string): void {
     if (!run.companion || run.companionBarks.includes(barkId)) return;
     run.companionBarks.push(barkId);
-    this.emit({ type: 'companionBark', barkId, pid });
+    // Carry the speaker on the event so the HUD does not have to resolve it
+    // from mutable companionState (which can be momentarily null online).
+    this.emit({ type: 'companionBark', barkId, companionId: run.companion.companionId, pid });
   }
 
   delveInteract(objectId: number, pid?: number): void {
@@ -6313,6 +6331,11 @@ export class Sim {
   /** Claim item loot from an opened delve chest (shown on the loot overlay). */
   collectDelveChestLoot(chestId: number, pid?: number): void {
     runsMod.collectDelveChestLoot(this.ctx, chestId, pid);
+  }
+
+  /** The Drowned Litany finale: lock in the chosen rite difficulty (offline). */
+  delveRiteChoose(intensity: RiteIntensity, pid?: number): void {
+    runsMod.delveRiteChoose(this.ctx, intensity, pid);
   }
 
   /** Read-only projection of the active lockpick attempt for IWorld (offline). */

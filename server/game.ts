@@ -3050,6 +3050,12 @@ export class GameServer {
         sim.companionUpgrade(msg.companionId, pid);
         break;
       }
+      case 'delve_rite_choose': {
+        if (msg.intensity !== 'easy' && msg.intensity !== 'medium' && msg.intensity !== 'hard')
+          break;
+        sim.delveRiteChoose(msg.intensity, pid);
+        break;
+      }
       case 'delve_buy': {
         if (typeof msg.delveId !== 'string' || typeof msg.itemId !== 'string') break;
         const e = sim.entities.get(pid);

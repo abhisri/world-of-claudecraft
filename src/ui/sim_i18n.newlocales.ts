@@ -98,6 +98,7 @@ export const BASE_NEW = {
     'error.whoOnline': '/who-listen er tilgængelig i onlinespil.',
     'log.abilityRankUp': 'Din {name} er forbedret til Rang {rank}.',
     'log.bossUnleashes': '{name} udløser {mechanic}!',
+    'log.mobChannels': '{name} kanaliserer {mechanic}.',
     'log.boutDecided': 'Dysten er afgjort. Vender tilbage til verden…',
     'log.callsForAid': '{name} kalder på hjælp!',
     'log.channelJoined':
@@ -251,6 +252,7 @@ export const BASE_NEW = {
     'error.whoOnline': 'Daftar /who tersedia dalam permainan daring.',
     'log.abilityRankUp': '{name}-mu telah meningkat ke Peringkat {rank}.',
     'log.bossUnleashes': '{name} melepaskan {mechanic}!',
+    'log.mobChannels': '{name} menyalurkan {mechanic}.',
     'log.boutDecided': 'Pertarungan telah usai. Kembali ke dunia…',
     'log.callsForAid': '{name} meminta bantuan!',
     'log.channelJoined':
@@ -404,6 +406,7 @@ export const BASE_NEW = {
     'error.whoOnline': 'De /who-lijst is beschikbaar in online spel.',
     'log.abilityRankUp': 'Je {name} is verbeterd naar Rang {rank}.',
     'log.bossUnleashes': '{name} ontketent {mechanic}!',
+    'log.mobChannels': '{name} kanaliseert {mechanic}.',
     'log.boutDecided': 'Het gevecht is beslist. Terugkeren naar de wereld…',
     'log.callsForAid': '{name} roept om hulp!',
     'log.channelJoined':
@@ -557,6 +560,7 @@ export const BASE_NEW = {
     'error.whoOnline': 'Lista /who jest dostępna w grze sieciowej.',
     'log.abilityRankUp': 'Twoja umiejętność {name} osiągnęła Rangę {rank}.',
     'log.bossUnleashes': '{name} uwalnia {mechanic}!',
+    'log.mobChannels': '{name} kieruje {mechanic}.',
     'log.boutDecided': 'Pojedynek rozstrzygnięty. Powrót do świata…',
     'log.callsForAid': '{name} wzywa pomocy!',
     'log.channelJoined':
@@ -710,6 +714,7 @@ export const BASE_NEW = {
     'error.whoOnline': 'Listan /who är tillgänglig i onlinespel.',
     'log.abilityRankUp': 'Din {name} har förbättrats till rang {rank}.',
     'log.bossUnleashes': '{name} släpper lös {mechanic}!',
+    'log.mobChannels': '{name} kanaliserar {mechanic}.',
     'log.boutDecided': 'Drabbningen är avgjord. Återvänder till världen…',
     'log.callsForAid': '{name} ropar på hjälp!',
     'log.channelJoined':
@@ -863,6 +868,7 @@ export const BASE_NEW = {
     'error.whoOnline': '/who listesi çevrimiçi oyunda kullanılabilir.',
     'log.abilityRankUp': '{name} yeteneğin Rank {rank} seviyesine yükseldi.',
     'log.bossUnleashes': '{name}, {mechanic} salıyor!',
+    'log.mobChannels': '{name}, {mechanic} yönlendiriyor.',
     'log.boutDecided': 'Karşılaşma sonuçlandı. Dünyaya dönülüyor…',
     'log.callsForAid': '{name} yardım çağırıyor!',
     'log.channelJoined': '{channel} kanalına katıldın. Konuşmak için /{channel} <mesaj> yaz.',
@@ -1015,6 +1021,7 @@ export const BASE_NEW = {
     'error.whoOnline': 'Danh sách /who chỉ có trong chế độ chơi trực tuyến.',
     'log.abilityRankUp': '{name} của bạn đã nâng lên Cấp {rank}.',
     'log.bossUnleashes': '{name} tung ra {mechanic}!',
+    'log.mobChannels': '{name} dẫn {mechanic}.',
     'log.boutDecided': 'Trận đấu đã ngã ngũ. Đang trở về thế giới…',
     'log.callsForAid': '{name} kêu gọi viện trợ!',
     'log.channelJoined': 'Đã tham gia kênh {channel}. Gõ /{channel} <message> để trò chuyện.',
@@ -1082,6 +1089,7 @@ export const PET_NEW = {
     'error.noLivingDemon': 'Du har ingen levende dæmon.',
     'error.noLivingPet': 'Du har intet levende kæledyr.',
     'error.noPet': 'Du har intet kæledyr.',
+    'error.petsNotAllowedInDelves': 'Kæledyr er ikke tilladt inde i delves.',
     'error.permanentPetAbandonFrame': 'Permanente kæledyr kan kun opgives fra kæledyrsrammen.',
     'error.petAlreadyAlive': 'Dit kæledyr er allerede i live.',
     'error.petClassesCommand': 'Kun kæledyrsklasser kan befale kæledyr.',
@@ -1124,6 +1132,7 @@ export const PET_NEW = {
     'error.noLivingDemon': 'Kamu tidak punya iblis yang hidup.',
     'error.noLivingPet': 'Kamu tidak punya peliharaan yang hidup.',
     'error.noPet': 'Kamu tidak punya peliharaan.',
+    'error.petsNotAllowedInDelves': 'Peliharaan tidak diperbolehkan di dalam delve.',
     'error.permanentPetAbandonFrame':
       'Peliharaan permanen hanya bisa dilepaskan dari bingkai peliharaan.',
     'error.petAlreadyAlive': 'Peliharaanmu sudah hidup.',
@@ -1167,6 +1176,7 @@ export const PET_NEW = {
     'error.noLivingDemon': 'Je hebt geen levende demon.',
     'error.noLivingPet': 'Je hebt geen levend huisdier.',
     'error.noPet': 'Je hebt geen huisdier.',
+    'error.petsNotAllowedInDelves': 'Huisdieren zijn niet toegestaan in delves.',
     'error.permanentPetAbandonFrame':
       'Permanente huisdieren kunnen alleen via het huisdiervenster worden achtergelaten.',
     'error.petAlreadyAlive': 'Je huisdier is al levend.',
@@ -1211,6 +1221,7 @@ export const PET_NEW = {
     'error.noLivingDemon': 'Nie masz żywego demona.',
     'error.noLivingPet': 'Nie masz żywego zwierzęcia.',
     'error.noPet': 'Nie masz zwierzęcia.',
+    'error.petsNotAllowedInDelves': 'Zwierzęta nie są dozwolone wewnątrz wypraw.',
     'error.permanentPetAbandonFrame': 'Stałe zwierzęta można porzucić tylko z ramki zwierzęcia.',
     'error.petAlreadyAlive': 'Twoje zwierzę już żyje.',
     'error.petClassesCommand': 'Tylko klasy ze zwierzętami mogą wydawać im rozkazy.',
@@ -1254,6 +1265,7 @@ export const PET_NEW = {
     'error.noLivingDemon': 'Du har ingen levande demon.',
     'error.noLivingPet': 'Du har inget levande djur.',
     'error.noPet': 'Du har inget djur.',
+    'error.petsNotAllowedInDelves': 'Husdjur är inte tillåtna inuti delver.',
     'error.permanentPetAbandonFrame': 'Permanenta djur kan bara överges från djurpanelen.',
     'error.petAlreadyAlive': 'Ditt djur lever redan.',
     'error.petClassesCommand': 'Bara djurklasser kan befalla djur.',
@@ -1296,6 +1308,7 @@ export const PET_NEW = {
     'error.noLivingDemon': 'Yaşayan bir şeytanın yok.',
     'error.noLivingPet': 'Yaşayan bir evcilin yok.',
     'error.noPet': 'Hiç evcilin yok.',
+    'error.petsNotAllowedInDelves': 'Mağara seferleri içinde evcil hayvanlara izin verilmez.',
     'error.permanentPetAbandonFrame':
       'Kalıcı evciller yalnızca evcil çerçevesinden terk edilebilir.',
     'error.petAlreadyAlive': 'Evcilin zaten hayatta.',
@@ -1340,6 +1353,7 @@ export const PET_NEW = {
     'error.noLivingDemon': 'Bạn không có quỷ nào còn sống.',
     'error.noLivingPet': 'Bạn không có thú nuôi nào còn sống.',
     'error.noPet': 'Bạn không có thú nuôi.',
+    'error.petsNotAllowedInDelves': 'Không được mang thú nuôi vào trong hang sâu.',
     'error.permanentPetAbandonFrame': 'Thú nuôi vĩnh viễn chỉ có thể bị bỏ rơi từ khung thú nuôi.',
     'error.petAlreadyAlive': 'Thú nuôi của bạn vẫn còn sống.',
     'error.petClassesCommand': 'Chỉ các lớp có thú nuôi mới có thể ra lệnh cho thú nuôi.',
