@@ -260,6 +260,7 @@ import {
   nextMinimapZoom,
 } from './minimap_zoom';
 import { type MobTooltipI18n, type MobTooltipModel, mobTooltipHtml } from './mob_tooltip_view';
+import { MovableFrame } from './movable_frame';
 import { OptionsWindow } from './options_window';
 import { makeWriterFacet, type PainterHostPresentation } from './painter_host';
 import { partyFrameSignature, selectPartyFrameMembers } from './party_frames';
@@ -309,12 +310,6 @@ import { swingTimerState } from './swing_timer';
 import { SwingTimerPainter } from './swing_timer_painter';
 import { localizeTalentTitle, roleLabel, tTalent } from './talent_i18n';
 import { TalentsWindow } from './talents_window';
-import {
-  clampTargetFramePos,
-  parseTargetFramePos,
-  serializeTargetFramePos,
-  type TargetFramePos,
-} from './target_frame_pos';
 import type { PresetId, ThemeKnob, ThemeState } from './theme';
 import { TOOLTIP_PEEK_MS, TouchPeekGuard } from './touch_peek';
 import { TutorialOverlay } from './tutorial';
@@ -550,7 +545,9 @@ const CHAT_ACTIVE_TAB_KEY = 'woc_chat_active_tab';
 // Persisted chat-window geometry (drag position + resize size). Desktop only —
 // the mobile layout owns its own placement and ignores this.
 const CHAT_GEOMETRY_KEY = 'woc_chat_geometry';
+// Persisted top-left for each movable unit frame (MovableFrame in movable_frame.ts).
 const TARGET_FRAME_POS_KEY = 'woc_target_frame_pos';
+const PLAYER_FRAME_POS_KEY = 'woc_player_frame_pos';
 const CHAT_TEMPLATE_KEYS = {
   party: 'hud.chat.templates.party',
   yell: 'hud.chat.templates.yell',
@@ -1038,13 +1035,11 @@ export class Hud {
         startH: number;
       }
     | null = null;
-  // Movable target frame: the persisted top-left (null = stock CSS default), the
-  // move/lock button, whether the frame is currently unlocked for dragging, and the
-  // in-progress drag gesture. See target_frame_pos.ts for the math.
-  private targetFramePos: TargetFramePos | null = null;
-  private targetFrameMoveBtn: HTMLButtonElement | null = null;
-  private targetFrameUnlocked = false;
-  private targetFrameGesture: { pointerId: number; grabX: number; grabY: number } | null = null;
+  // Movable unit frames (the shared MovableFrame controller, movable_frame.ts):
+  // the target frame and the player frame each get a corner move/lock button, a
+  // pointer drag, and a persisted top-left. Constructed once in initFrameMovers.
+  private targetFrameMover: MovableFrame | null = null;
+  private playerFrameMover: MovableFrame | null = null;
   private windowObserver: MutationObserver | null = null;
   private windowZ = 50;
   private ignoredChatNames = new Set<string>();
@@ -1107,7 +1102,7 @@ export class Hud {
     this.meters = new Meters(sim);
     this.initChatTabs();
     this.initChatBoxGeometry();
-    this.initTargetFrameDrag();
+    this.initFrameMovers();
     this.initWindowManagement();
     this.emoteWheelSlots = this.loadEmoteWheelSlots();
     this.loadSlotMap();
@@ -2119,155 +2114,65 @@ export class Hud {
   }
 
   // -------------------------------------------------------------------------
-  // Movable / lockable target frame (desktop only). The pure position math
-  // (clamping, (de)serialization) lives in target_frame_pos.ts; this section is
-  // the DOM wiring: a small corner button that toggles the frame between locked
-  // (fixed) and unlocked (draggable), the pointer drag itself, and localStorage
-  // persistence of the chosen spot. The saved spot survives reloads; the lock
-  // state does not (the frame always loads locked so a stray drag never moves it).
-  // Mirrors the movable chat box above (its resize-less sibling).
+  // Movable / lockable unit frames (desktop only). The DOM wiring (corner
+  // move/lock button, pointer drag, localStorage persistence) lives in the
+  // shared MovableFrame controller (movable_frame.ts); the pure position math
+  // in target_frame_pos.ts. Two instances: the target frame keeps its stock
+  // look wherever it lands; the player frame DETACHES from the action-bar
+  // stack once moved (pf-detached: position fixed + the compact target-frame
+  // bar width), so it can sit anywhere and read like the target frame.
   // -------------------------------------------------------------------------
 
-  private initTargetFrameDrag(): void {
-    const frame = this.targetFrameEl;
-    if (!frame) return;
-
-    // The corner toggle. Built here (like the chat resize grip) so index.html
-    // stays untouched; its glyph + position are styled in hud.css.
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'tf-move-btn';
-    btn.setAttribute('aria-pressed', 'false');
-    frame.appendChild(btn);
-    this.targetFrameMoveBtn = btn;
-    this.refreshTargetFrameMoveBtn();
-    btn.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      this.setTargetFrameUnlocked(!this.targetFrameUnlocked);
-    });
-
-    // touch-action:none (so a drag is not stolen by browser panning) is scoped to
-    // the unlocked state in CSS (#target-frame.tf-unlocked), never applied while
-    // locked so it cannot interfere with normal touch behaviour on the frame.
-    frame.addEventListener('pointerdown', (ev) => this.onTargetFrameMoveStart(ev));
-    document.addEventListener('pointermove', (ev) => this.onTargetFramePointerMove(ev));
-    const end = (ev: PointerEvent) => this.onTargetFramePointerEnd(ev);
-    document.addEventListener('pointerup', end);
-    document.addEventListener('pointercancel', end);
-    // Re-clamp into view when the viewport changes (mirrors the chat box logic).
-    window.addEventListener('resize', () => {
-      if (this.targetFramePos) this.applyTargetFramePos();
-    });
-
-    let saved: string | null = null;
-    try {
-      saved = localStorage.getItem(TARGET_FRAME_POS_KEY);
-    } catch {
-      /* storage unavailable */
+  private initFrameMovers(): void {
+    const isMobileLayout = () => this.isMobileLayout();
+    if (this.targetFrameEl) {
+      this.targetFrameMover = new MovableFrame({
+        frame: this.targetFrameEl,
+        storageKey: TARGET_FRAME_POS_KEY,
+        unlockLabelKey: 'hudChrome.targetFrame.unlock',
+        lockLabelKey: 'hudChrome.targetFrame.lock',
+        draggingBodyClass: 'target-frame-dragging',
+        fallbackSize: { w: 220, h: 92 },
+        isMobileLayout,
+      });
     }
-    this.targetFramePos = parseTargetFramePos(saved);
-    if (this.targetFramePos) this.applyTargetFramePos();
-  }
-
-  // The move button's accessible name / tooltip and pressed state track whether the
-  // frame is unlocked; the frame gets a class so the cursor + drag affordance show.
-  private refreshTargetFrameMoveBtn(): void {
-    const btn = this.targetFrameMoveBtn;
-    if (!btn) return;
-    const label = this.targetFrameUnlocked
-      ? t('hudChrome.targetFrame.lock')
-      : t('hudChrome.targetFrame.unlock');
-    btn.setAttribute('aria-pressed', this.targetFrameUnlocked ? 'true' : 'false');
-    btn.setAttribute('aria-label', label);
-    btn.title = label;
-    btn.classList.toggle('active', this.targetFrameUnlocked);
-    this.targetFrameEl.classList.toggle('tf-unlocked', this.targetFrameUnlocked);
-  }
-
-  private setTargetFrameUnlocked(unlocked: boolean): void {
-    this.targetFrameUnlocked = unlocked;
-    this.refreshTargetFrameMoveBtn();
-  }
-
-  // Seed targetFramePos from the live rect the first time a drag starts, so a frame
-  // still on its CSS default converts cleanly to explicit px coordinates.
-  private ensureTargetFramePos(): void {
-    if (this.targetFramePos) return;
-    const rect = this.targetFrameEl.getBoundingClientRect();
-    this.targetFramePos = { left: rect.left, top: rect.top };
-  }
-
-  private onTargetFrameMoveStart(ev: PointerEvent): void {
-    if (ev.button !== 0 || this.isMobileLayout() || !this.targetFrameUnlocked) return;
-    const target = ev.target as HTMLElement | null;
-    // The move button (and any debuff icon buttons) keep their own behaviour; only
-    // the frame body area initiates a drag.
-    if (!target || target.closest('button')) return;
-    ev.preventDefault();
-    this.ensureTargetFramePos();
-    const rect = this.targetFrameEl.getBoundingClientRect();
-    this.targetFrameGesture = {
-      pointerId: ev.pointerId,
-      grabX: ev.clientX - rect.left,
-      grabY: ev.clientY - rect.top,
-    };
-    document.body.classList.add('target-frame-dragging');
-    try {
-      this.targetFrameEl.setPointerCapture?.(ev.pointerId);
-    } catch {
-      /* synthetic pointer */
+    if (this.playerFrameEl) {
+      this.playerFrameMover = new MovableFrame({
+        frame: this.playerFrameEl,
+        storageKey: PLAYER_FRAME_POS_KEY,
+        unlockLabelKey: 'hudChrome.playerFrame.unlock',
+        lockLabelKey: 'hudChrome.playerFrame.lock',
+        draggingBodyClass: 'player-frame-dragging',
+        fallbackSize: { w: 260, h: 84 },
+        isMobileLayout,
+        onPositioned: (active) => this.setPlayerFrameDetached(active),
+      });
     }
   }
 
-  private onTargetFramePointerMove(ev: PointerEvent): void {
-    const g = this.targetFrameGesture;
-    if (!g || g.pointerId !== ev.pointerId) return;
-    ev.preventDefault();
-    this.targetFramePos = { left: ev.clientX - g.grabX, top: ev.clientY - g.grabY };
-    this.applyTargetFramePos();
+  // Public: snap both movable unit frames back to their stock CSS spots and
+  // forget the saved drags. Wired to the "Reset Frame Positions" interface option.
+  resetUnitFrames(): void {
+    this.targetFrameMover?.reset();
+    this.playerFrameMover?.reset();
   }
 
-  private onTargetFramePointerEnd(ev: PointerEvent): void {
-    const g = this.targetFrameGesture;
-    if (!g || g.pointerId !== ev.pointerId) return;
-    this.targetFrameGesture = null;
-    document.body.classList.remove('target-frame-dragging');
-    this.persistTargetFramePos();
-  }
-
-  private applyTargetFramePos(): void {
-    if (!this.targetFramePos) return;
-    // On the mobile layout the desktop-saved position must not apply. Clear any
-    // inline left/top/right/bottom (e.g. left over after a live desktop-to-mobile
-    // viewport shrink) so the mobile stylesheet owns the frame's position again.
-    if (this.isMobileLayout()) {
-      for (const prop of ['left', 'top', 'right', 'bottom'])
-        this.targetFrameEl.style.removeProperty(prop);
-      return;
-    }
-    const rect = this.targetFrameEl.getBoundingClientRect();
-    // The frame is display:none with no target (rect is 0x0); fall back to a nominal
-    // size so a saved spot still clamps sensibly and re-shows on-screen.
-    const size = { w: rect.width || 220, h: rect.height || 92 };
-    const clamped = clampTargetFramePos(
-      this.targetFramePos,
-      { w: window.innerWidth, h: window.innerHeight },
-      size,
-    );
-    this.targetFramePos = clamped;
-    this.targetFrameEl.style.left = `${clamped.left}px`;
-    this.targetFrameEl.style.top = `${clamped.top}px`;
-    this.targetFrameEl.style.right = 'auto';
-    this.targetFrameEl.style.bottom = 'auto';
-  }
-
-  private persistTargetFramePos(): void {
-    if (!this.targetFramePos) return;
-    try {
-      localStorage.setItem(TARGET_FRAME_POS_KEY, serializeTargetFramePos(this.targetFramePos));
-    } catch {
-      /* storage unavailable */
+  // The player frame docks inside #actionbar-stack, whose #bottom-bar ancestor
+  // carries a centering transform, and a transformed ancestor hijacks any
+  // fixed/absolute positioning (it becomes the containing block). Detaching
+  // therefore REPARENTS the frame to #ui, the target frame's own parent, so the
+  // saved left/top resolve in the same HUD coordinates the target frame uses;
+  // re-docking (the mobile layout) puts it back at the head of the stack. The
+  // painters' element refs (pf-hp etc.) are live nodes, so they survive the move.
+  private setPlayerFrameDetached(active: boolean): void {
+    const frame = this.playerFrameEl;
+    frame.classList.toggle('pf-detached', active);
+    if (active) {
+      const uiRoot = $('#ui');
+      if (frame.parentElement !== uiRoot) uiRoot.appendChild(frame);
+    } else {
+      const stack = $('#actionbar-stack');
+      if (frame.parentElement !== stack) stack.insertBefore(frame, stack.firstChild);
     }
   }
 
@@ -3188,6 +3093,7 @@ export class Hud {
     // The gold log tint stays Hud-side so the painter carries no color literal.
     log: (message) => this.log(message, '#ffd100'),
     resetChatWindow: () => this.resetChatWindow(),
+    resetUnitFrames: () => this.resetUnitFrames(),
     getChatTimestamps: () => this.chatTimestamps,
     setChatTimestamps: (on) => {
       this.chatTimestamps = on;
@@ -3745,10 +3651,11 @@ export class Hud {
     // The keyed-pool party rows reuse their DOM, so a rebuild never re-runs t() on
     // their badge tooltips / leave label; re-localize them in place on a switch.
     this.partyFramesPainter.relocalize();
-    // The target-frame move/lock button's label is set once at construction + on
-    // toggle, so re-localize it in place on a language switch (same reason as the
-    // party rows above).
-    this.refreshTargetFrameMoveBtn();
+    // The unit-frame move/lock buttons' labels are set once at construction + on
+    // toggle, so re-localize them in place on a language switch (same reason as
+    // the party rows above).
+    this.targetFrameMover?.relocalize();
+    this.playerFrameMover?.relocalize();
     if (this.questlogWindow.isOpen) this.questlogWindow.render();
     if ($('#bags').style.display !== 'none') this.renderBags();
     if (this.openVendorNpcId !== null && $('#vendor-window').style.display === 'block')

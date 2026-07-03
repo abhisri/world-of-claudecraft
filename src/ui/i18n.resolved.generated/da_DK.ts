@@ -392,6 +392,8 @@ export const da_DK: EnTranslations = {
       "showDevBadges": "Vis udviklermærker",
       "showOwnNameplate": "Show My Nameplate",
       "uiScale": "UI-skala",
+      "playerFrameScale": "Player Frame Scale",
+      "targetFrameScale": "Target Frame Scale",
       "highContrastBackground": "Baggrund med høj kontrast",
       "startAttackOnAbility": "Autoangreb ved brug af evne",
       "walkByAutoloot": "Walk-by Autoloot",
@@ -850,6 +852,13 @@ export const da_DK: EnTranslations = {
     "targetFrame": {
       "unlock": "Move target frame",
       "lock": "Lock target frame"
+    },
+    "playerFrame": {
+      "unlock": "Move player frame",
+      "lock": "Lock player frame"
+    },
+    "frameReset": {
+      "label": "Reset Frame Positions"
     },
     "itemTooltip": {
       "requiresLevel": "Kræver niveau {level}"

@@ -392,6 +392,8 @@ export const tr_TR: EnTranslations = {
       "showDevBadges": "Geliştirici Rozetlerini Göster",
       "showOwnNameplate": "Show My Nameplate",
       "uiScale": "Arayüz Ölçeği",
+      "playerFrameScale": "Player Frame Scale",
+      "targetFrameScale": "Target Frame Scale",
       "highContrastBackground": "Yüksek Kontrastlı Arka Plan",
       "startAttackOnAbility": "Yetenek Kullanımında Otomatik Saldırı",
       "walkByAutoloot": "Walk-by Autoloot",
@@ -850,6 +852,13 @@ export const tr_TR: EnTranslations = {
     "targetFrame": {
       "unlock": "Move target frame",
       "lock": "Lock target frame"
+    },
+    "playerFrame": {
+      "unlock": "Move player frame",
+      "lock": "Lock player frame"
+    },
+    "frameReset": {
+      "label": "Reset Frame Positions"
     },
     "itemTooltip": {
       "requiresLevel": "Gereken Seviye {level}"

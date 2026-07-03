@@ -392,6 +392,8 @@ export const ko_KR: EnTranslations = {
       "showDevBadges": "개발자 배지 표시",
       "showOwnNameplate": "내 이름표 표시",
       "uiScale": "UI 배율",
+      "playerFrameScale": "플레이어 프레임 크기",
+      "targetFrameScale": "대상 프레임 크기",
       "highContrastBackground": "고대비 배경",
       "startAttackOnAbility": "스킬 사용 시 자동 공격",
       "walkByAutoloot": "지나가며 자동 획득",
@@ -850,6 +852,13 @@ export const ko_KR: EnTranslations = {
     "targetFrame": {
       "unlock": "대상 프레임 이동",
       "lock": "대상 프레임 고정"
+    },
+    "playerFrame": {
+      "unlock": "플레이어 프레임 이동",
+      "lock": "플레이어 프레임 고정"
+    },
+    "frameReset": {
+      "label": "프레임 위치 초기화"
     },
     "itemTooltip": {
       "requiresLevel": "필요 레벨 {level}"

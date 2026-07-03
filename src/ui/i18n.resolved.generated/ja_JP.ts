@@ -392,6 +392,8 @@ export const ja_JP: EnTranslations = {
       "showDevBadges": "開発者バッジを表示",
       "showOwnNameplate": "自分のネームプレートを表示",
       "uiScale": "UIスケール",
+      "playerFrameScale": "プレイヤーフレームの大きさ",
+      "targetFrameScale": "ターゲットフレームの大きさ",
       "highContrastBackground": "高コントラスト背景",
       "startAttackOnAbility": "アビリティ使用時に自動攻撃",
       "walkByAutoloot": "通りがかり自動ルート",
@@ -850,6 +852,13 @@ export const ja_JP: EnTranslations = {
     "targetFrame": {
       "unlock": "ターゲットフレームを移動",
       "lock": "ターゲットフレームを固定"
+    },
+    "playerFrame": {
+      "unlock": "プレイヤーフレームを移動",
+      "lock": "プレイヤーフレームを固定"
+    },
+    "frameReset": {
+      "label": "フレーム位置をリセット"
     },
     "itemTooltip": {
       "requiresLevel": "必要レベル {level}"

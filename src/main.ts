@@ -1566,6 +1566,12 @@ async function startGame(
       case 'uiScale':
         document.documentElement.style.setProperty('--ui-scale', String(v));
         break;
+      case 'playerFrameScale':
+        document.documentElement.style.setProperty('--player-frame-scale', String(v));
+        break;
+      case 'targetFrameScale':
+        document.documentElement.style.setProperty('--target-frame-scale', String(v));
+        break;
       // Graphics-tier HUD effects follow the STATIC preset + the advanced
       // effectsQuality slider. The 3D renderer tier is resolved at renderer
       // construction (a reload); here we only re-publish the HUD effect profile

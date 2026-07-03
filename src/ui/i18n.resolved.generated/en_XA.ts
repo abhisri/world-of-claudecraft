@@ -392,6 +392,8 @@ export const en_XA: EnTranslations = {
       "showDevBadges": "[Šĥóŵ Ðéʋéļóþéŕ Ɓáðĝéš]",
       "showOwnNameplate": "[Šĥóŵ Ɱý Ñáɱéþļáţé]",
       "uiScale": "[ÚÍ Šçáļé]",
+      "playerFrameScale": "[Þļáýéŕ Ƒŕáɱé Šçáļé]",
+      "targetFrameScale": "[Ţáŕĝéţ Ƒŕáɱé Šçáļé]",
       "highContrastBackground": "[Ĥíĝĥ-Çóñţŕášţ Ɓáçķĝŕóúñð]",
       "startAttackOnAbility": "[Áúţó-Áţţáçķ óñ Áƀíļíţý Úšé]",
       "walkByAutoloot": "[Ŵáļķ-ƀý Áúţóļóóţ]",
@@ -850,6 +852,13 @@ export const en_XA: EnTranslations = {
     "targetFrame": {
       "unlock": "[Ɱóʋé ţáŕĝéţ ƒŕáɱé]",
       "lock": "[Ļóçķ ţáŕĝéţ ƒŕáɱé]"
+    },
+    "playerFrame": {
+      "unlock": "[Ɱóʋé þļáýéŕ ƒŕáɱé]",
+      "lock": "[Ļóçķ þļáýéŕ ƒŕáɱé]"
+    },
+    "frameReset": {
+      "label": "[Ŕéšéţ Ƒŕáɱé Þóšíţíóñš]"
     },
     "itemTooltip": {
       "requiresLevel": "[Ŕéɋúíŕéš Ļéʋéļ {level}]"

@@ -392,6 +392,8 @@ export const es: EnTranslations = {
       "showDevBadges": "Mostrar insignias de desarrollador",
       "showOwnNameplate": "Show My Nameplate",
       "uiScale": "Escala de la interfaz",
+      "playerFrameScale": "Escala del marco del jugador",
+      "targetFrameScale": "Escala del marco del objetivo",
       "highContrastBackground": "Fondo de alto contraste",
       "startAttackOnAbility": "Ataque automático al usar habilidad",
       "walkByAutoloot": "Walk-by Autoloot",
@@ -850,6 +852,13 @@ export const es: EnTranslations = {
     "targetFrame": {
       "unlock": "Move target frame",
       "lock": "Lock target frame"
+    },
+    "playerFrame": {
+      "unlock": "Mover marco del jugador",
+      "lock": "Fijar marco del jugador"
+    },
+    "frameReset": {
+      "label": "Restablecer posición de los marcos"
     },
     "itemTooltip": {
       "requiresLevel": "Requiere nivel {level}"
