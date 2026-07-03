@@ -38,8 +38,9 @@ moderation_service/email plus the content_type/origin_check/require_owned/rate_l
 sinks onto the logger; server/http/errors.ts keeps its console default (import cycle via
 context.ts) and dispatch.ts injects a logger-backed onUnexpected; email/sender.ts's console dev
 transport is intentional. TWO LOAD-BEARING DEFERRALS: (1) the X-Request-Id echo is BUILT and
-unit-tested in withRequestId (setHeader on the way in; REQUEST_ID_HEADER single-sourced with
-compose.ts) but the LIVE dispatch-onion mount is DEFERRED TO P25: mounting now adds the header to
+unit-tested in withRequestId (setHeader on the way in; REQUEST_ID_HEADER single-sourced in
+errors.ts, the runtime leaf, re-exported via compose.ts) but the LIVE dispatch-onion mount is
+DEFERRED TO P25: mounting now adds the header to
 migrated 2xx/429/404 responses the retained legacy delegate never emits (44 parity divergences);
 the error-path echo is already live via errors.ts baseHeaders; NOTE comment in dispatch.ts. (2)
 In 'legacy' dispatch mode (the production default until P25) /api requests emit NO access line or
@@ -57,7 +58,29 @@ constant, loadConfig(env) consolidation, server timeouts, the /metrics exposure 
 (token/bind/rate-limit + full-ip exception decision), the perf/tick-jitter acceptance gate, and
 optionally wiring the PgRateLimitStore metrics param. Validation: tsc 0, npm run gate PASS all 9
 steps (730 files / 8260 tests), build:server bundles prom-client. Full record: progress.md Phase
-23 Notes. NEXT: Phase 23 QA gate (phase-23-qa.md), then Phase 24 (phase-24-config-timeouts.md).
+23 Notes.
+
+Phase 23 QA gate (phase-23-qa.md) DONE (2026-07-03): PASS, apply-all, ZERO BLOCKING across five
+auditors (correctness: all 10 acceptance criteria PASS, criterion 4 with the documented P25
+deferral; test-coverage: 11/11 COVERED-DECISIVE; dead-code; privacy-security-review 0 CRITICAL;
+qa-checklist READY; exclusions confirmed: migration-safety / cross-platform-sync /
+architecture-reviewer not in play, release-malware-audit owns prom-client at release). Fixes
+applied in 6 commits (adb1cb11f..05b53548f): the three legacy-delegate arms now bind a fresh
+runWithReqId scope (dispatch.ts delegateWithReqId; they ran OUTSIDE any ALS scope so swept
+logger lines on the production-default 'legacy' path carried no reqId; observability-only,
+response bytes untouched), REQUEST_ID_HEADER re-homed to errors.ts (compose.ts re-exports; the
+reverse import cycles via context.ts), HTTP_DURATION_BUCKETS_SECONDS literal-pinned, unused
+exports trimmed (LogLevel, HTTP_METRIC_LABELS, HttpMetricLabel), the lazily request-reachable
+email transport banner moved onto the logger, coverage pins added (opaque token-key redact,
+withRequestId echo isolated from withErrors, both-mode livez/readyz integration, the production
+composite tee shape end to end), and a NEW guard tests/server/http/logger_call_hygiene.test.ts
+(fails on any server logger call passing raw req.url/req.headers/ctx.req/ctx.body wholesale).
+Conscious keeps: Logger.child() + health.isLive() are spec-mandated; the no-store constant dup
+stands. CARRIED-FORWARD WARNING: Phase 24 MUST land the /metrics exposure gate BEFORE
+API_DISPATCH=new reaches production (unauthenticated route-template + process/runtime
+disclosure today, by phase design); the optional redactor email value-pattern rides the same P24
+privacy batch. Validation after fixes: tsc 0, ci:changed clean, npm run gate PASS all 9 steps
+(731 files / 8269 tests). NEXT: Phase 24 (phase-24-config-timeouts.md).
 
 Phase 22 (REST i18n matcher + per-surface code-parity guard + the coded-emission pass) DONE
 (2026-07-02). The matcher is code-based and guarded, the migrated surfaces emit additive

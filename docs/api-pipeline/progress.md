@@ -60,7 +60,7 @@ Mark a row's Status as "In progress" or "Done" and fill Started / Completed
 | Phase 22 | Done | 2026-07-02 | 2026-07-02 |
 | Phase 22 QA | Done | 2026-07-02 | 2026-07-02 |
 | Phase 23 | Done | 2026-07-02 | 2026-07-03 |
-| Phase 23 QA | Not started |  |  |
+| Phase 23 QA | Done | 2026-07-03 | 2026-07-03 |
 | Phase 24 | Not started |  |  |
 | Phase 24 QA | Not started |  |  |
 | Phase 25 | Not started |  |  |
@@ -1328,10 +1328,10 @@ Deliverables:
 - [x] /livez + /readyz with /readyz reporting NOT-ready during the SIGTERM drain
 
 QA:
-- [ ] Fixes applied
-- [ ] Tests added
-- [ ] Dead code removed
-- [ ] Reviews clean
+- [x] Fixes applied
+- [x] Tests added
+- [x] Dead code removed
+- [x] Reviews clean
 
 Notes (implementation, 2026-07-03):
 - New modules: server/http/redact.ts (pure; key needles + Bearer/64-hex value patterns + OTP-scoped
@@ -1384,6 +1384,48 @@ Notes (implementation, 2026-07-03):
   health, metric_sink, dispatch, malware_scan); npm run gate PASS all 9 steps (730 files / 8260
   tests); build:server bundles prom-client 15.1.3 (pinned exact; subtree
   tdigest/bintrees/@opentelemetry/api).
+
+QA GATE (phase-23-qa.md) DONE (2026-07-03): PASS, 0 BLOCKING. Independent 5-dimension audit
+(Explore context loader + correctness / test-coverage-auditor / dead-code /
+privacy-security-review / qa-checklist). correctness: all 10 acceptance criteria PASS (criterion 4
+PASS-with-documented-deferral: the live 2xx X-Request-Id mount is the P25 flag-flip decision;
+criteria 1/3 carry the documented legacy-mode gap, no /api access line/metric/reqId until P25
+flips the flag). test-coverage: all 11 claimed behaviors COVERED-DECISIVE, 154/154 targeted tests.
+dead-code: categories clean except unused-export nits. qa-checklist READY (exclusions confirmed:
+migration-safety no-DDL, cross-platform-sync + architecture-reviewer server-only; S3 + per-surface
+code-parity not in play; release-malware-audit owns prom-client at release).
+- Findings applied (apply-all, 6 commits adb1cb11f..05b53548f): (1, correctness SHOULD-FIX)
+  all three legacy-delegate arms (un-migrated path, HEAD match, the 'legacy' entry that is the
+  production default) ran OUTSIDE any runWithReqId, so swept logger lines there carried no reqId;
+  dispatch.ts delegateWithReqId now binds a fresh id around each (observability-only, response
+  bytes untouched, test-first with 3 red-then-green pins). (2, coverage SHOULD-FIX)
+  HTTP_DURATION_BUCKETS_SECONDS was never literal-pinned; metrics.test.ts now pins the 11
+  boundaries + le= exposition. (3) REQUEST_ID_HEADER single-sourced in errors.ts (the LIVE
+  error-path emitter; compose.ts re-exports; the reverse import would cycle via context.ts).
+  (4) un-exported LogLevel + HTTP_METRIC_LABELS, dropped unused HttpMetricLabel. (5) the lazily
+  request-reachable email transport banner routed through the logger. (6) coverage nits: opaque
+  non-hex token-key redact pin, X-Request-Id echo isolated from withErrors (the composed 5xx test
+  passed without withRequestId's setHeader), livez/readyz integration under BOTH dispatch modes,
+  the production composite teeMetricSink(accessLog, prom) shape driven end to end through the
+  dispatcher. (7) NEW guard tests/server/http/logger_call_hygiene.test.ts: scans every server
+  logger call site and fails on raw req.url / req.headers / ctx.req / ctx.body wholesale (the
+  string-level redaction only covers Bearer + 64-hex, so the convention needed a test, not review).
+- Conscious keeps (not dead code): Logger.child() and health.isLive() are SPEC-MANDATED exports
+  (the phase doc names both; isLive is deliberately constant-true and handleLivez deliberately
+  hard-codes 200, wiring it would create an untestable dead 503 branch); the 'no-store' constant
+  duplication with security_headers.ts stands (coupling health.ts to it is worse);
+  HttpMetrics/CreateHttpMetricsOptions/LogFields/LoggerOptions stay exported (public-signature
+  types). serializeErrors' top-level-only Error flattening is now documented in the logger header
+  (a NESTED Error serializes via enumerable props; pg DatabaseError detail can carry row values).
+- privacy-security-review: 0 CRITICAL. ONE WARNING CARRIED FORWARD: /metrics is unauthenticated on
+  the public listener (route-template + process/runtime disclosure); acceptable within this phase
+  by design, but Phase 24 MUST land the exposure gate (ops token / loopback bind / network policy)
+  BEFORE API_DISPATCH=new reaches production. DoS posture mild (bucketed Histogram, no per-scrape
+  percentile cost). INFO deferrals to the P24 privacy batch: an optional email value-pattern in the
+  redactor (error-path-only residual risk today, every swept site logs {err} with top-level
+  flattening to {message,stack}).
+- Validation after fixes: tsc 0; the 11 touched/adjacent suites green (150 tests incl. the new
+  guard); ci:changed clean (pre-existing warnings only); full npm run gate PASS re-run unpiped.
 
 ## Phase 24: Validated config + server timeouts + no-magic-values consolidation
 
