@@ -202,6 +202,8 @@ export const sv_SE: EnTranslations = {
       "spinResult": "+{points} poäng",
       "spinButton": "Snurra",
       "tasks": "Uppgifter",
+      "taskMultiplier": "x{multiplier} multiplier",
+      "pointsGained": "{points} daily rewards points gained.",
       "leaderboard": "Daglig topplista",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",

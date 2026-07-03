@@ -202,6 +202,8 @@ export const zh_TW: EnTranslations = {
       "spinResult": "+{points} 點",
       "spinButton": "轉動",
       "tasks": "任務",
+      "taskMultiplier": "{multiplier}倍倍率",
+      "pointsGained": "已獲得 {points} 每日獎勵點數。",
       "leaderboard": "每日排行榜",
       "totalPlayer": "今天 {count} 名玩家",
       "totalPlayers": "今天 {count} 名玩家",

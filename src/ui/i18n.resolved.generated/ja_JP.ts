@@ -202,6 +202,8 @@ export const ja_JP: EnTranslations = {
       "spinResult": "+{points} ポイント",
       "spinButton": "スピン",
       "tasks": "タスク",
+      "taskMultiplier": "{multiplier}倍倍率",
+      "pointsGained": "{points} デイリー報酬ポイントを獲得しました。",
       "leaderboard": "デイリーランキング",
       "totalPlayer": "本日のプレイヤー {count} 人",
       "totalPlayers": "本日のプレイヤー {count} 人",

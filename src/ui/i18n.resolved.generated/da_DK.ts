@@ -202,6 +202,8 @@ export const da_DK: EnTranslations = {
       "spinResult": "+{points} point",
       "spinButton": "Drej",
       "tasks": "Opgaver",
+      "taskMultiplier": "x{multiplier} multiplier",
+      "pointsGained": "{points} daily rewards points gained.",
       "leaderboard": "Daglig resultattavle",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",

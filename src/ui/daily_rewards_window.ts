@@ -324,10 +324,13 @@ export class DailyRewardsWindow {
 
   private tasksHtml(view: Extract<DailyRewardsView, { kind: 'ready' }>): string {
     const rows = view.status.tasks
-      .map(
-        (task) =>
-          `<li class="${task.completed ? 'done' : ''}"><span>${esc(task.title)}</span><small>${esc(task.description)}</small><b>${formatNumber(task.points, { maximumFractionDigits: 0 })}</b></li>`,
-      )
+      .map((task) => {
+        const multiplier =
+          typeof task.multiplier === 'number' && Number.isFinite(task.multiplier)
+            ? `<em>${esc(t('hudChrome.dailyRewards.taskMultiplier', { multiplier: formatNumber(task.multiplier, { maximumFractionDigits: 2 }) }))}</em>`
+            : '';
+        return `<li class="${task.completed ? 'done' : ''}"><span>${esc(task.title)}</span><small><span>${esc(task.description)}</span>${multiplier}</small><b>${formatNumber(task.points, { maximumFractionDigits: 0 })}</b></li>`;
+      })
       .join('');
     return `<section class="dr-section"><h3>${esc(t('hudChrome.dailyRewards.tasks'))}</h3><ul class="dr-tasks">${rows}</ul></section>`;
   }

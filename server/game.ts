@@ -2299,6 +2299,9 @@ export class GameServer {
           if (!beforeDone && afterDone) {
             void dailyRewardService
               .recordQuestCompletion(session.accountId, msg.quest)
+              .then((points) => {
+                if (points > 0) this.sendDailyRewardPointsGained(session, points);
+              })
               .catch((err) => console.error('daily reward quest task failed:', err));
             if (msg.quest === ALDRIC_METEOR_QUEST_ID) {
               this.noteAccountQuestComplete(session, msg.quest);
@@ -3331,6 +3334,9 @@ export class GameServer {
             ratingBefore: ev.ratingBefore,
             ratingAfter: ev.ratingAfter,
           })
+          .then((points) => {
+            if (points > 0) this.sendDailyRewardPointsGained(s, points);
+          })
           .catch((err) => console.error('daily reward arena task failed:', err));
         if (!ev.won) continue;
         enqueueActivity(
@@ -3563,6 +3569,19 @@ export class GameServer {
 
   private sendSystemNotice(session: ClientSession, text: string): void {
     this.send(session, { t: 'events', list: [{ type: 'log', text, color: '#ffd100' }] });
+  }
+
+  private sendDailyRewardPointsGained(session: ClientSession, points: number): void {
+    this.send(session, {
+      t: 'events',
+      list: [
+        {
+          type: 'log',
+          text: `${Math.max(0, Math.floor(points))} daily rewards points gained.`,
+          color: '#ffe27a',
+        },
+      ],
+    });
   }
 
   /**

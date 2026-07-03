@@ -202,6 +202,8 @@ export const de_DE: EnTranslations = {
       "spinResult": "+{points} Punkte",
       "spinButton": "Drehen",
       "tasks": "Aufgaben",
+      "taskMultiplier": "x{multiplier} multiplier",
+      "pointsGained": "{points} daily rewards points gained.",
       "leaderboard": "Tägliche Rangliste",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",

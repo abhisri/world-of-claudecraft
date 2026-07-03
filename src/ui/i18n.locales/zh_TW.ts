@@ -34,6 +34,8 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinResult': '+{points} 點',
   'hudChrome.dailyRewards.spinButton': '轉動',
   'hudChrome.dailyRewards.tasks': '任務',
+  'hudChrome.dailyRewards.taskMultiplier': '{multiplier}倍倍率',
+  'hudChrome.dailyRewards.pointsGained': '已獲得 {points} 每日獎勵點數。',
   'hudChrome.dailyRewards.leaderboard': '每日排行榜',
   'hudChrome.dailyRewards.totalPlayer': '今天 {count} 名玩家',
   'hudChrome.dailyRewards.totalPlayers': '今天 {count} 名玩家',

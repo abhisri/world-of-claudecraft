@@ -202,6 +202,8 @@ export const tr_TR: EnTranslations = {
       "spinResult": "+{points} puan",
       "spinButton": "Çevir",
       "tasks": "Görevler",
+      "taskMultiplier": "x{multiplier} multiplier",
+      "pointsGained": "{points} daily rewards points gained.",
       "leaderboard": "Günlük Lider Tablosu",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",

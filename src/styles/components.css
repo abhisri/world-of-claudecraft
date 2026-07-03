@@ -1369,6 +1369,14 @@
     color: var(--color-text-muted);
     font-size: 11px;
   }
+  .dr-tasks small {
+    display: grid;
+    gap: 2px;
+  }
+  .dr-tasks small em {
+    color: #ffe27a;
+    font-style: normal;
+  }
   .dr-intro {
     margin: 0 0 10px;
     color: #f0e4c8;

@@ -202,6 +202,8 @@ export const ru_RU: EnTranslations = {
       "spinResult": "+{points} очков",
       "spinButton": "Крутить",
       "tasks": "Задания",
+      "taskMultiplier": "Множитель x{multiplier}",
+      "pointsGained": "Получено {points} очков ежедневных наград.",
       "leaderboard": "Ежедневная таблица лидеров",
       "totalPlayer": "Сегодня {count} игрок",
       "totalPlayers": "Сегодня {count} игроков",

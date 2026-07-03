@@ -7425,6 +7425,11 @@ export class Hud {
         count: formatNumber(Number(match[2]), { maximumFractionDigits: 0 }),
       });
     }
+    match = /^(\d+) daily rewards points gained\.$/.exec(text);
+    if (match)
+      return t('hudChrome.dailyRewards.pointsGained', {
+        points: formatNumber(Number(match[1]), { maximumFractionDigits: 0 }),
+      });
     // Server-sent friends/guild/who/world messages arrive as 'log' events; fall
     // back to the shared server-message localizer (same as localizeErrorText /
     // localizeLootText) so they are not displayed in raw English.

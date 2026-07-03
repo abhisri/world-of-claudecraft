@@ -202,6 +202,8 @@ export const id_ID: EnTranslations = {
       "spinResult": "+{points} poin",
       "spinButton": "Putar",
       "tasks": "Tugas",
+      "taskMultiplier": "x{multiplier} multiplier",
+      "pointsGained": "{points} daily rewards points gained.",
       "leaderboard": "Papan Peringkat Harian",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",

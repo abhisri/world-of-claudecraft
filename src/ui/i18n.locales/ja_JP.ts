@@ -34,6 +34,8 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinResult': '+{points} ポイント',
   'hudChrome.dailyRewards.spinButton': 'スピン',
   'hudChrome.dailyRewards.tasks': 'タスク',
+  'hudChrome.dailyRewards.taskMultiplier': '{multiplier}倍倍率',
+  'hudChrome.dailyRewards.pointsGained': '{points} デイリー報酬ポイントを獲得しました。',
   'hudChrome.dailyRewards.leaderboard': 'デイリーランキング',
   'hudChrome.dailyRewards.totalPlayer': '本日のプレイヤー {count} 人',
   'hudChrome.dailyRewards.totalPlayers': '本日のプレイヤー {count} 人',

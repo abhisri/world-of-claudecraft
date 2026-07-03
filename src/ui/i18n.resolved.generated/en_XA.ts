@@ -202,6 +202,8 @@ export const en_XA: EnTranslations = {
       "spinResult": "[+{points} þóíñţš]",
       "spinButton": "[Šþíñ]",
       "tasks": "[Ţášķš]",
+      "taskMultiplier": "[ẋ{multiplier} ɱúļţíþļíéŕ]",
+      "pointsGained": "[{points} ðáíļý ŕéŵáŕðš þóíñţš ĝáíñéð.]",
       "leaderboard": "[Ðáíļý Ļéáðéŕƀóáŕð]",
       "totalPlayer": "[{count} þļáýéŕ ţóðáý]",
       "totalPlayers": "[{count} þļáýéŕš ţóðáý]",

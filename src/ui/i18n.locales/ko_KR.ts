@@ -34,6 +34,8 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.spinResult': '+{points} 포인트',
   'hudChrome.dailyRewards.spinButton': '돌리기',
   'hudChrome.dailyRewards.tasks': '과제',
+  'hudChrome.dailyRewards.taskMultiplier': '{multiplier}배 배율',
+  'hudChrome.dailyRewards.pointsGained': '{points} 일일 보상 포인트를 획득했습니다.',
   'hudChrome.dailyRewards.leaderboard': '일일 순위표',
   'hudChrome.dailyRewards.totalPlayer': '오늘 플레이어 {count}명',
   'hudChrome.dailyRewards.totalPlayers': '오늘 플레이어 {count}명',

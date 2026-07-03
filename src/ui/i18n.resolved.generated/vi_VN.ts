@@ -202,6 +202,8 @@ export const vi_VN: EnTranslations = {
       "spinResult": "+{points} điểm",
       "spinButton": "Quay",
       "tasks": "Nhiệm Vụ",
+      "taskMultiplier": "x{multiplier} multiplier",
+      "pointsGained": "{points} daily rewards points gained.",
       "leaderboard": "Bảng Xếp Hạng Hằng Ngày",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",
