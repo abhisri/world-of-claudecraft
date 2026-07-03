@@ -666,6 +666,12 @@
     left: auto;
     right: -3px;
   }
+  /* The target's power bar: visible only when the painter set a resource type
+     class (mana / rage / energy). A resource-less target (a plain beast) keeps
+     them all off and the bar collapses, rather than showing an empty gray rail. */
+  #tf-resource:not(.mana):not(.rage):not(.energy) {
+    display: none;
+  }
   /* "resting" zZz marker on the player portrait while seated / eating / drinking */
   .rest-indicator {
     position: absolute;

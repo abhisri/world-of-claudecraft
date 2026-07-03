@@ -809,6 +809,13 @@ export class Hud {
   // discipline). The unit_frame painter drives it through the elided
   // writers, exactly as the player frame drives its own absorb node.
   private targetAbsorbEl = $('#tf-absorb');
+  // The target's resource bar (mana / rage / energy), the classic target-frame
+  // power readout. The painter's type classes drive it; a target with no
+  // resource (a plain beast) keeps every type class off and the bar hides via
+  // CSS (#tf-resource with no type class is display:none).
+  private targetResourceEl = $('#tf-resource');
+  private targetResEl = $('#tf-res');
+  private targetResTextEl = $('#tf-res-text');
   private targetDebuffsEl = $('#tf-debuffs');
   // The target whose portrait the family painter's repaint gate redraws this frame.
   // The gate fires synchronously inside the targetFramePainter.paint() call below,
@@ -2835,6 +2842,11 @@ export class Hud {
       hpFill: this.targetHpEl,
       hpText: this.targetHpTextEl,
       absorb: this.targetAbsorbEl,
+      resource: {
+        container: this.targetResourceEl,
+        fill: this.targetResEl,
+        text: this.targetResTextEl,
+      },
     },
     {
       shownDisplay: 'flex',
@@ -5144,9 +5156,14 @@ export class Hud {
             present: true,
             hpFrac: target.hp / Math.max(1, target.maxHp),
             hpText: target.dead ? t('hud.core.dead') : `${target.hp} / ${target.maxHp}`,
-            resourceKind: 'none',
-            resFrac: 0,
-            resText: '',
+            // The target's power bar (classic target frame): players and caster
+            // mobs show their mana/rage/energy; a resource-less target (a plain
+            // beast, rtype null) maps to 'none' EXPLICITLY (unitResourceClass
+            // buckets null with mana), so every type class turns off and the
+            // bar hides. A dead target hides it too.
+            resourceKind: target.dead || !target.resourceType ? 'none' : target.resourceType,
+            resFrac: target.resource / Math.max(1, target.maxResource),
+            resText: target.dead ? '' : `${Math.round(target.resource)} / ${target.maxResource}`,
             levelText: isBoss ? BOSS_SKULL_GLYPH : String(target.level),
             name: entityDisplayName(target),
             // id-keyed gate, byte-faithful to the old lastPortraitTarget !== target.id;

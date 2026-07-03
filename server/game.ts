@@ -560,6 +560,16 @@ function dynamicFields(e: Entity): Record<string, unknown> {
   if (e.dead) out.dead = 1;
   if (e.lootable) out.loot = 1;
   if (e.hostile) out.h = 1;
+  // The target frame's resource bar: type + current/max, sent only for entities
+  // that HAVE a resource (players and caster mobs; a resource-less wolf omits all
+  // three and the frame hides its bar). The rounded res keeps an idle entity's
+  // serialized record byte-stable so the per-entity dyn cache keeps eliding; the
+  // SELF record still overrides with its own precise res/mres/rtype fields.
+  if (e.resourceType) {
+    out.rtype = e.resourceType;
+    out.res = Math.round(e.resource);
+    out.mres = e.maxResource;
+  }
   if (e.castingAbility) {
     out.cast = e.castingAbility;
     out.castRem = round2(e.castRemaining);

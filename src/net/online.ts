@@ -1361,6 +1361,13 @@ export class ClientWorld implements IWorld {
       e.facing = w.f;
       e.hp = w.hp;
       e.maxHp = w.mhp;
+      // Resource (the target frame's bar): the wire sends it only for entities
+      // that have one, so a missing rtype keeps the blank defaults (no bar).
+      if (w.rtype !== undefined) {
+        e.resourceType = w.rtype;
+        e.resource = w.res;
+        e.maxResource = w.mres;
+      }
       e.rangedPower = w.rp ?? 0;
       e.overheadEmoteId = isOverheadEmoteId(w.emo) ? w.emo : null;
       e.overheadEmoteUntil = e.overheadEmoteId ? Number.POSITIVE_INFINITY : 0;
