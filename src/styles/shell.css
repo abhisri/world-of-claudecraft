@@ -2725,7 +2725,7 @@
       right: 26px;
       top: 110px;
       bottom: 140px;
-      width: 320px;
+      width: 360px;
       overflow-y: auto;
       background: #0d0d16d9;
       border: 1px solid var(--color-border-default);
@@ -2852,13 +2852,79 @@
       left: 26px;
       top: 150px;
       bottom: 96px;
-      width: 300px;
+      width: 340px;
       overflow-y: auto;
       background: #0d0d16d9;
       border: 1px solid var(--color-border-default);
       border-radius: var(--radius-md);
       padding: 14px;
       z-index: 2;
+    }
+
+    /* The class summary's base type is sized for the small pre-game card
+       (10px to 12px); on the full-screen stage it reads too small. Scale the
+       whole details sheet up one step in every cs-wow panel. */
+    #offline-select.cs-wow .class-details-panel,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .class-details-panel {
+      font-size: 13px;
+    }
+    #offline-select.cs-wow .class-details-name,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .class-details-name {
+      font-size: 24px;
+    }
+    #offline-select.cs-wow .class-details-role,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .class-details-role {
+      font-size: 13px;
+    }
+    #offline-select.cs-wow .class-details-lore,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .class-details-lore {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    #offline-select.cs-wow .details-section-title,
+    body:not(.mobile-touch)
+      :is(#charselect-panel, #charcreate-panel).cs-wow
+      .details-section-title {
+      font-size: 14px;
+    }
+    #offline-select.cs-wow .details-stat-bar-row,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .details-stat-bar-row {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    #offline-select.cs-wow .details-stat-label,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .details-stat-label {
+      width: 76px;
+    }
+    #offline-select.cs-wow .details-stat-val,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .details-stat-val {
+      width: 24px;
+    }
+    #offline-select.cs-wow .details-gear-row,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .details-gear-row {
+      font-size: 13px;
+    }
+    #offline-select.cs-wow .badge,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .badge {
+      font-size: 12px;
+    }
+    #offline-select.cs-wow .details-spell-item,
+    body:not(.mobile-touch) :is(#charselect-panel, #charcreate-panel).cs-wow .details-spell-item {
+      font-size: 13px;
+    }
+    #offline-select.cs-wow .details-spell-text strong,
+    body:not(.mobile-touch)
+      :is(#charselect-panel, #charcreate-panel).cs-wow
+      .details-spell-text
+      strong {
+      font-size: 13px;
+    }
+    #offline-select.cs-wow .details-spell-icon-img,
+    body:not(.mobile-touch)
+      :is(#charselect-panel, #charcreate-panel).cs-wow
+      .details-spell-icon-img {
+      width: 38px;
+      height: 38px;
     }
   }
 
