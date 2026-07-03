@@ -5,6 +5,8 @@ import { CAMPS, ITEMS, MOBS, NPCS, QUESTS } from '../src/sim/data';
 import {
   activeGameConfig,
   applyGameConfig,
+  CALENDAR_TUNING,
+  DEFAULT_CALENDAR,
   DEFAULT_RATES,
   gameConfigDefaults,
   TUNING,
@@ -118,6 +120,22 @@ describe('validateGameConfig', () => {
     expect(drift.errors.some((e) => e.startsWith('camps.0: expected mob'))).toBe(true);
   });
 
+  it('accepts calendar caps and drops invalid ones with errors', () => {
+    const ok = validateGameConfig({ calendar: { eventLimit: 10, titleMax: 64 } });
+    expect(ok.errors).toEqual([]);
+    expect(ok.config.calendar).toEqual({ eventLimit: 10, titleMax: 64 });
+
+    const bad = validateGameConfig({
+      calendar: { eventLimit: 0, noteMax: 2.5, horizonDays: 99999, nonsense: 1 },
+    });
+    expect(bad.config.calendar).toBeUndefined();
+    expect(bad.errors).toEqual([
+      'calendar: invalid eventLimit',
+      'calendar: invalid noteMax',
+      'calendar: invalid horizonDays',
+    ]);
+  });
+
   it('validates the xpTable shape', () => {
     const short = validateGameConfig({ xpTable: [100, 200] });
     expect(short.config.xpTable).toBeUndefined();
@@ -221,6 +239,14 @@ describe('applyGameConfig', () => {
     const shipped = gameConfigDefaults().xpTable;
     expect(xpForLevel(1)).toBe(shipped[0]);
     expect(xpToReachLevel(3)).toBe(shipped[0] + shipped[1]);
+  });
+
+  it('calendar overrides land on CALENDAR_TUNING and reset on the next apply', () => {
+    expect(CALENDAR_TUNING).toEqual(DEFAULT_CALENDAR);
+    applyGameConfig({ calendar: { eventLimit: 3, keepPastDays: 0 } });
+    expect(CALENDAR_TUNING).toEqual({ ...DEFAULT_CALENDAR, eventLimit: 3, keepPastDays: 0 });
+    applyGameConfig({});
+    expect(CALENDAR_TUNING).toEqual(DEFAULT_CALENDAR);
   });
 
   it('tracks the active config for restart-pending comparison', () => {

@@ -604,11 +604,8 @@ export function handleDeath(ctx: SimContext, e: Entity, killer: Entity | null): 
 
       meta.counters.kills++;
       if (creditEntity.targetId === e.id) creditEntity.autoAttack = false;
-      if (creditEntity.comboTargetId === e.id) {
-        creditEntity.comboPoints = 0;
-        creditEntity.comboTargetId = null;
-        ctx.emit({ type: 'comboPoint', points: 0, pid: creditEntity.id });
-      }
+      // combo points are character-bound: unspent points survive the kill and
+      // carry to the next target (they fade on their own via updateComboExpiry)
       for (const member of eligible) {
         const mE = ctx.entities.get(member.entityId);
         if (!mE) continue;

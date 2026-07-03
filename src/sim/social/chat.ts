@@ -142,8 +142,10 @@ export function chat(ctx: SimContext, text: string, pid?: number): SentChat | nu
   }
 
   if (ctx.devCommands) {
+    // null means "handled, nothing to broadcast": returning it here is what
+    // keeps a dev command from falling through to the unknown-command error.
     const devHandled = handleDevChat(ctx, raw, r.meta.entityId);
-    if (devHandled !== undefined && devHandled !== null) return devHandled;
+    if (devHandled !== undefined) return devHandled;
   }
 
   if (/^\/who(?:\s|$)/i.test(raw)) {
@@ -467,7 +469,7 @@ export function chat(ctx: SimContext, text: string, pid?: number): SentChat | nu
     return null;
   }
   if (/^\/(?:combo|cp|combopoints)(?:\s|$)/i.test(raw)) {
-    ctx.error(r.meta.entityId, readouts.comboReadout(ctx, r.e));
+    ctx.error(r.meta.entityId, readouts.comboReadout(r.e));
     return null;
   }
   if (/^\/(?:combat|cb|incombat)(?:\s|$)/i.test(raw)) {
@@ -834,6 +836,16 @@ export function handleDevChat(
     ctx.addItem(itemId, count, pid);
     return null;
   }
+  const goldM = /^\/(?:dev\s+gold|devgold)\s+(\d+)\s*$/i.exec(raw);
+  if (goldM) {
+    const gold = Math.max(1, Math.min(100000, Number(goldM[1])));
+    const meta = ctx.players.get(pid);
+    if (meta) {
+      meta.copper += gold * 10000;
+      ctx.emit({ type: 'log', text: `[dev] Added ${gold}g to your purse.`, pid });
+    }
+    return null;
+  }
   const questM = /^\/(?:dev\s+quest|devquest)\s+(\S+)\s*$/i.exec(raw);
   if (questM) {
     ctx.completeQuestForDev(questM[1], pid);
@@ -874,7 +886,7 @@ export function handleDevChat(
   if (/^\/dev(?:\s|$)/i.test(raw)) {
     ctx.error(
       pid,
-      'Dev commands: /dev level N, /dev tp X Z, /dev give itemId [count], /dev quest questId, /dev quests, /dev gather professionId [amount], /dev bot name',
+      'Dev commands: /dev level N, /dev tp X Z, /dev give itemId [count], /dev gold N, /dev quest questId, /dev quests, /dev gather professionId [amount], /dev bot name',
     );
     return null;
   }

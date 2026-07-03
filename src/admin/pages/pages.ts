@@ -14,6 +14,7 @@ export type AdminPage =
   | 'bug-reports'
   | 'housekeeping'
   | 'housekeeping-rates'
+  | 'housekeeping-calendar'
   | 'housekeeping-mobs'
   | 'housekeeping-spawns'
   | 'housekeeping-quests'
@@ -87,6 +88,7 @@ export const NAV_SECTIONS: readonly AdminNavSection[] = [
     items: [
       { id: 'housekeeping', labelKey: 'nav.hkOverview' },
       { id: 'housekeeping-rates', labelKey: 'nav.hkRates' },
+      { id: 'housekeeping-calendar', labelKey: 'nav.hkCalendar' },
       { id: 'housekeeping-mobs', labelKey: 'nav.hkMobs' },
       { id: 'housekeeping-spawns', labelKey: 'nav.hkSpawns' },
       { id: 'housekeeping-quests', labelKey: 'nav.hkQuests' },

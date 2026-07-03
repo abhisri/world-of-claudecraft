@@ -67,6 +67,36 @@ export const DEFAULT_RATES: Readonly<GameRates> = Object.freeze({
 // apply a config read the defaults forever.
 export const TUNING: GameRates = { ...DEFAULT_RATES };
 
+// ---------------------------------------------------------------------------
+// Guild calendar: caps + input bounds for the event calendar. Server-only
+// (the offline Sim has no guild calendar, like worldSeed above): the values
+// live here so they ride the one override document and its validation, and
+// server/social.ts reads them at each use site.
+// ---------------------------------------------------------------------------
+
+export interface CalendarTuning {
+  // Upcoming events allowed per guild.
+  eventLimit: number;
+  // Max lengths for the event title and note (player text, clamped).
+  titleMax: number;
+  noteMax: number;
+  // How far out an event may be booked, in days (UTC).
+  horizonDays: number;
+  // How many past days stay visible (yesterday survives across timezones).
+  keepPastDays: number;
+}
+
+export const DEFAULT_CALENDAR: Readonly<CalendarTuning> = Object.freeze({
+  eventLimit: 25,
+  titleMax: 48,
+  noteMax: 160,
+  horizonDays: 366,
+  keepPastDays: 2,
+});
+
+// Live calendar knobs, same lifecycle as TUNING.
+export const CALENDAR_TUNING: CalendarTuning = { ...DEFAULT_CALENDAR };
+
 /** XP-award scaling used by grantXp. Identity when the rate is untouched. */
 export function tunedXpAmount(amount: number): number {
   return TUNING.xpRate === 1 ? amount : Math.max(0, Math.round(amount * TUNING.xpRate));
@@ -92,6 +122,14 @@ export const RATE_FIELDS: readonly NumericFieldSpec[] = [
   { key: 'mobDmgRate', min: 0, max: 1000 },
   { key: 'respawnSeconds', min: 1, max: 86400, integer: true },
   { key: 'worldSeed', min: 1, max: 2147483647, integer: true },
+];
+
+export const CALENDAR_FIELDS: readonly NumericFieldSpec[] = [
+  { key: 'eventLimit', min: 1, max: 200, integer: true },
+  { key: 'titleMax', min: 4, max: 128, integer: true },
+  { key: 'noteMax', min: 0, max: 1000, integer: true },
+  { key: 'horizonDays', min: 1, max: 3660, integer: true },
+  { key: 'keepPastDays', min: 0, max: 60, integer: true },
 ];
 
 export const MOB_NUMERIC_FIELDS: readonly NumericFieldSpec[] = [
@@ -194,6 +232,7 @@ export interface CampOverride {
 
 export interface GameConfigOverrides {
   rates?: Partial<GameRates>;
+  calendar?: Partial<CalendarTuning>;
   // Full replacement of XP_TABLE (xp required per level, length preserved).
   xpTable?: number[];
   mobs?: Record<string, MobOverride>;
@@ -520,6 +559,24 @@ function cleanRates(raw: unknown, errors: string[]): Partial<GameRates> | null {
   return Object.keys(out).length > 0 ? out : null;
 }
 
+function cleanCalendar(raw: unknown, errors: string[]): Partial<CalendarTuning> | null {
+  if (!isRecord(raw)) {
+    errors.push('calendar: not an object');
+    return null;
+  }
+  const out: Partial<CalendarTuning> = {};
+  for (const spec of CALENDAR_FIELDS) {
+    if (!(spec.key in raw)) continue;
+    const clean = cleanNumber(raw[spec.key], spec);
+    if (clean === null) {
+      errors.push(`calendar: invalid ${spec.key}`);
+    } else {
+      (out as Record<string, number>)[spec.key] = clean;
+    }
+  }
+  return Object.keys(out).length > 0 ? out : null;
+}
+
 function cleanDomain<T>(
   raw: unknown,
   domain: string,
@@ -551,13 +608,19 @@ export function validateGameConfig(raw: unknown): ValidatedGameConfig {
     return { config, errors };
   }
   for (const domain of Object.keys(raw)) {
-    if (!['rates', 'xpTable', 'mobs', 'quests', 'items', 'npcs', 'camps'].includes(domain)) {
+    if (
+      !['rates', 'calendar', 'xpTable', 'mobs', 'quests', 'items', 'npcs', 'camps'].includes(domain)
+    ) {
       errors.push(`config: unknown section ${domain}`);
     }
   }
   if (raw.rates !== undefined) {
     const rates = cleanRates(raw.rates, errors);
     if (rates) config.rates = rates;
+  }
+  if (raw.calendar !== undefined) {
+    const calendar = cleanCalendar(raw.calendar, errors);
+    if (calendar) config.calendar = calendar;
   }
   if (raw.xpTable !== undefined) {
     const table = raw.xpTable;
@@ -762,6 +825,7 @@ function resetToDefaults(): void {
   XP_TABLE.push(...base.xpTable);
   refreshPostcapXpTable();
   Object.assign(TUNING, DEFAULT_RATES);
+  Object.assign(CALENDAR_TUNING, DEFAULT_CALENDAR);
 }
 
 const scaleChance = (chance: number, rate: number): number => Math.min(1, chance * rate);
@@ -806,6 +870,7 @@ export function applyGameConfig(config: GameConfigOverrides): void {
   resetToDefaults();
   const rates: GameRates = { ...DEFAULT_RATES, ...config.rates };
   Object.assign(TUNING, rates);
+  Object.assign(CALENDAR_TUNING, { ...DEFAULT_CALENDAR, ...config.calendar });
   applyGlobalMobRates(rates);
   if (config.xpTable) {
     XP_TABLE.length = 0;

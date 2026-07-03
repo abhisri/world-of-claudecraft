@@ -19,8 +19,12 @@ import {
 import {
   activeGameConfig,
   applyGameConfig,
+  CALENDAR_FIELDS,
+  CALENDAR_TUNING,
   CAMP_NUMERIC_FIELDS,
+  type CalendarTuning,
   type CampOverride,
+  DEFAULT_CALENDAR,
   DEFAULT_RATES,
   type GameConfigOverrides,
   type GameRates,
@@ -84,7 +88,7 @@ export function isRestartPending(savedClean: GameConfigOverrides): boolean {
 
 const ENTITY_DOMAINS = ['mobs', 'quests', 'items', 'npcs', 'camps'] as const;
 type EntityDomain = (typeof ENTITY_DOMAINS)[number];
-export type OverrideDomain = EntityDomain | 'rates' | 'xpTable';
+export type OverrideDomain = EntityDomain | 'rates' | 'calendar' | 'xpTable';
 
 export interface MergeResult {
   next: GameConfigOverrides | null;
@@ -110,7 +114,7 @@ export function mergeOverridePatch(savedRaw: unknown, body: unknown): MergeResul
   const domain = req.domain;
   if (
     typeof domain !== 'string' ||
-    (!isEntityDomain(domain) && domain !== 'rates' && domain !== 'xpTable')
+    (!isEntityDomain(domain) && domain !== 'rates' && domain !== 'calendar' && domain !== 'xpTable')
   ) {
     return { next: null, errors: ['unknown override domain'], warnings: [] };
   }
@@ -126,6 +130,7 @@ export function mergeOverridePatch(savedRaw: unknown, body: unknown): MergeResul
   if (patch === null) {
     // Deletion.
     if (domain === 'rates') delete next.rates;
+    else if (domain === 'calendar') delete next.calendar;
     else if (domain === 'xpTable') delete next.xpTable;
     else if (next[domain]) {
       delete next[domain]?.[id as string];
@@ -135,7 +140,7 @@ export function mergeOverridePatch(savedRaw: unknown, body: unknown): MergeResul
   }
 
   const miniDoc =
-    domain === 'rates' || domain === 'xpTable'
+    domain === 'rates' || domain === 'calendar' || domain === 'xpTable'
       ? { [domain]: patch }
       : { [domain]: { [id as string]: patch } };
   const validated = validateGameConfig(miniDoc);
@@ -145,6 +150,11 @@ export function mergeOverridePatch(savedRaw: unknown, body: unknown): MergeResul
   if (domain === 'rates') {
     if (!validated.config.rates) return { next: null, errors: ['nothing to save'], warnings: [] };
     next.rates = validated.config.rates;
+  } else if (domain === 'calendar') {
+    if (!validated.config.calendar) {
+      return { next: null, errors: ['nothing to save'], warnings: [] };
+    }
+    next.calendar = validated.config.calendar;
   } else if (domain === 'xpTable') {
     if (!validated.config.xpTable) return { next: null, errors: ['nothing to save'], warnings: [] };
     next.xpTable = validated.config.xpTable;
@@ -209,6 +219,7 @@ export interface HousekeepingOverview {
   };
   overrideCounts: {
     rates: number;
+    calendar: number;
     xpTable: boolean;
     mobs: number;
     quests: number;
@@ -246,6 +257,7 @@ export function housekeepingOverview(input: {
     },
     overrideCounts: {
       rates: Object.keys(config.rates ?? {}).length,
+      calendar: Object.keys(config.calendar ?? {}).length,
       xpTable: config.xpTable !== undefined,
       mobs: Object.keys(config.mobs ?? {}).length,
       quests: Object.keys(config.quests ?? {}).length,
@@ -280,6 +292,25 @@ export function ratesCatalog(savedRaw: unknown, savedUpdatedAt: string | null): 
     saved: saved.config.rates ?? null,
     xpTableDefault: [...gameConfigDefaults().xpTable],
     xpTableSaved: saved.config.xpTable ?? null,
+    status: housekeepingStatus(savedRaw, savedUpdatedAt),
+  };
+}
+
+export interface CalendarCatalog {
+  fields: NumericFieldSpec[];
+  defaults: CalendarTuning;
+  applied: CalendarTuning;
+  saved: Partial<CalendarTuning> | null;
+  status: HousekeepingStatus;
+}
+
+export function calendarCatalog(savedRaw: unknown, savedUpdatedAt: string | null): CalendarCatalog {
+  const saved = validateGameConfig(savedRaw);
+  return {
+    fields: [...CALENDAR_FIELDS],
+    defaults: { ...DEFAULT_CALENDAR },
+    applied: { ...CALENDAR_TUNING },
+    saved: saved.config.calendar ?? null,
     status: housekeepingStatus(savedRaw, savedUpdatedAt),
   };
 }

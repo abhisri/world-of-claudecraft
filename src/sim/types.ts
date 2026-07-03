@@ -1462,8 +1462,8 @@ export interface Entity {
   queuedOnSwing: string | null; // heroic strike
   queuedOnSwingFree?: boolean; // next_cast_free consumed at queue time
   fiveSecondRule: number; // time since last mana spend
-  comboPoints: number;
-  comboTargetId: number | null;
+  comboPoints: number; // retail-style: character-bound, not anchored to a target
+  comboUntil: number; // sim-time until which unspent combo points persist
   overpowerUntil: number; // sim-time until which overpower is usable
   potionCooldownUntil: number; // sim-time until a combat potion can be used again (#103)
   // Same shared potion cooldown as REMAINING seconds, materialized per tick (like
@@ -1622,6 +1622,34 @@ export interface NythraxisEncounterState {
 
 export type ErrorReason = 'target_dead';
 
+// Ravenpost mail command outcomes. `sent`/`collected` are successes; the rest
+// are refusals. The client maps each code to its localized line (the sim never
+// emits mail text).
+export type MailResultCode =
+  | 'sent'
+  | 'collected'
+  | 'tooFar'
+  | 'needRecipient'
+  | 'noRecipient'
+  | 'tooManyParcels'
+  | 'noMailQuestItems'
+  | 'notEnoughItems'
+  | 'cantAffordPostage'
+  | 'recipientBoxFull'
+  | 'letterGone'
+  | 'takeParcelsFirst';
+
+// Guild calendar command outcomes (mirrors server/social.ts CalendarResultCode;
+// `created`/`removed` are successes, the rest refusals).
+export type CalendarResultCode =
+  | 'created'
+  | 'removed'
+  | 'notInGuild'
+  | 'notOfficer'
+  | 'badInput'
+  | 'calendarFull'
+  | 'eventGone';
+
 // `pid` (when present) marks a personal event that should only be delivered to
 // that player entity's owner; events without pid are world-visible.
 export type SimEvent = { pid?: number } & (
@@ -1677,6 +1705,20 @@ export type SimEvent = { pid?: number } & (
   // itemId names the single item for buy/sell/buyback; it is omitted for the
   // bulk "sell all junk" sweep, which the client treats as a plain refresh signal.
   | { type: 'vendor'; action: 'buy' | 'sell' | 'buyback'; itemId?: string }
+  // Ravenpost mail. Structured data only, the client builds every visible
+  // string (the lockpick convention). `mailbox` asks the client to open the
+  // mail window (the interact path at a mailbox object); `mailArrived` is the
+  // personal arrival cue (envelope toast + sound); `mailResult` reports a mail
+  // command's outcome (`sent` carries the recipient name + postage in copper,
+  // `collected` the coin taken, `tooManyParcels` the attachment cap). All
+  // always carry pid.
+  | { type: 'mailbox' }
+  | { type: 'mailArrived'; senderName: string; letterId?: string }
+  | { type: 'mailResult'; code: MailResultCode; value?: number; name?: string }
+  // Guild calendar outcome. Emitted only by the server's SocialService (the
+  // sim never books guild events); declared here so the one client event
+  // switch stays exhaustively typed.
+  | { type: 'calendarResult'; code: CalendarResultCode }
   // say/yell are delivered only to players in range and carry the speaker's
   // entity id so the client can hang a chat bubble over their head; whisper
   // goes to the target (and echoes to the sender with `to` set); general is

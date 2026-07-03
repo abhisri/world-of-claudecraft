@@ -33,6 +33,7 @@
     data
       ? [
           { key: 'rates', count: data.overrideCounts.rates + (data.overrideCounts.xpTable ? 1 : 0) },
+          { key: 'calendar', count: data.overrideCounts.calendar },
           { key: 'mobs', count: data.overrideCounts.mobs },
           { key: 'quests', count: data.overrideCounts.quests },
           { key: 'items', count: data.overrideCounts.items },

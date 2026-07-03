@@ -4,6 +4,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   applyGameConfigAtBoot,
+  calendarCatalog,
   clearOverrides,
   housekeepingOverview,
   itemsCatalog,
@@ -82,6 +83,17 @@ describe('mergeOverridePatch', () => {
     expect(result.warnings.some((w) => w.includes('ghost_mob_gone'))).toBe(true);
   });
 
+  it('replaces and clears the calendar block like rates', () => {
+    const result = mergeOverridePatch({}, { domain: 'calendar', patch: { eventLimit: 5 } });
+    expect(result.errors).toEqual([]);
+    expect(result.next?.calendar).toEqual({ eventLimit: 5 });
+    const cleared = clearOverrides(result.next, { domain: 'calendar' });
+    expect(cleared.next?.calendar).toBeUndefined();
+    const bad = mergeOverridePatch({}, { domain: 'calendar', patch: { eventLimit: 0 } });
+    expect(bad.next).toBeNull();
+    expect(bad.errors).toEqual(['calendar: invalid eventLimit']);
+  });
+
   it('clearOverrides clears everything, a domain, or one entry', () => {
     const doc = {
       rates: { xpRate: 2 },
@@ -122,6 +134,21 @@ describe('boot apply + restart pending', () => {
 });
 
 describe('catalogs', () => {
+  it('calendar catalog carries fields, defaults, applied, and the saved override', () => {
+    const catalog = calendarCatalog({ calendar: { eventLimit: 5 } }, null);
+    expect(catalog.fields.map((f) => f.key)).toEqual([
+      'eventLimit',
+      'titleMax',
+      'noteMax',
+      'horizonDays',
+      'keepPastDays',
+    ]);
+    expect(catalog.defaults.eventLimit).toBe(25);
+    expect(catalog.applied.eventLimit).toBe(25);
+    expect(catalog.saved).toEqual({ eventLimit: 5 });
+    expect(catalog.status.restartPending).toBe(true);
+  });
+
   it('overview counts content and overrides', () => {
     const overview = housekeepingOverview({
       realm: 'TestRealm',
