@@ -928,6 +928,7 @@ export const en_XA: EnTranslations = {
       "memberSinceDays": "[{days}ð íñ ţĥé Ðíšçóŕð]",
       "roleTag": {
         "levyst": "[Ļéʋý Šţ]",
+        "admin": "[Áðɱíñ]",
         "devs": "[Ðéʋ]",
         "mods": "[Ɱóð]",
         "artists": "[Áŕţíšţ]"

@@ -928,6 +928,7 @@ export const zh_CN: EnTranslations = {
       "memberSinceDays": "已加入 Discord {days} 天",
       "roleTag": {
         "levyst": "Levy St",
+        "admin": "管理员",
         "devs": "开发者",
         "mods": "管理员",
         "artists": "画师"

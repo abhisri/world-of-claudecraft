@@ -928,6 +928,7 @@ export const pt_BR: EnTranslations = {
       "memberSinceDays": "{days}d no Discord",
       "roleTag": {
         "levyst": "Levy St",
+        "admin": "Admin",
         "devs": "Dev",
         "mods": "Mod",
         "artists": "Artista"

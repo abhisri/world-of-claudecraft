@@ -5028,6 +5028,7 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.discord.open': 'Discord',
   'hudChrome.discord.viewCharacter': '{name} 보기',
   'hudChrome.discord.rank': '등급',
+  'hudChrome.discord.roleTag.admin': '관리자',
   'hudChrome.discord.roleTag.levyst': 'Levy St',
   'hudChrome.discord.roleTag.devs': '개발자',
   'hudChrome.discord.roleTag.mods': '운영자',

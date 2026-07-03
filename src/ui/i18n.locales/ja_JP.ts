@@ -5022,6 +5022,7 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.discord.open': 'Discord',
   'hudChrome.discord.viewCharacter': '{name}を表示',
   'hudChrome.discord.rank': 'ランク',
+  'hudChrome.discord.roleTag.admin': '管理者',
   'hudChrome.discord.roleTag.levyst': 'Levy St',
   'hudChrome.discord.roleTag.devs': '開発者',
   'hudChrome.discord.roleTag.mods': 'モデレーター',

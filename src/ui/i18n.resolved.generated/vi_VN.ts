@@ -928,6 +928,7 @@ export const vi_VN: EnTranslations = {
       "memberSinceDays": "{days} ngày trong Discord",
       "roleTag": {
         "levyst": "Levy St",
+        "admin": "Admin",
         "devs": "Lập Trình Viên",
         "mods": "Điều Hành Viên",
         "artists": "Họa Sĩ"

@@ -5131,6 +5131,7 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.discord.open': 'Discord',
   'hudChrome.discord.viewCharacter': 'Показать {name}',
   'hudChrome.discord.rank': 'Ранг',
+  'hudChrome.discord.roleTag.admin': 'Администратор',
   'hudChrome.discord.roleTag.levyst': 'Levy St',
   'hudChrome.discord.roleTag.devs': 'Разработчик',
   'hudChrome.discord.roleTag.mods': 'Модератор',

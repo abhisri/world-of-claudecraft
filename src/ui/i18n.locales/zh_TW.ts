@@ -4770,6 +4770,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'hudChrome.discord.open': 'Discord',
   'hudChrome.discord.viewCharacter': '查看 {name}',
   'hudChrome.discord.rank': '階級',
+  'hudChrome.discord.roleTag.admin': '管理員',
   'hudChrome.discord.roleTag.levyst': 'Levy St',
   'hudChrome.discord.roleTag.devs': '開發者',
   'hudChrome.discord.roleTag.mods': '管理員',

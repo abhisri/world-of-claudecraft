@@ -928,6 +928,7 @@ export const ko_KR: EnTranslations = {
       "memberSinceDays": "Discord 가입 {days}일",
       "roleTag": {
         "levyst": "Levy St",
+        "admin": "관리자",
         "devs": "개발자",
         "mods": "운영자",
         "artists": "아티스트"

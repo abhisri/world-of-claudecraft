@@ -928,6 +928,7 @@ export const da_DK: EnTranslations = {
       "memberSinceDays": "{days}d på Discord",
       "roleTag": {
         "levyst": "Levy St",
+        "admin": "Admin",
         "devs": "Udvikler",
         "mods": "Moderator",
         "artists": "Kunstner"

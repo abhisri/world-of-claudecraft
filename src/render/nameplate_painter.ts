@@ -39,6 +39,7 @@ import { type IWorld, OVERHEAD_EMOTES } from '../world_api';
 // Staff/special Discord role -> localized nameplate tag label key.
 const DISCORD_ROLE_TAG_KEYS: Record<string, TranslationKey> = {
   levyst: 'hudChrome.discord.roleTag.levyst',
+  admin: 'hudChrome.discord.roleTag.admin',
   devs: 'hudChrome.discord.roleTag.devs',
   mods: 'hudChrome.discord.roleTag.mods',
   artists: 'hudChrome.discord.roleTag.artists',

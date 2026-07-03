@@ -928,6 +928,7 @@ export const ja_JP: EnTranslations = {
       "memberSinceDays": "Discord加入{days}日",
       "roleTag": {
         "levyst": "Levy St",
+        "admin": "管理者",
         "devs": "開発者",
         "mods": "モデレーター",
         "artists": "アーティスト"

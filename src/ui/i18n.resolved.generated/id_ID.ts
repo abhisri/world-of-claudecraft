@@ -928,6 +928,7 @@ export const id_ID: EnTranslations = {
       "memberSinceDays": "{days}h di Discord",
       "roleTag": {
         "levyst": "Levy St",
+        "admin": "Admin",
         "devs": "Pengembang",
         "mods": "Moderator",
         "artists": "Seniman"
