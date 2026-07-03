@@ -2380,7 +2380,7 @@ export class GameServer {
           const afterDone = sim.meta(pid)?.questsDone.has(msg.quest) ?? false;
           if (!beforeDone && afterDone) {
             void dailyRewardService
-              .recordQuestCompletion(session.accountId, msg.quest)
+              .recordQuestCompletion(session.accountId, session.characterId, msg.quest)
               .then((points) => {
                 if (points > 0) this.sendDailyRewardPointsGained(session, points);
               })

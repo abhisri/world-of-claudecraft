@@ -425,6 +425,11 @@ function questCompletionPoints(
   return { points: Math.max(0, Math.floor(basePoints * multiplier)), multiplier };
 }
 
+function repeatQuestPoints(points: number, priorCompletions: number): number {
+  if (points <= 0) return 0;
+  return Math.max(1, Math.floor(points / 2 ** Math.max(0, priorCompletions)));
+}
+
 function onlineMultiplierPoints(
   basePoints: number,
   config: Record<string, unknown>,
@@ -566,6 +571,7 @@ export class DailyRewardService {
 
   async recordQuestCompletion(
     accountId: number,
+    characterId: number | null,
     questId: string,
     completedAt: Date = new Date(),
   ): Promise<number> {
@@ -582,22 +588,32 @@ export class DailyRewardService {
     for (const task of tasks) {
       const { points, multiplier } = questCompletionPoints(task, onlineMinutes);
       if (points <= 0) continue;
+      const priorCompletions = await this.db.questTaskCompletionCount(
+        day,
+        accountId,
+        task.taskId,
+        questId,
+      );
+      const awarded = repeatQuestPoints(points, priorCompletions);
       const recorded = await this.db.addPoints(
         day,
         accountId,
         'task',
-        points,
-        `task:${task.taskId}:quest:${questId}`,
+        awarded,
+        `task:${task.taskId}:quest:${questId}:character:${characterId ?? 'account'}`,
         {
           taskId: task.taskId,
           taskType: task.type,
           questId,
+          characterId,
           onlineMinutes,
           multiplier,
           basePoints: task.basePoints,
+          undiscountedPoints: points,
+          repeatIndex: priorCompletions,
         },
       );
-      if (recorded) awardedPoints += points;
+      if (recorded) awardedPoints += awarded;
     }
     return awardedPoints;
   }
