@@ -203,12 +203,6 @@ import {
   normalizeCraftSkills,
 } from './professions/wheel';
 import {
-  craftSkillsFor,
-  emptyCraftSkills,
-  gainCraftSkill,
-  normalizeCraftSkills,
-} from './professions/wheel';
-import {
   applyTalentAllocation,
   deleteTalentLoadout,
   respecTalents,

@@ -15,8 +15,8 @@
     {
       "tick": 0,
       "time": 0,
-      "nextId": 393,
-      "state": "5ea52a12",
+      "nextId": 401,
+      "state": "aaa995ef",
       "events": "741638a5",
       "rng": {
         "draws": 0,
@@ -29,13 +29,19 @@
           "arena2v2Rating": 1500,
           "arenaRating": 1500,
           "autoEquip": true,
+          "bags": [
+            null,
+            null,
+            null,
+            null
+          ],
           "cls": "rogue",
           "companionUpgrades": {},
           "counters": {},
           "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
-          "entityId": 392,
+          "entityId": 400,
           "equipment": {
             "chest": "footpad_jerkin",
             "mainhand": "rusty_dagger"
@@ -62,7 +68,7 @@
           "fallStartY": 1.5,
           "fiveSecondRule": 99,
           "hp": 62,
-          "id": 392,
+          "id": 400,
           "kind": "player",
           "level": 1,
           "lootFfaTimer": "Infinity",
@@ -107,9 +113,9 @@
     {
       "tick": 10,
       "time": 0.5,
-      "nextId": 404,
-      "state": "0ac91ecc",
-      "events": "9e34e27d",
+      "nextId": 412,
+      "state": "ab6c1d42",
+      "events": "32297f59",
       "rng": {
         "draws": 3,
         "digest": "ad960248"
@@ -118,9 +124,9 @@
     {
       "tick": 20,
       "time": 1,
-      "nextId": 404,
-      "state": "7a5e7fac",
-      "events": "1bd10bbf",
+      "nextId": 412,
+      "state": "aedbeb22",
+      "events": "b93c7dc5",
       "rng": {
         "draws": 3,
         "digest": "ad960248"
@@ -129,8 +135,8 @@
     {
       "tick": 30,
       "time": 1.5,
-      "nextId": 404,
-      "state": "e40c9ab2",
+      "nextId": 412,
+      "state": "1354ee84",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -140,8 +146,8 @@
     {
       "tick": 40,
       "time": 2,
-      "nextId": 404,
-      "state": "556f5a3c",
+      "nextId": 412,
+      "state": "221675d2",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -151,8 +157,8 @@
     {
       "tick": 50,
       "time": 2.5,
-      "nextId": 404,
-      "state": "7fe3cace",
+      "nextId": 412,
+      "state": "cf226af8",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -162,8 +168,8 @@
     {
       "tick": 60,
       "time": 3,
-      "nextId": 404,
-      "state": "d27273d0",
+      "nextId": 412,
+      "state": "f7c03cfe",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -173,9 +179,9 @@
     {
       "tick": 69,
       "time": 3.45,
-      "nextId": 405,
-      "state": "da0de8b2",
-      "events": "1344a4b5",
+      "nextId": 413,
+      "state": "a5971884",
+      "events": "3b915263",
       "rng": {
         "draws": 3,
         "digest": "ad960248"
@@ -187,6 +193,12 @@
           "arena2v2Rating": 1500,
           "arenaRating": 1500,
           "autoEquip": true,
+          "bags": [
+            null,
+            null,
+            null,
+            null
+          ],
           "cls": "rogue",
           "companionUpgrades": {},
           "counters": {
@@ -197,7 +209,7 @@
           "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
-          "entityId": 392,
+          "entityId": 400,
           "equipment": {
             "chest": "footpad_jerkin",
             "mainhand": "rusty_dagger"
@@ -225,7 +237,7 @@
           "dodgeChance": 0.0715,
           "fiveSecondRule": 102.45,
           "hp": 50000,
-          "id": 392,
+          "id": 400,
           "inCombat": true,
           "kind": "player",
           "level": 7,
@@ -275,7 +287,7 @@
           "facing": 3.141593,
           "fiveSecondRule": 99,
           "hp": 1,
-          "id": 403,
+          "id": 411,
           "kind": "object",
           "level": 1,
           "lootFfaTimer": "Infinity",
@@ -308,8 +320,8 @@
     {
       "tick": 70,
       "time": 3.5,
-      "nextId": 405,
-      "state": "f5f1f2e2",
+      "nextId": 413,
+      "state": "7b3cea14",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -319,8 +331,8 @@
     {
       "tick": 71,
       "time": 3.55,
-      "nextId": 405,
-      "state": "8190cc0e",
+      "nextId": 413,
+      "state": "fb7759b8",
       "events": "741638a5",
       "rng": {
         "draws": 3,
@@ -333,6 +345,12 @@
           "arena2v2Rating": 1500,
           "arenaRating": 1500,
           "autoEquip": true,
+          "bags": [
+            null,
+            null,
+            null,
+            null
+          ],
           "cls": "rogue",
           "companionUpgrades": {},
           "counters": {
@@ -343,7 +361,7 @@
           "craftSkills": {},
           "delveClears": {},
           "delveDaily": {},
-          "entityId": 392,
+          "entityId": 400,
           "equipment": {
             "chest": "footpad_jerkin",
             "mainhand": "rusty_dagger"
@@ -371,7 +389,7 @@
           "dodgeChance": 0.0715,
           "fiveSecondRule": 102.55,
           "hp": 50000,
-          "id": 392,
+          "id": 400,
           "inCombat": true,
           "kind": "player",
           "level": 7,
@@ -421,7 +439,7 @@
           "facing": 3.141593,
           "fiveSecondRule": 99,
           "hp": 1,
-          "id": 403,
+          "id": 411,
           "kind": "object",
           "level": 1,
           "lootFfaTimer": "Infinity",
