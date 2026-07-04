@@ -11,8 +11,24 @@ workstream), NOT a gameplay change, NOT a WS wire change.
 
 ## Current phase
 
+Phase 25 (docs + new:endpoint scaffold + flag-default flip) is the FINAL phase. THE
+DISPATCH DEFAULT IS NOW 'new' (server/http/config.ts DEFAULT_DISPATCH = DISPATCH_NEW):
+the in-house pipeline fronts every REST surface in production, and API_DISPATCH=legacy is
+the ONE-FLAG rollback (no code redeploy) to the retained legacy ladder. The one const
+seeds both loadConfig's unset/empty default AND main.ts's four pre-boot entry seeds, so all
+four flag-gated entries (apiEntry / adminApiEntry / oauthApiEntry / internalApiEntry) flip
+together via the single setApiDispatchMode; loadConfig throws on a garbage API_DISPATCH.
+logApiDispatchSelection's legacy+production ALERT now fires exactly when someone has ROLLED
+BACK. resetApiDispatchModeForTests now restores the BOOT DEFAULT (DEFAULT_DISPATCH, 'new'),
+and the two characterization golden masters (characterization.test.ts +
+characterization_admin_oauth_internal.test.ts) plus route_dispatch.test.ts now pin 'legacy'
+EXPLICITLY (they characterize the legacy ladder, so they are immune to the flip);
+tests/server/http/dispatch_default.test.ts pins both directions on all four entries.
+config.test.ts pins the literal 'new' as the unset default. The old ladder is RETAINED
+behind the flag this release; its deletion is a NEXT-RELEASE follow-up PR gated by the
+criteria in `## Old-ladder deletion exit criteria (next release)` (end of this file).
 Phase 24 (validated config + server timeouts + no-magic-values + perf gate) DONE
-(2026-07-03). ONLY PHASE 25 REMAINS (docs + new:endpoint scaffold + flag-default flip).
+(2026-07-03).
 
 THIRD v0.20.0 RELEASE-MERGE SLICE (2026-07-03, after the Phase 24 QA gate): the map
 editor surface landed and was migrated IN-MERGE (9 custom-map + 4 uploaded-GLB /api
@@ -873,7 +889,8 @@ the X-ms constant; X is TBD, see open items.)
 - **Phase 9 dispatcher now fronts /api (load-bearing for every migration phase).** The new
   in-house dispatcher (`server/http/dispatch.ts` `createApiDispatcher`) sits in front of the
   legacy `handleApi` via a per-path catch-all delegate, gated by the single `API_DISPATCH`
-  flag (read via `loadConfig` once at boot; `Config.dispatch`, default `DEFAULT_DISPATCH='legacy'`).
+  flag (read via `loadConfig` once at boot; `Config.dispatch`, default `DEFAULT_DISPATCH='new'`
+  since the Phase 25 flip; `API_DISPATCH=legacy` is the one-flag rollback).
   The FLAG is the master on/off (rollback = flip it, the new pipeline is never entered); the
   DELEGATE is the partial-migration mechanism (an un-matched /api path falls through to the
   legacy ladder unchanged). CORS + the OPTIONS-204 preflight are now ONE top-level wrapper
@@ -921,11 +938,13 @@ the X-ms constant; X is TBD, see open items.)
 - **Perf/tick gate X-ms TBD.** The acceptance constant (pipeline adds < X ms p99; tick p95
   stays under 0.8 x DT) is not yet picked. Phase 24 codifies the gate and chooses X against
   the existing perf harness.
-- **Old-ladder deletion exit criteria TBD.** "Next release once metrics are clean" is
-  unresolved: which metrics, what thresholds, who owns the call, what if v0.18 ships before
-  they are clean. Phase 25 names the metric gate (e.g. zero `http_requests_total` on the
-  old-path label for N days, zero unexplained 404 delta) + an owner; the deletion is its own
-  follow-up PR.
+- **Old-ladder deletion exit criteria RESOLVED (Phase 25).** The gate, its carve-outs, the
+  metric-instrumentation caveat, the owner, and the full deferred-items handoff now live in
+  `## Old-ladder deletion exit criteria (next release)` (end of this file). One correction the
+  writeup makes explicit: the delegate/old-ladder path is currently UNMETERED (withMetrics is
+  mounted only on the matched-route onion, not on the per-path delegate), so there is no
+  existing `http_requests_total` label that counts old-ladder traffic; the deletion PR must add
+  a bounded delegate counter FIRST, then read it. The deletion is its own next-release PR.
 - **Rollback tradeoff accepted.** A flag flip reverts the hardening too (the suite targets
   the new path). This is the chosen model; not an open question, but keep it visible.
 - **`handleSwagClaim` orphaned.** Implemented + tested in `discord.ts` but never dispatched;
@@ -935,3 +954,103 @@ the X-ms constant; X is TBD, see open items.)
   a boot-time table-existence assertion.
 - **`isIpBlocked` + turnstile parity gap** carried forward from prior Discord reviews;
   ported Discord endpoints must not skip those checks.
+
+## Old-ladder deletion exit criteria (next release)
+
+The legacy handler ladder (main.ts `handleApi` + the `handleAdminApi` / `handleOAuth` /
+daily-rewards+`handleInternalApi` composite delegates) is RETAINED behind the flag this
+release (Phase 25 only flipped the default to 'new'). Its removal is a named NEXT-RELEASE
+follow-up PR, owner **Fernando (maintainer)**, and may land ONLY when the gate below is met.
+`server/http/CLAUDE.md` links here by this exact heading; do not rename it.
+
+### 1. The metric gate (and the instrumentation it needs FIRST)
+
+The RED exporter (`server/http/metrics.ts`) emits `http_requests_total{route, method, status}`
+(name const `HTTP_REQUESTS_TOTAL`) and `http_request_duration_seconds`, where `route` is the
+`:param` TEMPLATE. IMPORTANT CAVEAT discovered at the flip: `withMetrics` is mounted ONLY on
+the matched-route onion (`server/http/dispatch.ts` `createApiDispatcher`), NOT on the per-path
+catch-all delegate. So today a delegate-served request (an un-migrated path, a HEAD-as-GET
+match, a wrong-method-on-a-migrated-path that resolves `methodNotAllowed`, or any off-table
+shape) traverses NO `withMetrics` and emits NEITHER an `http_requests_total` row NOR an access
+line. There is therefore NO existing metric label that counts old-ladder traffic, and a naive
+"old-path label shows zero" gate is not directly measurable.
+
+The deletion PR must therefore, as its FIRST step, instrument the delegate branch with a
+BOUNDED old-path counter: increment a fixed-cardinality series on the two delegate branches of
+`createApiDispatcher` (a sentinel `route` label such as `'<delegate>'` on `http_requests_total`,
+or a dedicated `http_delegated_requests_total{surface, method, status}` counter, keyed by the
+prefix surface, never the concrete path, to keep cardinality O(1)). The gate then reads THAT
+counter. The gate: the delegate/old-path counter shows ZERO requests for **14 consecutive days**
+in production EXCLUDING the carve-out classes in section 2, AND there is zero unexplained
+404-rate delta versus the pre-flip baseline over the same window. Tracked as the named
+next-release follow-up PR above.
+
+### 2. Carve-outs (delegate-served shapes that legitimately keep the old-path signal warm under flag 'new')
+
+A naive zero-requests gate is unreachable without excluding these deliberately delegate-served
+shapes. At deletion each flips to the table's pre-auth shape (the `planned405BeforeAuth` class:
+the dispatcher will serve `methodNotAllowed` / `notFound` itself once the delegate is gone):
+- **(a) HEAD-to-GET delegation.** The router synthesizes HEAD from GET (`head: true`) and the
+  dispatcher delegates a head match, so HEAD stays byte-identical old-vs-new while the ladder is
+  retained. At deletion HEAD is served AS GET (a deliberate behavior change), and the
+  housekeeping HEAD shape flips from its post-auth in-family 405 to a GET-served response, NOT
+  from 404.
+- **(b) The `oauthInternalOffTable405` set.** DECISION RECORDED HERE: at the deletion, migrate
+  GET /oauth/authorize and GET /oauth/device (the HTML consent/device pages, off-table and
+  delegate-served today) onto `meta.envelope 'html'` RouteDefs IN the deletion PR (table-owned,
+  no permanent delegate), and the restart-countdown wrong-method shape adopts the table's
+  pre-auth 405 (`planned405BeforeAuth`). The `oauthInternalOffTable405` knownDeviation FIRES at
+  the deletion, not at this flip.
+- **(c) The Phase 18b off-table remainder.** The daily-rewards prefix-arm oddities (the ladder's
+  auth-then-404 on a wrong method, on an unknown subpath, and on the no-slash
+  '/api/daily-rewardsX' sibling) adopt the table's pre-auth 404/405 at the deletion (same
+  `planned405BeforeAuth` class), and the ops family's family-wide PRE-PATH 401 becomes per-route
+  table auth at deletion (unknown ops subpaths become pre-auth 404). Recreation-or-loss of the
+  family-wide pre-path 401 is adjudicated in the deletion PR (per `dailyRewardsOpsBodyValidationRemap`).
+- **(d) The v0.20.0 housekeeping in-family shapes.** An unknown `/admin/api/housekeeping/`
+  sub-path or a non-GET/POST method has no RouteDef and delegates today (admin 401 precedes the
+  sub-dispatcher's in-family 404/405). At deletion these flip to the table's pre-auth 404/405.
+- **(e) The v0.20.0 third-slice maps/assets wrong-method shapes.** A wrong method on an
+  `/api/maps` or `/api/assets` path has no RouteDef and delegates to the ladder terminal 404
+  today; at deletion it flips to the table's pre-auth 405 (`planned405BeforeAuth`). GET
+  /api/maps/:id keeps its conditional anonymous-only prose throttle inside `optionalViewerGuard`
+  on the surviving path BY DESIGN (documented in `mapsAssetsRateLimitedBodyToCode`).
+
+### 3. Also part of the deletion follow-up PR
+
+- **The Phase 18/18b dual-edit MAINTENANCE RULE EXPIRES.** A migrated route lives in BOTH the
+  RouteDef table and the legacy ladder; until the ladder is removed, a behavior edit to one twin
+  must land in the other in the same change. That obligation ends when the ladder is deleted.
+- **Wire the surviving /api/perf arm onto `Config.allowDevCommands`.** See section 4.
+- **`http_requests_total` for the delegate counter** (section 1) is added here.
+- Re-annotate the surface-inventory rows that document the LEGACY arm and mislead once the
+  ladder is gone: the swag-claim row's `unreachable: true` and the four limiter-column rows
+  (reports, characters-POST, wallet-link x2).
+
+### 4. `Config.allowDevCommands`: KEEP AND SCHEDULE (Phase 24 QA wire-or-drop resolution)
+
+`Config.allowDevCommands` STAYS (the validated single-source pin). It has no live consumer yet:
+the two /api/perf dev gates (the main.ts legacy arm and the leaderboard.ts migrated arm) each
+keep a live per-request `ALLOW_DEV_COMMANDS` read so the two dispatch arms cannot diverge while
+the legacy ladder is retained behind the flag. The old-ladder deletion PR (NOT Phase 25) removes
+the legacy /api/perf arm and wires the surviving migrated arm onto `Config.allowDevCommands`; the
+game.ts per-tick / per-command cheat gates stay per-command env reads BY DESIGN. This decision is
+also recorded in `server/http/config.ts` (Config.allowDevCommands doc + conscious exception (2)).
+
+### 5. Deferred items carried into the next release (NOT part of the deletion gate, but the same horizon)
+
+- API conventions still DEFERRED to a consumer-driven follow-up: A (versioning), D (ETag), F
+  (Deprecation/Sunset), G (OpenAPI). Ship paths UNVERSIONED until then.
+- The full-CSP Report-Only effort (Phase 21 shipped the header hardening minus CSP/COEP).
+- The concurrency-scalability workstream (the single-threaded 20 Hz world loop is the per-realm
+  ceiling; out of scope for this packet).
+- The **X-Request-Id echo LIVE mount**: built and unit-tested in
+  `server/http/middleware/request_id.ts` (the success-path header), but NOT mounted on the
+  dispatch onion. Mounting adds the header to migrated 2xx/429/404 responses the retained legacy
+  delegate does not emit (a corpus-wide parity-visible change), so it is deferred to the deletion
+  follow-up (normalize X-Request-Id out of the shared parity normalizer, or register it
+  corpus-wide). The error-path echo is already live via `errors.ts` baseHeaders.
+- The timed DRAIN WINDOW constant (additive; none exists today; deferred to the concurrency
+  workstream).
+- The daily-rewards pagination upper-clamp hardening (a pre-existing non-behavioral contract gap).
+- HEAD-as-GET behavior change at the deletion (carve-out (a)).

@@ -64,7 +64,7 @@ Mark a row's Status as "In progress" or "Done" and fill Started / Completed
 | v0.20.0 release merge + audit | Done | 2026-07-03 | 2026-07-03 |
 | Phase 24 | Done | 2026-07-03 | 2026-07-03 |
 | Phase 24 QA | Done | 2026-07-03 | 2026-07-03 |
-| Phase 25 | Not started |  |  |
+| Phase 25 | Done | 2026-07-03 | 2026-07-03 |
 | Phase 25 QA | Not started |  |  |
 
 ## Phase 01: Importable spine + WS-auth extraction (the gate, zero behavior change)
@@ -1758,15 +1758,129 @@ parity/coverage, social_system, social_frames, delves); tsc 0.
 ## Phase 25: Docs + new:endpoint scaffold + flag-default flip
 
 Deliverables:
-- [ ] Update server/CLAUDE.md (pipeline model + graduated Adding-an-endpoint recipe + error-localization rule + the injected-FakeDb test recipe over the pg-mock idiom), root CLAUDE.md (the server/http seam), new server/http/CLAUDE.md, i18n docs (apiError.* domain)
-- [ ] npm run new:endpoint scaffold emitting RouteDef stub + typed schema + paired error code + English catalog entry + a paired FakeDb-based copy-from TEST file, auto-attaching requireOwned* on :id routes
-- [ ] Flip the env-flag default to the new path keeping the old ladders behind the flag; designate one early migration commit as the canonical add-one-authenticated-endpoint example
-- [ ] Name the old-ladder deletion exit criteria (metric gate + owner) for the next-release follow-up PR
+- [x] Update server/CLAUDE.md (pipeline model + graduated Adding-an-endpoint recipe + error-localization rule + the injected-FakeDb test recipe over the pg-mock idiom), root CLAUDE.md (the server/http seam), new server/http/CLAUDE.md, i18n docs (apiError.* domain)
+- [x] npm run new:endpoint scaffold emitting RouteDef stub + typed schema + paired error code + English catalog entry + a paired FakeDb-based copy-from TEST file, auto-attaching requireOwned* on :id routes
+- [x] Flip the env-flag default to the new path keeping the old ladders behind the flag; designate one early migration commit as the canonical add-one-authenticated-endpoint example
+- [x] Name the old-ladder deletion exit criteria (metric gate + owner) for the next-release follow-up PR
 
 QA:
-- [ ] Fixes applied
-- [ ] Tests added
-- [ ] Dead code removed
-- [ ] Reviews clean
+- [x] Fixes applied (all findings from all three in-phase reviewers, including nits)
+- [x] Tests added (dispatch_default.test.ts + the new_endpoint golden suite)
+- [x] Dead code removed (nothing to remove: the phase adds new surface only; main.ts got comment edits plus the one-line reset-body change)
+- [x] Reviews clean (privacy-security-review, qa-checklist, test-coverage-auditor: zero BLOCKING each; every should-fix and nit applied and re-verified)
 
 Notes:
+
+DONE 2026-07-03 (one session: one Explore context agent, three hand-spawned slice agents
+(docs, scaffold, flip), three in-phase reviewers apply-all). The MIGRATION PACKET IS
+COMPLETE: this was the final phase; the separate phase-25-qa.md gate remains, then the
+old-ladder deletion follows next release under the recorded exit criteria.
+
+THE FLIP. DEFAULT_DISPATCH (server/http/config.ts) went DISPATCH_LEGACY to DISPATCH_NEW;
+that one const seeds both loadConfig's unset/empty default and the four module-init entry
+seeds in server/main.ts, and setApiDispatchMode recomputes all four entries (apiEntry,
+adminApiEntry, oauthApiEntry, internalApiEntry), so the new pipeline is now the production
+default on every surface with API_DISPATCH=legacy as the one-flag rollback. The per-path
+catch-all delegate semantics are UNCHANGED (only the default moved); zero parity fixtures
+diffed (the phase stopping rule held). logApiDispatchSelection's legacy+production warn now
+fires exactly when an operator has rolled back (DEPLOY.md operational note added).
+resetApiDispatchModeForTests restores DEFAULT_DISPATCH instead of a hardcoded 'legacy'
+(every caller sets its mode explicitly; reset is cleanup only). Three legacy golden-master
+suites now pin 'legacy' explicitly instead of riding the ambient default
+(characterization.test.ts, characterization_admin_oauth_internal.test.ts,
+route_dispatch.test.ts); config.test.ts default pins flipped to the literal 'new'.
+
+tests/server/http/dispatch_default.test.ts asserts BOTH directions on ALL FOUR entries
+db-free. Premise correction discovered here: a wrong-method probe does NOT discriminate
+new-vs-legacy today (the dispatcher delegates every non-matched resolve including
+methodNotAllowed; the table 405s are the planned405BeforeAuth class that fires at the
+deletion). So /api uses the two VISIBLE Phase 10 deviations as discriminators
+(realmsSearchAuthzGapClose search 200-vs-401, statusNameListTrim), and admin/oauth/internal
+use legacy-delegate spies (handleAdminApi / handleOAuth / the internal composite with
+handleDailyRewardInternalApi tried first; handleApi is in-module and not mockable), with
+unmatched-path cases proving each spy CAN fire (non-vacuous).
+
+THE SCAFFOLD. scripts/new_endpoint.mjs behind `npm run new:endpoint --
+--domain <slug> --method <METHOD> --path </api/...> [--public] [--root <dir>] [--repo <dir>]`.
+Rung derivation: :param and no --public = owner-gated (real requireOwned auto-attached,
+meta.requireOwned, 404 anti-enum denial); --public = public read (meta.publicRead on a
+:param); else authenticated. After the security review the emitted guards compose the REAL
+shared server/http/middleware/bearer_active_guard.ts (createReadGuard on GET,
+createActiveGuard on mutating: moderation-gated AND read-vs-full scope-enforced out of the
+box) over an injected db seam that defaults to the real db.ts reads (pg Pool constructs
+lazily; verified with DATABASE_URL unset). Emitted files: the domain routes module (typed
+Infer-derived schema via server/http/schema.ts combinators, withBody on mutations, an
+in-array rate-limit TODO naming the recipe step) plus a FakeDb-idiom test asserting
+happy/401/403-moderation/403-read-scope/404/invalid paths; SIX append-only targets
+(error_codes.ts, its EXPECTED_CODES snapshot test, api_error_code_parity.test.ts
+KNOWN_CODES, api_error_i18n.ts API_ERROR_KEYS, the api_error.ts English catalog,
+registry.ts via two anchor comments), leaving a real-tree run parity-green. --domain and
+--path are strict-charset validated before templating (template-injection hardening);
+--public plus a mutating method prints an unauthenticated-unlimited-write warning; the CLI
+reminds about M16 (the wordy-English heuristic is /[a-z]{4,}/, so ANY real English value
+trips it: emitted defaults are terse to minimize the five non-Latin fills, which remain
+required in the same change when the contributor rewords). Biome formatting of emitted
+files is the contributor's normal biome check --write step (CLI says so). The golden test
+(tests/server/new_endpoint.test.ts, 22 tests, ~2s) emits ALL THREE rungs into one mkdtemp
+root, type-checks all six emitted files with one child tsc (repo-extending tsconfig), runs
+the three emitted tests plus the error_codes snapshot in one child vitest (explicit config
+override), byte-level asserts append-only on all six targets (in-order subsequence +
+reconstruction, catches reorder), pins hostile-path/refuse-overwrite/missing-target
+negatives per dimension, and asserts git porcelain unchanged (the scaffold writes only
+under --root, so this diff never touches src/ and the S3 guard is not triggered). tmp/**
+joined vite.config.ts test.exclude so a crashed golden run cannot leave collectable orphan
+tests.
+
+DOCS. server/http/CLAUDE.md is NEW (spine module map, the RouteDef/RouteMeta contract,
+per-surface envelope rule, append-only error_codes + apiError.* localization mapping, the
+dispatch-flag model, the dual-edit maintenance rule, the housekeeping vi.mock seam note,
+and the exit-criteria pointer). server/CLAUDE.md gained the pipeline model, the graduated
+Adding-an-endpoint recipe (scaffold first, then the three rungs by real commits:
+c07d677af public read server/leaderboard.ts; 14275d39e authenticated server/auth_routes.ts,
+designated THE canonical add-one-authenticated-endpoint example; 5bba9353e owner-gated
+server/characters.ts), the emit-the-CODE-never-English rule, and the FakeDb-over-pg-mock
+test recipe; its Key-files row no longer claims main.ts owns a route table. Root CLAUDE.md:
+one repo-map row plus the request-seam architecture/modularity notes (AGENTS.md and
+GEMINI.md untouched, still thin pointers). translation-workflow.md gained the REST
+localize-by-code section.
+
+EXIT CRITERIA (state.md `## Old-ladder deletion exit criteria (next release)`, owner
+Fernando). Discovered while writing it: the delegate path is UNMETERED today (withMetrics
+mounts only on the matched-route onion), so the deletion PR must FIRST add a bounded
+old-path counter (a sentinel route label or http_delegated_requests_total{surface,method,
+status}, O(1) cardinality), then gate on 14 consecutive zero days in production EXCLUDING
+the enumerated carve-outs, plus zero unexplained 404-rate delta vs the pre-flip baseline.
+Carve-outs enumerated: HEAD-to-GET delegation, the oauthInternalOffTable405 set (decision:
+the two GET oauth HTML pages migrate onto meta.envelope 'html' RouteDefs IN the deletion
+PR; restart-countdown wrong-method joins planned405BeforeAuth), the 18b daily-rewards
+prefix-arm oddities and ops pre-path 401, the housekeeping in-family 404/405 flips, and the
+maps/assets wrong-method flips. Also scheduled there: the Phase 18/18b dual-edit rule
+expiry, and the Config.allowDevCommands resolution (KEEP AND SCHEDULE: the deletion PR
+wires the surviving /api/perf arm; game.ts per-command env reads stay by design). Deferred
+items carried forward: conventions A/D/F/G, full-CSP Report-Only, the concurrency
+workstream, the X-Request-Id echo live mount, the timed drain window, the daily-rewards
+pagination clamp, HEAD-as-GET at deletion.
+
+REVIEWS (apply-all). privacy-security-review: 0 BLOCKING, 2 should-fix + 2 nits, all
+applied and re-verified CLOSED (the real-guard composition, --path charset, limiter TODO +
+public-write warning, three-rung e2e); it confirmed the flip is a net hardening,
+byte-identical onion, cleanly reversible, and flagged the operator-visible note that
+GET /api/search serves anonymous callers 200 by default post-flip (the pre-existing,
+rate-limited Phase 10 realmsSearchAuthzGapClose deviation) while /api/status gets stricter.
+qa-checklist: READY, 0 BLOCKING (its two should-fix: this ledger entry, and the golden
+rung-coverage gap, both applied). test-coverage-auditor: CLEAN, 0 BLOCKING 0 should-fix,
+20/20 behaviors decisively pinned; its actionable nit (a unit pin proving the parity-file
+append lands exactly one row against the real source) applied; its no-change nit (e2e
+content pins beyond error_codes.ts are covered by the per-helper unit layer) recorded.
+
+VALIDATION at the final tree: tsc 0; dispatch_default + config 32/32; the golden 22/22;
+tests/server/http parity + completeness + known_deviations 41 files / 912 tests green with
+ZERO fixture edits; PERF_GATE_WALLCLOCK=1 perf_gate 10/10 (the P24-mandated pre-flip
+wall-clock arm); ci:changed 0; npm run gate PASS all 9 steps (re-run after the review
+fixes). Ship reminder inherited from P24 for the maintainer before this branch deploys:
+the deploy-env audit (stricter validators throw at boot; METRICS_TOKEN on server and
+scraper together; no empty numeric placeholders), now plus the flipped default itself
+(set API_DISPATCH=legacy only as a deliberate rollback).
+
+NEXT: the phase-25-qa.md gate (separate session), then the next-release old-ladder
+deletion PR under the exit criteria above.
