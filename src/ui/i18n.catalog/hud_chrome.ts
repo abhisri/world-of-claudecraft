@@ -51,6 +51,8 @@ export const hudChromeStrings = {
     error: 'Could not load daily rewards.',
     intro:
       'Hold enough WOC in your verified wallet to unlock daily rewards. Earn points with one daily spin and rotating tasks, then climb the daily leaderboard for a share of the prize pool.',
+    disclaimer:
+      'WOC price can move quickly. We recommend holding more than the $20 USD minimum so normal price swings do not lock you out. This is not financial advice.',
     prize: 'Prize Pool',
     reset: 'Reset',
     endsIn: 'Ends in {time}',
@@ -74,6 +76,11 @@ export const hudChromeStrings = {
     pointsGained: '{points} daily rewards points gained.',
     showChestButton: 'Show Chest',
     hideChestButton: 'Hide Chest',
+    hideChestConfirmTitle: 'Hide Daily Rewards Chest?',
+    hideChestConfirmBody:
+      'This removes the chest shortcut from your HUD. Rewards, eligibility, and this panel stay available; you can bring the shortcut back from Options.',
+    hideChestConfirmOk: 'Hide Chest',
+    hideChestConfirmCancel: 'Cancel',
     leaderboard: 'Daily Leaderboard',
     totalPlayer: '{count} player today',
     totalPlayers: '{count} players today',

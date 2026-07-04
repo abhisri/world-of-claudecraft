@@ -188,6 +188,7 @@ export const en_CA: EnTranslations = {
       "loading": "Loading daily rewards...",
       "error": "Could not load daily rewards.",
       "intro": "Hold enough WOC in your verified wallet to unlock daily rewards. Earn points with one daily spin and rotating tasks, then climb the daily leaderboard for a share of the prize pool.",
+      "disclaimer": "WOC price can move quickly. We recommend holding more than the $20 USD minimum so normal price swings do not lock you out. This is not financial advice.",
       "prize": "Prize Pool",
       "reset": "Reset",
       "endsIn": "Ends in {time}",
@@ -211,6 +212,10 @@ export const en_CA: EnTranslations = {
       "pointsGained": "{points} daily rewards points gained.",
       "showChestButton": "Show Chest",
       "hideChestButton": "Hide Chest",
+      "hideChestConfirmTitle": "Hide Daily Rewards Chest?",
+      "hideChestConfirmBody": "This removes the chest shortcut from your HUD. Rewards, eligibility, and this panel stay available; you can bring the shortcut back from Options.",
+      "hideChestConfirmOk": "Hide Chest",
+      "hideChestConfirmCancel": "Cancel",
       "leaderboard": "Daily Leaderboard",
       "totalPlayer": "{count} player today",
       "totalPlayers": "{count} players today",
@@ -3588,7 +3593,7 @@ export const en_CA: EnTranslations = {
     },
     "lore": {
       "warrior": "Warriors are battle-hardened melee fighters who build Rage as they deal or take damage. They absorb heavy hits or crush foes with powerful weapons.",
-      "paladin": "Paladins are holy crusaders who support allies with blessings, heal wounds with Holy Light, and protect the weak in heavy armour.",
+      "paladin": "Paladins are holy crusaders who support allies with blessings, heal wounds with Mending Light, and protect the weak in heavy armour.",
       "hunter": "Hunters are ranged specialists who fight beside a tamed beast, peppering enemies with aimed and rapid shots, slowing them with stings and concussive fire, and shifting aspects to suit the moment.",
       "rogue": "Rogues are stealthy assassins who spend Energy and Combo Points on backstabs and finishing moves from the shadows.",
       "priest": "Priests call on Mending Light to heal and shield allies, while Shadow magic lets them drain the life of their enemies.",
@@ -5712,7 +5717,7 @@ export const en_CA: EnTranslations = {
         "name": "Gravewoven Bag"
       },
       "mistcallers_duffel": {
-        "name": "Mistcaller's Duffel"
+        "name": "Fogbinder's Duffel"
       },
       "copper_mining_pick": {
         "name": "Copper Mining Pick"
@@ -7795,15 +7800,23 @@ export const en_CA: EnTranslations = {
       }
     },
     "itemSets": {
+      "boundstone_vanguard": {
+        "name": "Boundstone Vanguard",
+        "bonus3": "Increases attack and casting speed by 15%."
+      },
       "crownforged": {
         "name": "Bonewrought Regalia",
         "bonus2": "Increases attack power by 40.",
-        "bonus3": "Increases Strength by 15 and Stamina by 15."
+        "bonus3": "Increases Strength by 15, Stamina by 15, and attack and casting speed by 15%."
       },
       "deathlord": {
         "name": "Barrowlord Battlegear",
         "bonus2": "Increases attack power by 40.",
         "bonus3": "Increases Strength by 15 and Stamina by 15."
+      },
+      "greyjaw_stalker": {
+        "name": "Greyjaw Stalker's Kit",
+        "bonus3": "Increases attack and casting speed by 15%."
       },
       "necromancers": {
         "name": "Mournweave Raiment",
@@ -7813,17 +7826,21 @@ export const en_CA: EnTranslations = {
       "nighttalon": {
         "name": "Direfang Pelt",
         "bonus2": "Increases attack power by 40.",
-        "bonus3": "Increases Agility by 15 and critical strike chance by 2%."
+        "bonus3": "Increases Agility by 15, critical strike chance by 2%, and attack and casting speed by 15%."
       },
       "soulflame": {
         "name": "Wraithfire Regalia",
         "bonus2": "You cannot be knocked back (100% knockback resistance).",
-        "bonus3": "Increases Intellect by 15 and Spirit by 15."
+        "bonus3": "Increases Intellect by 15, Spirit by 15, and attack and casting speed by 15%."
       },
       "stormcallers": {
         "name": "Galecall Vestments",
         "bonus2": "You cannot be knocked back (100% knockback resistance).",
-        "bonus3": "Increases Intellect by 15 and Spirit by 15."
+        "bonus3": "Increases Intellect by 15, Spirit by 15, and attack and casting speed by 15%."
+      },
+      "vale_arcanist": {
+        "name": "Vale Arcanist's Regalia",
+        "bonus3": "Increases attack and casting speed by 15%."
       },
       "wyrmshadow": {
         "name": "Nightfang Vestments",

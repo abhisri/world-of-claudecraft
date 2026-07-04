@@ -2160,7 +2160,7 @@ const itemNamesEn = {
       "Traveler's Knapsack",
       'Wolfhide Satchel',
       'Gravewoven Bag',
-      "Mistcaller's Duffel",
+      "Fogbinder's Duffel",
       'Copper Mining Pick',
       'Iron Mining Pick',
       'Mithril Mining Pick',

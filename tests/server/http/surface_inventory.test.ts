@@ -26,12 +26,11 @@
 //     auth regexes.
 //   * REGISTERED RouteDefs: every exact (non-:param) path in the route registry
 //     (server/http/registry.ts apiRoutes). A registered RouteDef is a dispatch
-//     arm all the same; until Phase 25 almost every migrated route ALSO keeps its
-//     legacy `=== '<path>'` arm, so this union is a no-op for them. It exists for
-//     families whose legacy serving is a SUFFIX-comparing sub-dispatcher the text
-//     scan cannot see (the v0.20.0 housekeeping family: handleHousekeepingApi
-//     slices '/admin/api/housekeeping/' off and compares the remainder), and it
-//     keeps the gate correct when Phase 25 deletes the legacy arms outright.
+//     arm all the same; until the ladder-deletion PR almost every migrated route
+//     ALSO keeps its legacy `=== '<path>'` arm, so this union is a no-op for
+//     them. It exists for families whose legacy serving is a SUFFIX-comparing
+//     sub-dispatcher the text scan cannot see, and it keeps the gate correct
+//     when the ladder deletion removes the legacy arms outright.
 // To register a NEW route: add its row to SURFACE_INVENTORY (and, for an /api
 // route, an API_CONTENT_TYPE entry). If it is a new `:param` route, give the row
 // a `match` RegExp whose source equals the dispatcher's regex literal.

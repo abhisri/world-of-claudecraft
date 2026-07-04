@@ -2,7 +2,6 @@ import * as fs from 'node:fs';
 import * as http from 'node:http';
 import * as path from 'node:path';
 import { WebSocketServer } from 'ws';
-import { TUNING } from '../src/sim/game_config';
 import {
   LEADERBOARD_MAX,
   LEADERBOARD_PAGE_SIZE,
@@ -118,8 +117,6 @@ import {
 } from './github';
 import { configureGithubContributorsRuntime, topContributors } from './github_contributors';
 import { pruneGitHubOAuthStates } from './github_db';
-import { applyGameConfigAtBoot } from './housekeeping';
-import { loadGameConfigOverrides } from './housekeeping_db';
 import { createAccessLogSink } from './http/access_log';
 import { handleClientError } from './http/client_error';
 import { type Config, DEFAULT_DISPATCH, type DispatchMode, loadConfig } from './http/config';
@@ -292,16 +289,12 @@ const DAILY_PRUNE_INTERVAL_MS = 24 * 3600 * 1000;
 
 // The live GameServer, constructed on FIRST TOUCH via liveGame() (the
 // activeConfig() memoization pattern). Production takes that first touch inside
-// startServer() AFTER the housekeeping game-config overrides are loaded and
-// applied: the Sim ctor reads the content tables (spawns, rolled levels), so the
-// world must not be built before they are overridden; nothing else touches the
-// game until then (routes, timers, and the WS server are all wired later inside
-// startServer(), and every module-scope configure*Runtime closure defers its
-// liveGame() read to request time). The parity/characterization harnesses import
-// this module and drive routeHttpRequest WITHOUT running startServer(), so their
-// first request constructs the world lazily against the default (override-free)
-// content, matching the pre-housekeeping module-load construction they pinned
-// their goldens on.
+// startServer(); nothing else touches the game until then (routes, timers, and
+// the WS server are all wired later inside startServer(), and every module-scope
+// configure*Runtime closure defers its liveGame() read to request time). The
+// parity/characterization harnesses import this module and drive routeHttpRequest
+// WITHOUT running startServer(), so their first request constructs the world
+// lazily instead of at module load.
 let gameInstance: GameServer | null = null;
 function liveGame(): GameServer {
   gameInstance ??= new GameServer();
@@ -313,10 +306,7 @@ function initialCharacterState(
   name: string,
   skin: number,
 ): import('../src/sim/sim').CharacterState {
-  // Deliberate: a worldSeed override retargets this template sim too, so new
-  // characters serialize against the same world the realm actually runs
-  // (historically a fixed 20061, independent of WORLD_SEED).
-  const sim = new Sim({ seed: TUNING.worldSeed ?? 20061, playerClass: cls, playerName: name });
+  const sim = new Sim({ seed: 20061, playerClass: cls, playerName: name });
   sim.setPlayerSkin(sim.playerId, skin);
   const character = sim.serializeCharacter(sim.playerId);
   if (!character) throw new Error('failed to serialize initial character');
@@ -1919,12 +1909,11 @@ configureDiscordRuntime({
 
 // configureAdminRuntime(game) and configureInternalRuntime(game) pass the live
 // GameServer BY VALUE (AdminRuntime / InternalRuntime are Picks of GameServer, so
-// the live game satisfies them directly). Since the housekeeping override layer
-// moved construction off module load (liveGame()'s first touch happens in
-// startServer(), after the overrides apply), those two injections now happen in
-// startServer() right after that first touch, unlike the closure-based
-// configure* calls above, which defer every liveGame() read to request time and
-// stay at module scope.
+// the live game satisfies them directly). Since construction is deferred off
+// module load (liveGame()'s first touch happens in startServer()), those two
+// injections happen in startServer() right after that first touch, unlike the
+// closure-based configure* calls above, which defer every liveGame() read to
+// request time and stay at module scope.
 
 // The RED /metrics exporter (Phase 23): ONE prom-client registry with the default
 // process/runtime metrics attached, paired with the structured access-log sink
@@ -2178,13 +2167,6 @@ export async function startServer(): Promise<http.Server> {
   }
   await ensureSchema();
   await seedOAuthClients();
-  // Housekeeping: load + apply this realm's game-config overrides BEFORE the
-  // world exists; the GameServer ctor builds the Sim from the content tables.
-  const storedOverrides = await loadGameConfigOverrides();
-  const overrideWarnings = applyGameConfigAtBoot(storedOverrides.data, new Date().toISOString());
-  for (const warning of overrideWarnings) {
-    console.warn(`game-config override dropped: ${warning}`);
-  }
   const game = liveGame();
   // Inject the game-session methods the ported admin routes (server/admin.ts) call
   // for their live reads + side effects (adminStats/liveSessions/disconnectAccount/

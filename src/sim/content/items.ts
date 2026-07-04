@@ -135,6 +135,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   woven_robe: {
     id: 'woven_robe',
+    set: 'vale_arcanist',
     name: 'Valewoven Robe',
     kind: 'armor',
     armorType: 'cloth',
@@ -146,6 +147,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   shadow_jerkin: {
     id: 'shadow_jerkin',
+    set: 'greyjaw_stalker',
     name: 'Shadowstitch Jerkin',
     kind: 'armor',
     armorType: 'leather',
@@ -187,6 +189,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   greyjaw_hide_boots: {
     id: 'greyjaw_hide_boots',
+    set: 'greyjaw_stalker',
     name: 'Greyjaw Hide Boots',
     kind: 'armor',
     armorType: 'leather',
@@ -342,6 +345,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   boundstone_helm: {
     id: 'boundstone_helm',
+    set: 'boundstone_vanguard',
     name: 'Boundstone Helm',
     kind: 'armor',
     armorType: 'mail',
@@ -352,6 +356,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   boundstone_girdle: {
     id: 'boundstone_girdle',
+    set: 'boundstone_vanguard',
     name: 'Boundstone Girdle',
     kind: 'armor',
     armorType: 'mail',
@@ -372,6 +377,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   gravewyrm_gauntlets: {
     id: 'gravewyrm_gauntlets',
+    set: 'boundstone_vanguard',
     name: 'Gravewyrm Gauntlets',
     kind: 'armor',
     armorType: 'mail',
@@ -420,7 +426,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   mistcallers_duffel: {
     id: 'mistcallers_duffel',
-    name: "Mistcaller's Duffel",
+    name: "Fogbinder's Duffel",
     kind: 'bag',
     quality: 'epic',
     bagSlots: 14,
@@ -1226,6 +1232,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   acolytes_circlet: {
     id: 'acolytes_circlet',
+    set: 'vale_arcanist',
     name: "Acolyte's Circlet",
     kind: 'armor',
     armorType: 'cloth',
@@ -1269,6 +1276,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   silk_sash: {
     id: 'silk_sash',
+    set: 'vale_arcanist',
     name: 'Woven Silk Sash',
     kind: 'armor',
     armorType: 'cloth',
@@ -1422,6 +1430,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   trail_leggings: {
     id: 'trail_leggings',
+    set: 'greyjaw_stalker',
     name: 'Trailworn Leggings',
     kind: 'armor',
     armorType: 'leather',

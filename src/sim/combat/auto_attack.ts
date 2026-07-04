@@ -117,7 +117,8 @@ export function updatePlayerAutoAttack(ctx: SimContext, p: Entity, meta: PlayerM
     if (!ctx.hasLineOfSight(p, t)) return;
     ctx.breakGhostWolf(p);
     rangedSwing(ctx, p, t, ranged);
-    p.swingTimer = ranged.speed * ctx.swingIntervalMult(p);
+    // Ranged haste (item-set bonus) shortens the auto-shot interval.
+    p.swingTimer = (ranged.speed * ctx.swingIntervalMult(p)) / (1 + p.rangedHaste);
     return;
   }
   if (d > MELEE_RANGE) return;
@@ -153,8 +154,9 @@ export function updatePlayerAutoAttack(ctx: SimContext, p: Entity, meta: PlayerM
   }
   meleeSwing(ctx, p, t, bonus, abilityName, { threatFlat, threatMult });
   // Wolf Form swings at the rogue's fixed feral cadence, not the carried weapon's
-  // speed (see combat/form_swing.ts); everyone else uses their weapon speed.
-  p.swingTimer = baseSwingSpeed(p) * ctx.swingIntervalMult(p);
+  // speed (see combat/form_swing.ts); everyone else uses their weapon speed. Melee
+  // haste (item-set bonus) then shortens whatever base interval that yields.
+  p.swingTimer = (baseSwingSpeed(p) * ctx.swingIntervalMult(p)) / (1 + p.meleeHaste);
 }
 
 export function rangedSwing(

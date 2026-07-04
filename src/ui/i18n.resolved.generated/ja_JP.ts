@@ -43,7 +43,7 @@ export const ja_JP: EnTranslations = {
       "subtitle": "累計経験値",
       "rank": "順位",
       "name": "名前",
-      "realmCol": "レルム",
+      "realmCol": "ワールド",
       "level": "Lv",
       "vlevel": "仮Lv",
       "lifetimeXp": "累計経験値",
@@ -52,7 +52,7 @@ export const ja_JP: EnTranslations = {
       "loading": "ランキングを読み込み中...",
       "unranked": "順位なし",
       "you": "あなた",
-      "globalSubtitle": "全レルムの上位英雄",
+      "globalSubtitle": "全ワールドの上位英雄",
       "retry": "ランキングを読み込めませんでした。もう一度お試しください。"
     },
     "milestone": {
@@ -188,6 +188,7 @@ export const ja_JP: EnTranslations = {
       "loading": "デイリー報酬を読み込み中...",
       "error": "デイリー報酬を読み込めませんでした。",
       "intro": "認証済みウォレットに十分なWOCを保有すると、デイリー報酬が解放されます。1日1回のスピンとローテーションするタスクでポイントを獲得し、デイリーランキングを駆け上がって賞金プールの分け前を狙いましょう。",
+      "disclaimer": "WOC価格は大きく変動する場合があります。通常の価格変動で報酬がロックされないよう、$20 USDの最低額より多めに保有することをおすすめします。これは金融助言ではありません。",
       "prize": "賞金プール",
       "reset": "リセット",
       "endsIn": "終了まで{time}",
@@ -211,6 +212,10 @@ export const ja_JP: EnTranslations = {
       "pointsGained": "{points} デイリー報酬ポイントを獲得しました。",
       "showChestButton": "宝箱を表示",
       "hideChestButton": "宝箱を隠す",
+      "hideChestConfirmTitle": "デイリー報酬の宝箱を非表示にしますか？",
+      "hideChestConfirmBody": "HUDから宝箱のショートカットが削除されます。報酬、受給資格、このパネルは引き続き利用できます。ショートカットはオプションから再表示できます。",
+      "hideChestConfirmOk": "宝箱を隠す",
+      "hideChestConfirmCancel": "キャンセル",
       "leaderboard": "デイリーランキング",
       "totalPlayer": "本日のプレイヤー {count} 人",
       "totalPlayers": "本日のプレイヤー {count} 人",
@@ -555,7 +560,7 @@ export const ja_JP: EnTranslations = {
       "defaultBuildName": "ビルド {n}"
     },
     "tips": {
-      "joinChannels": "ヒント：/join world または /join lfg と入力すると、レルム全体のプレイヤーとチャットできます。"
+      "joinChannels": "ヒント：/join world または /join lfg と入力すると、ワールド全体のプレイヤーとチャットできます。"
     },
     "itemSet": {
       "header": "{name} ({have}/{total})",
@@ -610,7 +615,7 @@ export const ja_JP: EnTranslations = {
     },
     "bugReport": {
       "menuButton": "バグを報告",
-      "realm": "サーバー",
+      "realm": "ワールド",
       "character": "キャラクター",
       "position": "座標",
       "unknown": "不明",
@@ -830,13 +835,13 @@ export const ja_JP: EnTranslations = {
       "disarm": "武装解除: 武器攻撃を使用できない",
       "lockout": "呪文系統がロックされている",
       "imbue": "武器に追加効果が付与されている",
-      "imbueRange": "武器付与: 裁きで{min}から{max}の追加ダメージ",
+      "imbueRange": "武器付与: ヴァーディクトで{min}から{max}の追加ダメージ",
       "stealth": "隠密状態。移動速度が{pct}%低下する",
-      "formBear": "ベアフォーム: 体力と防御力が上昇",
+      "formBear": "ブルーインフォーム: 体力と防御力が上昇",
       "formCat": "キャットフォーム: 近接ダメージとエネルギー",
-      "formTravel": "トラベルフォーム: 移動速度が{pct}%上昇",
-      "defensiveStance": "ディフェンシブスタンス: 受けるダメージが減少し、脅威度が上昇",
-      "righteousFury": "正義の怒り: 神聖ダメージによる脅威度が大幅に上昇",
+      "formTravel": "フリートフォーム: 移動速度が{pct}%上昇",
+      "defensiveStance": "ガーデッドスタンス: 受けるダメージが減少し、脅威度が上昇",
+      "righteousFury": "バーニングオース: 神聖ダメージによる脅威度が大幅に上昇",
       "scale": "サイズが{pct}%増加",
       "jump": "ジャンプの高さが{pct}%増加",
       "school": {
@@ -1061,18 +1066,18 @@ export const ja_JP: EnTranslations = {
       "close": "メールボックスを閉じる",
       "tabInbox": "受信箱",
       "tabInboxWithCount": "受信箱（{count}）",
-      "tabSend": "Send",
+      "tabSend": "送信",
       "empty": "メールボックスは空です。",
       "truncated": "全{total}通のうち最新の{shown}通を表示しています。",
       "attachmentsBadge": "小包あり",
       "unreadBadge": "未読",
-      "back": "Back",
+      "back": "戻る",
       "take": "添付品を受け取る",
       "delete": "手紙を削除",
       "deleteAria": "手紙「{subject}」を削除",
       "openAria": "{name}からの手紙「{subject}」を読む",
       "noSubject": "（件名なし）",
-      "toLabel": "To",
+      "toLabel": "宛先",
       "toPlaceholder": "キャラクター名",
       "subjectLabel": "件名",
       "bodyLabel": "本文",
@@ -1363,7 +1368,7 @@ export const ja_JP: EnTranslations = {
         "valeName": "イーストブルックの谷",
         "valeBlurb": "すべての冒険が始まる、緑の丘と古い森。",
         "marshName": "マイアフェン湿地",
-        "marshBlurb": "沈んだ沼地と波に削られた遺跡。マーロックや、それ以上に厄介なものが棲む。",
+        "marshBlurb": "沈んだ沼地と波に削られた遺跡。マッドフィンや、それ以上に厄介なものが棲む。",
         "peaksName": "ソーンピーク高地",
         "peaksBlurb": "風に削られた尾根が、この世界で最も冷たい危険へと続いていく。"
       },
@@ -1385,12 +1390,12 @@ export const ja_JP: EnTranslations = {
         "q2": "暗号通貨ウォレットは必要ですか?",
         "a2": "いいえ。ウォレットがなくても完全にプレイできます。任意のコミュニティトークンは見た目の装飾を解放するだけで、性能には一切影響しません。",
         "q3": "オフラインで遊べますか?",
-        "a3": "はい。ブラウザですぐに遊べるシングルプレイモードに加え、共有のオンラインレルムもあります。",
+        "a3": "はい。ブラウザですぐに遊べるシングルプレイモードに加え、共有のオンラインワールドもあります。",
         "q4": "最大レベルまでどのくらいかかりますか?",
         "a4": "レベル上限は{cap}で、3つのゾーンにわたるクエスト、ダンジョン、探索を通じて到達します。"
       },
       "community": {
-        "heading": "レルムに参加しよう",
+        "heading": "ワールドに参加しよう",
         "body": "今すぐ飛び込むもよし、挨拶しに来るもよし。仲間がいれば世界はもっと楽しい。",
         "play": "今すぐプレイ",
         "discord": "Discordに参加",
@@ -1424,7 +1429,7 @@ export const ja_JP: EnTranslations = {
       "groupingTitle": "一緒に遊ぶ",
       "groupingBody": "他のプレイヤーをパーティに招待すれば、クエストの達成を共有したりダンジョンに挑んだりできます。ワールドの大半はソロで進められるので、グループ行動は義務ではなく選択です。",
       "onlineTitle": "オンラインかオフラインか",
-      "onlineBody": "みんなと一緒に共有のオンラインレルムで遊ぶか、ブラウザですぐに始められるオフラインワールドで基本を覚えるか、選べます。",
+      "onlineBody": "みんなと一緒に共有のオンラインワールドで遊ぶか、ブラウザですぐに始められるオフラインワールドで基本を覚えるか、選べます。",
       "reassure": "タレントはレベル10で解放され、いつでもリセットできます。序盤の選択が永久に固定されることはないので、自由に試してみてください。",
       "controlsLink": "操作方法の完全なリファレンスを見る"
     },
@@ -1460,7 +1465,7 @@ export const ja_JP: EnTranslations = {
       "growBody": "レベルが上がるたびに頑丈になり、新たなアビリティを習得します。これはレベル上限{cap}まで続きます。最速で成長するのはクエスト。ダンジョンと探索がそれを補います。",
       "effectsTitle": "バフ、デバフ、群衆制御",
       "effectsBody": "多くのアビリティは、しばらく残る効果を付与します。有益なもの（バフ）はステータスを上げ、盾を張り、少しずつ回復させてくれます。有害なもの（デバフ）は継続ダメージで体力を削り、あるいはあなたを弱体化させます。アクションバーの近くにある小さなアイコンを見れば、何が付いていて、あとどれくらい続くのかがわかります。",
-      "ccBody": "群衆制御は、対象の行動を制限する特殊なデバフです。スタン、根縛りや減速、呪文詠唱を止めるサイレンス、武装解除、フィアー、そして一瞬だけ敵を無害にするポリモーフなど。根縛り、フィアー、ポリモーフのように、あまりに早く再付与すると効果が解けるものもあるため、永遠に連鎖させることはできません。",
+      "ccBody": "群衆制御は、対象の行動を制限する特殊なデバフです。スタン、根縛りや減速、呪文詠唱を止めるサイレンス、武装解除、フィアー、そして一瞬だけ敵を無害にする変身系など。根縛り、フィアー、変身系のように、あまりに早く再付与すると効果が解けるものもあるため、永遠に連鎖させることはできません。",
       "deathTitle": "倒れたとき",
       "deathBody": "体力がゼロになると倒れます。魂を解放すれば最寄りの墓地で全回復して復活し、そこから元いた場所へ戻ります。だから死は進行ではなく、少しの時間を失うだけです。戦いの合間には座って食べ、飲んで、次の戦いを万全の状態で始めましょう。"
     },
@@ -1601,12 +1606,12 @@ export const ja_JP: EnTranslations = {
       "charge": "離れた敵に突進し、短いスタンで戦闘の口火を切ります。",
       "rend": "出血を与え、時間をかけて標的を削っていきます。",
       "thunder_clap": "周囲のすべてに当たり、相手の攻撃を遅くします。",
-      "seal_of_righteousness": "一振りごとにホーリーダメージを付与し、ジャッジメントで消費します。",
+      "seal_of_righteousness": "一振りごとにホーリーダメージを付与し、ヴァーディクトで消費します。",
       "holy_light": "味方や自分の体力を満タンに戻す、安定した大きめのヒールです。",
       "devotion_aura": "アーマーを上げて被弾を和らげる、持続する自己強化です。",
       "judgement": "現在のシールを消費し、近距離から敵を打ち据えます。",
       "blessing_of_might": "味方の攻撃力を上げます。プルの前に唱えておくとよいでしょう。",
-      "divine_protection": "状況が厳しいときにダメージを吸収する、素早いホーリーシールドです。",
+      "divine_protection": "状況が厳しいときにダメージを吸収する、素早い守りの結界です。",
       "raptor_strike": "敵に距離を詰められたときに使う、重い近接の一撃です。",
       "aspect_of_the_hawk": "維持し続けることで遠隔攻撃力を高めるスタンスです。",
       "serpent_sting": "毒を浴びせ、継続してネイチャーダメージを与えます。",
@@ -1638,7 +1643,7 @@ export const ja_JP: EnTranslations = {
       "conjure_water": "マナを回復する飲み物を作り出し、プルの合間に補充できます。",
       "conjure_food": "座って食べると体力を回復する食料を作り出します。",
       "shadow_bolt": "標的に放つシャドウのボルト。主力の火力です。",
-      "summon_imp": "遠距離から敵にファイアボルトを放つインプを呼び出します。",
+      "summon_imp": "遠距離から敵にファイアボルトを放つエンバーキンを呼び出します。",
       "demon_skin": "肌を硬化させてアーマーを上げる、持続する自己強化です。",
       "immolate": "標的に火を放ち、初撃を与えつつ燃焼を残します。",
       "corruption": "標的をシャドウで蝕み、他の行動をしている間も継続して効果が続きます。",
@@ -1670,7 +1675,7 @@ export const ja_JP: EnTranslations = {
         "old_greyjaw": "どんな罠にも捕らえられたことのない、傷だらけの老いた狼。猟犬三頭と厩番の少年の腕を奪った咎を負わされています。深い森を独りで狩り、戦いが長引くほどに獰猛になります。",
         "grubjaw": "あまりに強欲で、他のトロルが隣で掘ろうとしないほどの沼地のトロル。交易商の最後の駄馬二頭を、馬具ごと食ったと言われています。",
         "shardlord_kazzix": "肩を得た嵐のエレメンタル。ストームクラグの上方にそびえる遥かな岩場を歩き、稲妻を冒してでも手に入れたいハートシャードを抱えています。",
-        "mirejaw_frenzy": "戦いの最中に自らを暴れ狂う狂乱へと駆り立てる沼地のマーロック。騒がしく縄張り意識の強い群れの中で、最もやかましい一匹です。",
+        "mirejaw_frenzy": "戦いの最中に自らを暴れ狂う狂乱へと駆り立てる沼地のマッドフィン。騒がしく縄張り意識の強い群れの中で、最もやかましい一匹です。",
         "gravecaller_cultist": "死のカルトに仕えるローブ姿の僕たち。その業は渓谷から高地まで墓を汚し、彼らが集う場所では死者が安らぎません。"
       }
     },
@@ -1684,12 +1689,12 @@ export const ja_JP: EnTranslations = {
         "desc": "暗く入り組んだ場所に巣を張る、糸を操る毒持ちの待ち伏せ屋たち。ハンターは野獣と同じように手なずけることができます。"
       },
       "mudfin": {
-        "name": "マーロック",
+        "name": "マッドフィン",
         "desc": "浅瀬に群がる水陸両生の沼地の住人。騒がしく、縄張り意識の強い群れをなします。"
       },
       "burrower": {
-        "name": "コボルド",
-        "desc": "頭にろうそくを掲げた採掘者たち。鉱山や巣穴にはびこり、自らの鉱石を必死に守ります。"
+        "name": "穴掘り",
+        "desc": "泥にまみれた採掘者たち。鉱山や巣穴にはびこり、自らの鉱石を必死に守ります。"
       },
       "humanoid": {
         "name": "ヒューマノイド",
@@ -1725,7 +1730,7 @@ export const ja_JP: EnTranslations = {
       "places": "注目の場所",
       "residents": "出会う者たち",
       "valeBlurb": "緑あふれる始まりの谷。新たな英雄たちが、イーストブルックの町の周りでオオカミや盗賊を相手に腕を磨く場所です。",
-      "marshBlurb": "霧と廃墟に沈んだ国。浅瀬にはマーロックが群れ、水の底ではより古き何かがうごめいています。橋の町フェンブリッジから見張られています。",
+      "marshBlurb": "霧と廃墟に沈んだ国。浅瀬にはマッドフィンが群れ、水の底ではより古き何かがうごめいています。橋の町フェンブリッジから見張られています。",
       "peaksBlurb": "風に削られた尾根と古い鉱山跡。この地で最も寒く、最も高所にある危険へと続いており、前哨地ハイウォッチが守っています。",
       "valeGreeting": "刃を手放すな。渓谷はかつての姿ではない。",
       "valeGreeter": "レッドブルック元帥、イーストブルック",
@@ -1733,9 +1738,9 @@ export const ja_JP: EnTranslations = {
       "marshGreeter": "番人フェンウィック、フェンブリッジ",
       "peaksGreeting": "この壁は二百年立ち続けてきた。私が守る限り崩れはしないが、軋んでいる。",
       "peaksGreeter": "隊長テサリー、ハイウォッチ",
-      "valePlaceNotes": "Eastbrookは最初の本拠地です。Wolf RunとBoar Meadowは穏やかな狩り場、Mirror Lakeは釣りのできる静かな水辺です。WebwoodとCopper Digには蜘蛛と鉱石に貪欲な掘り手が隠れ、Bandit CampとFallen Chapelにはより手荒い仕事があります。Reliquary Hillはレルム初のデルヴ、Collapsed Reliquaryへと落ち込んでおり、Brightwood Gladeは北にある静かな陽だまりの木立です。",
-      "marshPlaceNotes": "フェンブリッジは唯一の乾いた道を守っています。プラウラー葦原とディープフェン浅瀬は沼地の獣とマーロックでひしめき、ウィドウの茂みは蜘蛛の糸が厚く張られ、水没の礼拝堂とトロルの塚にはより古き危険が潜み、グレイブコーラーの野営地にはカルトが立てこもり、沈んだ砦は沼地のインスタンス化された中心地です。",
-      "peaksPlaceNotes": "ハイウォッチは壁を守っています。ストーカー尾根とディープロックの巣穴は尾根猫とコボルドのもの、オーガの丘陵とドログマーの戦営は雇われの荒くれ者のもの。ストームクラグはエレメンタルで弾け、その下にはグリマーミアが輝きます。ワームカルトのテントとレヴェナントの野原がカルトの高所を囲み、その頂には墓守竜の聖域があります。",
+      "valePlaceNotes": "イーストブルックは最初の本拠地です。ウルフランとボアメドウは穏やかな狩り場、鏡の湖は釣りのできる静かな水辺です。セイブルウェブとカッパーディグには蜘蛛と鉱石に貪欲な掘り手が隠れ、山賊の野営地と倒れた礼拝堂にはより手荒い仕事があります。レリカリーの丘はレルム初のデルヴ、崩落したレリカリーへと落ち込んでおり、ブライトウッドの木立は北にある静かな陽だまりの木立です。",
+      "marshPlaceNotes": "フェンブリッジは唯一の乾いた道を守っています。プラウラー葦原とディープフェン浅瀬は沼地の獣とマッドフィンでひしめき、ウィドウの茂みは蜘蛛の糸が厚く張られ、水没の礼拝堂とトロルの塚にはより古き危険が潜み、グレイブコーラーの野営地にはカルトが立てこもり、沈んだ砦は沼地のインスタンス化された中心地です。",
+      "peaksPlaceNotes": "ハイウォッチは壁を守っています。ストーカー尾根とディープロックの巣穴は尾根猫と穴掘りのもの、オーガの丘陵とドログマーの戦営は雇われの荒くれ者のもの。ストームクラグはエレメンタルで弾け、その下にはグリマーミアが輝きます。ワームカルトのテントとレヴェナントの野原がカルトの高所を囲み、その頂には墓守竜の聖域があります。",
       "gladeTitle": "静かな一角：ブライトウッド・グレード",
       "gladeBody": "Valeの物語がすべて死者について語るわけではありません。北にはBrightwood Gladeと呼ばれる陽だまりの木立があり、静かな小道と枝々の下に揺れる木漏れ日とともに、穏やかな独自の調子を保っています。あなたが追う足跡への柔らかな対照であり、道に寄り道の余裕があるなら見る価値があります。"
     },
@@ -1770,7 +1775,7 @@ export const ja_JP: EnTranslations = {
       "sagaValeTitle": "渓谷：印に刻まれた名",
       "sagaValeBody": "イーストブルックでは死者が安らがず、その背後の印は、とうに滅んだと思われていた一派のものです。それを礼拝堂の地下墓所で働くグレイブコーラーまでたどれば、彼自身の書き物が北の沼へとあなたを導きます。",
       "sagaMarshTitle": "湿地：魂の貢ぎ",
-      "sagaMarshBody": "マイアフェンでの溺死は事故ではありません。何者かが、まるで献金箱を満たすように沼を満たし、水が奪う旅人すべてから従順な死者を起こしています。命令の連鎖をたどって、水没した砦のミストコーラーまで上り詰めれば、その末期の言葉が、峰々の下でうごめくさらに古き何かの名を告げます。",
+      "sagaMarshBody": "マイアフェンでの溺死は事故ではありません。何者かが、まるで献金箱を満たすように沼を満たし、水が奪う旅人すべてから従順な死者を起こしています。命令の連鎖をたどって、水没した砦のフォグバインダーまで上り詰めれば、その末期の言葉が、峰々の下でうごめくさらに古き何かの名を告げます。",
       "sagaPeaksTitle": "峰々：貢ぎは何のためだったのか",
       "sagaPeaksBody": "Thornpeakで企ての全貌が明らかになります。Vale以来盗まれてきたすべての魂は、山の中心で進むカルトの陰惨な企てに注がれた貢ぎ物でした。礼拝堂の前庭で始まった足取りは、すべての黒幕と対峙する五人での降下となって、ここで終わります。その奥に誰が待つのかは、あなた自身に見届けてもらいましょう。",
       "sideTitle": "本道から外れた糸",
@@ -2125,9 +2130,9 @@ export const ja_JP: EnTranslations = {
       "undoCountTitle": "{count} 手戻せます（Ctrl+Z で元に戻す、Ctrl+Y でやり直し）",
       "autosave": "自動保存",
       "autosaveTitle": "未保存の変更がある間、マップを自動保存します。保存に失敗すると自動的にオフになります。",
-      "undo": "Undo",
+      "undo": "元に戻す",
       "undoTitle": "直前の変更を元に戻す（Ctrl+Z）",
-      "redo": "Redo",
+      "redo": "やり直す",
       "redoTitle": "元に戻した変更をやり直す（Ctrl+Y）",
       "offline": "オフライン",
       "offlineTitle": "未ログイン：マップはこのブラウザーにのみ保存されます。オンライン保存するにはゲームでログインしてください。",
@@ -2552,10 +2557,10 @@ export const ja_JP: EnTranslations = {
     "donate": "寄付"
   },
   "stats": {
-    "title": "レルムステータス",
+    "title": "ワールドステータス",
     "accountsCreated": "プレイヤー",
     "playersOnline": "オンラインプレイヤー数",
-    "realmName": "レルム名"
+    "realmName": "ワールド名"
   },
   "footer": {
     "copyright": "2026 World of ClaudeCraft",
@@ -2573,7 +2578,7 @@ export const ja_JP: EnTranslations = {
   },
   "highscores": {
     "title": "ハイスコアリーダーボード",
-    "desc": "レルムの偉大なチャンピオンたちを確認し、あなたの進行度と比較しましょう。"
+    "desc": "ワールドの偉大なチャンピオンたちを確認し、あなたの進行度と比較しましょう。"
   },
   "wiki": {
     "title": "ゲームWiki & ガイド",
@@ -2595,12 +2600,12 @@ export const ja_JP: EnTranslations = {
   },
   "comingSoon": {
     "placeholder": "近日公開...",
-    "featureComingSoon": "この機能はまもなくレルムに実装されます。"
+    "featureComingSoon": "この機能はまもなくワールドに実装されます。"
   },
   "mode": {
     "onlineTitle": "オンラインでプレイ",
-    "onlineDesc": "レルムにログインします。キャラクターはサーバー上に保存され、オンラインの他の全プレイヤーと同じ世界を共有します。",
-    "onlineAria": "オンラインでプレイ：永続的な共有レルムにログインします",
+    "onlineDesc": "ワールドにログインします。キャラクターはサーバー上に保存され、オンラインの他の全プレイヤーと同じ世界を共有します。",
+    "onlineAria": "オンラインでプレイ：永続的な共有ワールドにログインします",
     "offlineTitle": "オフラインでプレイ",
     "offlineDesc": "ブラウザ上で即座にシングルプレイヤーの世界を起動します。保存は一切されず、小規模な対戦やテストに最適です。",
     "offlineAria": "オフラインでプレイ：即座にローカルシングルプレイヤーセッションを開始します",
@@ -2610,15 +2615,15 @@ export const ja_JP: EnTranslations = {
     "serverOffline": "オフライン",
     "play": "プレイ",
     "playAria": "World of ClaudeCraftをプレイ",
-    "serverLabel": "レルムを選択",
-    "serverAria": "レルムを選択：オンラインまたはオフライン",
+    "serverLabel": "ワールドを選択",
+    "serverAria": "ワールドを選択：オンラインまたはオフライン",
     "serverOfflineSub": "即座にローカルの世界へ",
     "caLabel": "$WOC コントラクトアドレス",
     "caCopyAria": "コントラクトアドレスをコピー",
     "caNote": "WOCはコミュニティトークンです。プレイには必要ありません。Discordに参加して、WOCのユーティリティとフライホイールについて語り合いましょう。"
   },
   "auth": {
-    "enterRealm": "レルムに入る",
+    "enterRealm": "ワールドに入る",
     "username": "ユーザー名",
     "usernameError": "ユーザー名を入力してください。",
     "usernamePlaceholder": "ユーザー名を入力",
@@ -2626,17 +2631,17 @@ export const ja_JP: EnTranslations = {
     "passwordError": "パスワードを入力してください。",
     "passwordPlaceholder": "パスワードを入力",
     "email": "メールアドレス",
-    "emailPlaceholder": "you@example.com",
+    "emailPlaceholder": "mail@example.com",
     "emailError": "有効なメールアドレスを入力してください。",
     "showPassword": "パスワードを表示",
     "hidePassword": "パスワードを非表示",
     "logIn": "ログイン",
     "createAccount": "アカウント作成",
     "back": "戻る",
-    "realmList": "レルムリスト",
-    "loadingRealms": "レルムを読み込み中...",
-    "changeRealm": "レルム変更",
-    "realm": "レルム",
+    "realmList": "ワールドリスト",
+    "loadingRealms": "ワールドを読み込み中...",
+    "changeRealm": "ワールド変更",
+    "realm": "ワールド",
     "newCharacter": "新規キャラクター",
     "appearance": "外見",
     "class": "クラス",
@@ -2658,7 +2663,7 @@ export const ja_JP: EnTranslations = {
       "title": "復旧用メールアドレスを追加",
       "body": "メールアドレスを設定すると、アカウントを復旧できるようになります。パスワードのリセットが必要になった際に、このアカウントの所有者であることを確認するためだけに使用します。",
       "save": "メールを保存",
-      "logOut": "Log out",
+      "logOut": "ログアウト",
       "invalid": "有効なメールアドレスを入力してください。",
       "failed": "メールアドレスを保存できませんでした。もう一度お試しください。"
     }
@@ -2814,7 +2819,7 @@ export const ja_JP: EnTranslations = {
     "renderFailedStatus": "カードのレンダリングに失敗しました。",
     "levelClass": "レベル{level} - {className}",
     "topPercent": "上位 {percent}%",
-    "realmSubtitle": "{realm} レルム",
+    "realmSubtitle": "{realm} ワールド",
     "defaultRealm": "ClaudeCraftの世界",
     "brandWordmark": "WORLD OF CLAUDECRAFT",
     "recruited": "招待 {count}人",
@@ -2823,7 +2828,7 @@ export const ja_JP: EnTranslations = {
     "footerCta": "あなたの伝説を鍛えよう: {siteUrl}",
     "arenaStat": "アリーナ",
     "shareTierBit": ", {tier}ランクの$WOCホルダー",
-    "shareText": "World of ClaudeCraftで伝説を鍛えています: レベル{level} {className}{tierBit}。私のレルムに参加してください:",
+    "shareText": "World of ClaudeCraftで伝説を鍛えています: レベル{level} {className}{tierBit}。私のワールドに参加してください:",
     "nativeShareTitle": "ClaudeCraftの世界",
     "fileNameFallback": "プレイヤー",
     "actionShareX": "Xで共有",
@@ -3022,9 +3027,9 @@ export const ja_JP: EnTranslations = {
   "delveRiteUi": {
     "title": "溺れし聖遺物の儀式",
     "blurb": "祠は順番に光る。各祠を順に起動して順序を繰り返せ。誤った接触は試みを失敗させ順序を再生する。完璧な試みは最も豊かな戦利品を得て、試行回数を使い果たすと聖遺物匣は最も貧しい形で開く。儀式がお前をどう試すか選べ。",
-    "easy": "Easy",
+    "easy": "簡単",
     "medium": "普通",
-    "hard": "Hard",
+    "hard": "難しい",
     "guideWatch": "選択すると、4つの祠が順番に光ります。順番を覚えてください。",
     "guideRepeat": "祠が暗くなったら、同じ順番で各祠まで歩きFキー（インタラクト）を押してください。",
     "guideStakes": "間違った祠に触れると黒水を浴び、挑戦回数を1回失います。順番を最後までなぞれば聖遺物匣が開きます。",
@@ -3148,7 +3153,7 @@ export const ja_JP: EnTranslations = {
       "sluice_valve": "水門弁",
       "grave_tablet": "墓碑板",
       "corpse_candle": "死体蝋燭",
-      "bell_rope": "Bell Rope"
+      "bell_rope": "鐘の縄"
     },
     "companion": {
       "barkLine": "{name}: {line}",
@@ -3309,7 +3314,7 @@ export const ja_JP: EnTranslations = {
         "desc": "物理攻撃の威力が15%上昇する。"
       },
       "aug_spellfire": {
-        "name": "呪炎",
+        "name": "凶炎",
         "desc": "あなたの呪文が15%多くダメージを与える。"
       },
       "aug_toughness": {
@@ -3353,7 +3358,7 @@ export const ja_JP: EnTranslations = {
         "desc": "あらゆるダメージ+18%、移動速度+12%。"
       },
       "aug_lightwell": {
-        "name": "ライトウェル",
+        "name": "墓の灯火",
         "desc": "回復量+30%、最大体力+15%。チームの要となれ。"
       },
       "aug_bounty_hunter": {
@@ -3404,13 +3409,13 @@ export const ja_JP: EnTranslations = {
   },
   "seo": {
     "title": "World of ClaudeCraft: クラシック風Web MMO",
-    "description": "ブラウザで直接遊べるクラシック風マイクロMMO、World of ClaudeCraft で壮大な冒険に出ましょう。永続的な共有レルムに参加し、クラスを育て、敵を倒してください。",
+    "description": "ブラウザで直接遊べるクラシック風マイクロMMO、World of ClaudeCraft で壮大な冒険に出ましょう。永続的な共有ワールドに参加し、クラスを育て、敵を倒してください。",
     "genre": "MMORPG",
     "playMode": "マルチプレイヤー",
     "applicationCategory": "ゲーム",
     "operatingSystem": "Webブラウザ",
     "officialLabel": "World of ClaudeCraft 公式サイト",
-    "officialBody": "worldofclaudecraft.com は Claudemoon レルムの公式無料ブラウザMMOです。永続キャラクターでオンラインプレイし、オフラインでソロ探索し、wikiを読み、このサイトから確認済みのコミュニティリンクをたどれます。"
+    "officialBody": "worldofclaudecraft.com は Claudemoon ワールドの公式無料ブラウザMMOです。永続キャラクターでオンラインプレイし、オフラインでソロ探索し、wikiを読み、このサイトから確認済みのコミュニティリンクをたどれます。"
   },
   "a11y": {
     "goHome": "ホームへ移動",
@@ -3426,7 +3431,7 @@ export const ja_JP: EnTranslations = {
     "world": "世界を読み込み中...",
     "worldProgress": "世界を読み込み中... {done}/{total}",
     "enteringWorld": "世界に入っています...",
-    "connectingRealm": "レルムに接続中...",
+    "connectingRealm": "ワールドに接続中...",
     "assetsFailed": "アセットの読み込みに失敗しました。再読み込みしてください。{error}",
     "rendererFailed": "レンダラーを開始できません。再読み込みしてください。{error}",
     "enterTimeout": "世界に入れませんでした。接続がタイムアウトしました。ゲームサーバーは動作していますか？",
@@ -3486,25 +3491,25 @@ export const ja_JP: EnTranslations = {
     }
   },
   "realm": {
-    "noRealms": "利用可能なレルムがありません。",
-    "loading": "レルムを読み込み中...",
+    "noRealms": "利用可能なワールドがありません。",
+    "loading": "ワールドを読み込み中...",
     "recommended": "おすすめ",
     "checkingStatus": "状態を確認中...",
     "onlineNow": "現在{count}人がオンライン",
-    "down": "レルムは停止中です",
+    "down": "ワールドは停止中です",
     "offline": "オフライン",
     "full": "満員",
     "high": "高",
     "medium": "中",
     "low": "低",
     "popTipLow": "低人口：現在オンラインのプレイヤーは15人未満。余裕があり、新規スタートに最適です。",
-    "popTipMedium": "中人口：現在オンラインのプレイヤーは15〜39人。健全で活発なレルムです。",
+    "popTipMedium": "中人口：現在オンラインのプレイヤーは15〜39人。健全で活発なワールドです。",
     "popTipHigh": "高人口：現在オンラインのプレイヤーは40〜79人。混雑しており、多くのプレイヤーがいます。",
     "popTipFull": "満員：現在オンラインのプレイヤーは80人以上。非常に混雑しており、ログイン待ちが発生する場合があります。",
-    "popTipOffline": "オフライン：このレルムは現在接続できず、参加できません。",
+    "popTipOffline": "オフライン：このワールドは現在接続できず、参加できません。",
     "characterCountOne": "{count}キャラクター",
     "characterCountOther": "{count}キャラクター",
-    "selectedRealm": "レルム: {name}",
+    "selectedRealm": "ワールド: {name}",
     "statsOffline": "オフライン",
     "statsRealmOffline": "{realm}（オフライン）"
   },
@@ -3588,13 +3593,13 @@ export const ja_JP: EnTranslations = {
     },
     "lore": {
       "warrior": "ウォリアーは戦いで鍛えられた近接戦士で、ダメージを与えたり受けたりして怒りを蓄えます。重い一撃を耐え、強力な武器で敵を砕きます。",
-      "paladin": "パラディンは祝福で味方を支え、聖なる光で傷を癒やし、重装備で弱き者を守る聖騎士です。",
+      "paladin": "パラディンは祝福で味方を支え、癒しの光で傷を癒やし、重装備で弱き者を守る聖騎士です。",
       "hunter": "ハンターはテイムした獣を従えて戦う遠距離戦の専門家で、エイムショットやラピッドファイアで敵を撃ち抜き、スティングやコンカッシブショットで足を止め、状況に応じて相を切り替えます。",
       "rogue": "ローグはエネルギーとコンボポイントを使い、影から奇襲と決め技を放つ隠密の暗殺者です。",
-      "priest": "プリーストは聖なる光で味方を癒やして守り、影の魔法で敵の生命力を吸い取ります。",
+      "priest": "プリーストは癒しの光で味方を癒やして守り、影の魔法で敵の生命力を吸い取ります。",
       "shaman": "シャーマンは元素を操り、武器に力を宿し、稲妻で敵を打ち、味方を回復します。",
-      "mage": "メイジは火炎、氷霜、秘術の力で敵を破壊し、水を作り出し、脅威を凍らせます。",
-      "warlock": "ウォーロックは悪魔を召喚し、呪いと継続ダメージ魔法をかけ、生命力を吸収して耐えます。",
+      "mage": "メイジは火炎、氷霜、秘術の力で敵を破壊し、水を召喚し、脅威をその場で凍りつかせます。",
+      "warlock": "ウォーロックは悪魔を召喚し、呪いと継続ダメージ魔法をかけ、敵から生命力を吸収して耐えます。",
       "druid": "ドルイドは自然の力を導き、傷を癒やし、敵を絡め取り、動物形態に変身して守りまたは攻めます。"
     },
     "aria": "{className}のクラス詳細: 役割 {role}。開始ステータス: 筋力 {str}、敏捷性 {agi}、スタミナ {sta}、知力 {int}、精神力 {spi}。",
@@ -3619,10 +3624,10 @@ export const ja_JP: EnTranslations = {
     "otherInstallDetail": "最高のモバイル全画面体験のため、このページをインストールするかホーム画面に追加してください。"
   },
   "serverUnavailable": {
-    "title": "World of ClaudeCraft - レルム利用不可",
+    "title": "World of ClaudeCraft - ワールド利用不可",
     "logoAlt": "World of ClaudeCraft",
-    "eyebrow": "レルムメンテナンス",
-    "heading": "レルムは一時的に利用できません。",
+    "eyebrow": "ワールドメンテナンス",
+    "heading": "ワールドは一時的に利用できません。",
     "body": "ゲームサービスを再起動しています。Claudemoonはまもなく戻る予定です。このページは自動的に確認を続けます。",
     "status": "まもなく復帰"
   },
@@ -3942,9 +3947,9 @@ export const ja_JP: EnTranslations = {
       "requiresCombo": "その能力にはコンボポイントが必要です。",
       "requiresForm": "{form}フォームである必要があります。",
       "cantInForm": "{form}フォーム中は実行できません。",
-      "bear": "熊",
+      "bear": "ブルーイン",
       "cat": "狼",
-      "travel": "トラベル",
+      "travel": "フリート",
       "shapeshifted": "変身中は実行できません。",
       "stealthed": "ステルス状態である必要があります。",
       "inCombat": "戦闘中は実行できません。",
@@ -4354,7 +4359,7 @@ export const ja_JP: EnTranslations = {
       "tool": "道具",
       "potion": "ポーション",
       "elixir": "エリクサー",
-      "bag": "Bag"
+      "bag": "バッグ"
     },
     "stats": {
       "armor": "防御力",
@@ -4397,7 +4402,7 @@ export const ja_JP: EnTranslations = {
       "clickUseInstant": "クリックして戦闘中に即使用",
       "clickUse": "クリックして使用",
       "clickBuyback": "クリックして買い戻す",
-      "bagSlots": "{slots} Slot Bag"
+      "bagSlots": "{slots}スロットのバッグ"
     },
     "bags": {
       "title": "バッグ",
@@ -4559,63 +4564,63 @@ export const ja_JP: EnTranslations = {
         "description": "対象地点を揺るがし、敵に{damage}の自然ダメージを与えます。"
       },
       "heroic_strike": {
-        "name": "英雄の一撃",
+        "name": "略奪者の一撃",
         "description": "強力な攻撃で近接ダメージが {damage} 増加します。次のスイングで発動します。"
       },
       "battle_shout": {
-        "name": "バトルシャウト",
+        "name": "鉄の咆哮",
         "description": "2分間、攻撃力が20増加します。"
       },
       "commanding_shout": {
-        "name": "コマンディングシャウト",
+        "name": "鼓舞の号令",
         "description": "2分間、スタミナが6増加します。"
       },
       "demoralizing_shout": {
-        "name": "デモラライジングシャウト",
+        "name": "戦慄の遠吠え",
         "description": "恐ろしい雄叫びを上げ、30秒間、周囲の敵すべての攻撃力を30低下させます。"
       },
       "charge": {
-        "name": "チャージ",
+        "name": "突撃",
         "description": "敵に突撃し、怒りを9生成して1秒間スタンさせます。射程8-25yd。"
       },
       "rend": {
-        "name": "レンド",
+        "name": "深き裂傷",
         "description": "対象を負傷させ、9秒間で {damage} の出血ダメージを与えます。"
       },
       "thunder_clap": {
-        "name": "サンダークラップ",
+        "name": "震撼の一撃",
         "description": "周囲の敵に {damage} のダメージを与え、10秒間、攻撃速度を10%低下させます。"
       },
       "hamstring": {
-        "name": "ハムストリング",
+        "name": "足萎えの斬撃",
         "description": "敵を痛めつけて5ダメージを与え、15秒間、移動速度を50%低下させます。"
       },
       "bloodrage": {
-        "name": "ブラッドレイジ",
+        "name": "血の代償",
         "description": "体力を代償に怒りを10生成します。"
       },
       "overpower": {
-        "name": "オーバーパワー",
+        "name": "血染めの手",
         "description": "武器ダメージ +5 の即時攻撃です。対象が回避した後にのみ使用できます。回避されません。"
       },
       "execute": {
-        "name": "エグゼキュート",
+        "name": "早すぎる墓",
         "description": "傷ついた敵をとどめようとして {damage} のダメージを与えます。体力が20%未満の敵にのみ使用できます。"
       },
       "slam": {
-        "name": "スラム",
+        "name": "力任せの一振り",
         "description": "相手を叩きつけ、武器ダメージに {damage} を加えたダメージを与えます。"
       },
       "cleave": {
-        "name": "クリーブ",
+        "name": "刈り取りの弧",
         "description": "大きく薙ぎ払い、前方のすべての敵に {damage} のダメージを与えます。"
       },
       "defensive_stance": {
-        "name": "防御スタンス",
+        "name": "ガーデッドスタンス",
         "description": "防御用の戦闘スタンスです。脅威生成が30%増加しますが、与えるダメージと受けるダメージが10%低下します。再度使用するとスタンスを解除します。"
       },
       "sunder_armor": {
-        "name": "アーマー破壊",
+        "name": "装甲切断",
         "description": "対象のアーマーを破壊し、1回ごとに {damage} 低下させます。最大5回まで重なります。大量の脅威を生成します。"
       },
       "taunt": {
@@ -4623,19 +4628,19 @@ export const ja_JP: EnTranslations = {
         "description": "対象を挑発します。あなたの脅威が対象の最も憎む敵と同じ値まで上がり、3秒間あなたを攻撃させます。"
       },
       "fireball": {
-        "name": "ファイアボール",
+        "name": "灰燼の矢",
         "description": "炎の球を放ち、{damage} の火炎ダメージと追加の継続ダメージを与えます。"
       },
       "frost_armor": {
-        "name": "フロストアーマー",
+        "name": "白霜の外套",
         "description": "霜で身を包み、30分間アーマーを30増加させます。"
       },
       "arcane_intellect": {
-        "name": "アーケインインテレクト",
+        "name": "エーテルの叡智",
         "description": "30分間、知力が2増加します。"
       },
       "frostbolt": {
-        "name": "フロストボルト",
+        "name": "霧氷の槍",
         "description": "氷の矢を放ち、{damage} の冷気ダメージを与え、移動速度を40%低下させます。"
       },
       "conjure_water": {
@@ -4643,91 +4648,91 @@ export const ja_JP: EnTranslations = {
         "description": "飲むとマナを回復する水の瓶を2本召喚します。高ランクではより純粋な水を召喚します。"
       },
       "conjure_food": {
-        "name": "食料の召喚",
+        "name": "パンの召喚",
         "description": "食べると体力を回復するパンを2食分召喚します。高ランクではより滋養のある食料を召喚します。"
       },
       "fire_blast": {
-        "name": "ファイアブラスト",
+        "name": "灰燼爆ぜ",
         "description": "敵を爆炎で打ち、{damage} の火炎ダメージを与えます。即時発動。"
       },
       "arcane_missiles": {
-        "name": "アーケインミサイル",
-        "description": "敵にアーケインミサイルを放ち、3秒間、毎秒{damage}の秘術ダメージを与えます。"
+        "name": "エーテルダート",
+        "description": "敵にエーテルダートを放ち、3秒間、毎秒{damage}の秘術ダメージを与えます。"
       },
       "polymorph": {
-        "name": "ポリモーフ",
-        "description": "敵を最大15秒間ヒツジに変えます。ヒツジは歩き回り、急速に回復します。ダメージを受けると効果が切れます。獣と人型のみ。"
+        "name": "呪化",
+        "description": "敵を最大15秒間ヒキガエルに変えます。ヒキガエルは歩き回り、急速に回復します。ダメージを受けると効果が切れます。獣と人型のみ。"
       },
       "frost_nova": {
-        "name": "フロストノヴァ",
+        "name": "氷縛",
         "description": "周囲の敵すべてを最大8秒間その場に凍結させ、{damage} の冷気ダメージを与えます。"
       },
       "arcane_explosion": {
-        "name": "アーケインエクスプロージョン",
+        "name": "エーテルバースト",
         "description": "秘術エネルギーの爆発が周囲の敵すべてに {damage} の秘術ダメージを与えます。"
       },
       "scorch": {
-        "name": "スコーチ",
+        "name": "灼き",
         "description": "敵を焼き、{damage} の火炎ダメージを与えます。詠唱が速い呪文です。"
       },
       "pyroblast": {
-        "name": "パイロブラスト",
+        "name": "火焔槍",
         "description": "巨大な炎の岩塊を放ち、{damage} の火炎ダメージと追加の継続ダメージを与えます。"
       },
       "ice_barrier": {
-        "name": "アイスバリア",
+        "name": "氷の帳",
         "description": "氷で身を守り、60秒間130ダメージを吸収します。"
       },
       "sinister_strike": {
-        "name": "邪悪な一撃",
+        "name": "邪悪な斬撃",
         "description": "武器ダメージに {damage} を加えた即時攻撃です。コンボポイントを1獲得します。"
       },
       "eviscerate": {
-        "name": "エヴィサレイト",
+        "name": "永の眠り",
         "description": "コンボポイントに応じてダメージを与えるフィニッシュムーブです。"
       },
       "backstab": {
-        "name": "バックスタブ",
+        "name": "卑劣な突き",
         "description": "対象を背後から刺し、武器ダメージの150%に {damage} を加えたダメージを与えます。対象の背後にいる必要があります。ダガーが必要です。コンボポイントを1獲得します。"
       },
       "gouge": {
-        "name": "ガウジ",
+        "name": "目潰し",
         "description": "対象を打って4秒間行動不能にします。ダメージを受けると効果が切れます。コンボポイントを1獲得します。"
       },
       "evasion": {
-        "name": "イベイジョン",
+        "name": "幻足",
         "description": "15秒間、回避率が50%増加します。"
       },
       "slice_and_dice": {
-        "name": "スライス・アンド・ダイス",
+        "name": "残忍な速攻",
         "description": "近接攻撃速度を30%増加させるフィニッシュムーブです。コンボポイントごとに持続時間が延びます。"
       },
       "sprint": {
-        "name": "スプリント",
+        "name": "駿足",
         "description": "15秒間、移動速度が70%増加します。"
       },
       "kidney_shot": {
-        "name": "キドニーショット",
+        "name": "急所打ち",
         "description": "対象をスタンさせるフィニッシュムーブです。コンボポイントごとに1秒長く続きます。"
       },
       "ambush": {
-        "name": "アンブッシュ",
+        "name": "潜伏者の一撃",
         "description": "ステルス中に対象の背後から奇襲し、武器ダメージの250%に {damage} を加えたダメージを与えます。ダガーが必要です。コンボポイントを1獲得します。"
       },
       "stealth": {
-        "name": "ステルス",
-        "description": "影に身を隠します。敵にほとんど気づかれませんが、移動速度が50%低下します。攻撃するかダメージを受けるとステルスが解除されます。再度使用すると姿を現します。"
+        "name": "ダスクヴェール",
+        "description": "影に身を隠します。敵にほとんど気づかれませんが、移動速度が50%低下します。攻撃するかダメージを受けるとダスクヴェールが解除されます。再度使用すると姿を現します。"
       },
       "adrenaline_rush": {
-        "name": "アドレナリンラッシュ",
+        "name": "滾る血潮",
         "description": "血が熱くなり、即座にエネルギーを60回復します。"
       },
       "garrote": {
-        "name": "ガロット",
+        "name": "喉絞めの弦",
         "description": "敵を絞め、即座にダメージを与えるとともに、18秒かけて{damage}の出血ダメージを与えます。ステルス状態でなければなりません。コンボポイントを1獲得します。"
       },
       "cheap_shot": {
-        "name": "チープショット",
+        "name": "みぞおち強打",
         "description": "対象を打って4秒間スタンさせます。ステルス状態でなければなりません。コンボポイントを2獲得します。"
       },
       "sap": {
@@ -4735,135 +4740,135 @@ export const ja_JP: EnTranslations = {
         "description": "対象を8秒間行動不能にします。ステルス状態かつ戦闘外でなければなりません。ダメージを受けると効果が切れます。"
       },
       "crippling_poison": {
-        "name": "クリップリング・ポイズン",
-        "description": "対象をクリップリング・ポイズンで攻撃し、{damage}の自然ダメージを与えるとともに、移動速度を12秒間50%低下させます。"
+        "name": "鉛の毒",
+        "description": "対象を鉛の毒で攻撃し、{damage}の自然ダメージを与えるとともに、移動速度を12秒間50%低下させます。"
       },
       "expose_armor": {
-        "name": "エクスポーズ・アーマー",
+        "name": "装甲破り",
         "description": "対象の防御を崩し、アーマーを低下させるフィニッシュムーブです。消費したコンボポイントが多いほど、より深く切り込みます。"
       },
       "rupture": {
-        "name": "ラプチャー",
+        "name": "止まらぬ出血",
         "description": "対象に傷を負わせ、16秒かけて{damage}の出血ダメージを与えるフィニッシュムーブです。"
       },
       "vanish": {
-        "name": "ヴァニッシュ",
-        "description": "視界から消え、戦闘中でもステルス状態に入ります。隠れている間は移動速度が50%低下します。最大10秒間持続します。"
+        "name": "煙隠れ",
+        "description": "視界から消え、戦闘中でもダスクヴェール状態に入ります。隠れている間は移動速度が50%低下します。最大10秒間持続します。"
       },
       "instant_poison": {
-        "name": "インスタント・ポイズン",
+        "name": "毒蛇の噛みつき",
         "description": "武器に30分間毒を塗り、近接攻撃ごとに8の追加自然ダメージを与えます。"
       },
       "deadly_poison": {
-        "name": "デッドリー・ポイズン",
+        "name": "腐敗の毒",
         "description": "武器に30分間毒を塗り、近接攻撃ごとに14の追加自然ダメージを与えます。"
       },
       "blind": {
-        "name": "ブラインド",
+        "name": "砂かけ",
         "description": "対象を盲目にし、8秒間混乱してさまよわせます。ダメージを受けると効果が切れます。"
       },
       "seal_of_righteousness": {
-        "name": "正義のシール",
-        "description": "30秒間、聖なる力で満たされ、近接攻撃ごとに4の追加神聖ダメージを与えます。ジャッジメントで解放します。"
+        "name": "誓いの烙印",
+        "description": "30秒間、聖なる力で満たされ、近接攻撃ごとに4の追加神聖ダメージを与えます。ヴァーディクトで解放します。"
       },
       "holy_light": {
-        "name": "ホーリーライト",
+        "name": "癒しの光",
         "description": "味方対象の体力を {damage} 回復します。"
       },
       "devotion_aura": {
-        "name": "ディヴォーションオーラ",
+        "name": "不動のオーラ",
         "description": "30分間、アーマーが40増加します。"
       },
       "judgement": {
-        "name": "ジャッジメント",
-        "description": "有効なシールを敵に解放し、消費してその裁きのダメージを与えます。"
+        "name": "ヴァーディクト",
+        "description": "有効なシールを敵に解放し、消費して蓄えた神聖ダメージを与えます。"
       },
       "blessing_of_might": {
-        "name": "力の祝福",
+        "name": "鉄の誓い",
         "description": "味方対象に祝福を与え、5分間、攻撃力を15増加させます。"
       },
       "divine_protection": {
-        "name": "ディヴァインプロテクション",
-        "description": "聖なる盾が10秒間50ダメージを吸収します。"
+        "name": "信仰の守り",
+        "description": "守りの結界が10秒間50ダメージを吸収します。"
       },
       "hammer_of_justice": {
-        "name": "正義の槌",
+        "name": "断裂の裁き槌",
         "description": "対象を3秒間スタンさせます。"
       },
       "lay_on_hands": {
-        "name": "レイ・オン・ハンズ",
+        "name": "最後の秘跡",
         "description": "大きな癒やしの波で体力を250回復します。クールダウン10分。"
       },
       "flash_of_light": {
-        "name": "フラッシュ・オブ・ライト",
-        "description": "素早く効率的な光で味方対象の体力を {damage} 回復します。"
+        "name": "光の癒し",
+        "description": "素早く効率的な光の迸りで味方対象の体力を {damage} 回復します。"
       },
       "exorcism": {
-        "name": "エクソシズム",
+        "name": "追放の儀式",
         "description": "聖なる怒りで邪悪を退け、{damage} の神聖ダメージを与えます。"
       },
       "consecration": {
-        "name": "コンセクレーション",
+        "name": "聖なる大地",
         "description": "足元の地面を聖別し、周囲の敵を焼いて {damage} の神聖ダメージを与えます。"
       },
       "righteous_fury": {
-        "name": "正義の怒り",
+        "name": "バーニングオース",
         "description": "30分間、あなたの神聖ダメージが生成する脅威が60%増加します。タンク役パラディンの要です。"
       },
       "retribution_aura": {
-        "name": "リトリビューションオーラ",
+        "name": "報復のオーラ",
         "description": "30分間、聖なる力で身を包み、近接攻撃をしてきた敵に5の神聖ダメージを与えます。"
       },
       "tame_beast": {
-        "name": "獣の調教",
+        "name": "野生の絆",
         "description": "獣を仲間にするための調教を始めます。獣はあなたのレベル以下で、エリートであってはなりません。ペットはあなたに従い、敵を攻撃し、独自の脅威を保ちます。同時に連れられるペットは1体だけです。"
       },
       "dismiss_pet": {
-        "name": "ペット解散",
+        "name": "仲間を解放",
         "description": "ペットを野生へ帰します。"
       },
       "raptor_strike": {
-        "name": "ラプターストライク",
+        "name": "腹裂きの一撃",
         "description": "強力な近接攻撃でダメージを5増加させます。次のスイングで発動します。"
       },
       "aspect_of_the_hawk": {
-        "name": "鷹の相",
-        "description": "鷹の相を取り、30分間、攻撃力を20増加させます。"
+        "name": "猛禽の相",
+        "description": "猛禽の相をまとい、30分間、攻撃力を20増加させます。"
       },
       "serpent_sting": {
-        "name": "サーペントスティング",
+        "name": "毒の棘",
         "description": "対象を刺し、15秒間で {damage} の自然ダメージを与えます。"
       },
       "arcane_shot": {
-        "name": "アーケインショット",
+        "name": "凶弾",
         "description": "{damage} の秘術ダメージを与える即時射撃です。"
       },
       "concussive_shot": {
-        "name": "コンカッシブショット",
+        "name": "動揺の射撃",
         "description": "対象を朦朧とさせ、4秒間、移動速度を50%低下させます。"
       },
       "mongoose_bite": {
-        "name": "マングースバイト",
+        "name": "反撃の牙",
         "description": "対象が回避した後に反撃し、武器ダメージに12を加えたダメージを与えます。回避されません。"
       },
       "wing_clip": {
-        "name": "ウィングクリップ",
+        "name": "足枷斬り",
         "description": "傷を負わせ、10秒間、敵の移動速度を40%低下させます。"
       },
       "aspect_of_the_monkey": {
-        "name": "猿の相",
-        "description": "猿の相を取り、30分間、回避率を8%増加させます。"
+        "name": "テンの相",
+        "description": "テンの相をまとい、30分間、回避率を8%増加させます。"
       },
       "aspect_of_the_cheetah": {
-        "name": "チーターの相",
-        "description": "チーターの相を取り、30分間、移動速度を30%増加させます。"
+        "name": "駿馬の相",
+        "description": "駿馬の相をまとい、30分間、移動速度を30%増加させます。"
       },
       "aimed_shot": {
-        "name": "エイムショット",
-        "description": "慎重に狙った射撃で {damage} のダメージを与えます。"
+        "name": "引き絞り",
+        "description": "慎重に引き絞った射撃で {damage} のダメージを与えます。"
       },
       "rapid_fire": {
-        "name": "ラピッドファイア",
+        "name": "熱狂の速射",
         "description": "15秒間、攻撃速度が40%増加します。"
       },
       "smite": {
@@ -4871,164 +4876,164 @@ export const ja_JP: EnTranslations = {
         "description": "敵に {damage} の神聖ダメージを与えます。"
       },
       "lesser_heal": {
-        "name": "下級ヒール",
+        "name": "囁きの祈り",
         "description": "味方対象の体力を {damage} 回復します。"
       },
       "power_word_fortitude": {
-        "name": "パワーワード: フォーティチュード",
+        "name": "決意の連祷",
         "description": "30分間、対象のスタミナを3増加させます。"
       },
       "shadow_word_pain": {
-        "name": "シャドウワード: ペイン",
+        "name": "腐朽の葬送歌",
         "description": "闇の言葉で18秒間に {damage} の暗黒ダメージを与えます。"
       },
       "power_word_shield": {
-        "name": "パワーワード: シールド",
+        "name": "守りの聖歌",
         "description": "対象を守り、30秒間48ダメージを吸収します。"
       },
       "renew": {
-        "name": "リニュー",
+        "name": "留まる恩寵",
         "description": "15秒間で対象の体力を {damage} 回復します。"
       },
       "mind_blast": {
-        "name": "マインドブラスト",
+        "name": "精神粉砕",
         "description": "対象の精神を打ち、{damage} の暗黒ダメージを与えます。"
       },
       "heal": {
-        "name": "ヒール",
+        "name": "厳かな祈り",
         "description": "遅いが強力な祈りで、味方対象の体力を {damage} 回復します。"
       },
       "mind_flay": {
-        "name": "マインドフレイ",
+        "name": "嘆きの連祷",
         "description": "暗黒エネルギーで対象の精神を攻撃し、3秒間、毎秒{damage}ダメージを与えます。"
       },
       "flash_heal": {
-        "name": "フラッシュヒール",
+        "name": "緊急の祈り",
         "description": "素早い祈りで味方対象の体力を {damage} 回復します。"
       },
       "lightning_bolt": {
-        "name": "ライトニングボルト",
+        "name": "電弧の矢",
         "description": "稲妻の矢を放ち、{damage} の自然ダメージを与えます。"
       },
       "rockbiter_weapon": {
-        "name": "ロックバイターウェポン",
+        "name": "石縛の武器",
         "description": "石の怒りを武器に込めます。5分間、各スイングが5の追加ダメージを与えます。"
       },
       "healing_wave": {
-        "name": "ヒーリングウェーブ",
+        "name": "癒しの水流",
         "description": "味方対象の体力を {damage} 回復します。"
       },
       "earth_shock": {
-        "name": "アースショック",
+        "name": "大地の衝撃",
         "description": "衝撃の力で対象を即座に打ち、{damage} の自然ダメージを与えます。"
       },
       "lightning_shield": {
-        "name": "ライトニングシールド",
+        "name": "雷の守り",
         "description": "弾ける稲妻で身を包みます。近接攻撃者は13の自然ダメージを受けます。"
       },
       "flame_shock": {
-        "name": "フレイムショック",
+        "name": "灰燼の衝撃",
         "description": "対象を炎で焼き、25ダメージに加えて12秒間で {damage} のダメージを与えます。"
       },
       "flametongue_weapon": {
-        "name": "フレイムタングウェポン",
+        "name": "火焔烙印の武器",
         "description": "元素の炎を武器に込めます。5分間、各スイングが8の追加火炎ダメージを与えます。"
       },
       "frost_shock": {
-        "name": "フロストショック",
+        "name": "霧氷の衝撃",
         "description": "対象を冷気で即座に打ち、{damage} の冷気ダメージを与え、8秒間、移動速度を50%低下させます。"
       },
       "frostbrand_weapon": {
-        "name": "フロストブランドウェポン",
+        "name": "霧氷縛の武器",
         "description": "刺すような冷気を武器に込めます。5分間、各スイングが8の追加ダメージを与えます。"
       },
       "ghost_wolf": {
-        "name": "ゴーストウルフ",
-        "description": "ゴーストウルフに変身し、10分間、移動速度が40%増加します。"
+        "name": "シェイドウルフ",
+        "description": "シェイドウルフに変身し、10分間、移動速度が40%増加します。"
       },
       "stormstrike": {
-        "name": "ストームストライク",
+        "name": "祖霊の一撃",
         "description": "武器に嵐を流し込み、即座に武器ダメージに {damage} を加えたダメージを与えます。"
       },
       "shadow_bolt": {
-        "name": "シャドウボルト",
+        "name": "暗鬱の矢",
         "description": "敵に影の矢を放ち、{damage} の暗黒ダメージを与えます。"
       },
       "demon_skin": {
-        "name": "デーモンスキン",
+        "name": "魔物の肌",
         "description": "悪魔の皮膚により、30分間アーマーが30増加します。"
       },
       "immolate": {
-        "name": "イモレート",
+        "name": "灼熱の契約",
         "description": "敵を燃やして11の火炎ダメージを与え、15秒間で追加の {damage} を与えます。"
       },
       "corruption": {
-        "name": "コラプション",
+        "name": "黒腐れ",
         "description": "対象を堕落させ、18秒間で {damage} の暗黒ダメージを与えます。"
       },
       "life_tap": {
-        "name": "ライフタップ",
+        "name": "過酷な取引",
         "description": "体力30をマナ30に変換します。"
       },
       "curse_of_agony": {
-        "name": "苦痛の呪い",
+        "name": "苦悶の呪い",
         "description": "対象に苦痛の呪いをかけ、24秒間で {damage} の暗黒ダメージを与えます。"
       },
       "drain_life": {
-        "name": "ドレインライフ",
+        "name": "喰らう",
         "description": "対象の生命力を吸収し、5秒間、毎秒{damage}の体力を自分に移します。"
       },
       "fear": {
-        "name": "フィアー",
+        "name": "責め苦",
         "description": "敵に恐怖を刻み、最大8秒間おびえさせます。ダメージを受けると効果が切れます。"
       },
       "searing_pain": {
-        "name": "シアリングペイン",
+        "name": "灼熱",
         "description": "苦痛の炎で敵を焼き、{damage} の火炎ダメージを与えます。詠唱が速い呪文です。"
       },
       "shadowburn": {
-        "name": "シャドウバーン",
-        "description": "対象に影の炎を即座に叩き込み、{damage} の暗黒ダメージを与えます。"
+        "name": "黄昏の火",
+        "description": "対象に灼ける影を即座に叩き込み、{damage} の暗黒ダメージを与えます。"
       },
       "wrath": {
-        "name": "ラス",
+        "name": "野生の稲妻",
         "description": "自然エネルギーの矢を放ち、{damage} の自然ダメージを与えます。"
       },
       "healing_touch": {
-        "name": "ヒーリングタッチ",
+        "name": "野生の癒し",
         "description": "味方対象の体力を {damage} 回復します。"
       },
       "mark_of_the_wild": {
-        "name": "野生の印",
-        "description": "味方対象に野生の印を付与し、30分間アーマーを25増加させます。"
+        "name": "ワイルドワード",
+        "description": "味方対象にワイルドワードを付与し、30分間アーマーを25増加させます。"
       },
       "moonfire": {
-        "name": "ムーンファイア",
+        "name": "月の嵐",
         "description": "月の炎で敵を焼き、{damage} の秘術ダメージと継続ダメージを与えます。"
       },
       "rejuvenation": {
-        "name": "リジュビネーション",
+        "name": "野生の芽吹き",
         "description": "12秒間で対象の体力を {damage} 回復します。"
       },
       "thorns": {
-        "name": "ソーンズ",
+        "name": "茨の守り",
         "description": "対象から棘が生えます。近接攻撃者は3の自然ダメージを受けます。"
       },
       "entangling_roots": {
-        "name": "絡みつく根",
+        "name": "締めつける根",
         "description": "対象を最大12秒間その場に根付かせます。"
       },
       "bear_form": {
-        "name": "ベアフォーム",
+        "name": "ブルーインフォーム",
         "description": "熊に変身します。アーマー +65%、攻撃力 +15、攻撃が怒りを生成し、脅威生成が30%増加します。再度使用すると術者形態に戻ります。"
       },
       "maul": {
-        "name": "モール",
-        "description": "近接ダメージを {damage} 増加させ、大量の脅威を発生させる猛攻です。次のスイングで発動します。ベアフォーム専用。"
+        "name": "骨砕き",
+        "description": "近接ダメージを {damage} 増加させ、大量の脅威を発生させる猛攻です。次のスイングで発動します。ブルーインフォーム専用。"
       },
       "growl": {
-        "name": "グロウル",
-        "description": "対象に唸ります。あなたの脅威が対象の最も憎む敵と同じ値まで上がり、3秒間あなたを攻撃させます。ベアフォーム専用。"
+        "name": "威嚇",
+        "description": "対象に唸ります。あなたの脅威が対象の最も憎む敵と同じ値まで上がり、3秒間あなたを攻撃させます。ブルーインフォーム専用。"
       },
       "cat_form": {
         "name": "ウルフフォーム",
@@ -5039,43 +5044,43 @@ export const ja_JP: EnTranslations = {
         "description": "敵を引っかき、武器ダメージに {damage} を加えたダメージを与えます。コンボポイントを1獲得します。ウルフフォーム専用。"
       },
       "ferocious_bite": {
-        "name": "獰猛な噛みつき",
+        "name": "血噛み",
         "description": "コンボポイントに応じてダメージを与えるフィニッシュムーブです。ウルフフォーム専用。"
       },
       "swipe": {
-        "name": "スワイプ",
-        "description": "周囲の敵を薙ぎ払い、{damage} のダメージを与えます。追加の脅威を発生させます。ベアフォーム専用。"
+        "name": "薙ぎ払う爪",
+        "description": "周囲の敵を薙ぎ払い、{damage} のダメージを与えます。追加の脅威を発生させます。ブルーインフォーム専用。"
       },
       "regrowth": {
-        "name": "リグロース",
+        "name": "二度目の開花",
         "description": "味方対象の体力を {damage} 回復し、さらに21秒間追加で回復します。"
       },
       "barkskin": {
-        "name": "バークスキン",
+        "name": "樫の肌",
         "description": "肌が樹皮のように硬くなり、15秒間アーマーが150増加します。"
       },
       "starfire": {
-        "name": "スターファイア",
+        "name": "天墜",
         "description": "星の炎を呼び下ろし、{damage} の秘術ダメージを与えます。"
       },
       "travel_form": {
-        "name": "トラベルフォーム",
-        "description": "素早い移動形態に即座に変身し、移動速度を40%上昇させます。変身中は他のアビリティを使用できませんが、戦闘中でも戦闘外でも変身を切り替えられるため、逃走に最適です。"
+        "name": "フリートフォーム",
+        "description": "素早いフリートフォームに即座に変身し、移動速度を40%上昇させます。変身中は他のアビリティを使用できませんが、戦闘中でも戦闘外でも変身を切り替えられるため、逃走に最適です。"
       },
       "enrage": {
-        "name": "激怒",
-        "description": "即座にレイジを20生成します。ベアフォーム専用。"
+        "name": "焚きつけ",
+        "description": "即座にレイジを20生成します。ブルーインフォーム専用。"
       },
       "bash": {
-        "name": "殴打",
-        "description": "対象を2秒間スタンさせます。ベアフォーム専用。"
+        "name": "脳震盪",
+        "description": "対象を2秒間スタンさせます。ブルーインフォーム専用。"
       },
       "faerie_fire": {
-        "name": "フェアリーファイア",
+        "name": "魔女火",
         "description": "対象の防御力を40秒間35低下させます。"
       },
       "hibernate": {
-        "name": "ハイバネート",
+        "name": "微睡み",
         "description": "対象を最大8秒間深い眠りに落とします。ダメージを受けると目を覚まします。"
       },
       "dash": {
@@ -5083,15 +5088,15 @@ export const ja_JP: EnTranslations = {
         "description": "前方へ駆け出し、移動速度を15秒間50%上昇させます。ウルフフォーム専用。"
       },
       "pounce": {
-        "name": "パウンス",
+        "name": "忍び強襲",
         "description": "隠密状態から放つ先制攻撃で、対象を2秒間スタンさせます。コンボポイントを1獲得します。ウルフフォーム専用。"
       },
       "insect_swarm": {
-        "name": "インセクトスウォーム",
+        "name": "刺す虫の群れ",
         "description": "敵が虫の群れに襲われ、12秒かけて{damage}の自然ダメージを受けます。"
       },
       "tigers_fury": {
-        "name": "タイガーフューリー",
+        "name": "狼の血",
         "description": "攻撃力を6秒間40上昇させます。ウルフフォーム専用。"
       },
       "rip": {
@@ -5099,67 +5104,67 @@ export const ja_JP: EnTranslations = {
         "description": "12秒かけて出血ダメージを与えるフィニッシュムーブです。コンボポイントを消費します。ウルフフォーム専用。"
       },
       "mortal_strike": {
-        "name": "致死打撃",
+        "name": "重傷の一撃",
         "description": "凶悪な一撃で武器ダメージに加えて {damage} のダメージを与えます。（武器シグネチャー）"
       },
       "bloodthirst": {
-        "name": "血の渇き",
+        "name": "瀉血",
         "description": "血の狂乱に身を任せて即座に攻撃し、{damage} のダメージを与えます。（狂怒シグネチャー）"
       },
       "shield_slam": {
-        "name": "シールドスラム",
+        "name": "盾砕き",
         "description": "盾で対象を叩きつけ、{damage} のダメージと大量の脅威を与えます。（防御シグネチャー）"
       },
       "whirlwind": {
-        "name": "旋風斬",
+        "name": "刃の旋風",
         "description": "致命的な弧を描いて回転し、近くのすべての敵に {damage} のダメージを与えます。（狂怒タレント）"
       },
       "berserker_rage": {
-        "name": "バーサーカーレイジ",
-        "description": "バーサーカーの怒りに入り、怒りを20生成します。（戦士タレント）"
+        "name": "滾る怒り",
+        "description": "滾る怒りに身を任せ、怒りを20生成します。（戦士タレント）"
       },
       "summon_imp": {
-        "name": "インプの召喚",
-        "description": "ウォーロックの命令に従うインプを召喚します。インプは遠くから敵にファイアボルトを放ちます。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+        "name": "エンバーキンの召喚",
+        "description": "ウォーロックの命令に従うエンバーキンを召喚します。エンバーキンは遠くから敵にアッシュボルトを放ちます。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "summon_voidwalker": {
-        "name": "ヴォイドウォーカーの召喚",
-        "description": "ウォーロックの命令に従うヴォイドウォーカーを召喚します。ヴォイドウォーカーは敵を挑発し攻撃を受け止める頑強な悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+        "name": "グルームシェイドの召喚",
+        "description": "ウォーロックの命令に従うグルームシェイドを召喚します。グルームシェイドは敵を挑発し攻撃を受け止める頑強な悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "summon_succubus": {
-        "name": "サキュバスの召喚",
-        "description": "ウォーロックの命令に従うサキュバスを召喚します。サキュバスは素早く攻撃し近接戦闘で大きなダメージを与える脆い悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+        "name": "ダスクボーンの召喚",
+        "description": "ウォーロックの命令に従うダスクボーンを召喚します。ダスクボーンは素早く攻撃し近接戦闘で大きなダメージを与える脆い悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "summon_felhunter": {
-        "name": "フェルハンターの召喚",
-        "description": "ウォーロックの命令に従うフェルハンターを召喚します。フェルハンターはシャドウバイトで遠くから敵を悩ませ、呪文の使い手を狩るのに長けています。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+        "name": "スペルハウンドの召喚",
+        "description": "ウォーロックの命令に従うスペルハウンドを召喚します。スペルハウンドはグルームバイトで遠くから敵を悩ませ、呪文の使い手を狩るのに長けています。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "summon_felguard": {
-        "name": "フェルガードの召喚",
-        "description": "ウォーロックの命令に従うフェルガードを召喚します。フェルガードは戦場に踏み込んで持ちこたえる頑丈な近接悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+        "name": "ウォーフィーンドの召喚",
+        "description": "ウォーロックの命令に従うウォーフィーンドを召喚します。ウォーフィーンドは戦場に踏み込んで持ちこたえる頑丈な近接悪魔です。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "summon_infernal": {
-        "name": "インファーナルの召喚",
-        "description": "インファーナルを意のままに束縛します。圧倒的な近接攻撃と、あらゆる悪魔の中で最も深い生命力と防御力を備えた巨大な破壊兵器です。長い再使用時間がその純然たる力を制限します。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+        "name": "パイアコロッサスの召喚",
+        "description": "パイアコロッサスを意のままに束縛します。圧倒的な近接攻撃と、あらゆる悪魔の中で最も深い生命力と防御力を備えた巨大な破壊兵器です。長い再使用時間がその純然たる力を制限します。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "summon_doomguard": {
-        "name": "ドゥームガードの召喚",
-        "description": "ドゥームガードを意のままに束縛します。遠方から強力なシャドウダメージを降らせるエリート悪魔です。長い再使用時間がその破壊的な力を制限します。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
+        "name": "レイスボーンの召喚",
+        "description": "レイスボーンを意のままに束縛します。遠方から強力なシャドウダメージを降らせるエリート悪魔です。長い再使用時間がその破壊的な力を制限します。新たな悪魔を召喚すると現在の悪魔は解放されます。悪魔は一度に1体しか従えられません。"
       },
       "bear_charge": {
-        "name": "ベアチャージ",
-        "description": "敵に突進して激怒を9獲得し、1秒間スタンさせる。射程7～23メートル。ベアフォーム時のみ使用可能。"
+        "name": "ブルーインラッシュ",
+        "description": "敵に突進して激怒を9獲得し、1秒間スタンさせる。射程7～23メートル。ブルーインフォーム時のみ使用可能。"
       },
       "demoralizing_roar": {
-        "name": "意気消沈の咆哮",
-        "description": "周囲の敵を萎縮させ、20秒間その攻撃力を20低下させる。ベアフォーム時のみ使用可能。"
+        "name": "臆病の咆哮",
+        "description": "周囲の敵を萎縮させ、20秒間その攻撃力を20低下させる。ブルーインフォーム時のみ使用可能。"
       },
       "prowl": {
-        "name": "忍び寄り",
+        "name": "つけ狙い",
         "description": "ウルフフォーム中にステルス状態に入り、移動速度が50%低下する。戦闘中は使用できない。"
       },
       "rake": {
-        "name": "切り裂き",
+        "name": "皮剥ぎ",
         "description": "ステルス状態からの先制攻撃で、武器ダメージに加えて{damage}のダメージを与え、9秒かけて出血ダメージを与える。コンボポイントを1獲得する。ウルフフォーム時のみ使用可能。"
       },
       "revive_pet": {
@@ -5169,10 +5174,10 @@ export const ja_JP: EnTranslations = {
     },
     "items": {
       "worn_sword": {
-        "name": "擦り切れたショートソード"
+        "name": "錆穴だらけのショートソード"
       },
       "gnarled_staff": {
-        "name": "節くれだった杖"
+        "name": "沼樫の杖"
       },
       "rusty_dagger": {
         "name": "錆びたダガー"
@@ -5184,13 +5189,13 @@ export const ja_JP: EnTranslations = {
         "name": "錆びた手斧"
       },
       "recruit_tunic": {
-        "name": "新兵のチュニック"
+        "name": "徴集兵のチュニック"
       },
       "apprentice_robe": {
-        "name": "見習いのローブ"
+        "name": "擦り切れたローブ"
       },
       "footpad_jerkin": {
-        "name": "追いはぎのジャーキン"
+        "name": "巾着切りのジャーキン"
       },
       "redbrook_blade": {
         "name": "レッドブルック民兵の刃"
@@ -5220,22 +5225,22 @@ export const ja_JP: EnTranslations = {
         "name": "グレイジョーの毛皮レギンス"
       },
       "baked_bread": {
-        "name": "焼きたてのパン"
+        "name": "田舎パン"
       },
       "spring_water": {
-        "name": "爽やかな泉の水"
+        "name": "冷たい井戸水"
       },
       "roasted_boar": {
-        "name": "焼いた猪肉"
+        "name": "串焼き猪の腿肉"
       },
       "conjured_water": {
-        "name": "召喚された泉の水"
+        "name": "召喚された雨水"
       },
       "conjured_water2": {
-        "name": "召喚された鉱水"
+        "name": "召喚された井戸水"
       },
       "conjured_water3": {
-        "name": "召喚された発泡水"
+        "name": "召喚された清水"
       },
       "eastbrook_arming_sword": {
         "name": "イーストブルックの武装剣"
@@ -5295,7 +5300,7 @@ export const ja_JP: EnTranslations = {
         "name": "幽霊のエッセンス"
       },
       "webwood_silk": {
-        "name": "ウェブウッドの絹腺"
+        "name": "セイブルウェブの絹腺"
       },
       "supply_crate": {
         "name": "盗まれた補給箱"
@@ -5316,13 +5321,13 @@ export const ja_JP: EnTranslations = {
         "name": "赤いバンダナ"
       },
       "tough_jerky": {
-        "name": "硬い干し肉"
+        "name": "塩漬けの干し肉"
       },
       "mudfin_scale": {
-        "name": "ぬめるマーロックの鱗"
+        "name": "ぬめるマッドフィンの鱗"
       },
       "tallow_candle": {
-        "name": "獣脂のろうそく"
+        "name": "脂ぎった獣脂の塊"
       },
       "spider_leg": {
         "name": "ぴくつく蜘蛛の脚"
@@ -5388,7 +5393,7 @@ export const ja_JP: EnTranslations = {
         "name": "沼渡りのブーツ"
       },
       "mistcallers_edge": {
-        "name": "ミストコーラーの刃"
+        "name": "フォグバインダーの刃"
       },
       "vaels_mist_staff": {
         "name": "ヴァエルの霧杖"
@@ -5532,7 +5537,7 @@ export const ja_JP: EnTranslations = {
         "name": "ヴェルカーの杖"
       },
       "shadowmeld_tunic": {
-        "name": "影溶けのチュニック"
+        "name": "夜帳のチュニック"
       },
       "gravewyrm_scale_hauberk": {
         "name": "墓ワーム鱗のホーバーク"
@@ -5601,13 +5606,13 @@ export const ja_JP: EnTranslations = {
         "name": "割れたワームの鱗"
       },
       "conjured_bread": {
-        "name": "魔法のパン"
+        "name": "魔法のオートケーキ"
       },
       "conjured_bread2": {
-        "name": "魔法のライ麦パン"
+        "name": "魔法の黒パン"
       },
       "conjured_bread3": {
-        "name": "魔法の菓子パン"
+        "name": "魔法のハニーケーキ"
       },
       "roadwardens_helm": {
         "name": "道守りの兜"
@@ -5712,7 +5717,7 @@ export const ja_JP: EnTranslations = {
         "name": "墓織りのバッグ"
       },
       "mistcallers_duffel": {
-        "name": "ミストコーラーのダッフル"
+        "name": "フォグバインダーのダッフル"
       },
       "copper_mining_pick": {
         "name": "銅の採掘ピック"
@@ -5742,7 +5747,7 @@ export const ja_JP: EnTranslations = {
         "name": "銀葉の鎌"
       },
       "bristleback_maul": {
-        "name": "ブリストルバックの大槌"
+        "name": "ギャロウグラスの大槌"
       },
       "broodmother_silk_robe": {
         "name": "ブルードマザーの絹ローブ"
@@ -5751,16 +5756,16 @@ export const ja_JP: EnTranslations = {
         "name": "墓骨のグリーヴ"
       },
       "cryptstalker_jerkin": {
-        "name": "墓潜みのジャーキン"
+        "name": "墓徘徊のジャーキン"
       },
       "deathlord_legguards": {
-        "name": "死王のレッグガード"
+        "name": "バロウロードのレッグガード"
       },
       "deathlord_sabatons": {
-        "name": "死王のサバトン"
+        "name": "バロウロードのサバトン"
       },
       "deathlord_warplate": {
-        "name": "死王の戦鎧"
+        "name": "バロウロードの戦鎧"
       },
       "drogmar_warboots": {
         "name": "ドログマーの戦靴"
@@ -5838,13 +5843,13 @@ export const ja_JP: EnTranslations = {
         "name": "モガーの踏みつけブーツ"
       },
       "necromancers_legwraps": {
-        "name": "死霊術師の脚巻き"
+        "name": "モーンウィーヴの脚巻き"
       },
       "necromancers_soulsteps": {
-        "name": "死霊術師の魂歩き"
+        "name": "モーンウィーヴの魂歩き"
       },
       "necromancers_starshroud": {
-        "name": "死霊術師の星覆い"
+        "name": "モーンウィーヴの星覆い"
       },
       "nhalias_dirgeblade": {
         "name": "ナリアの哀歌刃"
@@ -5880,13 +5885,13 @@ export const ja_JP: EnTranslations = {
         "name": "ワーム教団の魂歩き"
       },
       "wyrmshadow_harness": {
-        "name": "ワーム影のハーネス"
+        "name": "ナイトファングのハーネス"
       },
       "wyrmshadow_legguards": {
-        "name": "ワーム影のレッグガード"
+        "name": "ナイトファングのレッグガード"
       },
       "wyrmshadow_treads": {
-        "name": "ワーム影の足具"
+        "name": "ナイトファングの足具"
       },
       "glimmerfin_koi": {
         "name": "きらめきヒレの錦鯉"
@@ -5904,7 +5909,7 @@ export const ja_JP: EnTranslations = {
         "name": "生の川スズキ"
       },
       "raw_stonescale_carp": {
-        "name": "生の石鱗コイ"
+        "name": "生の石鰭コイ"
       },
       "soggy_boot": {
         "name": "ずぶ濡れのブーツ"
@@ -6015,13 +6020,13 @@ export const ja_JP: EnTranslations = {
         "name": "月鱗のサーベル"
       },
       "moonshroud_breastplate": {
-        "name": "月帷子の胸甲"
+        "name": "ムーンラックの胸甲"
       },
       "moonshroud_robe": {
-        "name": "月帷子のローブ"
+        "name": "ムーンラックのローブ"
       },
       "moonshroud_tunic": {
-        "name": "月帷子のチュニック"
+        "name": "ムーンラックのチュニック"
       },
       "pale_pearl": {
         "name": "蒼白の真珠"
@@ -6057,7 +6062,7 @@ export const ja_JP: EnTranslations = {
         "name": "墓骨のポールドロン"
       },
       "deathlords_dread_visage": {
-        "name": "死王の恐怖の面貌"
+        "name": "バロウロードの恐怖の面貌"
       },
       "gravewyrm_gauntlets": {
         "name": "墓ワームのガントレット"
@@ -6072,10 +6077,10 @@ export const ja_JP: EnTranslations = {
         "name": "霧覆いの握り"
       },
       "necromancers_soulspire_mantle": {
-        "name": "死霊術師の魂尖塔マントル"
+        "name": "モーンウィーヴの魂尖塔マントル"
       },
       "wyrmshadow_talongrips": {
-        "name": "ワーム影の鉤爪握り"
+        "name": "ナイトファングの鉤爪握り"
       },
       "reliquary_plate_chest": {
         "name": "聖遺物庫衛兵のホーバーク"
@@ -6210,31 +6215,31 @@ export const ja_JP: EnTranslations = {
         "name": "不死王冠の心材"
       },
       "kingsbane_last_oath": {
-        "name": "キングスベイン、ソーンピーク最後の誓い"
+        "name": "スロウンベイン、ソーンピーク最後の誓い"
       },
       "crownforged_dreadhelm": {
-        "name": "冠鍛えの恐怖兜"
+        "name": "ボーンロートの恐怖兜"
       },
       "crownforged_warspaulders": {
-        "name": "冠鍛えの戦肩当て"
+        "name": "ボーンロートの戦肩当て"
       },
       "nighttalon_crown": {
-        "name": "夜爪の冠"
+        "name": "ダイアファングの冠"
       },
       "nighttalon_shoulderguards": {
-        "name": "夜爪の肩守り"
+        "name": "ダイアファングの肩守り"
       },
       "soulflame_cowl": {
-        "name": "魂炎の頭巾"
+        "name": "レイスファイアの頭巾"
       },
       "soulflame_mantle": {
-        "name": "魂炎のマント"
+        "name": "レイスファイアのマント"
       },
       "stormcallers_crown": {
-        "name": "嵐呼びの冠"
+        "name": "ゲイルコールの冠"
       },
       "stormcallers_spaulders": {
-        "name": "嵐呼びの肩当て"
+        "name": "ゲイルコールの肩当て"
       },
       "unknown_alien_weaponry": {
         "name": "未知の異星武装"
@@ -6323,13 +6328,13 @@ export const ja_JP: EnTranslations = {
         "name": "野生の猪"
       },
       "webwood_spider": {
-        "name": "ウェブウッドの潜伏者"
+        "name": "セイブルウェブの潜伏者"
       },
       "mudfin_murloc": {
         "name": "泥ひれの潜伏者"
       },
       "tunnel_rat": {
-        "name": "トンネルラット掘り"
+        "name": "ディープロックの掘削者"
       },
       "vale_bandit": {
         "name": "谷の盗賊"
@@ -6431,13 +6436,13 @@ export const ja_JP: EnTranslations = {
         "name": "騎士司令官オレン"
       },
       "vael_the_mistcaller": {
-        "name": "霧呼びのヴァエル"
+        "name": "フォグバインダーのヴァエル"
       },
       "sanctum_boneguard": {
         "name": "聖所の骨衛兵"
       },
       "sanctum_drakonid": {
-        "name": "聖所のドラコニッド"
+        "name": "サンクタム・スケイルガード"
       },
       "raised_bonewalker": {
         "name": "甦った骨歩き"
@@ -6572,13 +6577,13 @@ export const ja_JP: EnTranslations = {
         "name": "ヴァーカスの骨衛兵"
       },
       "emberkin": {
-        "name": "インプ"
+        "name": "エンバーキン"
       },
       "gloomshade": {
-        "name": "ヴォイドウォーカー"
+        "name": "グルームシェイド"
       },
       "duskborn": {
-        "name": "サキュバス"
+        "name": "ダスクボーン"
       },
       "grix_the_tunnelking": {
         "name": "トンネルキングのグリックス"
@@ -6602,16 +6607,16 @@ export const ja_JP: EnTranslations = {
         "name": "魂縛りマルドレク"
       },
       "spellhound": {
-        "name": "フェルハンター"
+        "name": "スペルハウンド"
       },
       "warfiend": {
-        "name": "フェルガード"
+        "name": "ウォーフィーンド"
       },
       "pyre_colossus": {
-        "name": "インファーナル"
+        "name": "パイアコロッサス"
       },
       "wraithborn": {
-        "name": "ドゥームガード"
+        "name": "レイスボーン"
       },
       "choirmother_selthe": {
         "name": "聖歌母セルセ"
@@ -6684,12 +6689,12 @@ export const ja_JP: EnTranslations = {
       "fisherman_brandt": {
         "name": "漁師ブラント",
         "title": "老いた船乗り",
-        "greeting": "グルマーログル... 失礼、魚人どもの声を聞きすぎました。"
+        "greeting": "ブルブ・グルブ... 失礼、魚人どもの声を聞きすぎました。"
       },
       "foreman_odell": {
         "name": "監督官オデル",
         "title": "鉱山監督",
-        "greeting": "坑道全体が頭にろうそくを立てた害虫どもでいっぱいです！"
+        "greeting": "坑道全体が泥まみれの害虫どもでうごめいています！"
       },
       "warden_fenwick": {
         "name": "番人フェンウィック",
@@ -6799,7 +6804,7 @@ export const ja_JP: EnTranslations = {
         }
       },
       "q_boars": {
-        "title": "ブリッスルバックの皮",
+        "title": "剛毛の猪の皮",
         "text": "猪の皮は旅袋に最適です。町外れの草地に獣が満ちています。剛毛猪の皮を5枚持ってきてください。",
         "completion": "いい剛毛の皮です。高く売れるでしょう。",
         "objectives": {
@@ -6809,21 +6814,21 @@ export const ja_JP: EnTranslations = {
         }
       },
       "q_spiders": {
-        "title": "ウェブウッドの脅威",
-        "text": "ウェブウッドの潜伏者は薬布に使う絹を出しますが、増えすぎました。6匹を倒し、絹腺を4つ切り取ってください。",
+        "title": "セイブルウェブの脅威",
+        "text": "東の森の潜伏者は、私の湿布に必要な絹を紡ぎます。おまけに、あまりに数を増やしすぎました。セイブルウェブの潜伏者を6匹間引き、その腹から絹腺を4つ切り取ってください。",
         "completion": "うう、まだ動いています。完璧です。これはあなたの取り分です。",
         "objectives": {
           "0": {
-            "label": "ウェブウッドの潜伏者を討伐"
+            "label": "セイブルウェブの潜伏者を討伐"
           },
           "1": {
-            "label": "ウェブウッドの絹腺"
+            "label": "セイブルウェブの絹腺"
           }
         }
       },
       "q_murlocs": {
         "title": "湖の騒ぎ",
-        "text": "鏡の湖で二十年漁をしてきましたが、魚人が浅瀬から這い出しました。泥ひれを8体追い払い、群れに注意を。",
+        "text": "二十年もの間、鏡の湖で漁をしてきましたが、あのゴボゴボと鳴く魚人どもが浅瀬から這い出すまで、網一つ失ったことはありませんでした。マッドフィンを追い返してください。8体倒すのです。そして油断は禁物です。マッドフィンが一体いる場所には、五体はいるものですから。",
         "completion": "はっ！自分たちの泥穴にこもることを覚えるでしょう。",
         "objectives": {
           "0": {
@@ -6833,11 +6838,11 @@ export const ja_JP: EnTranslations = {
       },
       "q_mine": {
         "title": "鉱山の鼠",
-        "text": "よい銅脈を掘り当てた途端、コボルドが丘から湧きました。トンネルラット掘りを10体倒してください。",
+        "text": "よい銅脈を掘り当てた途端、あの穴を掘る害獣どもが丘の斜面から湧き出しました。片付くまで、私の作業員は坑道に足を踏み入れようとしません。ディープロックの掘削者を10体始末してください。",
         "completion": "よし、仕事に戻れ、皆！礼と報酬を受け取ってください。",
         "objectives": {
           "0": {
-            "label": "トンネルラット掘りを討伐"
+            "label": "ディープロックの掘削者を討伐"
           }
         }
       },
@@ -6893,7 +6898,7 @@ export const ja_JP: EnTranslations = {
       },
       "q_rite": {
         "title": "束縛の儀式",
-        "text": "墓所を開くには、束縛の儀式で生者の道を作る必要があります。祝福された獣脂を4つ、幽霊のエッセンスを6つ集めてください。",
+        "text": "グレイブコーラーを止めるには、礼拝堂の下の墓所を開かねばなりません。しかし、生者が通れるのは束縛の儀式によってのみ。祝福された獣脂を4塊、鉱山の穴掘りどもは獣脂を木箱ごと溜め込んでいます、そして安らげぬ死者から幽霊のエッセンスを6つ必要です。",
         "completion": "終わりました。下への道が開きます...最も強い仲間を集めてください、{playerName}。",
         "objectives": {
           "0": {
@@ -6927,7 +6932,7 @@ export const ja_JP: EnTranslations = {
       "q_gravecallers_trail": {
         "title": "墓呼びの足跡",
         "text": "モーセンは死にましたが、一世紀潜んだ一派が一つの礼拝堂だけで終わるはずがありません。{playerName}、廃墟で彼の魔導書を探してください。",
-        "completion": "モーセンは北の湿地のミストコーラーに書いていました。{playerName}、一派は死んでいません。ただ待っていたのです。",
+        "completion": "モーセンは北の湿地の『フォグバインダー』に書き送っていました。{playerName}、一派は死んでいません。ただ辛抱強く待っていたのです。",
         "objectives": {
           "0": {
             "label": "モーセンの魔導書"
@@ -6956,7 +6961,7 @@ export const ja_JP: EnTranslations = {
       },
       "q_fenbridge_muster": {
         "title": "フェンブリッジ集結",
-        "text": "モーセンの書き物は北の湿地の主を名指ししています。{playerName}、私は偶然を信じません。フェンブリッジの門柱から召集令を取り、番人へ届けてください。",
+        "text": "モーセンの書き物は、北の湿地の主を名指ししていました。『フォグバインダー』と。そして今、番人フェンウィックがフェンブリッジで召集の角笛を鳴らしました。{playerName}、私は偶然を信じません。堤道を北へ進み、門柱から召集令を取り、番人へ届けてください。",
         "completion": "アルドリックの印ですか。なら役に立ちます。湿地は私の巡察を丸ごと飲み込んでいます。",
         "objectives": {
           "0": {
@@ -6996,7 +7001,7 @@ export const ja_JP: EnTranslations = {
       },
       "q_deepfen": {
         "title": "ディープフェンの目覚め",
-        "text": "ディープフェンの魚人が湖底から何かを引き上げています。スナッパーを12体討ち、その理由を探りましょう。",
+        "text": "ディープフェンのマッドフィンは二十年もの間、浅瀬に留まっていました。それが今や、腐肉に群がる蠅のように東岸へ押し寄せています。番人たちは、奴らが湖底から何かを引き上げていると言うのです。奴らを駆り立てているものが何であれ、止めさせたい。スナッパーを12体間引いてください。",
         "completion": "しばらくは泥へ押し戻せます。だが、何かが掘らせているのです。",
         "objectives": {
           "0": {
@@ -7026,7 +7031,7 @@ export const ja_JP: EnTranslations = {
       },
       "q_deepfen_purge": {
         "title": "浅瀬へ戻せ",
-        "text": "偶像は教団のものです。魚人は古い悪を湿地からすくい上げています。浅瀬へ戻り、さらに14体倒してください。",
+        "text": "アルドリックが言うには、あの偶像は教団の作。つまりマッドフィンは、湿地の古き悪を一抱えずつ引き上げているのです。それを私の堤道に流れ着かせるわけにはいきません。浅瀬へ戻り、浚渫を完全に断ち切ってください。スナッパーをさらに14体です。",
         "completion": "容赦なく徹底しています。この湿地が乾いたら、あなたには番人の仕事があります。",
         "objectives": {
           "0": {
@@ -7133,7 +7138,7 @@ export const ja_JP: EnTranslations = {
       "q_summoners": {
         "title": "召喚を止めろ",
         "text": "召喚師は笛に応じる犬のように溺死者を水から呼びます。8人を沈黙させ、暗号を4つ持ち帰ってください。",
-        "completion": "暗号はすべて助祭ヴォスの副署で、砦のミストコーラー宛てです。モーセンの主です、{playerName}。見つけました。",
+        "completion": "暗号はすべて『助祭ヴォス』の副署で、砦の『フォグバインダー』宛てに書き送られています。モーセンの主です、{playerName}。ついに見つけました。",
         "objectives": {
           "0": {
             "label": "グレイブコーラーの召喚師を討伐"
@@ -7155,7 +7160,7 @@ export const ja_JP: EnTranslations = {
       },
       "q_bastion_door": {
         "title": "沈んだ砦",
-        "text": "沈んだ砦はミストコーラーの場所で、扉は墓石で封じられています。{playerName}、護り石を一つ持ってきてください。",
+        "text": "沈んだ砦は、一世紀前に湿地へと沈んだ騎士の拠点であり、ヴォスの手紙が指し示す場所、そしてこのフォグバインダーが溺れの賛歌を歌う場所です。教団はその扉を墓石で封じています。{playerName}、その護り石を一つ持ってきてください。私が封印を解き解します。",
         "completion": "封印は腐った縄のようにほどけます。扉は開き、闇が耳を澄ませています。",
         "objectives": {
           "0": {
@@ -7165,7 +7170,7 @@ export const ja_JP: EnTranslations = {
       },
       "q_olen": {
         "title": "騎士司令官の恥",
-        "text": "オレンは砦を守って溺れ、今は操り人形として同じ扉を守っています。{playerName}、四人の仲間と下り、眠らせてください。",
+        "text": "騎士団長オレンは、砦が沈むとき、それを守り抜きました。持ち場を捨てるより、そこで溺れる道を選んだのです。番人は皆、誇りを持って彼の名を学びます。今やフォグバインダーは、彼が命を賭して守った、まさにその扉を守らせるため、彼を操り人形として蘇らせました。その恥辱を終わらせましょう、{playerName}。四人の仲間を連れて下り、オレンにふさわしい安息を与えてください。",
         "completion": "彼の見張りはようやく終わりました。門に名を刻むのは私がやります。ありがとう、{playerName}。",
         "objectives": {
           "0": {
@@ -7174,12 +7179,12 @@ export const ja_JP: EnTranslations = {
         }
       },
       "q_mistcaller": {
-        "title": "霧呼び",
-        "text": "ヴァエルは砦の底にいます。百人を溺れさせ、軍を作った声です。四人の仲間と終わらせてください、{playerName}。",
+        "title": "フォグバインダー",
+        "text": "砦の底では、フォグバインダーのヴァエルが待ち構えています。モーセンの主、ヴォスの主、自らの軍勢を起こすために百人もの旅人を溺れさせた声です。彼は一人の英雄の手に負えるものではありません。四人の仲間を、それを下回らぬ数で連れて行きなさい。彼を終わらせてください、{playerName}。そうすれば湿地の死者たちも、ようやく安らかに眠れるでしょう。",
         "completion": "ヴァエルは死に、霧は晴れています。だが最後の言葉は血を凍らせます。ワームが峰の下で動く、と。{playerName}、今のうちに休んでください。次は山です。",
         "objectives": {
           "0": {
-            "label": "霧呼びのヴァエルを討伐"
+            "label": "フォグバインダーのヴァエルを討伐"
           }
         }
       },
@@ -7245,8 +7250,8 @@ export const ja_JP: EnTranslations = {
       },
       "q_kobold_tunnels": {
         "title": "ディープロックの問題",
-        "text": "ディープロックのコボルドは、壁の下から呼ばれているように真下へ掘っています。{playerName}、坑夫を12体倒してください。",
-        "completion": "どの坑も真下です。コボルドだけではこう掘りません。",
+        "text": "ディープロックの巣穴の坑夫どもは、どんな坑鼠の道理をも越えて深く掘り進んでいます。まるで何かに呼ばれているかのように、まっすぐ真下へと。奴らの坑道は我らの壁の下を走っています、{playerName}。この事態を潰してください。ディープロックの坑夫を12体倒すのです。",
+        "completion": "どの坑も真下です。穴掘りどもだけでは、こうは掘りません。私は書物を紐解かねばなりません。",
         "objectives": {
           "0": {
             "label": "ディープロックの坑夫を討伐"
@@ -7255,7 +7260,7 @@ export const ja_JP: EnTranslations = {
       },
       "q_glowing_wax": {
         "title": "奇妙な蝋",
-        "text": "坑夫のろうは光り、{playerName}、鼓動のように温かい。キャディスの研究のために6塊持ってきてください。",
+        "text": "キャディスが、あの坑夫の一体から剥ぎ取ったろうの塊を見せてくれました。それは光るのです、{playerName}、そして鼓動のように温かい。彼は研究のためもっと欲しがり、私はそれを補給品目録から外したい。光るろうの塊を6つ持ち帰ってください。",
         "completion": "まだ温かい。博識者の知る炎とは違う光です。",
         "objectives": {
           "0": {
@@ -7642,7 +7647,7 @@ export const ja_JP: EnTranslations = {
             "label": "鏡の湖"
           },
           "4": {
-            "label": "ウェブウッド"
+            "label": "セイブルウェブ"
           },
           "5": {
             "label": "銅鉱山"
@@ -7795,38 +7800,50 @@ export const ja_JP: EnTranslations = {
       }
     },
     "itemSets": {
+      "boundstone_vanguard": {
+        "name": "束縛石の前衛",
+        "bonus3": "攻撃速度と詠唱速度が15%上昇します。"
+      },
       "crownforged": {
-        "name": "冠鋳の戦装束",
+        "name": "ボーンロートの戦装束",
         "bonus2": "攻撃力が40上昇します。",
-        "bonus3": "筋力が15、スタミナが15上昇します。"
+        "bonus3": "筋力が15、スタミナが15上昇し、攻撃速度と詠唱速度が15%上昇します。"
       },
       "deathlord": {
-        "name": "死王の戦装束",
+        "name": "バロウロードの戦装束",
         "bonus2": "攻撃力が40上昇します。",
         "bonus3": "筋力が15、スタミナが15上昇します。"
       },
+      "greyjaw_stalker": {
+        "name": "グレイジョーの追跡者の装備",
+        "bonus3": "攻撃速度と詠唱速度が15%上昇します。"
+      },
       "necromancers": {
-        "name": "死霊術師の法衣",
+        "name": "モーンウィーヴの法衣",
         "bonus2": "ノックバックされなくなります（ノックバック耐性100%）。",
         "bonus3": "知力が10、スタミナが10上昇します。"
       },
       "nighttalon": {
-        "name": "夜爪の革装束",
+        "name": "ダイアファングの革装束",
         "bonus2": "攻撃力が40上昇します。",
-        "bonus3": "敏捷性が15、クリティカル率が2%上昇します。"
+        "bonus3": "敏捷性が15、クリティカル率が2%上昇し、攻撃速度と詠唱速度が15%上昇します。"
       },
       "soulflame": {
-        "name": "魂炎の法衣",
+        "name": "レイスファイアの法衣",
         "bonus2": "ノックバックされなくなります（ノックバック耐性100%）。",
-        "bonus3": "知力が15、精神力が15上昇します。"
+        "bonus3": "知力が15、精神力が15上昇し、攻撃速度と詠唱速度が15%上昇します。"
       },
       "stormcallers": {
-        "name": "嵐呼びの法衣",
+        "name": "ゲイルコールの法衣",
         "bonus2": "ノックバックされなくなります（ノックバック耐性100%）。",
-        "bonus3": "知力が15、精神力が15上昇します。"
+        "bonus3": "知力が15、精神力が15上昇し、攻撃速度と詠唱速度が15%上昇します。"
+      },
+      "vale_arcanist": {
+        "name": "谷の秘術師の装束",
+        "bonus3": "攻撃速度と詠唱速度が15%上昇します。"
       },
       "wyrmshadow": {
-        "name": "竜影の装束",
+        "name": "ナイトファングの装束",
         "bonus2": "攻撃力が40上昇します。",
         "bonus3": "敏捷性が15、クリティカル率が2%上昇します。"
       }

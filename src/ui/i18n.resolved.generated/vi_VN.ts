@@ -43,7 +43,7 @@ export const vi_VN: EnTranslations = {
       "subtitle": "XP Trọn Đời",
       "rank": "Hạng",
       "name": "Tên",
-      "realmCol": "Máy Chủ",
+      "realmCol": "Thế Giới",
       "level": "Cấp",
       "vlevel": "Cấp Ảo",
       "lifetimeXp": "XP Trọn Đời",
@@ -52,7 +52,7 @@ export const vi_VN: EnTranslations = {
       "loading": "Đang tải bảng xếp hạng…",
       "unranked": "Chưa Xếp Hạng",
       "you": "Bạn",
-      "globalSubtitle": "Những nhà vô địch hàng đầu trên mọi máy chủ",
+      "globalSubtitle": "Những nhà vô địch hàng đầu trên mọi thế giới",
       "retry": "Không thể tải bảng xếp hạng. Hãy thử lại."
     },
     "milestone": {
@@ -155,9 +155,9 @@ export const vi_VN: EnTranslations = {
       "banner": "Đang xem {name}"
     },
     "death": {
-      "resurrectAtCorpse": "Resurrect at Corpse",
-      "resurrectAtHealer": "The Pale Keeper (Keeper's Toll)",
-      "spiritHealerAlive": "The Pale Keeper watches over the dead. You are still among the living."
+      "resurrectAtCorpse": "Hồi Sinh Tại Xác Chết",
+      "resurrectAtHealer": "Người Canh Giữ Nhợt Nhạt (Cái Giá của Người Canh Giữ)",
+      "spiritHealerAlive": "Người Canh Giữ Nhợt Nhạt trông nom kẻ chết. Bạn vẫn còn ở giữa cõi sống."
     },
     "emotes": {
       "wave": "Vẫy Tay",
@@ -188,6 +188,7 @@ export const vi_VN: EnTranslations = {
       "loading": "Đang tải phần thưởng hằng ngày...",
       "error": "Không thể tải phần thưởng hằng ngày.",
       "intro": "Giữ đủ WOC trong ví đã xác minh của bạn để mở khóa phần thưởng hằng ngày. Kiếm điểm bằng một lượt quay mỗi ngày và các nhiệm vụ luân phiên, rồi leo lên bảng xếp hạng hằng ngày để nhận phần chia từ quỹ giải thưởng.",
+      "disclaimer": "Giá WOC có thể biến động nhanh. Chúng tôi khuyên bạn nên giữ nhiều hơn mức tối thiểu 20 USD để những dao động giá thông thường không khóa bạn ở ngoài. Đây không phải lời khuyên tài chính.",
       "prize": "Quỹ Giải Thưởng",
       "reset": "Đặt Lại",
       "endsIn": "Kết thúc sau {time}",
@@ -207,13 +208,17 @@ export const vi_VN: EnTranslations = {
       "spinResult": "+{points} điểm",
       "spinButton": "Quay",
       "tasks": "Nhiệm Vụ",
-      "taskMultiplier": "x{multiplier} multiplier",
-      "pointsGained": "{points} daily rewards points gained.",
-      "showChestButton": "Show Chest",
-      "hideChestButton": "Hide Chest",
+      "taskMultiplier": "hệ số x{multiplier}",
+      "pointsGained": "Nhận được {points} điểm phần thưởng hằng ngày.",
+      "showChestButton": "Hiện rương",
+      "hideChestButton": "Ẩn rương",
+      "hideChestConfirmTitle": "Ẩn Rương Phần Thưởng Hằng Ngày?",
+      "hideChestConfirmBody": "Thao tác này gỡ lối tắt rương khỏi HUD của bạn. Phần thưởng, điều kiện nhận và bảng này vẫn khả dụng; bạn có thể bật lại lối tắt từ Tùy Chọn.",
+      "hideChestConfirmOk": "Ẩn Rương",
+      "hideChestConfirmCancel": "Hủy",
       "leaderboard": "Bảng Xếp Hạng Hằng Ngày",
-      "totalPlayer": "{count} player today",
-      "totalPlayers": "{count} players today",
+      "totalPlayer": "{count} người chơi hôm nay",
+      "totalPlayers": "{count} người chơi hôm nay",
       "history": "Người Thắng Trước Đây",
       "noLeaders": "Chưa có điểm nào.",
       "noHistory": "Chưa có khoản chi trả nào.",
@@ -288,9 +293,9 @@ export const vi_VN: EnTranslations = {
       "partyLabel": "Đội Của Bạn",
       "partyGroup": "Nhóm {n}",
       "durationUnitSeconds": "s",
-      "durationUnitMinutes": "m",
-      "durationUnitHours": "h",
-      "durationUnitDays": "d"
+      "durationUnitMinutes": "ph",
+      "durationUnitHours": "g",
+      "durationUnitDays": "ng"
     },
     "character": {
       "modelPreview": "Xem Trước Mô Hình Nhân Vật"
@@ -400,20 +405,20 @@ export const vi_VN: EnTranslations = {
       "showWalletOnCharacterScreen": "Hiện Ví Tiền Ở Màn Hình Nhân Vật",
       "showWalletOnPlayerCard": "Hiện Ví Tiền Trên Thẻ Người Chơi",
       "showDevBadges": "Hiện Huy Hiệu Nhà Phát Triển",
-      "showOwnNameplate": "Show My Nameplate",
+      "showOwnNameplate": "Hiện Bảng Tên Của Tôi",
       "uiScale": "Tỷ Lệ Giao Diện",
-      "playerFrameScale": "Player Frame Scale",
-      "targetFrameScale": "Target Frame Scale",
-      "aurasOnPlayerFrame": "Buffs on the Player Frame",
+      "playerFrameScale": "Tỷ Lệ Khung Người Chơi",
+      "targetFrameScale": "Tỷ Lệ Khung Mục Tiêu",
+      "aurasOnPlayerFrame": "Hiệu Ứng Có Lợi Trên Khung Người Chơi",
       "highContrastBackground": "Nền Tương Phản Cao",
       "startAttackOnAbility": "Tự Đánh Khi Dùng Kỹ Năng",
-      "walkByAutoloot": "Walk-by Autoloot",
+      "walkByAutoloot": "Tự Nhặt Đồ Khi Đi Ngang",
       "groundReticle": "Vòng ngắm mục tiêu mặt đất",
       "showItemLevel": "Hiển Thị Cấp Vật Phẩm",
       "itemLevelLine": "Cấp Vật Phẩm {level}",
       "itemScoreLine": "Điểm {score}",
       "showSecondaryActionBar": "Hiện Thanh Hành Động Phụ",
-      "showDailyRewardsChest": "Show Daily Rewards Chest"
+      "showDailyRewardsChest": "Hiện Rương Phần Thưởng Hằng Ngày"
     },
     "controller": {
       "title": "Tay Cầm",
@@ -555,7 +560,7 @@ export const vi_VN: EnTranslations = {
       "defaultBuildName": "Cấu Hình {n}"
     },
     "tips": {
-      "joinChannels": "Mẹo: gõ /join world hoặc /join lfg để trò chuyện với người chơi khắp realm."
+      "joinChannels": "Mẹo: gõ /join world hoặc /join lfg để trò chuyện với người chơi khắp thế giới."
     },
     "itemSet": {
       "header": "{name} ({have}/{total})",
@@ -610,7 +615,7 @@ export const vi_VN: EnTranslations = {
     },
     "bugReport": {
       "menuButton": "Báo Cáo Lỗi",
-      "realm": "Máy Chủ",
+      "realm": "Thế Giới",
       "character": "Nhân vật",
       "position": "Vị Trí",
       "unknown": "Không Rõ",
@@ -733,7 +738,7 @@ export const vi_VN: EnTranslations = {
     },
     "party": {
       "promoteLeader": "Thăng Làm Đội Trưởng",
-      "inviteUsage": "Invite whom? Usage: /invite <name>."
+      "inviteUsage": "Mời ai? Cách dùng: /invite <name>."
     },
     "lootSettings": {
       "title": "Cài Đặt Chiến Lợi Phẩm",
@@ -762,11 +767,11 @@ export const vi_VN: EnTranslations = {
       "searchAria": "Tìm vật phẩm trong túi theo tên",
       "noMatch": "Không có vật phẩm nào khớp với bộ lọc của bạn.",
       "capacity": "{used}/{total}",
-      "capacityAria": "Bag slots used: {used} of {total}",
-      "backpack": "Backpack",
+      "capacityAria": "Ô túi đã dùng: {used} trên {total}",
+      "backpack": "Ba Lô",
       "bagSocketAria": "{name}: {slots}",
-      "socketEmpty": "Empty bag slot",
-      "unequipHint": "Click to remove this bag"
+      "socketEmpty": "Ô túi trống",
+      "unequipHint": "Nhấp để tháo chiếc túi này"
     },
     "raidConvert": {
       "toPartyDone": "Raid của bạn đã chuyển trở lại thành tổ đội.",
@@ -809,7 +814,7 @@ export const vi_VN: EnTranslations = {
         "spi": "Reduce el espíritu en {value}",
         "allStats": "Reduce todos los atributos en {value}"
       },
-      "allStatsPctReduce": "Reduces all attributes by {pct}%",
+      "allStatsPctReduce": "Giảm tất cả thuộc tính đi {pct}%",
       "dodge": "Aumenta la probabilidad de esquivar un {pct}%",
       "dodgeReduce": "Reduce la probabilidad de esquivar un {pct}%",
       "armorFlat": "Reduce la armadura en {value}",
@@ -823,20 +828,20 @@ export const vi_VN: EnTranslations = {
       "stun": "Aturdido: no puede actuar",
       "root": "Enraizado: no puede moverse",
       "incapacitate": "Incapacitado: no puede actuar",
-      "polymorph": "Polimorfado: no puede actuar",
+      "polymorph": "Bị biến hình: không thể hành động.",
       "hex": "Reduce el daño y la sanación realizados un {pct}%",
       "blind": "Cegado: no puede actuar",
       "silence": "Silenciado: no puede lanzar hechizos",
       "disarm": "Desarmado: no puede usar ataques con arma",
       "lockout": "Escuela de hechizos bloqueada",
       "imbue": "Arma imbuida con efectos adicionales",
-      "imbueRange": "Arma imbuida: {min} a {max} de daño adicional al juzgar",
+      "imbueRange": "Vũ khí được phù chú: {min} đến {max} sát thương thêm khi dùng Verdict.",
       "stealth": "Oculto; velocidad de movimiento reducida un {pct}%",
-      "formBear": "Forma de oso: salud y armadura aumentadas",
+      "formBear": "Bruin Form: tăng máu và giáp.",
       "formCat": "Forma felina: daño cuerpo a cuerpo y energía",
-      "formTravel": "Forma de viaje: velocidad de movimiento aumentada un {pct}%",
-      "defensiveStance": "Actitud defensiva: daño recibido reducido, más amenaza",
-      "righteousFury": "Furia recta: amenaza de daño Sagrado muy aumentada",
+      "formTravel": "Fleet Form: tốc độ di chuyển tăng {pct}%.",
+      "defensiveStance": "Thế Thủ: giảm sát thương phải chịu, tăng đe dọa.",
+      "righteousFury": "Lời Thề Rực Cháy: tăng mạnh đe dọa từ sát thương Thánh.",
       "scale": "Tamaño aumentado un {pct}%",
       "jump": "Altura de salto aumentada un {pct}%",
       "school": {
@@ -850,7 +855,7 @@ export const vi_VN: EnTranslations = {
       }
     },
     "worldBoss": {
-      "spawn": "{name} rises over Thornpeak Heights!"
+      "spawn": "{name} trỗi dậy trên Cao Nguyên Đỉnh Gai!"
     },
     "loot": {
       "chestTitle": "Rương"
@@ -864,21 +869,21 @@ export const vi_VN: EnTranslations = {
       "mobElite": "[{level}+] {name}"
     },
     "mobTooltip": {
-      "levelFamily": "Level {level} {family}",
-      "familyDemon": "Demon",
-      "hostile": "Hostile",
-      "friendly": "Friendly"
+      "levelFamily": "{family} cấp {level}",
+      "familyDemon": "Ác Quỷ",
+      "hostile": "Thù Địch",
+      "friendly": "Thân Thiện"
     },
     "targetFrame": {
-      "unlock": "Move target frame",
-      "lock": "Lock target frame"
+      "unlock": "Di chuyển khung mục tiêu",
+      "lock": "Khóa khung mục tiêu"
     },
     "playerFrame": {
-      "unlock": "Move player frame",
-      "lock": "Lock player frame"
+      "unlock": "Di chuyển khung người chơi",
+      "lock": "Khóa khung người chơi"
     },
     "frameReset": {
-      "label": "Reset Frame Positions"
+      "label": "Đặt Lại Vị Trí Các Khung"
     },
     "itemTooltip": {
       "requiresLevel": "Yêu cầu Cấp {level}"
@@ -961,7 +966,7 @@ export const vi_VN: EnTranslations = {
       "memberSinceDays": "{days} ngày trong Discord",
       "roleTag": {
         "levyst": "Levy St",
-        "admin": "Admin",
+        "admin": "Quản Trị Viên",
         "devs": "Lập Trình Viên",
         "mods": "Điều Hành Viên",
         "artists": "Họa Sĩ"
@@ -1056,114 +1061,114 @@ export const vi_VN: EnTranslations = {
       "unlink": "Hủy liên kết GitHub"
     },
     "mailbox": {
-      "title": "Mailbox",
-      "subtitle": "The Ravenpost",
-      "close": "Close mailbox",
-      "tabInbox": "Inbox",
-      "tabInboxWithCount": "Inbox ({count})",
-      "tabSend": "Send",
-      "empty": "Your mailbox is empty.",
-      "truncated": "Showing the newest {shown} of {total} letters.",
-      "attachmentsBadge": "Parcel attached",
-      "unreadBadge": "Unread",
-      "back": "Back",
-      "take": "Take attachments",
-      "delete": "Delete letter",
-      "deleteAria": "Delete the letter {subject}",
-      "openAria": "Read the letter {subject} from {name}",
-      "noSubject": "(no subject)",
-      "toLabel": "To",
-      "toPlaceholder": "Character name",
-      "subjectLabel": "Subject",
-      "bodyLabel": "Message",
-      "coinLabel": "Attach coin",
-      "parcelsLabel": "Parcels",
-      "parcelsHint": "Click an item in your bags to attach it.",
-      "removeParcelAria": "Remove {item} from the letter",
-      "sendButton": "Send letter",
-      "postageNote": "Postage: {amount}. The raven flies for about {seconds}s.",
-      "arrivedBanner": "The raven has landed: mail from {name}.",
-      "arrivedLog": "You have new mail from {name}.",
-      "indicatorAria": "Unread mail: {count}",
-      "indicatorTip": "You have {count} unread letters. Visit a mailbox to read them.",
-      "clickAttach": "Click to attach to your letter.",
-      "cannotMail": "This cannot be mailed.",
+      "title": "Hòm Thư",
+      "subtitle": "Bưu Quạ",
+      "close": "Đóng hòm thư",
+      "tabInbox": "Hộp Thư Đến",
+      "tabInboxWithCount": "Hộp Thư Đến ({count})",
+      "tabSend": "Gửi",
+      "empty": "Hòm thư của bạn trống rỗng.",
+      "truncated": "Đang hiển thị {shown} lá thư mới nhất trên tổng {total}.",
+      "attachmentsBadge": "Có bưu kiện đính kèm",
+      "unreadBadge": "Chưa đọc",
+      "back": "Quay lại",
+      "take": "Lấy vật đính kèm",
+      "delete": "Xóa thư",
+      "deleteAria": "Xóa lá thư {subject}",
+      "openAria": "Đọc lá thư {subject} từ {name}",
+      "noSubject": "(không tiêu đề)",
+      "toLabel": "Người nhận",
+      "toPlaceholder": "Tên nhân vật",
+      "subjectLabel": "Tiêu đề",
+      "bodyLabel": "Nội dung",
+      "coinLabel": "Đính kèm tiền",
+      "parcelsLabel": "Bưu Kiện",
+      "parcelsHint": "Nhấp một vật phẩm trong túi để đính kèm.",
+      "removeParcelAria": "Gỡ {item} khỏi lá thư",
+      "sendButton": "Gửi thư",
+      "postageNote": "Bưu phí: {amount}. Quạ thư bay mất khoảng {seconds} giây.",
+      "arrivedBanner": "Quạ thư đã đáp xuống: thư từ {name}.",
+      "arrivedLog": "Bạn có thư mới từ {name}.",
+      "indicatorAria": "Thư chưa đọc: {count}",
+      "indicatorTip": "Bạn có {count} lá thư chưa đọc. Hãy ghé một hòm thư để đọc.",
+      "clickAttach": "Nhấp để đính kèm vào lá thư của bạn.",
+      "cannotMail": "Thứ này không thể gửi qua thư.",
       "result": {
-        "sent": "A raven takes wing with your letter to {name} ({postage} postage).",
-        "collected": "You collect {amount} from the letter.",
-        "tooFar": "You must be at a mailbox to tend your post.",
-        "needRecipient": "Name a recipient for your letter.",
-        "noRecipient": "No one by that name holds a mailbox here.",
-        "tooManyParcels": "A letter carries at most {count} parcels.",
-        "noMailQuestItems": "You cannot mail quest items.",
-        "notEnoughItems": "You do not have that many to send.",
-        "cantAffordPostage": "You cannot afford the postage.",
-        "recipientBoxFull": "Their mailbox is full.",
-        "letterGone": "That letter is no longer in your box.",
-        "takeParcelsFirst": "Take the parcels out before discarding the letter."
+        "sent": "Một con quạ tung cánh mang lá thư của bạn đến {name} (bưu phí {postage}).",
+        "collected": "Bạn nhận {amount} từ lá thư.",
+        "tooFar": "Bạn phải ở cạnh một hòm thư để xử lý thư từ.",
+        "needRecipient": "Hãy ghi tên người nhận cho lá thư của bạn.",
+        "noRecipient": "Không ai mang tên đó có hòm thư ở đây.",
+        "tooManyParcels": "Một lá thư chở tối đa {count} bưu kiện.",
+        "noMailQuestItems": "Bạn không thể gửi vật phẩm nhiệm vụ qua thư.",
+        "notEnoughItems": "Bạn không có đủ số lượng đó để gửi.",
+        "cantAffordPostage": "Bạn không đủ tiền trả bưu phí.",
+        "recipientBoxFull": "Hòm thư của người nhận đã đầy.",
+        "letterGone": "Lá thư đó không còn trong hòm thư của bạn.",
+        "takeParcelsFirst": "Hãy lấy bưu kiện ra trước khi bỏ lá thư."
       }
     },
     "calendar": {
-      "title": "Event Calendar",
-      "close": "Close calendar",
-      "keybindLabel": "Event Calendar",
-      "prevMonth": "Previous month",
-      "nextMonth": "Next month",
-      "dayAria": "{date}: {count} events",
-      "noEvents": "Nothing planned for this day.",
-      "allDay": "All day",
-      "bookedBy": "Booked by {name}",
-      "deleteAria": "Remove the event {title}",
-      "bookTitle": "Book a guild event",
-      "titlePlaceholder": "Event title",
-      "notePlaceholder": "Note (optional)",
-      "hourLabel": "Hour (UTC)",
-      "hourAllDay": "All day",
-      "addButton": "Book event",
-      "guildOnlyNote": "Join a guild to plan events together.",
+      "title": "Lịch Sự Kiện",
+      "close": "Đóng lịch",
+      "keybindLabel": "Lịch Sự Kiện",
+      "prevMonth": "Tháng trước",
+      "nextMonth": "Tháng sau",
+      "dayAria": "{date}: {count} sự kiện",
+      "noEvents": "Không có gì được lên lịch cho ngày này.",
+      "allDay": "Cả ngày",
+      "bookedBy": "Đặt bởi {name}",
+      "deleteAria": "Gỡ sự kiện {title}",
+      "bookTitle": "Đặt một sự kiện bang hội",
+      "titlePlaceholder": "Tiêu đề sự kiện",
+      "notePlaceholder": "Ghi chú (tùy chọn)",
+      "hourLabel": "Giờ (UTC)",
+      "hourAllDay": "Cả ngày",
+      "addButton": "Đặt sự kiện",
+      "guildOnlyNote": "Gia nhập một bang hội để cùng nhau lên kế hoạch sự kiện.",
       "result": {
-        "created": "The event is on the guild calendar.",
-        "removed": "The event was taken off the calendar.",
-        "notInGuild": "You are not in a guild.",
-        "notOfficer": "Only officers and the Guild Master may manage guild events.",
-        "badInput": "Give the event a title and a valid day.",
-        "calendarFull": "The guild calendar is full.",
-        "eventGone": "That event is no longer on the calendar."
+        "created": "Sự kiện đã có trên lịch bang hội.",
+        "removed": "Sự kiện đã được gỡ khỏi lịch.",
+        "notInGuild": "Bạn không ở trong bang hội nào.",
+        "notOfficer": "Chỉ sĩ quan và Hội Chủ mới có thể quản lý sự kiện bang hội.",
+        "badInput": "Hãy đặt tiêu đề cho sự kiện và chọn một ngày hợp lệ.",
+        "calendarFull": "Lịch bang hội đã đầy.",
+        "eventGone": "Sự kiện đó không còn trên lịch."
       },
       "events": {
         "raidCall": {
-          "title": "Raid Call",
-          "note": "Wardens sound the horn: gather a party for the crypts and the raid."
+          "title": "Hiệu Triệu Raid",
+          "note": "Các vệ quan thổi tù và: hãy tập hợp tổ đội cho hầm mộ và trận raid."
         },
         "marketDay": {
-          "title": "Market Day",
-          "note": "The Merchant expects fresh stock. A fine day to browse the World Market."
+          "title": "Ngày Họp Chợ",
+          "note": "Thương Nhân chờ đợi hàng mới về. Một ngày lành để dạo Chợ Thế Giới."
         },
         "fiestaNight": {
-          "title": "Fiesta Night",
-          "note": "The 2v2 Fiesta ring draws its loudest crowds tonight."
+          "title": "Đêm Fiesta",
+          "note": "Võ đài Fiesta 2v2 đón đám đông cuồng nhiệt nhất vào tối nay."
         },
         "arenaClash": {
-          "title": "Arena Clash",
-          "note": "Duelists flock to the Ashen Coliseum. Queue up and climb the ladder."
+          "title": "Đại Chiến Đấu Trường",
+          "note": "Các đấu sĩ đổ về Đấu Trường Tro Tàn. Hãy xếp hàng và leo bảng xếp hạng."
         },
         "fishingDerby": {
-          "title": "Fishing Derby",
-          "note": "Anglers line the lakes. Bring a pole and swap fishing tales."
+          "title": "Hội Thi Câu Cá",
+          "note": "Cần thủ xếp hàng quanh các hồ nước. Hãy mang theo cần câu và trao đổi chuyện câu cá."
         },
         "delveDay": {
-          "title": "Delve Day",
-          "note": "Brother Halven marks his charts: a fine day to brave the Collapsed Reliquary."
+          "title": "Ngày Hang Sâu",
+          "note": "Tu Huynh Halven đánh dấu vào những tấm bản đồ của mình: một ngày lành để thử sức Thánh Tích Sụp Đổ."
         },
         "moongateCommunion": {
-          "title": "Moongate Communion",
-          "note": "Pilgrims gather at the temple moongate under the mid-month moon."
+          "title": "Hội Ngộ Nguyệt Môn",
+          "note": "Khách hành hương tụ họp tại nguyệt môn của ngôi đền dưới ánh trăng giữa tháng."
         }
       }
     },
     "social": {
-      "lastSeen": "Last seen: {when}",
-      "lastSeenNever": "never"
+      "lastSeen": "Lần cuối trực tuyến: {when}",
+      "lastSeenNever": "chưa bao giờ"
     }
   },
   "apiError": {
@@ -1363,7 +1368,7 @@ export const vi_VN: EnTranslations = {
         "valeName": "Thung Lũng Đông Khê",
         "valeBlurb": "Những ngọn đồi xanh và những cánh rừng già nơi mọi cuộc phiêu lưu bắt đầu.",
         "marshName": "Đầm Lầy Bùn Sâu",
-        "marshBlurb": "Những đầm lầy chìm sâu và phế tích bị thủy triều mài mòn, nơi trú ngụ của murloc và những thứ tệ hơn.",
+        "marshBlurb": "Những đầm lầy chìm sâu và phế tích bị thủy triều mài mòn, nơi trú ngụ của mudfin và những thứ tệ hơn.",
         "peaksName": "Cao Nguyên Đỉnh Gai",
         "peaksBlurb": "Những rặng núi bị gió bào mòn vươn lên về phía những hiểm nguy lạnh giá nhất của vương quốc."
       },
@@ -1385,12 +1390,12 @@ export const vi_VN: EnTranslations = {
         "q2": "Tôi có cần ví crypto không?",
         "a2": "Không. Trò chơi hoàn toàn chơi được mà không cần ví. Token cộng đồng tùy chọn chỉ mở khóa trang trí làm đẹp và không bao giờ ảnh hưởng đến sức mạnh.",
         "q3": "Tôi có thể chơi ngoại tuyến không?",
-        "a3": "Có. Có chế độ chơi đơn tức thì ngay trong trình duyệt của bạn, cộng thêm vương quốc trực tuyến chung.",
+        "a3": "Có. Có chế độ chơi đơn tức thì ngay trong trình duyệt của bạn, cộng thêm thế giới trực tuyến chung.",
         "q4": "Mất bao lâu để đạt cấp tối đa?",
         "a4": "Cấp tối đa là cấp {cap}, đạt được qua ba vùng đất với nhiệm vụ, hầm ngục và khám phá."
       },
       "community": {
-        "heading": "Gia nhập vương quốc",
+        "heading": "Gia nhập thế giới",
         "body": "Nhảy vào ngay, hoặc ghé qua chào một tiếng. Thế giới sẽ vui hơn khi có bạn đồng hành.",
         "play": "Chơi Ngay",
         "discord": "Tham gia Discord",
@@ -1424,7 +1429,7 @@ export const vi_VN: EnTranslations = {
       "groupingTitle": "Cùng nhau chơi",
       "groupingBody": "Mời người khác vào tổ đội để chia sẻ công trạng nhiệm vụ và chinh phục các hầm ngục. Phần lớn thế giới có thể chơi đơn, nên lập đội là một lựa chọn, không phải một việc bắt buộc.",
       "onlineTitle": "Trực tuyến hay ngoại tuyến",
-      "onlineBody": "Chơi vương quốc trực tuyến chung với mọi người khác, hoặc khởi tạo một thế giới ngoại tuyến tức thì trong trình duyệt để học cách chơi.",
+      "onlineBody": "Chơi thế giới trực tuyến chung với mọi người khác, hoặc khởi tạo một thế giới ngoại tuyến tức thì trong trình duyệt để học cách chơi.",
       "reassure": "Tài năng mở khóa ở cấp 10 và có thể thiết lập lại bất cứ lúc nào, nên những lựa chọn ban đầu của bạn không bao giờ là vĩnh viễn. Cứ thoải mái thử nghiệm.",
       "controlsLink": "Xem bảng tra điều khiển đầy đủ"
     },
@@ -1601,12 +1606,12 @@ export const vi_VN: EnTranslations = {
       "charge": "Lao tới kẻ địch ở xa để mở màn trận đấu bằng một cú choáng ngắn.",
       "rend": "Mở một vết chảy máu bào mòn mục tiêu dần theo thời gian.",
       "thunder_clap": "Đánh trúng mọi thứ quanh bạn và làm chậm đòn tấn công của chúng.",
-      "seal_of_righteousness": "Phù chú đòn vung của bạn với sát thương Thánh, rồi giải phóng bằng Phán Xét.",
+      "seal_of_righteousness": "Phù chú đòn vung của bạn với sát thương Thánh, rồi giải phóng bằng Verdict.",
       "holy_light": "Một đòn trị liệu vững chãi, đáng kể để hồi đầy cho đồng đội hoặc bản thân.",
       "devotion_aura": "Một buff bản thân lâu dài giúp tăng giáp để đòn đánh giảm uy lực.",
       "judgement": "Tiêu Ấn Chú đang kích hoạt để giáng đòn lên kẻ địch từ cự ly gần.",
       "blessing_of_might": "Tăng sức tấn công cho mục tiêu thân thiện, nên niệm trước khi vào trận.",
-      "divine_protection": "Một tấm khiên thần thánh nhanh gọn để hứng sát thương khi tình thế ngặt nghèo.",
+      "divine_protection": "Một tấm bùa hộ mệnh nhanh gọn để hứng sát thương khi tình thế ngặt nghèo.",
       "raptor_strike": "Một cú vung cận chiến mạnh tay cho khi có kẻ áp sát bạn.",
       "aspect_of_the_hawk": "Một trạng thái bạn duy trì để gia tăng sức tấn công tầm xa.",
       "serpent_sting": "Tiêm vào một liều nọc độc gây sát thương tự nhiên theo thời gian.",
@@ -1638,7 +1643,7 @@ export const vi_VN: EnTranslations = {
       "conjure_water": "Tạo ra đồ uống hồi mana, để bạn nạp lại giữa các đợt kéo quái.",
       "conjure_food": "Tạo ra thức ăn hồi máu khi bạn ngồi xuống dùng bữa.",
       "shadow_bolt": "Một tia bóng tối bạn niệm vào mục tiêu, đòn chủ lực quen thuộc của bạn.",
-      "summon_imp": "Triệu một tiểu quỷ phóng những tia lửa vào kẻ địch từ xa.",
+      "summon_imp": "Triệu một Emberkin phóng những tia lửa vào kẻ địch từ xa.",
       "demon_skin": "Một buff bản thân lâu dài giúp da bạn cứng cáp hơn và tăng giáp.",
       "immolate": "Thiêu cháy mục tiêu cho một đòn mở màn và một vệt cháy âm ỉ kéo dài.",
       "corruption": "Làm mục rữa mục tiêu bằng bóng tối, gây sát thương theo thời gian trong khi bạn làm việc khác.",
@@ -1670,7 +1675,7 @@ export const vi_VN: EnTranslations = {
         "old_greyjaw": "Một con sói già đầy sẹo chưa cái bẫy nào giữ nổi, bị đổ tội cho ba con chó săn và cánh tay một cậu giữ ngựa. Hắn săn mồi một mình giữa rừng sâu, và càng trở nên hung tợn khi trận đấu kéo dài.",
         "grubjaw": "Một troll đầm lầy tham lam đến mức những troll khác không chịu đào bới bên cạnh hắn, đồn rằng đã nuốt chửng hai con la thồ cuối cùng của một thương nhân, cả bộ yên cương lẫn tất cả.",
         "shardlord_kazzix": "Một tinh linh bão tố được ban cho thân hình, lang thang trên những vách đá xa xôi phía trên Stormcrag với một mảnh tâm thạch đáng để liều mình giữa sấm sét.",
-        "mirejaw_frenzy": "Một murloc đầm lầy tự kích mình vào cơn cuồng quẫy đảo giữa trận, thứ ồn ào nhất trong một bầy ồn ào, hung hãn lãnh thổ.",
+        "mirejaw_frenzy": "Một mudfin đầm lầy tự kích mình vào cơn cuồng quẫy đảo giữa trận, thứ ồn ào nhất trong một bầy ồn ào, hung hãn lãnh thổ.",
         "gravecaller_cultist": "Những kẻ phục dịch khoác áo choàng của giáo phái tử thần, kẻ mà công việc làm ô uế những nấm mồ từ Thung Lũng đến những đỉnh núi. Nơi chúng tụ họp, người chết không được yên nghỉ."
       }
     },
@@ -1684,12 +1689,12 @@ export const vi_VN: EnTranslations = {
         "desc": "Những kẻ giăng tơ và rình rập độc địa làm tổ ở những nơi tối tăm, rậm rạp. Thợ Săn có thể thuần hóa chúng, giống như dã thú."
       },
       "mudfin": {
-        "name": "Murloc",
+        "name": "Mudfin",
         "desc": "Cư dân đầm lầy lưỡng cư tràn ngập vùng nước nông trong những bầy ồn ào, giành lãnh thổ."
       },
       "burrower": {
-        "name": "Kobold",
-        "desc": "Những kẻ đào hang đầu mang nến tràn ngập các hầm mỏ và hang ổ, hung hãn bảo vệ quặng của chúng."
+        "name": "Lũ Đào Hang",
+        "desc": "Những kẻ đào hang bám đầy bùn đất tràn ngập các hầm mỏ và hang ổ, hung hãn bảo vệ quặng của chúng."
       },
       "humanoid": {
         "name": "Nhân Hình",
@@ -1725,7 +1730,7 @@ export const vi_VN: EnTranslations = {
       "places": "Những địa điểm đáng chú ý",
       "residents": "Những người bạn sẽ gặp",
       "valeBlurb": "Thung lũng khởi đầu xanh tươi, nơi những anh hùng mới rèn luyện bản lĩnh với lũ sói và đám cướp quanh thị trấn Eastbrook.",
-      "marshBlurb": "Một xứ sở chìm trong sương mù và phế tích. Bầy murloc tràn ngập vùng nước nông và một thứ gì đó cổ xưa hơn đang cựa quậy dưới mặt nước, được canh chừng từ thị trấn cầu Fenbridge.",
+      "marshBlurb": "Một xứ sở chìm trong sương mù và phế tích. Bầy mudfin tràn ngập vùng nước nông và một thứ gì đó cổ xưa hơn đang cựa quậy dưới mặt nước, được canh chừng từ thị trấn cầu Fenbridge.",
       "peaksBlurb": "Những rặng núi bị gió bào mòn và các hầm mỏ cũ vươn tới những hiểm họa lạnh giá, cao nhất của vương quốc, được trấn giữ bởi tiền đồn Highwatch.",
       "valeGreeting": "Hãy giữ lưỡi kiếm bên mình. Thung Lũng không còn như xưa nữa.",
       "valeGreeter": "Cảnh Sát Trưởng Redbrook, Eastbrook",
@@ -1733,9 +1738,9 @@ export const vi_VN: EnTranslations = {
       "marshGreeter": "Hộ Vệ Fenwick, Fenbridge",
       "peaksGreeting": "Hai trăm năm bức tường này đã đứng vững. Nó sẽ không sụp đổ dưới phiên gác của ta, nhưng nó đang rền rĩ.",
       "peaksGreeter": "Đại Úy Thessaly, Highwatch",
-      "valePlaceNotes": "Eastbrook là căn cứ nhà đầu tiên của bạn. Wolf Run và Boar Meadow là vùng săn bắn hiền hòa; Mirror Lake là vùng nước tĩnh lặng để câu cá; Webwood và Copper Dig giấu lũ nhện và đám đào mỏ tham quặng; một Bandit Camp và Fallen Chapel chứa những công việc gai góc hơn; Reliquary Hill dẫn xuống Collapsed Reliquary, delve đầu tiên của vương quốc; và Brightwood Glade là một khu rừng thưa ngập nắng, tĩnh lặng ở phía bắc.",
-      "marshPlaceNotes": "Fenbridge canh giữ con đường khô ráo duy nhất. Prowler Reeds và Deepfen Shallows đầy thú đầm lầy và murloc; Widow Thicket giăng kín mạng nhện dày đặc; Drowned Chapel và Troll Mounds chứa những hiểm họa cổ xưa hơn; Gravecaller Encampment là nơi giáo phái đào hầm ẩn náu, và Pháo Đài Chìm là trái tim hầm ngục của đầm lầy.",
-      "peaksPlaceNotes": "Highwatch giữ vững bức tường. Stalker Ridge và Deeprock Burrows thuộc về mèo núi và kobold; Ogre Foothills và Drogmar's War-Camp thuộc về lũ côn đồ đánh thuê; Stormcrag lách tách tiếng các nguyên tố và Glimmermere phát sáng bên dưới nó; Wyrmcult Tents và Revenant Fields bao quanh vùng đất cao của giáo phái, với Thánh Đường Mộ Long ở đỉnh của nó.",
+      "valePlaceNotes": "Eastbrook là căn cứ nhà đầu tiên của bạn. Wolf Run và Boar Meadow là vùng săn bắn hiền hòa; Mirror Lake là vùng nước tĩnh lặng để câu cá; Sableweb và Copper Dig giấu lũ nhện và đám đào mỏ tham quặng; một Bandit Camp và Fallen Chapel chứa những công việc gai góc hơn; Reliquary Hill dẫn xuống Collapsed Reliquary, delve đầu tiên của thế giới; và Brightwood Glade là một khu rừng thưa ngập nắng, tĩnh lặng ở phía bắc.",
+      "marshPlaceNotes": "Fenbridge canh giữ con đường khô ráo duy nhất. Prowler Reeds và Deepfen Shallows đầy thú đầm lầy và mudfin; Widow Thicket giăng kín mạng nhện dày đặc; Drowned Chapel và Troll Mounds chứa những hiểm họa cổ xưa hơn; Gravecaller Encampment là nơi giáo phái đào hầm ẩn náu, và Pháo Đài Chìm là trái tim hầm ngục của đầm lầy.",
+      "peaksPlaceNotes": "Highwatch giữ vững bức tường. Stalker Ridge và Deeprock Burrows thuộc về mèo núi và lũ đào hang; Ogre Foothills và Drogmar's War-Camp thuộc về lũ côn đồ đánh thuê; Stormcrag lách tách tiếng các nguyên tố và Glimmermere phát sáng bên dưới nó; Wyrmcult Tents và Revenant Fields bao quanh vùng đất cao của giáo phái, với Thánh Đường Mộ Long ở đỉnh của nó.",
       "gladeTitle": "Một góc tĩnh lặng: Brightwood Glade",
       "gladeBody": "Không phải mọi câu chuyện ở Vale đều về người chết. Ở phía bắc, một khu rừng thưa ngập nắng tên là Brightwood Glade giữ nhịp điệu dịu dàng của riêng nó, toàn những lối đi tĩnh lặng và ánh sáng lốm đốm dưới tán cành. Nó là một nốt nhạc đối lập êm dịu với con đường bạn đang theo, và đáng để ghé thăm khi cung đường cho bạn chỗ để lang thang."
     },
@@ -1770,7 +1775,7 @@ export const vi_VN: EnTranslations = {
       "sagaValeTitle": "Thung Lũng: một cái tên trên ấn triện",
       "sagaValeBody": "Tại Eastbrook người chết không chịu yên nghỉ, và dấu ấn đằng sau nó thuộc về một giáo phái từ lâu tưởng đã biến mất. Lần theo nó đến một Kẻ Gọi Mộ đang hoạt động trong hầm mộ nguyện đường, và chính giấy tờ của hắn chỉ bạn về phía đầm lầy ở phương bắc.",
       "sagaMarshTitle": "Đầm lầy: một khoản thuế linh hồn",
-      "sagaMarshBody": "Tại Đầm Lầy Bùn Sâu những cái chết đuối không phải tai nạn. Có kẻ đang lấp đầy đầm lầy như một hòm thuế, dựng dậy những xác chết phục tùng từ mọi lữ khách bị dòng nước cuốn đi. Lần theo mệnh lệnh ngược lên chuỗi chỉ huy đến một Kẻ Gọi Sương trong pháo đài chìm, mà lời trăng trối nêu tên một thứ còn cổ xưa hơn, đang cựa mình bên dưới những đỉnh núi.",
+      "sagaMarshBody": "Tại Đầm Lầy Bùn Sâu những cái chết đuối không phải tai nạn. Có kẻ đang lấp đầy đầm lầy như một hòm thuế, dựng dậy những xác chết phục tùng từ mọi lữ khách bị dòng nước cuốn đi. Lần theo mệnh lệnh ngược lên chuỗi chỉ huy đến một Fogbinder trong pháo đài chìm, mà lời trăng trối nêu tên một thứ còn cổ xưa hơn, đang cựa mình bên dưới những đỉnh núi.",
       "sagaPeaksTitle": "Đỉnh núi: khoản thuế ấy để làm gì",
       "sagaPeaksBody": "Trên Thornpeak toàn bộ âm mưu trở nên rõ ràng. Mọi linh hồn bị đánh cắp kể từ Vale đều là một khoản cống nạp đổ về công việc tăm tối của giáo phái nơi trái tim ngọn núi. Con đường khởi đầu từ một sân nguyện đường kết thúc tại đây, trong một cuộc xuống sâu năm người để đối mặt với bàn tay đứng sau tất cả. Chúng tôi sẽ để bạn tự khám phá ai đang chờ ở tận cùng.",
       "sideTitle": "Những sợi chỉ rẽ khỏi đường chính",
@@ -2082,427 +2087,427 @@ export const vi_VN: EnTranslations = {
     }
   },
   "editor": {
-    "appTitle": "Map Editor",
-    "docTitle": "Map Editor - World of ClaudeCraft",
-    "untitledMap": "Untitled Map",
-    "playtestPlayerName": "Mapmaker",
+    "appTitle": "Trình Chỉnh Sửa Bản Đồ",
+    "docTitle": "Trình Chỉnh Sửa Bản Đồ - World of ClaudeCraft",
+    "untitledMap": "Bản Đồ Chưa Đặt Tên",
+    "playtestPlayerName": "Người Tạo Bản Đồ",
     "topbar": {
-      "label": "Editor actions",
-      "mapNameLabel": "Map name",
-      "dirty": "Unsaved changes",
-      "dirtyDot": "This map has unsaved changes",
-      "clean": "All changes saved",
-      "savedLocal": "Saved in this browser",
-      "savedServer": "Saved to server (v{version})",
-      "saving": "Saving...",
-      "neverSaved": "Not saved yet",
-      "new": "New",
-      "newTitle": "Start a new map from the built-in world",
-      "open": "Open",
-      "openTitle": "Open a saved map (browser or server)",
-      "save": "Save",
-      "saveTitle": "Save to this browser, and to the server when signed in (Ctrl+S)",
-      "saveAs": "Save As",
-      "saveAsTitle": "Save a copy under a new name",
-      "fork": "Fork",
-      "forkTitle": "Create your own server-side copy of this map",
-      "forkDisabledTitle": "Open a server map first to fork it",
-      "import": "Import",
-      "importTitle": "Import a map from a JSON file",
-      "export": "Export",
-      "exportTitle": "Download this map as a JSON file",
-      "uploadAsset": "Upload Asset",
-      "uploadAssetTitle": "Upload a GLB model (up to 8 MiB) to place in your maps",
-      "uploadAssetDisabledTitle": "Sign in from the game to upload assets",
-      "playtest": "Playtest",
-      "playtestTitle": "Boot the game on this map (offline, current edits included)",
-      "viewLabel": "View mode",
+      "label": "Thao tác trình chỉnh sửa",
+      "mapNameLabel": "Tên bản đồ",
+      "dirty": "Thay đổi chưa lưu",
+      "dirtyDot": "Bản đồ này có thay đổi chưa lưu",
+      "clean": "Đã lưu mọi thay đổi",
+      "savedLocal": "Đã lưu trong trình duyệt này",
+      "savedServer": "Đã lưu lên máy chủ (v{version})",
+      "saving": "Đang lưu...",
+      "neverSaved": "Chưa lưu",
+      "new": "Mới",
+      "newTitle": "Bắt đầu bản đồ mới từ thế giới dựng sẵn",
+      "open": "Mở",
+      "openTitle": "Mở một bản đồ đã lưu (trình duyệt hoặc máy chủ)",
+      "save": "Lưu",
+      "saveTitle": "Lưu vào trình duyệt này, và lên máy chủ khi đã đăng nhập (Ctrl+S)",
+      "saveAs": "Lưu Thành",
+      "saveAsTitle": "Lưu một bản sao dưới tên mới",
+      "fork": "Rẽ Nhánh",
+      "forkTitle": "Tạo bản sao trên máy chủ của riêng bạn cho bản đồ này",
+      "forkDisabledTitle": "Hãy mở một bản đồ trên máy chủ trước để rẽ nhánh",
+      "import": "Nhập",
+      "importTitle": "Nhập bản đồ từ một tệp JSON",
+      "export": "Xuất",
+      "exportTitle": "Tải bản đồ này xuống dưới dạng tệp JSON",
+      "uploadAsset": "Tải Lên Vật Thể",
+      "uploadAssetTitle": "Tải lên một mô hình GLB (tối đa 8 MiB) để đặt vào bản đồ của bạn",
+      "uploadAssetDisabledTitle": "Đăng nhập từ trò chơi để tải lên vật thể",
+      "playtest": "Chơi Thử",
+      "playtestTitle": "Khởi động trò chơi trên bản đồ này (ngoại tuyến, gồm cả chỉnh sửa hiện tại)",
+      "viewLabel": "Chế độ xem",
       "view3d": "3D",
-      "view3dTitle": "Edit in the rendered world",
+      "view3dTitle": "Chỉnh sửa trong thế giới được kết xuất",
       "view2d": "2D",
-      "view2dTitle": "Edit on the symbolic overhead map",
-      "undoCount": "Undo: {count}",
-      "undoCountTitle": "{count} undoable steps (Ctrl+Z to undo, Ctrl+Y to redo)",
-      "autosave": "Autosave",
-      "autosaveTitle": "Automatically save the map while there are unsaved changes. Turns itself off if a save fails.",
-      "undo": "Undo",
-      "undoTitle": "Undo the last change (Ctrl+Z)",
-      "redo": "Redo",
-      "redoTitle": "Redo the last undone change (Ctrl+Y)",
-      "offline": "Offline",
-      "offlineTitle": "Not signed in: maps save to this browser only. Sign in from the game to save online.",
-      "signIn": "Sign in",
-      "signInTitle": "Open the game login screen in a new tab",
-      "help": "Help",
-      "helpTitle": "Editor guide: tools, shortcuts, and the tutorial"
+      "view2dTitle": "Chỉnh sửa trên bản đồ 2D ký hiệu nhìn từ trên cao",
+      "undoCount": "Hoàn tác: {count}",
+      "undoCountTitle": "{count} bước có thể hoàn tác (Ctrl+Z để hoàn tác, Ctrl+Y để làm lại)",
+      "autosave": "Tự Động Lưu",
+      "autosaveTitle": "Tự động lưu bản đồ khi có thay đổi chưa lưu. Tự tắt nếu một lần lưu thất bại.",
+      "undo": "Hoàn Tác",
+      "undoTitle": "Hoàn tác thay đổi gần nhất (Ctrl+Z)",
+      "redo": "Làm Lại",
+      "redoTitle": "Làm lại thay đổi vừa hoàn tác (Ctrl+Y)",
+      "offline": "Ngoại tuyến",
+      "offlineTitle": "Chưa đăng nhập: bản đồ chỉ lưu vào trình duyệt này. Đăng nhập từ trò chơi để lưu trực tuyến.",
+      "signIn": "Đăng nhập",
+      "signInTitle": "Mở màn hình đăng nhập trò chơi trong thẻ mới",
+      "help": "Trợ Giúp",
+      "helpTitle": "Cẩm nang trình chỉnh sửa: công cụ, phím tắt và phần hướng dẫn"
     },
     "tool": {
-      "listLabel": "Editor tools",
+      "listLabel": "Công cụ chỉnh sửa",
       "keyHint": "{name} ({key})",
-      "select": "Select",
-      "raise": "Raise",
-      "lower": "Lower",
-      "smooth": "Smooth",
-      "flatten": "Flatten",
-      "paint": "Paint Biome",
-      "water": "Water",
-      "place": "Place Asset",
-      "blocker": "Blocker Wall",
-      "camp": "Camp",
-      "spawn": "Spawn Point",
-      "region": "Region",
-      "erase": "Erase"
+      "select": "Chọn",
+      "raise": "Nâng Cao",
+      "lower": "Hạ Thấp",
+      "smooth": "Làm Mịn",
+      "flatten": "San Phẳng",
+      "paint": "Tô Quần Xã",
+      "water": "Nước",
+      "place": "Đặt Vật Thể",
+      "blocker": "Tường Chắn",
+      "camp": "Trại Quái",
+      "spawn": "Điểm Xuất Hiện",
+      "region": "Vùng Chọn",
+      "erase": "Xóa"
     },
     "inspector": {
-      "label": "Tool options"
+      "label": "Tùy chọn công cụ"
     },
     "brush": {
-      "title": "Brush",
-      "size": "Brush size",
-      "strength": "Strength",
-      "sizeHint": "Keys: [ and ] resize the brush; Shift+[ and Shift+] change strength.",
-      "editCount": "Terrain edits: {count} / {max}"
+      "title": "Cọ",
+      "size": "Cỡ cọ",
+      "strength": "Cường độ",
+      "sizeHint": "Phím: [ và ] đổi cỡ cọ; Shift+[ và Shift+] đổi cường độ.",
+      "editCount": "Chỉnh sửa địa hình: {count} / {max}"
     },
     "biome": {
-      "title": "Biome",
-      "paletteLabel": "Biome to paint",
-      "vale": "Vale",
-      "marsh": "Marsh",
-      "peaks": "Peaks",
-      "beach": "Beach",
-      "desert": "Desert",
-      "volcano": "Volcano",
-      "cave": "Cave",
-      "erase": "Erase paint",
-      "hint": "Painted cells override the zone biome for terrain shape and color.",
-      "clear": "Clear all biome paint",
-      "clearConfirm": "Remove every painted biome cell from this map?"
+      "title": "Quần Xã",
+      "paletteLabel": "Quần xã cần tô",
+      "vale": "Thung Lũng",
+      "marsh": "Đầm Lầy",
+      "peaks": "Đỉnh Núi",
+      "beach": "Bãi Biển",
+      "desert": "Sa Mạc",
+      "volcano": "Núi Lửa",
+      "cave": "Hang Động",
+      "erase": "Tẩy lớp tô",
+      "hint": "Các ô đã tô sẽ ghi đè quần xã của vùng về hình dạng và màu sắc địa hình.",
+      "clear": "Xóa toàn bộ lớp tô quần xã",
+      "clearConfirm": "Gỡ mọi ô quần xã đã tô khỏi bản đồ này?"
     },
     "flatten": {
-      "hint": "Flatten levels the ground to the height under the cursor when the drag starts.",
-      "hardEdge": "Hard edge"
+      "hint": "San Phẳng đưa mặt đất về độ cao dưới con trỏ tại thời điểm bắt đầu kéo.",
+      "hardEdge": "Cạnh cứng"
     },
     "water": {
-      "title": "Water Level",
-      "level": "Water level",
-      "hint": "Sets the map-wide water surface height, from {min} to {max} yards.",
-      "reset": "Reset to the built-in level"
+      "title": "Mực Nước",
+      "level": "Mực nước",
+      "hint": "Đặt độ cao mặt nước cho toàn bản đồ, từ {min} đến {max} thước.",
+      "reset": "Đặt lại về mực dựng sẵn"
     },
     "place": {
-      "title": "Place Asset",
-      "scale": "Scale",
-      "collide": "Blocks movement",
-      "collideHint": "A blocking asset gets a collision footprint players cannot walk through.",
-      "randomRotation": "Random rotation",
-      "chosen": "Placing: {name}",
-      "none": "Pick an asset from the browser below, then click the ground to place it."
+      "title": "Đặt Vật Thể",
+      "scale": "Tỷ lệ",
+      "collide": "Chặn di chuyển",
+      "collideHint": "Vật thể chặn sẽ có một vùng va chạm mà người chơi không thể đi xuyên qua.",
+      "randomRotation": "Xoay ngẫu nhiên",
+      "chosen": "Đang đặt: {name}",
+      "none": "Chọn một vật thể từ trình duyệt bên dưới, rồi nhấp xuống mặt đất để đặt nó."
     },
     "blockerTool": {
-      "title": "Blocker Wall",
-      "hint": "Drag along the ground to draw an invisible wall players cannot walk or jump through. Release to place it; a wall shorter than half a yard is discarded.",
-      "count": "Blocker walls: {count} / {max}"
+      "title": "Tường Chắn",
+      "hint": "Kéo dọc mặt đất để vẽ một bức tường vô hình mà người chơi không thể đi hay nhảy xuyên qua. Thả tay để đặt tường; tường ngắn hơn nửa thước sẽ bị loại bỏ.",
+      "count": "Tường chắn: {count} / {max}"
     },
     "camp": {
-      "title": "Mob Camp",
-      "mob": "Mob",
-      "count": "Count",
-      "radius": "Radius",
-      "delete": "Delete camp",
-      "hint": "Click open ground to add a camp, or click an existing camp to edit it.",
-      "playtestNote": "Mobs spawn only in playtest, never in the editor view.",
-      "selected": "Camp: {mob}",
-      "none": "No camp selected."
+      "title": "Trại Quái",
+      "mob": "Quái",
+      "count": "Số lượng",
+      "radius": "Bán kính",
+      "delete": "Xóa trại",
+      "hint": "Nhấp vào khoảng đất trống để thêm một trại, hoặc nhấp vào trại có sẵn để chỉnh sửa.",
+      "playtestNote": "Quái chỉ xuất hiện khi chơi thử, không bao giờ xuất hiện trong khung nhìn chỉnh sửa.",
+      "selected": "Trại: {mob}",
+      "none": "Chưa chọn trại nào."
     },
     "spawn": {
-      "title": "Spawn Point",
-      "hint": "Click the ground to set where playtest drops the player.",
-      "position": "Spawn: {x}, {z}",
-      "unset": "Using the built-in start position.",
-      "clear": "Clear spawn point"
+      "title": "Điểm Xuất Hiện",
+      "hint": "Nhấp xuống mặt đất để đặt nơi chơi thử thả người chơi xuống.",
+      "position": "Xuất hiện: {x}, {z}",
+      "unset": "Đang dùng vị trí bắt đầu dựng sẵn.",
+      "clear": "Xóa điểm xuất hiện"
     },
     "region": {
-      "title": "Region",
-      "hint": "Drag a box to select placements and terrain edits. Copy, then click to paste.",
-      "hint3d": "Region boxes draw in the 2D view; copy and paste work in both views.",
-      "copy": "Copy region",
-      "pasteBeside": "Paste beside",
-      "copied": "Copied {assets} assets and {edits} terrain edits.",
-      "pasted": "Pasted {count} items.",
-      "needBox": "Draw a region box first.",
-      "needClipboard": "Copy a region first."
+      "title": "Vùng Chọn",
+      "hint": "Kéo một khung để chọn các vật thể đã đặt và chỉnh sửa địa hình. Sao chép, rồi nhấp để dán.",
+      "hint3d": "Khung vùng chọn được vẽ trong chế độ 2D; sao chép và dán hoạt động ở cả hai chế độ.",
+      "copy": "Sao chép vùng",
+      "pasteBeside": "Dán bên cạnh",
+      "copied": "Đã sao chép {assets} vật thể và {edits} chỉnh sửa địa hình.",
+      "pasted": "Đã dán {count} mục.",
+      "needBox": "Hãy vẽ một khung vùng chọn trước.",
+      "needClipboard": "Hãy sao chép một vùng trước."
     },
     "eraseTool": {
-      "title": "Erase",
-      "hint": "Click a placed asset to remove it, or click sculpted ground to remove the newest stamp under the cursor.",
-      "blockerHint": "Clicking near a blocker wall removes that wall instead."
+      "title": "Xóa",
+      "hint": "Nhấp vào một vật thể đã đặt để gỡ nó, hoặc nhấp vào nền đất đã điêu khắc để gỡ dấu mới nhất dưới con trỏ.",
+      "blockerHint": "Nhấp gần một tường chắn sẽ gỡ bức tường đó thay vì thứ khác."
     },
     "selection": {
-      "title": "Selection",
-      "none": "Nothing selected. Use Select and click a placed asset.",
-      "asset": "Asset: {name}",
+      "title": "Lựa Chọn",
+      "none": "Chưa chọn gì. Hãy dùng công cụ Chọn và nhấp vào một vật thể đã đặt.",
+      "asset": "Vật thể: {name}",
       "x": "X",
       "z": "Z",
-      "rotation": "Rotation",
-      "scale": "Scale",
-      "collide": "Blocks movement",
-      "radius": "Collision radius",
-      "radiusAuto": "Auto",
-      "radiusAutoTitle": "Reset the collision radius to follow the asset scale",
-      "radiusHint": "Auto derives the collision radius from the asset scale; drag the slider to override it.",
-      "footprints": "Show collision footprints",
-      "duplicate": "Duplicate",
-      "delete": "Delete",
-      "deleteHint": "Delete removes the selection; Ctrl+Z restores it.",
-      "moveHint": "Move: drag the asset along the ground in the 3D view, or nudge it with the arrow keys (0.5 yd, Shift for 2 yd).",
-      "wheelHint": "Shift+scroll rotates the asset, Alt+scroll scales it, Ctrl+D duplicates it."
+      "rotation": "Góc xoay",
+      "scale": "Tỷ lệ",
+      "collide": "Chặn di chuyển",
+      "radius": "Bán kính va chạm",
+      "radiusAuto": "Tự động",
+      "radiusAutoTitle": "Đặt lại bán kính va chạm theo tỷ lệ vật thể",
+      "radiusHint": "Tự động suy ra bán kính va chạm từ tỷ lệ vật thể; kéo thanh trượt để ghi đè.",
+      "footprints": "Hiện vùng va chạm",
+      "duplicate": "Nhân bản",
+      "delete": "Xóa",
+      "deleteHint": "Delete gỡ lựa chọn hiện tại; Ctrl+Z khôi phục lại.",
+      "moveHint": "Di chuyển: kéo vật thể trên mặt đất trong chế độ 3D, hoặc dịch bằng phím mũi tên (0,5 thước, giữ Shift cho 2 thước).",
+      "wheelHint": "Shift+lăn chuột xoay vật thể, Alt+lăn chuột chỉnh tỷ lệ, Ctrl+D nhân bản."
     },
     "marker": {
-      "title": "Marker",
-      "reset": "Reset position",
-      "moved": "{count} markers moved from the built-in layout."
+      "title": "Điểm Đánh Dấu",
+      "reset": "Đặt lại vị trí",
+      "moved": "{count} điểm đánh dấu đã dời khỏi bố cục dựng sẵn."
     },
     "layers": {
-      "title": "Layers",
-      "hub": "Hubs",
-      "graveyard": "Graveyards",
-      "lake": "Lakes",
-      "poi": "Points of interest",
-      "camp": "Camps",
-      "npc": "NPCs",
-      "object": "Objects",
-      "blocker": "Blocker walls"
+      "title": "Lớp",
+      "hub": "Tụ điểm",
+      "graveyard": "Nghĩa địa",
+      "lake": "Hồ nước",
+      "poi": "Địa danh",
+      "camp": "Trại quái",
+      "npc": "NPC",
+      "object": "Đồ vật",
+      "blocker": "Tường chắn"
     },
     "frame": {
-      "title": "Frame",
-      "all": "All"
+      "title": "Căn Khung",
+      "all": "Tất cả"
     },
     "procgen": {
-      "title": "Procedural",
-      "count": "Count",
-      "scatter": "Scatter category assets",
-      "hills": "Generate rolling hills",
-      "scattered": "Scattered {count} assets from {category}.",
-      "hillsAdded": "Added {count} hills.",
-      "noAssets": "No assets in that category."
+      "title": "Tạo Tự Động",
+      "count": "Số lượng",
+      "scatter": "Rải vật thể theo danh mục",
+      "hills": "Tạo đồi thoai thoải",
+      "scattered": "Đã rải {count} vật thể từ {category}.",
+      "hillsAdded": "Đã thêm {count} ngọn đồi.",
+      "noAssets": "Không có vật thể nào trong danh mục đó."
     },
     "assets": {
-      "title": "Asset Browser",
-      "label": "Asset browser",
-      "search": "Search assets",
-      "searchPlaceholder": "Search assets...",
-      "empty": "No matching assets.",
-      "uploadedTab": "Uploaded",
-      "uploadedEmpty": "No uploaded assets yet. Use Upload Asset to add a GLB model (up to 8 MiB).",
-      "uploadedSignIn": "Sign in from the game to upload and place your own GLB models.",
-      "uploadedLoadFailed": "Could not load your uploaded assets.",
-      "deleteAsset": "Delete uploaded asset",
-      "deleteAssetConfirm": "Delete the uploaded asset \"{name}\"? Maps that use it lose the model.",
-      "pick": "Place {name}",
+      "title": "Trình Duyệt Vật Thể",
+      "label": "Trình duyệt vật thể",
+      "search": "Tìm vật thể",
+      "searchPlaceholder": "Tìm vật thể...",
+      "empty": "Không có vật thể nào khớp.",
+      "uploadedTab": "Đã Tải Lên",
+      "uploadedEmpty": "Chưa có vật thể nào được tải lên. Dùng Tải Lên Vật Thể để thêm một mô hình GLB (tối đa 8 MiB).",
+      "uploadedSignIn": "Đăng nhập từ trò chơi để tải lên và đặt các mô hình GLB của riêng bạn.",
+      "uploadedLoadFailed": "Không thể tải các vật thể bạn đã tải lên.",
+      "deleteAsset": "Xóa vật thể đã tải lên",
+      "deleteAssetConfirm": "Xóa vật thể đã tải lên \"{name}\"? Các bản đồ đang dùng nó sẽ mất mô hình này.",
+      "pick": "Đặt {name}",
       "categoryTab": "{category} ({count})",
       "category": {
-        "biome": "Biome",
-        "chars": "Characters",
-        "creatures": "Creatures",
-        "dungeon": "Dungeon",
-        "foliage": "Foliage",
-        "props": "Props",
-        "quest": "Quest",
-        "resources": "Resources",
-        "tools": "Tools",
-        "weapons": "Weapons"
+        "biome": "Quần Xã",
+        "chars": "Nhân Vật",
+        "creatures": "Sinh Vật",
+        "dungeon": "Hầm Ngục",
+        "foliage": "Cây Cỏ",
+        "props": "Đạo Cụ",
+        "quest": "Nhiệm Vụ",
+        "resources": "Tài Nguyên",
+        "tools": "Dụng Cụ",
+        "weapons": "Vũ Khí"
       }
     },
     "upload": {
-      "notGlb": "Pick a .glb file.",
-      "tooLarge": "That file is over the 8 MiB limit.",
-      "uploading": "Uploading asset...",
-      "uploaded": "Asset uploaded: {name}",
-      "uploadedExisting": "That model was already on the server; reusing it.",
-      "deleted": "Uploaded asset deleted."
+      "notGlb": "Hãy chọn một tệp .glb.",
+      "tooLarge": "Tệp đó vượt quá giới hạn 8 MiB.",
+      "uploading": "Đang tải lên vật thể...",
+      "uploaded": "Đã tải lên vật thể: {name}",
+      "uploadedExisting": "Mô hình đó đã có sẵn trên máy chủ; đang dùng lại.",
+      "deleted": "Đã xóa vật thể tải lên."
     },
     "openDrawer": {
-      "title": "Open Map",
-      "close": "Close",
-      "tabLocal": "This Browser",
-      "tabMine": "My Server Maps",
-      "tabPublic": "Public Maps",
-      "colName": "Name",
-      "colUpdated": "Updated",
-      "colStatus": "Status",
-      "statusPublic": "Public",
-      "statusPrivate": "Private",
-      "open": "Open",
-      "fork": "Fork",
-      "publish": "Publish",
-      "unpublish": "Unpublish",
-      "delete": "Delete",
-      "draft": "Autosaved draft",
-      "emptyLocal": "No maps saved in this browser yet. Save one and it appears here.",
-      "emptyMine": "No maps on the server yet. Save while signed in to create one.",
-      "emptyPublic": "No public maps yet.",
-      "loading": "Loading maps...",
-      "loadFailed": "Could not load maps from the server.",
-      "signInHint": "Sign in from the game to browse, save, and fork server maps.",
-      "deleteLocalConfirm": "Delete the local map \"{name}\"?",
-      "deleteServerConfirm": "Delete the server map \"{name}\"? This cannot be undone.",
-      "prev": "Previous page",
-      "next": "Next page",
-      "page": "Page {page}"
+      "title": "Mở Bản Đồ",
+      "close": "Đóng",
+      "tabLocal": "Trình Duyệt Này",
+      "tabMine": "Bản Đồ Máy Chủ Của Tôi",
+      "tabPublic": "Bản Đồ Công Khai",
+      "colName": "Tên",
+      "colUpdated": "Cập nhật",
+      "colStatus": "Trạng thái",
+      "statusPublic": "Công khai",
+      "statusPrivate": "Riêng tư",
+      "open": "Mở",
+      "fork": "Rẽ Nhánh",
+      "publish": "Công Khai",
+      "unpublish": "Hủy Công Khai",
+      "delete": "Xóa",
+      "draft": "Bản nháp tự động lưu",
+      "emptyLocal": "Chưa có bản đồ nào được lưu trong trình duyệt này. Hãy lưu một bản đồ và nó sẽ xuất hiện ở đây.",
+      "emptyMine": "Chưa có bản đồ nào trên máy chủ. Hãy lưu khi đã đăng nhập để tạo một bản đồ.",
+      "emptyPublic": "Chưa có bản đồ công khai nào.",
+      "loading": "Đang tải bản đồ...",
+      "loadFailed": "Không thể tải bản đồ từ máy chủ.",
+      "signInHint": "Đăng nhập từ trò chơi để duyệt, lưu và rẽ nhánh các bản đồ trên máy chủ.",
+      "deleteLocalConfirm": "Xóa bản đồ cục bộ \"{name}\"?",
+      "deleteServerConfirm": "Xóa bản đồ trên máy chủ \"{name}\"? Không thể hoàn tác thao tác này.",
+      "prev": "Trang trước",
+      "next": "Trang sau",
+      "page": "Trang {page}"
     },
     "status": {
-      "savedLocal": "Saved \"{name}\" to this browser.",
-      "savedServer": "Saved \"{name}\" to the server (v{version}).",
-      "savedLocalOnly": "Saved \"{name}\" to this browser. Sign in to save online.",
-      "saveFailedLocal": "Local save failed (storage blocked).",
-      "opened": "Opened \"{name}\".",
-      "imported": "Imported \"{name}\".",
-      "importFailed": "Import cancelled, or the file is not a valid map.",
-      "exported": "Downloaded \"{name}\".",
-      "newMap": "New map started from the built-in world.",
-      "forked": "Forked to \"{name}\". You are editing your own copy now.",
-      "published": "Map published. Anyone can now find and fork it.",
-      "unpublished": "Map unpublished.",
-      "deleted": "Map deleted.",
-      "assetPlacedFirst": "Pick an asset in the browser first.",
-      "loading3d": "Loading the world...",
-      "playtestLaunch": "Launching playtest...",
-      "playtestFailed": "Could not start the playtest (storage blocked).",
-      "draftSaved": "Draft autosaved.",
-      "draftRestored": "Restored the autosaved draft.",
-      "autosaveFailed": "Autosave failed (browser storage is full or blocked). Export the map to keep a backup.",
-      "terrainCapReached": "Terrain edit limit reached ({max}). Extra sculpt stamps were not added.",
-      "placementCapReached": "Placement limit reached ({max}). Extra assets were not added.",
-      "blockerCapReached": "Blocker wall limit reached ({max}). The new wall was not added.",
-      "autosaveOff": "Autosave turned off: {reason} Save manually, then turn it back on."
+      "savedLocal": "Đã lưu \"{name}\" vào trình duyệt này.",
+      "savedServer": "Đã lưu \"{name}\" lên máy chủ (v{version}).",
+      "savedLocalOnly": "Đã lưu \"{name}\" vào trình duyệt này. Đăng nhập để lưu trực tuyến.",
+      "saveFailedLocal": "Lưu cục bộ thất bại (bộ nhớ bị chặn).",
+      "opened": "Đã mở \"{name}\".",
+      "imported": "Đã nhập \"{name}\".",
+      "importFailed": "Đã hủy nhập, hoặc tệp không phải là một bản đồ hợp lệ.",
+      "exported": "Đã tải xuống \"{name}\".",
+      "newMap": "Đã bắt đầu bản đồ mới từ thế giới dựng sẵn.",
+      "forked": "Đã rẽ nhánh thành \"{name}\". Giờ bạn đang chỉnh sửa bản sao của riêng mình.",
+      "published": "Bản đồ đã được công khai. Giờ đây ai cũng có thể tìm thấy và rẽ nhánh nó.",
+      "unpublished": "Đã hủy công khai bản đồ.",
+      "deleted": "Đã xóa bản đồ.",
+      "assetPlacedFirst": "Hãy chọn một vật thể trong trình duyệt trước.",
+      "loading3d": "Đang tải thế giới...",
+      "playtestLaunch": "Đang khởi chạy chơi thử...",
+      "playtestFailed": "Không thể bắt đầu chơi thử (bộ nhớ bị chặn).",
+      "draftSaved": "Đã tự động lưu bản nháp.",
+      "draftRestored": "Đã khôi phục bản nháp tự động lưu.",
+      "autosaveFailed": "Tự động lưu thất bại (bộ nhớ trình duyệt đầy hoặc bị chặn). Hãy xuất bản đồ để giữ một bản dự phòng.",
+      "terrainCapReached": "Đã chạm giới hạn chỉnh sửa địa hình ({max}). Các dấu điêu khắc dư không được thêm.",
+      "placementCapReached": "Đã chạm giới hạn đặt vật thể ({max}). Các vật thể dư không được thêm.",
+      "blockerCapReached": "Đã chạm giới hạn tường chắn ({max}). Bức tường mới không được thêm.",
+      "autosaveOff": "Tự động lưu đã tắt: {reason} Hãy lưu thủ công, rồi bật lại."
     },
     "confirm": {
       "ok": "OK",
-      "cancel": "Cancel",
-      "discardTitle": "Discard changes?",
-      "discardBody": "You have unsaved changes on \"{name}\". Discard them?",
-      "discard": "Discard",
-      "conflictTitle": "Save conflict",
-      "conflictBody": "This map changed on the server since you opened it (now v{version}). Save your version as a new copy?",
-      "conflictSaveCopy": "Save As Copy"
+      "cancel": "Hủy",
+      "discardTitle": "Bỏ các thay đổi?",
+      "discardBody": "Bạn có thay đổi chưa lưu trên \"{name}\". Bỏ chúng đi?",
+      "discard": "Bỏ",
+      "conflictTitle": "Xung đột khi lưu",
+      "conflictBody": "Bản đồ này đã thay đổi trên máy chủ kể từ khi bạn mở nó (hiện là v{version}). Lưu phiên bản của bạn thành một bản sao mới?",
+      "conflictSaveCopy": "Lưu Thành Bản Sao"
     },
     "prompt": {
-      "saveAsTitle": "Save As",
-      "nameLabel": "New map name"
+      "saveAsTitle": "Lưu Thành",
+      "nameLabel": "Tên bản đồ mới"
     },
     "serverError": {
-      "invalid_map_name": "That map name is not allowed. Use letters, numbers, spaces, apostrophes, or hyphens.",
-      "map_name_not_allowed": "That map name is not allowed.",
-      "invalid_map_doc": "The server rejected the map document.",
-      "invalid_version": "The save request was malformed. Reload and try again.",
-      "map_limit_reached": "You have reached the server map limit. Delete a map to save more.",
-      "map_not_found": "That map no longer exists on the server.",
-      "version_conflict": "The map changed on the server since you opened it.",
-      "slug_unavailable": "The server could not make a link for that name. Try a different name.",
-      "map_too_large": "The map document is too large to save on the server.",
-      "invalid_glb": "That file is not a valid GLB model.",
-      "asset_blocked": "That asset has been blocked by moderation.",
-      "asset_limit_reached": "You have reached the uploaded asset limit. Delete one to upload more.",
-      "asset_storage_limit_reached": "You are out of asset storage space. Delete an asset first.",
-      "asset_too_large": "That model is over the upload size limit.",
-      "asset_not_found": "That asset no longer exists on the server.",
-      "rate_limited": "Slow down a little and try again.",
-      "unauthorized": "Your session has expired. Sign in from the game again.",
-      "network": "Could not reach the server. Check your connection and try again.",
-      "timeout": "The server took too long to respond. Try again.",
-      "unknown": "Something went wrong talking to the server."
+      "invalid_map_name": "Tên bản đồ đó không được phép. Hãy dùng chữ cái, chữ số, dấu cách, dấu nháy đơn hoặc dấu gạch nối.",
+      "map_name_not_allowed": "Tên bản đồ đó không được phép.",
+      "invalid_map_doc": "Máy chủ đã từ chối tài liệu bản đồ.",
+      "invalid_version": "Yêu cầu lưu bị sai định dạng. Hãy tải lại trang và thử lại.",
+      "map_limit_reached": "Bạn đã chạm giới hạn bản đồ trên máy chủ. Hãy xóa một bản đồ để lưu thêm.",
+      "map_not_found": "Bản đồ đó không còn tồn tại trên máy chủ.",
+      "version_conflict": "Bản đồ đã thay đổi trên máy chủ kể từ khi bạn mở nó.",
+      "slug_unavailable": "Máy chủ không thể tạo liên kết cho tên đó. Hãy thử một tên khác.",
+      "map_too_large": "Tài liệu bản đồ quá lớn để lưu trên máy chủ.",
+      "invalid_glb": "Tệp đó không phải là một mô hình GLB hợp lệ.",
+      "asset_blocked": "Vật thể đó đã bị đội điều hành chặn.",
+      "asset_limit_reached": "Bạn đã chạm giới hạn vật thể tải lên. Hãy xóa bớt một cái để tải lên thêm.",
+      "asset_storage_limit_reached": "Bạn đã hết dung lượng lưu trữ vật thể. Hãy xóa một vật thể trước.",
+      "asset_too_large": "Mô hình đó vượt quá giới hạn kích thước tải lên.",
+      "asset_not_found": "Vật thể đó không còn tồn tại trên máy chủ.",
+      "rate_limited": "Hãy chậm lại một chút rồi thử lại.",
+      "unauthorized": "Phiên của bạn đã hết hạn. Hãy đăng nhập lại từ trò chơi.",
+      "network": "Không thể kết nối đến máy chủ. Hãy kiểm tra kết nối của bạn và thử lại.",
+      "timeout": "Máy chủ phản hồi quá lâu. Hãy thử lại.",
+      "unknown": "Đã có lỗi khi trao đổi với máy chủ."
     },
     "hints": {
-      "nav3d": "Drag to orbit, scroll to zoom. While dragging, WASD flies and Q/E changes height.",
-      "nav2d": "Drag to pan, scroll to zoom."
+      "nav3d": "Kéo để xoay quanh, lăn chuột để thu phóng. Trong khi kéo, WASD bay và Q/E đổi độ cao.",
+      "nav2d": "Kéo để rê khung nhìn, lăn chuột để thu phóng."
     },
     "help": {
-      "title": "Editor Help",
-      "toolsTitle": "Tools",
-      "shortcutsTitle": "Keyboard shortcuts",
-      "mouseTitle": "Mouse and navigation",
-      "flowTitle": "Saving and playtesting",
-      "beginTutorial": "Begin tutorial",
-      "close": "Close",
+      "title": "Trợ Giúp Trình Chỉnh Sửa",
+      "toolsTitle": "Công Cụ",
+      "shortcutsTitle": "Phím tắt",
+      "mouseTitle": "Chuột và điều hướng",
+      "flowTitle": "Lưu và chơi thử",
+      "beginTutorial": "Bắt đầu hướng dẫn",
+      "close": "Đóng",
       "tool": {
-        "select": "Pick placed assets to move, rotate, and scale them; click a 2D marker to edit it.",
-        "raise": "Raise the terrain under the brush.",
-        "lower": "Lower the terrain under the brush.",
-        "smooth": "Smooth bumps toward the local average height.",
-        "flatten": "Level the ground to the height where the drag starts.",
-        "paint": "Paint biome ground cover over the zone default.",
-        "water": "Set the map-wide water level.",
-        "place": "Place catalog or uploaded assets on the ground.",
-        "blocker": "Drag invisible walls that block movement in playtest.",
-        "camp": "Add and edit mob camps that spawn in playtest.",
-        "spawn": "Set where playtest drops the player.",
-        "region": "Box-select terrain and assets to copy and paste.",
-        "erase": "Remove placed assets or sculpt stamps under the cursor."
+        "select": "Chọn vật thể đã đặt để di chuyển, xoay và chỉnh tỷ lệ; nhấp một điểm đánh dấu 2D để chỉnh sửa.",
+        "raise": "Nâng cao địa hình dưới cọ.",
+        "lower": "Hạ thấp địa hình dưới cọ.",
+        "smooth": "Làm mịn các gồ ghề về độ cao trung bình quanh đó.",
+        "flatten": "San mặt đất về độ cao tại điểm bắt đầu kéo.",
+        "paint": "Tô lớp phủ quần xã đè lên mặc định của vùng.",
+        "water": "Đặt mực nước cho toàn bản đồ.",
+        "place": "Đặt vật thể từ danh mục hoặc đã tải lên xuống mặt đất.",
+        "blocker": "Kéo để tạo các bức tường vô hình chặn di chuyển khi chơi thử.",
+        "camp": "Thêm và chỉnh sửa các trại quái xuất hiện khi chơi thử.",
+        "spawn": "Đặt nơi chơi thử thả người chơi xuống.",
+        "region": "Chọn theo khung địa hình và vật thể để sao chép và dán.",
+        "erase": "Gỡ vật thể đã đặt hoặc dấu điêu khắc dưới con trỏ."
       },
       "key": {
-        "tools": "Every tool has a single-letter shortcut, shown on its button in the tool rail.",
-        "brush": "[ and ] resize the brush; Shift+[ and Shift+] change its strength.",
-        "undo": "Ctrl+Z undoes the last change; Ctrl+Y or Ctrl+Shift+Z redoes it.",
-        "save": "Ctrl+S saves the map.",
-        "duplicate": "Ctrl+D duplicates the selected asset.",
-        "nudge": "Arrow keys nudge the selected asset by 0.5 yards; hold Shift for 2 yards.",
-        "wheel": "Shift+scroll rotates the selected asset; Alt+scroll scales it.",
-        "delete": "Delete removes the selected asset or camp.",
-        "escape": "Esc clears the selection first, then returns to the Select tool."
+        "tools": "Mỗi công cụ có một phím tắt một chữ cái, hiển thị trên nút của nó ở thanh công cụ.",
+        "brush": "[ và ] đổi cỡ cọ; Shift+[ và Shift+] đổi cường độ.",
+        "undo": "Ctrl+Z hoàn tác thay đổi gần nhất; Ctrl+Y hoặc Ctrl+Shift+Z làm lại.",
+        "save": "Ctrl+S lưu bản đồ.",
+        "duplicate": "Ctrl+D nhân bản vật thể đang chọn.",
+        "nudge": "Phím mũi tên dịch vật thể đang chọn 0,5 thước; giữ Shift để dịch 2 thước.",
+        "wheel": "Shift+lăn chuột xoay vật thể đang chọn; Alt+lăn chuột chỉnh tỷ lệ.",
+        "delete": "Phím Delete gỡ vật thể hoặc trại đang chọn.",
+        "escape": "Esc bỏ lựa chọn trước, rồi quay về công cụ Chọn."
       },
       "mouse": {
-        "orbit3d": "3D view: drag to orbit and scroll to zoom; middle-drag or Shift+drag pans.",
-        "fly3d": "While holding a drag in 3D, WASD flies the camera and Q/E changes height.",
-        "move": "With Select active, drag a placed asset to move it across the ground.",
-        "pan2d": "2D view: drag to pan and scroll to zoom."
+        "orbit3d": "Chế độ 3D: kéo để xoay quanh và lăn chuột để thu phóng; kéo chuột giữa hoặc Shift+kéo để rê khung nhìn.",
+        "fly3d": "Khi đang giữ kéo trong chế độ 3D, WASD cho máy quay bay và Q/E đổi độ cao.",
+        "move": "Khi công cụ Chọn đang bật, kéo một vật thể đã đặt để di chuyển nó trên mặt đất.",
+        "pan2d": "Chế độ 2D: kéo để rê khung nhìn và lăn chuột để thu phóng."
       },
       "flow": {
-        "save": "Save keeps the map in this browser, and on the server when you are signed in.",
-        "draft": "While you have unsaved changes, a draft is autosaved every 30 seconds; Open restores it.",
-        "playtest": "Playtest boots the real game on this map, including your unsaved edits."
+        "save": "Lưu giữ bản đồ trong trình duyệt này, và trên máy chủ khi bạn đã đăng nhập.",
+        "draft": "Khi bạn có thay đổi chưa lưu, một bản nháp được tự động lưu mỗi 30 giây; nút Mở sẽ khôi phục nó.",
+        "playtest": "Chơi Thử khởi động trò chơi thật trên bản đồ này, bao gồm cả các chỉnh sửa chưa lưu của bạn."
       }
     },
     "tutorial": {
-      "title": "Editor tutorial",
-      "back": "Back",
-      "next": "Next",
-      "finish": "Finish",
-      "skip": "Skip tour",
-      "counter": "Step {current} of {total}",
+      "title": "Hướng dẫn trình chỉnh sửa",
+      "back": "Quay lại",
+      "next": "Tiếp",
+      "finish": "Hoàn tất",
+      "skip": "Bỏ qua phần giới thiệu",
+      "counter": "Bước {current} trên {total}",
       "steps": {
         "toolbar": {
-          "title": "The tool rail",
-          "body": "Every editing tool lives here: sculpting brushes, biome paint, water, asset placement, camps, and more. Each one has a single-key shortcut, shown in its corner."
+          "title": "Thanh công cụ",
+          "body": "Mọi công cụ chỉnh sửa nằm ở đây: cọ điêu khắc, tô quần xã, nước, đặt vật thể, trại quái và hơn thế nữa. Mỗi công cụ có một phím tắt một phím, hiển thị ở góc của nó."
         },
         "stage": {
-          "title": "The world",
-          "body": "This is your map, rendered with the real game engine. Drag to orbit, scroll to zoom, and middle-drag or Shift+drag to pan. Click the ground with a tool to edit."
+          "title": "Thế giới",
+          "body": "Đây là bản đồ của bạn, được kết xuất bằng chính engine của trò chơi. Kéo để xoay quanh, lăn chuột để thu phóng, kéo chuột giữa hoặc Shift+kéo để rê khung nhìn. Nhấp xuống mặt đất bằng một công cụ để chỉnh sửa."
         },
         "inspector": {
-          "title": "Tool options",
-          "body": "The options for the active tool appear here: brush size, the biome palette, asset scale, camp settings, and the properties of whatever you select."
+          "title": "Tùy chọn công cụ",
+          "body": "Các tùy chọn của công cụ đang dùng hiển thị ở đây: cỡ cọ, bảng màu quần xã, tỷ lệ vật thể, cài đặt trại, và thuộc tính của bất cứ thứ gì bạn chọn."
         },
         "viewToggle": {
-          "title": "3D and 2D",
-          "body": "Switch between the rendered 3D world and the symbolic overhead 2D map. The 2D view is best for moving zone markers and framing large areas."
+          "title": "3D và 2D",
+          "body": "Chuyển giữa thế giới 3D được kết xuất và bản đồ 2D ký hiệu nhìn từ trên cao. Chế độ 2D phù hợp nhất để di chuyển các điểm đánh dấu vùng và bao quát các khu vực rộng."
         },
         "save": {
-          "title": "Save your work",
-          "body": "Save stores the map in this browser, and on the server when you are signed in. Export downloads a JSON backup, and Open brings back saved maps and drafts."
+          "title": "Lưu thành quả của bạn",
+          "body": "Lưu cất bản đồ trong trình duyệt này, và trên máy chủ khi bạn đã đăng nhập. Xuất tải xuống một bản dự phòng JSON, còn Mở đưa các bản đồ và bản nháp đã lưu trở lại."
         },
         "playtest": {
-          "title": "Playtest",
-          "body": "Boot the real game on your map at any time, with your current edits included. Close the playtest tab to come back and keep editing."
+          "title": "Chơi Thử",
+          "body": "Khởi động trò chơi thật trên bản đồ của bạn bất cứ lúc nào, gồm cả các chỉnh sửa hiện tại. Đóng thẻ chơi thử để quay lại và tiếp tục chỉnh sửa."
         },
         "help": {
-          "title": "Help is here",
-          "body": "That is the whole loop. Open Help any time for the full tool list and every shortcut, or to run this tour again."
+          "title": "Trợ giúp ở đây",
+          "body": "Đó là toàn bộ vòng lặp làm việc. Mở Trợ Giúp bất cứ lúc nào để xem danh sách công cụ đầy đủ và mọi phím tắt, hoặc để chạy lại phần giới thiệu này."
         }
       }
     },
     "a11y": {
-      "stage": "Map viewport",
-      "toasts": "Editor notifications",
-      "dialog": "Editor dialog"
+      "stage": "Khung nhìn bản đồ",
+      "toasts": "Thông báo của trình chỉnh sửa",
+      "dialog": "Hộp thoại trình chỉnh sửa"
     }
   },
   "skinEvent": {
@@ -2552,10 +2557,10 @@ export const vi_VN: EnTranslations = {
     "donate": "Ủng Hộ"
   },
   "stats": {
-    "title": "Trạng Thái Realm",
+    "title": "Trạng Thái Thế Giới",
     "accountsCreated": "Người Chơi",
     "playersOnline": "Người Chơi Trực Tuyến",
-    "realmName": "Tên Realm"
+    "realmName": "Tên Thế Giới"
   },
   "footer": {
     "copyright": "2026 World of ClaudeCraft",
@@ -2573,7 +2578,7 @@ export const vi_VN: EnTranslations = {
   },
   "highscores": {
     "title": "Bảng Xếp Hạng Điểm Cao",
-    "desc": "Theo dõi những nhà vô địch vĩ đại nhất của vương quốc và so sánh tiến độ của bạn."
+    "desc": "Theo dõi những nhà vô địch vĩ đại nhất của thế giới và so sánh tiến độ của bạn."
   },
   "wiki": {
     "title": "Wiki & Hướng Dẫn Trò Chơi",
@@ -2595,12 +2600,12 @@ export const vi_VN: EnTranslations = {
   },
   "comingSoon": {
     "placeholder": "Sắp Ra Mắt...",
-    "featureComingSoon": "Tính năng này sắp ra mắt trong realm."
+    "featureComingSoon": "Tính năng này sắp ra mắt trong thế giới."
   },
   "mode": {
     "onlineTitle": "Chơi Trực Tuyến",
-    "onlineDesc": "Đăng nhập vào máy chủ. Các nhân vật của bạn sống trên máy chủ và bạn chia sẻ thế giới với tất cả những người khác đang trực tuyến.",
-    "onlineAria": "Chơi Trực Tuyến: đăng nhập vào máy chủ chung lưu trữ lâu dài",
+    "onlineDesc": "Đăng nhập vào thế giới. Các nhân vật của bạn sống trên máy chủ và bạn chia sẻ thế giới với tất cả những người khác đang trực tuyến.",
+    "onlineAria": "Chơi Trực Tuyến: đăng nhập vào thế giới chung lưu trữ lâu dài",
     "offlineTitle": "Chơi Ngoại Tuyến",
     "offlineDesc": "Thế giới chơi đơn tức thì ngay trong trình duyệt. Không lưu lại gì: hoàn hảo cho một trận đánh nhanh hoặc để thử nghiệm.",
     "offlineAria": "Chơi Ngoại Tuyến: bắt đầu phiên chơi đơn cục bộ tức thì",
@@ -2610,15 +2615,15 @@ export const vi_VN: EnTranslations = {
     "serverOffline": "Ngoại Tuyến",
     "play": "Chơi",
     "playAria": "Chơi World of ClaudeCraft",
-    "serverLabel": "Chọn realm của bạn",
-    "serverAria": "Chọn realm: Trực Tuyến hoặc Ngoại Tuyến",
+    "serverLabel": "Chọn thế giới của bạn",
+    "serverAria": "Chọn thế giới: Trực Tuyến hoặc Ngoại Tuyến",
     "serverOfflineSub": "Thế giới cục bộ tức thì",
     "caLabel": "Địa Chỉ Hợp Đồng $WOC",
     "caCopyAria": "Sao chép địa chỉ hợp đồng",
     "caNote": "WOC là token cộng đồng của chúng tôi. Không cần nó để chơi. Hãy tham gia Discord để thảo luận về tiện ích và vòng xoáy tăng trưởng của WOC."
   },
   "auth": {
-    "enterRealm": "Vào Máy Chủ",
+    "enterRealm": "Vào Thế Giới",
     "username": "Tên Đăng Nhập",
     "usernameError": "Vui lòng nhập tên đăng nhập của bạn.",
     "usernamePlaceholder": "Nhập tên đăng nhập",
@@ -2627,22 +2632,22 @@ export const vi_VN: EnTranslations = {
     "passwordPlaceholder": "Nhập mật khẩu",
     "email": "Email",
     "emailPlaceholder": "you@example.com",
-    "emailError": "Please enter a valid email address.",
+    "emailError": "Vui lòng nhập một địa chỉ email hợp lệ.",
     "showPassword": "Hiện mật khẩu",
     "hidePassword": "Ẩn mật khẩu",
     "logIn": "Đăng Nhập",
     "createAccount": "Tạo Tài Khoản",
     "back": "Quay lại",
-    "realmList": "Danh Sách Máy Chủ",
-    "loadingRealms": "Đang tải máy chủ...",
-    "changeRealm": "Đổi Máy Chủ",
-    "realm": "Máy Chủ",
+    "realmList": "Danh Sách Thế Giới",
+    "loadingRealms": "Đang tải thế giới...",
+    "changeRealm": "Đổi Thế Giới",
+    "realm": "Thế Giới",
     "newCharacter": "Nhân Vật Mới",
     "appearance": "Ngoại hình",
     "class": "Lớp Nhân Vật",
     "name": "Tên",
     "chromaOption": "Sắc Màu {n}",
-    "noAccountPrompt": "Mới đến với máy chủ?",
+    "noAccountPrompt": "Mới đến với thế giới?",
     "haveAccountPrompt": "Đã có tài khoản?",
     "characters": "Nhân vật:",
     "createCharacter": "Tạo Nhân Vật",
@@ -2655,12 +2660,12 @@ export const vi_VN: EnTranslations = {
     "twoFactorPlaceholder": "Mã 6 chữ số hoặc mã khôi phục",
     "twoFactorHint": "Nhập mã từ ứng dụng xác thực của bạn, hoặc một trong các mã khôi phục.",
     "recovery": {
-      "title": "Add a recovery email",
-      "body": "Set an email address so you can recover your account. We only use it to confirm you own this account if you ever need to reset your password.",
-      "save": "Save email",
-      "logOut": "Log out",
-      "invalid": "Please enter a valid email address.",
-      "failed": "Could not save your email. Please try again."
+      "title": "Thêm email khôi phục",
+      "body": "Hãy đặt một địa chỉ email để bạn có thể khôi phục tài khoản. Chúng tôi chỉ dùng nó để xác nhận bạn sở hữu tài khoản này nếu bạn cần đặt lại mật khẩu.",
+      "save": "Lưu email",
+      "logOut": "Đăng xuất",
+      "invalid": "Vui lòng nhập một địa chỉ email hợp lệ.",
+      "failed": "Không thể lưu email của bạn. Vui lòng thử lại."
     }
   },
   "wallet": {
@@ -2715,7 +2720,7 @@ export const vi_VN: EnTranslations = {
     "helpLinkedWithBalance": "Đặc quyền chủ sở hữu đang hoạt động. Ứng dụng ví đã kết nối trên trình duyệt này.",
     "helpLinkedDisconnected": "Đặc quyền chủ sở hữu đang hoạt động. Kết nối ứng dụng khi bạn cần ký hoặc chi tiêu.",
     "helpLinkedDisconnectedWithBalance": "Đặc quyền chủ sở hữu đang hoạt động. Kết nối ứng dụng khi bạn cần ký hoặc chi tiêu.",
-    "extensionHelp": "To see a wallet here, keep a browser wallet extension such as Solflare Wallet active.",
+    "extensionHelp": "Để thấy ví ở đây, hãy giữ một tiện ích ví trình duyệt như Solflare Wallet đang hoạt động.",
     "flowConnect": "Chọn một ví. Quá trình xác minh sẽ tiếp tục tự động.",
     "flowSign": "Ký vào thông điệp xác minh trong ứng dụng ví của bạn. Không cần giao dịch hay SOL.",
     "flowVerify": "Đang xác minh quyền sở hữu ví...",
@@ -2814,7 +2819,7 @@ export const vi_VN: EnTranslations = {
     "renderFailedStatus": "Kết xuất thẻ thất bại.",
     "levelClass": "Cấp {level} - {className}",
     "topPercent": "TOP {percent}%",
-    "realmSubtitle": "Máy Chủ {realm}",
+    "realmSubtitle": "Thế Giới {realm}",
     "defaultRealm": "World of ClaudeCraft",
     "brandWordmark": "WORLD OF CLAUDECRAFT",
     "recruited": "{count} người được chiêu mộ",
@@ -2823,7 +2828,7 @@ export const vi_VN: EnTranslations = {
     "footerCta": "Rèn nên huyền thoại của bạn: {siteUrl}",
     "arenaStat": "Đấu Trường",
     "shareTierBit": ", người nắm giữ $WOC hạng {tier}",
-    "shareText": "Tôi đang rèn nên huyền thoại của mình trong World of ClaudeCraft: {className} cấp {level}{tierBit}. Hãy tham gia máy chủ của tôi:",
+    "shareText": "Tôi đang rèn nên huyền thoại của mình trong World of ClaudeCraft: {className} cấp {level}{tierBit}. Hãy tham gia thế giới của tôi:",
     "nativeShareTitle": "World of ClaudeCraft",
     "fileNameFallback": "nguoichoi",
     "actionShareX": "Chia Sẻ Lên X",
@@ -2901,7 +2906,7 @@ export const vi_VN: EnTranslations = {
       "unknownTier": "Cấp bậc hầm thám hiểm không xác định.",
       "levelRequired": "Bạn phải đạt cấp {level} để vào {name}.",
       "levelRequiredTier": "Bạn phải đạt cấp {level} để vào {name} ở {tier}.",
-      "partyTooLarge": "{name} is meant for solo or duo delves. Parties of {max} or more may not enter.",
+      "partyTooLarge": "{name} chỉ dành cho các chuyến hầm thám hiểm đơn hoặc đôi. Tổ đội từ {max} người trở lên không thể vào.",
       "instancesBusy": "Tất cả các phiên bản của {name} đều đang bận. Hãy thử lại sớm.",
       "runFailed": "Lượt chạy {name} thất bại.",
       "complete": "Đã hoàn thành {name}.",
@@ -2911,14 +2916,14 @@ export const vi_VN: EnTranslations = {
       "doorAlreadyOpen": "Cánh cửa đã mở rồi.",
       "companionRankUp": "{name} đạt tới hạng {rank}.",
       "bossChest": "Trùm gục ngã. Một rương thánh tích có ếm bùa trồi lên trên bệ đá. Hãy cạy khóa để giành chiến lợi phẩm.",
-      "drownedLitanyReliquaryRise": "Sister Nhalia falls silent. The Drowned Reliquary rises from the blackwater. Approach it to begin the rite.",
-      "riteSequenceReady": "The shrines fall dark. Repeat the sequence.",
-      "riteSequencePlaying": "The shrines replay the rite. Wait.",
-      "riteCorrect": "A soft chime answers your touch.",
-      "riteWrong": "A harsh bell crack. Black water splashes at your feet.",
-      "riteReliquaryOpen": "The Drowned Reliquary opens.",
-      "riteReliquaryLocked": "Complete the shrine rite to open the reliquary.",
-      "riteReliquaryEmpty": "The reliquary is empty.",
+      "drownedLitanyReliquaryRise": "Sơ Nhalia im bặt. Hộp Thánh Tích Chết Chìm trồi lên từ làn nước đen. Hãy lại gần nó để bắt đầu nghi lễ.",
+      "riteSequenceReady": "Các miếu thờ tắt lửa. Hãy lặp lại chuỗi.",
+      "riteSequencePlaying": "Các miếu thờ đang phát lại nghi lễ. Hãy chờ.",
+      "riteCorrect": "Một tiếng ngân êm đáp lại cái chạm của bạn.",
+      "riteWrong": "Một tiếng chuông rè chát chúa. Nước đen bắn tung dưới chân bạn.",
+      "riteReliquaryOpen": "Hộp Thánh Tích Chết Chìm mở ra.",
+      "riteReliquaryLocked": "Hoàn thành nghi lễ miếu thờ để mở hộp thánh tích.",
+      "riteReliquaryEmpty": "Hộp thánh tích trống rỗng.",
       "surfaceStairs": "Một cầu thang dẫn lên mặt đất mở ra. Nhấn F tại cầu thang để rời đi.",
       "moduleEnter": "{name}: {objective}",
       "objectiveClearRoom": "Quét sạch căn phòng.",
@@ -2926,13 +2931,13 @@ export const vi_VN: EnTranslations = {
       "tombstoneHint": "Một lối đi bia mộ mở ra về phía bắc khi căn phòng được quét sạch.",
       "tombstoneOpen": "Một lối đi bia mộ bị niêm phong rền rĩ mở ra về phía bắc. Hãy bước vào để tiếp tục.",
       "tombstoneInto": "Bạn đi xuyên qua bia mộ vào {name}.",
-      "bellRopeShock": "The bell rope snaps taut. Drowned Cantors reel from the shock.",
-      "eggSacBurst": "The egg-sac bursts. Spiderlings skitter free across the baptistry rim.",
-      "baptistryEggs": "The baptistry falls quiet. Spider egg-sacs cling wetly to the rim.",
-      "baptistrySpidersSealed": "You should try to destroy the spider sacs.",
-      "puzzleSealed": "You need to open the seal by applying pressure somewhere in the room.",
-      "ropesSealed": "You should try pulling the bell ropes.",
-      "baptistryWave": "Something stirs in the black baptistry water.",
+      "bellRopeShock": "Dây chuông căng bật. Các Lĩnh Xướng Chết Chìm loạng choạng vì chấn động.",
+      "eggSacBurst": "Bọc trứng vỡ tung. Lũ nhện con tán loạn khắp miệng giếng rửa tội.",
+      "baptistryEggs": "Giếng rửa tội lặng đi. Những bọc trứng nhện bám ướt nhẹp quanh miệng giếng.",
+      "baptistrySpidersSealed": "Bạn nên thử phá hủy các bọc trứng nhện.",
+      "puzzleSealed": "Bạn cần mở dấu niêm bằng cách tạo áp lực ở đâu đó trong căn phòng.",
+      "ropesSealed": "Bạn nên thử kéo các dây chuông.",
+      "baptistryWave": "Có thứ gì đó khuấy động trong làn nước đen của giếng rửa tội.",
       "chestEmpty": "Chiếc rương trống rỗng.",
       "notInDelve": "Bạn không ở trong một hầm thám hiểm.",
       "cannotInteract": "Bạn không thể tương tác với thứ đó.",
@@ -2951,12 +2956,12 @@ export const vi_VN: EnTranslations = {
       "passageSealed": "Lối đi đã bị niêm phong.",
       "moveCloserPassage": "Hãy lại gần lối đi hơn.",
       "moveCloserChest": "Hãy lại gần chiếc rương hơn.",
-      "moveCloserReliquary": "Move closer to the reliquary.",
+      "moveCloserReliquary": "Hãy lại gần hộp thánh tích hơn.",
       "nothingToTake": "Không còn gì để lấy.",
       "wayOutNotOpen": "Lối ra vẫn chưa mở.",
       "moveCloserStairs": "Hãy lại gần cầu thang hơn.",
-      "nhaliaCantorShield": "Cantors, hold the note!",
-      "nhaliaBlackwaterMark": "{name} marks {player} with Blackwater!"
+      "nhaliaCantorShield": "Các Lĩnh Xướng, giữ vững nốt ngân!",
+      "nhaliaBlackwaterMark": "{name} đánh dấu {player} bằng Nước Đen!"
     },
     "lockpick": {
       "lockYields": "Ổ khóa bật mở! Chiến lợi phẩm {tier}.",
@@ -3020,24 +3025,24 @@ export const vi_VN: EnTranslations = {
     }
   },
   "delveRiteUi": {
-    "title": "The Drowned Reliquary Rite",
-    "blurb": "The shrines will light in order. Repeat the sequence by activating each shrine in turn. A wrong touch fails the attempt and replays the sequence, a flawless attempt earns the richest spoils, and running out of tries opens the reliquary on its meanest. Choose how the rite tests you.",
-    "easy": "Easy",
-    "medium": "Medium",
-    "hard": "Hard",
-    "guideWatch": "After you choose, the four shrines light up one at a time. Memorize the order.",
-    "guideRepeat": "When the shrines fall dark, walk to each shrine and press F (Interact) in that same order.",
-    "guideStakes": "A wrong shrine splashes you with blackwater and costs a try. Complete the sequence to open the reliquary.",
-    "showsTimes": "Sequence shown {count} times",
-    "showsOnce": "Sequence shown once",
-    "symbols": "{count} symbols",
-    "tries": "{count} tries",
+    "title": "Nghi Lễ Hộp Thánh Tích Chết Chìm",
+    "blurb": "Các miếu thờ sẽ sáng lên theo thứ tự. Hãy lặp lại chuỗi bằng cách kích hoạt từng miếu theo lượt. Chạm sai sẽ làm hỏng lượt thử và phát lại chuỗi, một lượt hoàn hảo mang về chiến lợi phẩm hậu hĩnh nhất, còn hết lượt thử thì hộp thánh tích chỉ mở ra phần bèo bọt nhất. Hãy chọn cách nghi lễ thử thách ngươi.",
+    "easy": "Dễ",
+    "medium": "Trung Bình",
+    "hard": "Khó",
+    "guideWatch": "Sau khi chọn, bốn miếu thờ sẽ lần lượt sáng lên. Hãy ghi nhớ thứ tự.",
+    "guideRepeat": "Khi các miếu thờ tắt lửa, hãy đi đến từng miếu và nhấn F (Tương Tác) theo đúng thứ tự đó.",
+    "guideStakes": "Chạm sai miếu, nước đen sẽ bắn lên người và tốn một lượt thử. Hoàn thành chuỗi để mở hộp thánh tích.",
+    "showsTimes": "Chuỗi hiển thị {count} lần",
+    "showsOnce": "Chuỗi hiển thị một lần",
+    "symbols": "{count} ký hiệu",
+    "tries": "{count} lượt thử",
     "reward": {
-      "easy": "Modest spoils",
-      "medium": "Rich spoils",
-      "hard": "Premium spoils"
+      "easy": "Chiến lợi phẩm khiêm tốn",
+      "medium": "Chiến lợi phẩm hậu hĩnh",
+      "hard": "Chiến lợi phẩm thượng hạng"
     },
-    "closeAria": "Close"
+    "closeAria": "Đóng"
   },
   "delveUi": {
     "board": {
@@ -3048,7 +3053,7 @@ export const vi_VN: EnTranslations = {
       "openDelveAria": "Mở Bảng Hang Sâu từ {name}",
       "marks": "Huy Hiệu Hang Sâu: {count}",
       "minLevel": "Yêu cầu Cấp {level}",
-      "partyTooLarge": "Solo or duo only ({max} players max)",
+      "partyTooLarge": "Chỉ đi đơn hoặc đôi (tối đa {max} người chơi)",
       "tier": {
         "normal": "Thường",
         "heroic": "Anh Hùng"
@@ -3083,10 +3088,10 @@ export const vi_VN: EnTranslations = {
       "marks": "Huy Hiệu Hang Sâu: {count}",
       "exitHintOpen": "Bước vào lối đi bia mộ (hướng bắc)",
       "exitHintLocked": "Dọn sạch quái lính để mở lối đi về hướng bắc",
-      "riteChoose": "Approach the Drowned Reliquary and press F to begin the rite",
-      "ritePlayback": "Watch the shrines: memorize the order they light up",
-      "riteInput": "Press F at each shrine in the order they lit ({current}/{total})",
-      "riteOpen": "The reliquary is open: press F on it to claim your spoils"
+      "riteChoose": "Lại gần Hộp Thánh Tích Chết Chìm và nhấn F để bắt đầu nghi lễ",
+      "ritePlayback": "Quan sát các miếu thờ: ghi nhớ thứ tự chúng sáng lên",
+      "riteInput": "Nhấn F tại từng miếu thờ theo thứ tự chúng đã sáng ({current}/{total})",
+      "riteOpen": "Hộp thánh tích đã mở: nhấn F vào nó để nhận chiến lợi phẩm"
     },
     "objective": {
       "kill_boss": "Hạ gục {boss}",
@@ -3109,52 +3114,52 @@ export const vi_VN: EnTranslations = {
         "greeting": "Hộp thánh tích bên dưới lại dịch chuyển lần nữa. Chúng tôi nghe tiếng tụng kinh xuyên qua nền nhà sau nửa đêm, và Tu Sinh Tessa thề rằng những cuốn sổ tang lễ đang tự thay đổi mực của chính chúng. Nếu ngươi đủ can đảm, {playerName}, hãy cầm một cây nến và đi xuống dưới. Đừng tin mọi giọng nói ngươi nghe thấy dưới đó. Một vài trong số chúng đã biết tên ngươi từ trước khi ngươi chào đời."
       },
       "halvenMarsh": {
-        "greeting": "The trail led north to the marsh, {playerName}. Another reliquary sings under the black water, and the drowned dead answer the bells. Acolyte Edda knows these reeds better than I do, stay close to her lantern. Choose your tier, and I will hold the rope until you return."
+        "greeting": "Dấu vết dẫn lên phía bắc đến đầm lầy, {playerName}. Một hộp thánh tích nữa đang ngân nga dưới làn nước đen, và những kẻ chết chìm đáp lại tiếng chuông. Tu Sinh Edda thông thuộc đám lau sậy này hơn ta, hãy bám sát ánh đèn lồng của cô ấy. Chọn độ khó của ngươi đi, và ta sẽ giữ dây thừng cho đến khi ngươi trở về."
       }
     },
     "intro": {
       "normal": "Lối cầu thang lạnh lẽo và tối tăm. Những phiến đá thánh vỡ vụn rải khắp đường xuống, và một nốt chuông khẽ vang treo lơ lửng trong bầu không khí ẩm ướt. Tu Sinh Tessa thì thầm, \"Hộp thánh tích lẽ ra không nên mở rộng đến vậy. Bám sát ta nhé, {playerName}.\"",
       "heroic": "Cánh cửa rên rỉ đóng sập sau lưng ngươi. Những cái tên cào lên đá như móng tay. Cây nến của Tessa cháy lên màu xanh lam. \"Giờ chúng không gọi kẻ chết nữa, {playerName}. Chúng đang đáp lại thứ gì đó.\"",
-      "litanyNormal": "Reed-choked stairs drop beneath Fenbridge. Edda Reedhand lifts her lantern. \"The marsh remembers every name they drowned, {playerName}. Stay in the light.\"",
-      "litanyHeroic": "Blackwater laps the causeway stones. Edda's flame gutters green. \"They are singing again below, {playerName}. Do not answer the choir.\""
+      "litanyNormal": "Những bậc thang nghẹt lau sậy đổ xuống bên dưới Fenbridge. Edda Reedhand nâng cao chiếc đèn lồng. \"Đầm lầy nhớ từng cái tên chúng đã dìm chết, {playerName}. Hãy ở trong vùng sáng.\"",
+      "litanyHeroic": "Nước đen vỗ vào những phiến đá đường đắp. Ngọn lửa của Edda leo lét ánh xanh lục. \"Chúng lại đang hát dưới kia, {playerName}. Đừng đáp lời dàn hợp ca.\""
     },
     "module": {
       "reliquary_sunken_ossuary": "Nước rỉ qua những giá kệ chôn cất, cuốn theo tro tàn cổ xưa thành những dòng đen ánh bạc.",
       "reliquary_bell_niche": "Hàng chục chiếc chuông tay treo trong im lặng, mỗi chiếc buộc một dải vải tang.",
       "reliquary_saintless_hall": "Những bức tượng với khuôn mặt bị đục đi bằng sự căm hờn cẩn trọng.",
       "reliquary_finale": "Chiếc chuông bị chôn ngân lên một lần dưới đôi ủng của ngươi.",
-      "litany_sluice": "Moss-choked sluice gates drip blackwater into the old choir crypt.",
-      "litany_ledger": "Ledger islands rise from flooded channels, ink bleeding into the marsh.",
-      "litany_ring": "A reliquary ring loops around a sealed central font of black water.",
-      "litany_baptistry": "A sinkhole baptistry yawns beneath cracked saint-stones and egg-sacs.",
-      "litany_choir_loft": "Fanning choir lofts echo with rope-hung bells that never quite stop.",
-      "litany_causeway": "A Y-split causeway forks over waist-deep fen water.",
-      "litany_apse": "The drowned apse opens onto Sister Nhalia's altar island."
+      "litany_sluice": "Những cửa cống phủ rêu nhỏ giọt nước đen xuống hầm mộ hợp ca cổ.",
+      "litany_ledger": "Những hòn đảo sổ sách nhô lên từ các lạch nước ngập, mực loang vào đầm lầy.",
+      "litany_ring": "Một vành đai thánh tích vòng quanh bể nước đen trung tâm bị niêm phong.",
+      "litany_baptistry": "Một giếng rửa tội sụt lún há miệng bên dưới những phiến đá thánh nứt vỡ và các bọc trứng.",
+      "litany_choir_loft": "Những gác hợp ca tỏa hình quạt vang vọng tiếng chuông treo dây chẳng bao giờ ngưng hẳn.",
+      "litany_causeway": "Một con đường đắp tách chữ Y rẽ nhánh trên làn nước đầm sâu ngang hông.",
+      "litany_apse": "Hậu cung chết chìm mở ra hòn đảo bàn thờ của Sơ Nhalia."
     },
     "moduleName": {
       "reliquary_sunken_ossuary": "Hầm Xương Chìm",
       "reliquary_bell_niche": "Hốc Chuông",
       "reliquary_saintless_hall": "Sảnh Không Thánh",
       "reliquary_finale": "Căn Phòng Chôn Chuông",
-      "litany_sluice": "The Crescent Sluice",
-      "litany_ledger": "The Island Ledger",
-      "litany_ring": "The Ring Reliquary",
-      "litany_baptistry": "The Sinkhole Baptistry",
-      "litany_choir_loft": "The Reedsong Gallery",
-      "litany_causeway": "The Y-Split Causeway",
-      "litany_apse": "The Drowned Apse"
+      "litany_sluice": "Cống Lưỡi Liềm",
+      "litany_ledger": "Đảo Sổ Sách",
+      "litany_ring": "Vành Đai Thánh Tích",
+      "litany_baptistry": "Giếng Rửa Tội Sụt Lún",
+      "litany_choir_loft": "Hành Lang Sậy Ca",
+      "litany_causeway": "Đường Đắp Chữ Y",
+      "litany_apse": "Hậu Cung Chết Chìm"
     },
     "object": {
-      "sluice_valve": "Sluice Valve",
-      "grave_tablet": "Grave Tablet",
-      "corpse_candle": "Corpse-Candle",
-      "bell_rope": "Bell Rope"
+      "sluice_valve": "Van Cống",
+      "grave_tablet": "Phiến Đá Mộ",
+      "corpse_candle": "Nến Tử Thi",
+      "bell_rope": "Dây Chuông"
     },
     "companion": {
       "barkLine": "{name}: {line}",
       "tessa": {
-        "run_start": "I have my candle and my ledger, {playerName}. Lead on.",
-        "ally_revive": "Up now. Tonight's ledger does not carry your name.",
+        "run_start": "Ta đã có cây nến và cuốn sổ của mình, {playerName}. Dẫn đường đi.",
+        "ally_revive": "Dậy nào. Cuốn sổ đêm nay không mang tên ngươi.",
         "combat_start": "Giữ vững chân, {playerName}. Kẻ chết nơi đây không yên nghỉ.",
         "low_hp": "Hít thở đi. Ta vẫn còn những lời nguyện cầu dành cho ngươi.",
         "trap_spotted": "Khoan đã. Có thứ gì đó trong nền nhà nhớ rõ tiếng bước chân.",
@@ -3169,17 +3174,17 @@ export const vi_VN: EnTranslations = {
         }
       },
       "edda": {
-        "run_start": "Keep to the plank-line, {playerName}. The silt takes the proud-footed.",
-        "ally_revive": "Up, now. The marsh does not get you today.",
-        "combat_start": "Mind the blackwater, {playerName}. The marsh listens.",
-        "low_hp": "Steady. My lantern is not out yet.",
-        "trap_spotted": "Wait. The reeds are wrong here.",
-        "boss_pull": "That canticle knows your name, {playerName}. Do not sing back.",
-        "completion": "The fen can swallow its secrets for one more night.",
+        "run_start": "Bám theo lối ván gỗ, {playerName}. Bùn lầy chuyên nuốt những bàn chân kiêu ngạo.",
+        "ally_revive": "Dậy nào. Hôm nay đầm lầy chưa bắt được ngươi đâu.",
+        "combat_start": "Coi chừng làn nước đen, {playerName}. Đầm lầy đang lắng nghe.",
+        "low_hp": "Bình tĩnh. Đèn lồng của ta vẫn chưa tắt.",
+        "trap_spotted": "Khoan. Đám lau sậy ở đây không ổn.",
+        "boss_pull": "Bản thánh ca đó biết tên ngươi, {playerName}. Đừng hát đáp lại.",
+        "completion": "Đầm lầy có thể nuốt giữ những bí mật của nó thêm một đêm nữa.",
         "rank": {
-          "1": "Lantern-Bearer",
-          "2": "Reed-Watcher",
-          "3": "Fenbridge Acolyte"
+          "1": "Người Cầm Đèn Lồng",
+          "2": "Người Canh Lau Sậy",
+          "3": "Tu Sinh Fenbridge"
         }
       }
     },
@@ -3224,9 +3229,9 @@ export const vi_VN: EnTranslations = {
       "grave_tax": "Thuế Mộ Phần",
       "unstable_roof": "Mái Vòm Bất Ổn",
       "cult_remnants": "Tàn Dư Giáo Phái",
-      "high_water": "High Water",
-      "lively_choir": "Lively Choir",
-      "belligerent_dead": "Belligerent Dead"
+      "high_water": "Nước Dâng Cao",
+      "lively_choir": "Hợp Ca Náo Động",
+      "belligerent_dead": "Kẻ Chết Hiếu Chiến"
     },
     "blessing": {
       "chapel_candle": "Nến Nguyện Đường: lượt chạy an toàn hơn, giảm một Dấu Ấn khi hoàn thành."
@@ -3309,7 +3314,7 @@ export const vi_VN: EnTranslations = {
         "desc": "Đòn đánh vật lý của ngươi mạnh hơn 15%."
       },
       "aug_spellfire": {
-        "name": "Hỏa Phép",
+        "name": "Hỏa Nghiệt",
         "desc": "Phép của ngươi gây thêm 15% sát thương."
       },
       "aug_toughness": {
@@ -3353,7 +3358,7 @@ export const vi_VN: EnTranslations = {
         "desc": "+18% mọi loại sát thương và +12% tốc chạy."
       },
       "aug_lightwell": {
-        "name": "Giếng Thánh Quang",
+        "name": "Ánh Sáng Mộ Phần",
         "desc": "+30% trị liệu và +15% máu tối đa. Làm trụ cột cho cả đội."
       },
       "aug_bounty_hunter": {
@@ -3404,13 +3409,13 @@ export const vi_VN: EnTranslations = {
   },
   "seo": {
     "title": "World of ClaudeCraft: MMO Web Phong Cách Cổ Điển",
-    "description": "Bắt đầu cuộc phiêu lưu hoành tráng trong World of ClaudeCraft, một micro-MMO phong cách cổ điển chơi trực tiếp trên trình duyệt của bạn. Tham gia một máy chủ chung bền vững, lên cấp các lớp nhân vật và đánh bại kẻ thù!",
+    "description": "Bắt đầu cuộc phiêu lưu hoành tráng trong World of ClaudeCraft, một micro-MMO phong cách cổ điển chơi trực tiếp trên trình duyệt của bạn. Tham gia một thế giới chung bền vững, lên cấp các lớp nhân vật và đánh bại kẻ thù!",
     "genre": "MMORPG",
     "playMode": "Nhiều người chơi",
     "applicationCategory": "Trò chơi",
     "operatingSystem": "Trình duyệt web",
     "officialLabel": "Trang web World of ClaudeCraft chính thức",
-    "officialBody": "worldofclaudecraft.com là trang MMO trên trình duyệt miễn phí chính thức cho máy chủ Claudemoon. Chơi trực tuyến với một nhân vật bền vững, khám phá đơn lẻ ngoại tuyến, đọc wiki và theo dõi các liên kết cộng đồng đã được xác minh từ trang này."
+    "officialBody": "worldofclaudecraft.com là trang MMO trên trình duyệt miễn phí chính thức cho thế giới Claudemoon. Chơi trực tuyến với một nhân vật bền vững, khám phá đơn lẻ ngoại tuyến, đọc wiki và theo dõi các liên kết cộng đồng đã được xác minh từ trang này."
   },
   "a11y": {
     "goHome": "Về trang chủ",
@@ -3426,7 +3431,7 @@ export const vi_VN: EnTranslations = {
     "world": "Đang tải thế giới...",
     "worldProgress": "Đang tải thế giới... {done}/{total}",
     "enteringWorld": "Đang vào thế giới...",
-    "connectingRealm": "Đang kết nối tới máy chủ...",
+    "connectingRealm": "Đang kết nối tới thế giới...",
     "assetsFailed": "Tải tài nguyên thất bại: thử tải lại. {error}",
     "rendererFailed": "Không thể khởi động bộ kết xuất: thử tải lại. {error}",
     "enterTimeout": "Không thể vào thế giới. Kết nối đã quá thời gian. Máy chủ trò chơi có đang chạy không?",
@@ -3486,25 +3491,25 @@ export const vi_VN: EnTranslations = {
     }
   },
   "realm": {
-    "noRealms": "Không có realm nào khả dụng.",
-    "loading": "Đang tải các realm...",
+    "noRealms": "Không có thế giới nào khả dụng.",
+    "loading": "Đang tải các thế giới...",
     "recommended": "Được Đề Xuất",
     "checkingStatus": "Đang kiểm tra trạng thái...",
     "onlineNow": "{count} đang trực tuyến",
-    "down": "Realm đang ngừng hoạt động",
+    "down": "Thế giới đang ngừng hoạt động",
     "offline": "Ngoại Tuyến",
     "full": "Đầy",
     "high": "Cao",
     "medium": "Trung Bình",
     "low": "Thấp",
     "popTipLow": "Dân số thấp: ít hơn 15 người chơi đang trực tuyến ngay lúc này. Còn nhiều chỗ trống; tuyệt vời để khởi đầu mới.",
-    "popTipMedium": "Dân số trung bình: 15 đến 39 người chơi đang trực tuyến ngay lúc này. Một realm năng động và lành mạnh.",
+    "popTipMedium": "Dân số trung bình: 15 đến 39 người chơi đang trực tuyến ngay lúc này. Một thế giới năng động và lành mạnh.",
     "popTipHigh": "Dân số cao: 40 đến 79 người chơi đang trực tuyến ngay lúc này. Đông đúc, có nhiều người chơi xung quanh.",
     "popTipFull": "Dân số đầy: 80 người chơi trở lên đang trực tuyến ngay lúc này. Rất đông; bạn có thể phải chờ trong hàng đợi đăng nhập.",
-    "popTipOffline": "Ngoại tuyến: realm này hiện không thể truy cập và không thể tham gia.",
+    "popTipOffline": "Ngoại tuyến: thế giới này hiện không thể truy cập và không thể tham gia.",
     "characterCountOne": "{count} nhân vật",
     "characterCountOther": "{count} nhân vật",
-    "selectedRealm": "Realm: {name}",
+    "selectedRealm": "Thế Giới: {name}",
     "statsOffline": "Ngoại Tuyến",
     "statsRealmOffline": "{realm} (Ngoại Tuyến)"
   },
@@ -3588,12 +3593,12 @@ export const vi_VN: EnTranslations = {
     },
     "lore": {
       "warrior": "Chiến Binh là những đấu sĩ cận chiến dày dạn trận mạc, tích lũy Nộ Khí khi gây ra hoặc nhận sát thương. Họ hứng chịu những đòn nặng nề hoặc nghiền nát kẻ thù bằng vũ khí uy lực.",
-      "paladin": "Thánh Kỵ Sĩ là những thập tự quân thần thánh, hỗ trợ đồng minh bằng các phúc lành, chữa lành vết thương bằng Thánh Quang, và bảo vệ kẻ yếu trong bộ giáp nặng.",
+      "paladin": "Thánh Kỵ Sĩ là những thập tự quân thần thánh, hỗ trợ đồng minh bằng các phúc lành, chữa lành vết thương bằng Thánh Quang Chữa Lành, và bảo vệ kẻ yếu trong bộ giáp nặng.",
       "hunter": "Thợ Săn là những chuyên gia tầm xa chiến đấu bên cạnh một mãnh thú đã thuần hóa, dội vào kẻ thù những phát bắn nhắm chuẩn và liên hồi, làm chậm chúng bằng các đòn chích nọc và hỏa lực chấn động, và chuyển đổi Linh Khí để thích ứng với từng khoảnh khắc.",
       "rogue": "Đạo Tặc là những sát thủ ẩn mình, tiêu hao Năng Lượng và Điểm Liên Hoàn cho những đòn đâm lén và đòn kết liễu từ trong bóng tối.",
-      "priest": "Tu Sĩ kêu gọi Thánh Quang để chữa lành và che chắn cho đồng minh, trong khi ma thuật Bóng Tối cho phép họ hút sinh lực của kẻ thù.",
+      "priest": "Tu Sĩ kêu gọi Thánh Quang Chữa Lành để chữa lành và che chắn cho đồng minh, trong khi ma thuật Bóng Tối cho phép họ hút sinh lực của kẻ thù.",
       "shaman": "Shaman điều khiển các nguyên tố, ban sức mạnh cho vũ khí, gây choáng kẻ thù bằng sấm sét, và hồi phục cho đồng minh.",
-      "mage": "Pháp Sư điều khiển sức mạnh Hỏa, Băng và Bí Thuật để tiêu diệt kẻ thù, tạo ra nước, và đóng băng các mối đe dọa tại chỗ.",
+      "mage": "Pháp Sư điều khiển sức mạnh Hỏa, Băng và uy lực bí thuật để tiêu diệt kẻ thù, triệu hồi nước, và đóng băng các mối đe dọa tại chỗ.",
       "warlock": "Thuật Sĩ Hắc Ám triệu hồi quỷ dữ, gieo lời nguyền và ma thuật sát thương theo thời gian, và hút sinh lực từ kẻ thù để trường tồn.",
       "druid": "Druid khơi dẫn sức mạnh thiên nhiên, chữa lành vết thương, trói buộc kẻ thù, và biến hình thành các dạng thú để phòng thủ hoặc gây sát thương."
     },
@@ -3619,10 +3624,10 @@ export const vi_VN: EnTranslations = {
     "otherInstallDetail": "Hãy cài đặt hoặc thêm trang này vào Màn hình chính để có trải nghiệm toàn màn hình tốt nhất trên di động."
   },
   "serverUnavailable": {
-    "title": "World of ClaudeCraft - Realm Không Khả Dụng",
+    "title": "World of ClaudeCraft - Thế Giới Không Khả Dụng",
     "logoAlt": "World of ClaudeCraft",
-    "eyebrow": "Bảo trì realm",
-    "heading": "Realm tạm thời không khả dụng.",
+    "eyebrow": "Bảo trì thế giới",
+    "heading": "Thế giới tạm thời không khả dụng.",
     "body": "Chúng tôi đang khởi động lại dịch vụ trò chơi và dự kiến Claudemoon sẽ trở lại trong giây lát. Trang này sẽ tự động tiếp tục kiểm tra.",
     "status": "Sớm trở lại"
   },
@@ -3942,9 +3947,9 @@ export const vi_VN: EnTranslations = {
       "requiresCombo": "Kỹ năng đó cần điểm liên hoàn.",
       "requiresForm": "Bạn phải ở Hình {form}.",
       "cantInForm": "Bạn không thể làm điều đó khi đang ở Hình {form}.",
-      "bear": "Gấu",
+      "bear": "Bruin",
       "cat": "Sói",
-      "travel": "Lữ Hành",
+      "travel": "Fleet",
       "shapeshifted": "Bạn không thể làm điều đó khi đang biến hình.",
       "stealthed": "Bạn phải đang ẩn thân.",
       "inCombat": "Bạn không thể làm điều đó khi đang chiến đấu.",
@@ -4249,8 +4254,8 @@ export const vi_VN: EnTranslations = {
     "tracker": {
       "title": "Nhiệm Vụ",
       "complete": "Hoàn Thành",
-      "showOnMap": "Show {name} on the map",
-      "hideFromMap": "Hide {name} from the map"
+      "showOnMap": "Hiện {name} trên bản đồ",
+      "hideFromMap": "Ẩn {name} khỏi bản đồ"
     },
     "log": {
       "title": "Nhật Ký Nhiệm Vụ",
@@ -4354,7 +4359,7 @@ export const vi_VN: EnTranslations = {
       "tool": "Dụng Cụ",
       "potion": "Thuốc",
       "elixir": "Tiên Dược",
-      "bag": "Bag"
+      "bag": "Túi"
     },
     "stats": {
       "armor": "Giáp",
@@ -4397,7 +4402,7 @@ export const vi_VN: EnTranslations = {
       "clickUseInstant": "Nhấp để dùng tức thời trong chiến đấu",
       "clickUse": "Nhấp để sử dụng",
       "clickBuyback": "Nhấp để mua lại",
-      "bagSlots": "{slots} Slot Bag"
+      "bagSlots": "Túi {slots} Ô"
     },
     "bags": {
       "title": "Túi Đồ",
@@ -4559,55 +4564,55 @@ export const vi_VN: EnTranslations = {
         "description": "Làm rung chuyển khu vực mục tiêu, quật ngã kẻ địch gây {damage} sát thương Thiên Nhiên."
       },
       "heroic_strike": {
-        "name": "Đòn Anh Hùng",
+        "name": "Đòn Cướp Phá",
         "description": "Một đòn đánh mạnh tăng sát thương cận chiến thêm {damage}. Kích hoạt ở đòn đánh tiếp theo của bạn."
       },
       "battle_shout": {
-        "name": "Hô Chiến",
+        "name": "Tiếng Gầm Thép",
         "description": "Tăng sức mạnh tấn công của ngươi thêm 20 trong 2 phút."
       },
       "commanding_shout": {
-        "name": "Hô Chỉ Huy",
+        "name": "Tiếng Hô Trợ Uy",
         "description": "Tăng Thể Lực của ngươi thêm 6 trong 2 phút."
       },
       "demoralizing_shout": {
-        "name": "Hô Áp Chế",
+        "name": "Tiếng Hú Hung Hiểm",
         "description": "Bật ra tiếng hô đáng sợ, giảm sức tấn công của tất cả kẻ địch xung quanh đi 30 trong 30 giây."
       },
       "charge": {
-        "name": "Xung Phong",
+        "name": "Xông Tới",
         "description": "Lao vào kẻ địch, tạo 9 nộ khí và làm choáng nó trong 1 giây. Tầm 8-25 thước."
       },
       "rend": {
-        "name": "Xé Toạc",
+        "name": "Vết Rạch Sâu",
         "description": "Gây vết thương cho mục tiêu, khiến chúng chảy máu nhận {damage} sát thương trong 9 giây."
       },
       "thunder_clap": {
-        "name": "Sấm Vỗ",
+        "name": "Đòn Chấn Rung",
         "description": "Giáng đòn lên các kẻ địch lân cận gây {damage} sát thương và làm chậm 10% đòn tấn công của chúng trong 10 giây."
       },
       "hamstring": {
-        "name": "Cắt Gân",
+        "name": "Nhát Cắt Què Chân",
         "description": "Làm bị thương kẻ địch 5 sát thương, làm chậm di chuyển của nó 50% trong 15 giây."
       },
       "bloodrage": {
-        "name": "Cuồng Huyết",
+        "name": "Giá Máu",
         "description": "Tạo 10 nộ khí bằng cái giá sinh lực."
       },
       "overpower": {
-        "name": "Áp Đảo",
+        "name": "Bàn Tay Đẫm Máu",
         "description": "Đòn tấn công tức thời gây sát thương vũ khí +5. Chỉ dùng được sau khi mục tiêu né đòn. Không thể bị né."
       },
       "execute": {
-        "name": "Hành Quyết",
+        "name": "Nấm Mồ Sớm",
         "description": "Cố gắng kết liễu kẻ thù đang trọng thương, gây {damage} sát thương. Chỉ dùng được trên kẻ địch còn dưới 20% máu."
       },
       "slam": {
-        "name": "Giáng Đòn",
+        "name": "Cú Vung Thô Bạo",
         "description": "Giáng đòn vào đối thủ gây sát thương vũ khí cộng thêm {damage}."
       },
       "cleave": {
-        "name": "Chém Quét",
+        "name": "Vòng Chém Gặt",
         "description": "Một đòn chém quét trúng mọi kẻ địch phía trước ngươi gây {damage} sát thương."
       },
       "defensive_stance": {
@@ -4615,119 +4620,119 @@ export const vi_VN: EnTranslations = {
         "description": "Thế đứng phòng thủ: bạn tạo ra nhiều hơn 30% mối đe dọa nhưng gây và nhận ít hơn 10% sát thương. Thi triển lại để rời khỏi thế đứng."
       },
       "sunder_armor": {
-        "name": "Nghiền Giáp",
+        "name": "Xẻ Giáp",
         "description": "Nghiền nát giáp của mục tiêu, giảm giáp đi {damage} mỗi lần áp dụng. Cộng dồn tối đa 5 lần. Tạo lượng đe dọa cao."
       },
       "taunt": {
-        "name": "Khiêu Khích",
+        "name": "Chọc Tức",
         "description": "Khiêu khích mục tiêu: đe dọa của bạn tăng lên ngang bằng kẻ địch mà nó căm ghét nhất và nó buộc phải tấn công bạn trong 3 giây."
       },
       "fireball": {
-        "name": "Cầu Lửa",
+        "name": "Tia Tàn Lửa",
         "description": "Ném ra một quả cầu lửa rực cháy gây {damage} sát thương Hỏa cùng sát thương cộng dồn theo thời gian."
       },
       "frost_armor": {
-        "name": "Giáp Băng",
+        "name": "Áo Choàng Sương Giá",
         "description": "Bao bọc bạn trong băng giá, tăng giáp thêm 30 trong 30 phút."
       },
       "arcane_intellect": {
-        "name": "Trí Tuệ Bí Thuật",
+        "name": "Tuệ Giác Ê-te",
         "description": "Tăng 2 Trí Tuệ trong 30 phút."
       },
       "frostbolt": {
-        "name": "Tiễn Băng",
+        "name": "Thương Băng Giá",
         "description": "Phóng ra một mũi tiễn băng, gây {damage} sát thương Băng và làm chậm di chuyển 40%."
       },
       "conjure_water": {
-        "name": "Tạo Nước Uống",
+        "name": "Kết Nước",
         "description": "Tạo ra 2 chai nước, hồi pháp lực khi uống. Cấp cao hơn tạo ra nước tinh khiết hơn."
       },
       "conjure_food": {
-        "name": "Tạo Thức Ăn",
+        "name": "Kết Bánh Mì",
         "description": "Tạo ra 2 phần bánh mì, hồi sinh lực khi ăn. Cấp cao hơn tạo ra món ăn no đủ hơn."
       },
       "fire_blast": {
-        "name": "Bộc Hỏa",
+        "name": "Mưa Tàn Lửa",
         "description": "Nổ tung kẻ địch, gây {damage} sát thương Hỏa. Tức thời."
       },
       "arcane_missiles": {
-        "name": "Phi Đạn Bí Thuật",
-        "description": "Phóng các Phi Đạn Bí Thuật vào kẻ địch, gây {damage} sát thương Bí Thuật mỗi giây trong 3 giây."
+        "name": "Phi Tiêu Ê-te",
+        "description": "Phóng các Phi Tiêu Ê-te vào kẻ địch, gây {damage} sát thương Bí Thuật mỗi giây trong 3 giây."
       },
       "polymorph": {
-        "name": "Biến Hình",
-        "description": "Biến kẻ địch thành một con cừu trong tối đa 15 giây. Con cừu đi lang thang và hồi máu rất nhanh. Mọi sát thương sẽ phá vỡ hiệu ứng. Chỉ với quái thú và nhân hình."
+        "name": "Mê Hoặc",
+        "description": "Biến kẻ địch thành một con cóc trong tối đa 15 giây. Con cóc đi lang thang và hồi máu rất nhanh. Mọi sát thương sẽ phá vỡ hiệu ứng. Chỉ với quái thú và nhân hình."
       },
       "frost_nova": {
-        "name": "Vụ Nổ Băng",
+        "name": "Trói Băng",
         "description": "Đóng băng tất cả kẻ địch xung quanh tại chỗ trong tối đa 8 giây, gây {damage} sát thương Băng."
       },
       "arcane_explosion": {
-        "name": "Nổ Bí Thuật",
+        "name": "Nổ Ê-te",
         "description": "Một luồng năng lượng Bí Thuật bùng nổ giáng vào mọi kẻ địch lân cận gây {damage} sát thương Bí Thuật."
       },
       "scorch": {
-        "name": "Cháy Sém",
+        "name": "Bỏng Rát",
         "description": "Thiêu cháy kẻ địch nhận {damage} sát thương Lửa. Niệm nhanh."
       },
       "pyroblast": {
-        "name": "Liệt Hỏa",
+        "name": "Thương Liệt Hỏa",
         "description": "Ném ra một tảng lửa khổng lồ gây {damage} sát thương Hỏa cùng sát thương cộng dồn theo thời gian."
       },
       "ice_barrier": {
-        "name": "Rào Băng",
+        "name": "Màn Băng",
         "description": "Che chắn bạn trong băng, hấp thụ 130 sát thương trong 60 giây."
       },
       "sinister_strike": {
-        "name": "Đòn Hiểm Ác",
+        "name": "Nhát Chém Gian Tà",
         "description": "Một đòn đánh tức thì gây sát thương vũ khí cộng thêm {damage}. Tích 1 điểm liên hoàn."
       },
       "eviscerate": {
-        "name": "Mổ Bụng",
+        "name": "Giấc Ngủ Vùi Đất",
         "description": "Đòn kết liễu gây sát thương theo mỗi điểm liên hoàn."
       },
       "backstab": {
-        "name": "Đâm Lén",
+        "name": "Đòn Đâm Hèn Hạ",
         "description": "Đâm lén mục tiêu gây 150% sát thương vũ khí cộng thêm {damage}. Phải ở phía sau mục tiêu. Yêu cầu một thanh dao găm. Thưởng 1 điểm liên hoàn."
       },
       "gouge": {
-        "name": "Khoét Mắt",
+        "name": "Thọc Mắt",
         "description": "Đâm vào mục tiêu, khiến nó bất lực trong 4 giây. Mọi sát thương sẽ phá vỡ hiệu ứng. Tặng 1 điểm liên hoàn."
       },
       "evasion": {
-        "name": "Né Tránh",
+        "name": "Bước Chân Ma",
         "description": "Tăng tỷ lệ né đòn của bạn thêm 50% trong 15 giây."
       },
       "slice_and_dice": {
-        "name": "Chém Băm",
+        "name": "Nhịp Cắt Cổ",
         "description": "Đòn kết liễu tăng 30% tốc độ đánh cận chiến. Kéo dài hơn theo mỗi điểm liên hoàn."
       },
       "sprint": {
-        "name": "Nước Rút",
+        "name": "Gót Chân Nhanh",
         "description": "Tăng 70% tốc độ di chuyển của bạn trong 15 giây."
       },
       "kidney_shot": {
-        "name": "Đánh Thận",
+        "name": "Đòn Chơi Xấu",
         "description": "Đòn kết liễu làm choáng mục tiêu. Kéo dài thêm 1 giây cho mỗi điểm liên hoàn."
       },
       "ambush": {
-        "name": "Mai Phục",
+        "name": "Đòn Kẻ Rình Rập",
         "description": "Mai phục mục tiêu gây 250% sát thương vũ khí cộng thêm {damage}. Phải đang ẩn thân và ở phía sau mục tiêu. Yêu cầu một thanh dao găm. Thưởng 1 điểm liên hoàn."
       },
       "stealth": {
-        "name": "Ẩn Thân",
-        "description": "Che giấu bạn trong bóng tối: kẻ địch khó nhận ra bạn, nhưng bạn di chuyển chậm hơn 50%. Tấn công hoặc nhận sát thương sẽ phá vỡ Ẩn Thân. Niệm lại để bước ra."
+        "name": "Duskveil",
+        "description": "Che giấu bạn trong bóng tối: kẻ địch khó nhận ra bạn, nhưng bạn di chuyển chậm hơn 50%. Tấn công hoặc nhận sát thương sẽ phá vỡ Duskveil. Niệm lại để bước ra."
       },
       "adrenaline_rush": {
-        "name": "Bộc Phát Adrenaline",
+        "name": "Huyết Tăng Tốc",
         "description": "Máu ngươi sôi sục, lập tức hồi lại 60 năng lượng."
       },
       "garrote": {
-        "name": "Siết Cổ",
+        "name": "Dây Siết Cổ",
         "description": "Siết cổ kẻ địch, gây sát thương ngay lập tức và khiến nó chảy máu {damage} trong 18 giây. Phải đang ẩn thân. Tặng 1 điểm liên hoàn."
       },
       "cheap_shot": {
-        "name": "Đòn Bẩn",
+        "name": "Thụi Bụng",
         "description": "Đánh mục tiêu, làm choáng nó trong 4 giây. Phải đang ẩn thân. Thưởng 2 điểm liên hoàn."
       },
       "sap": {
@@ -4735,135 +4740,135 @@ export const vi_VN: EnTranslations = {
         "description": "Vô hiệu hóa mục tiêu trong 8 giây. Phải đang Ẩn Thân và ngoài chiến đấu. Bất kỳ sát thương nào cũng phá vỡ hiệu ứng."
       },
       "crippling_poison": {
-        "name": "Độc Làm Què",
-        "description": "Tẩm vào mục tiêu một loại độc làm què, gây {damage} sát thương Tự Nhiên và giảm 50% tốc độ di chuyển của nó trong 12 giây."
+        "name": "Nọc Độc Chì",
+        "description": "Tẩm vào mục tiêu một loại nọc độc nặng như chì, gây {damage} sát thương Tự Nhiên và giảm 50% tốc độ di chuyển của nó trong 12 giây."
       },
       "expose_armor": {
-        "name": "Phá Giáp",
+        "name": "Xuyên Phá Giáp",
         "description": "Đòn kết liễu phơi bày mục tiêu, giảm giáp của chúng. Càng nhiều điểm liên hoàn được dùng thì vết cắt càng sâu."
       },
       "rupture": {
-        "name": "Rách Nát",
+        "name": "Rỉ Máu Chí Tử",
         "description": "Đòn kết liễu gây vết thương cho mục tiêu, khiến nó chảy máu nhận {damage} trong 16 giây."
       },
       "vanish": {
-        "name": "Tàng Hình",
-        "description": "Biến mất khỏi tầm nhìn, đi vào Ẩn Thân ngay cả trong chiến đấu. Bạn di chuyển chậm hơn 50% khi ẩn nấp. Kéo dài tối đa 10 giây."
+        "name": "Bước Khói",
+        "description": "Biến mất khỏi tầm nhìn, đi vào Duskveil ngay cả trong chiến đấu. Bạn di chuyển chậm hơn 50% khi ẩn nấp. Kéo dài tối đa 10 giây."
       },
       "instant_poison": {
-        "name": "Độc Tức Thời",
+        "name": "Vết Cắn Rắn Độc",
         "description": "Bôi lên vũ khí trong 30 phút, khiến mỗi đòn cận chiến gây thêm 8 sát thương Tự Nhiên."
       },
       "deadly_poison": {
-        "name": "Độc Chí Mạng",
+        "name": "Nọc Độc Ung Mủ",
         "description": "Bôi lên vũ khí trong 30 phút, khiến mỗi đòn cận chiến gây thêm 14 sát thương Tự Nhiên."
       },
       "blind": {
-        "name": "Làm Mù",
+        "name": "Hất Cát",
         "description": "Làm mù mục tiêu, khiến nó lảo đảo mất phương hướng trong 8 giây. Bất kỳ sát thương nào cũng phá vỡ hiệu ứng."
       },
       "seal_of_righteousness": {
-        "name": "Ấn Chính Nghĩa",
-        "description": "Tràn đầy sức mạnh Thánh trong 30 giây, khiến mỗi cú vung cận chiến của bạn gây thêm 4 sát thương Thánh. Giải phóng bằng Phán Xét."
+        "name": "Ấn Khắc Lời Thề",
+        "description": "Tràn đầy sức mạnh Thánh trong 30 giây, khiến mỗi cú vung cận chiến của bạn gây thêm 4 sát thương Thánh. Giải phóng bằng Verdict."
       },
       "holy_light": {
-        "name": "Thánh Quang",
+        "name": "Thánh Quang Chữa Lành",
         "description": "Trị liệu cho đồng minh {damage} máu."
       },
       "devotion_aura": {
-        "name": "Hào Quang Tận Tụy",
+        "name": "Hào Quang Kiên Định",
         "description": "Tăng giáp của bạn thêm 40 trong 30 phút."
       },
       "judgement": {
-        "name": "Phán Xét",
-        "description": "Giải phóng Ấn đang kích hoạt của bạn lên kẻ địch, tiêu hao nó để gây sát thương phán xét tương ứng."
+        "name": "Verdict",
+        "description": "Giải phóng Ấn đang kích hoạt của bạn lên kẻ địch, tiêu hao nó để gây lượng sát thương Thánh tích trữ trong đó."
       },
       "blessing_of_might": {
-        "name": "Phúc Lành Sức Mạnh",
+        "name": "Lời Thề Sắt Thép",
         "description": "Ban một Phúc Lành lên mục tiêu thân thiện, tăng sức mạnh tấn công thêm 15 trong 5 phút."
       },
       "divine_protection": {
-        "name": "Thần Thánh Bảo Hộ",
-        "description": "Một tấm khiên thần thánh hấp thụ 50 sát thương trong 10 giây."
+        "name": "Bùa Hộ Đức Tin",
+        "description": "Một tấm bùa hộ mệnh hấp thụ 50 sát thương trong 10 giây."
       },
       "hammer_of_justice": {
-        "name": "Búa Công Lý",
+        "name": "Búa Phán Nứt Vỡ",
         "description": "Làm choáng mục tiêu trong 3 giây."
       },
       "lay_on_hands": {
-        "name": "Đặt Tay Cứu Rỗi",
+        "name": "Nghi Thức Cuối Cùng",
         "description": "Một luồng trị liệu khổng lồ: hồi phục 250 máu. Hồi chiêu 10 phút."
       },
       "flash_of_light": {
-        "name": "Lóe Sáng Thánh Quang",
-        "description": "Một tia Thánh Quang nhanh và hiệu quả trị liệu cho đồng minh {damage} máu."
+        "name": "Ánh Quang Hàn Gắn",
+        "description": "Một luồng Thánh Quang nhanh và hiệu quả trị liệu cho đồng minh {damage} máu."
       },
       "exorcism": {
-        "name": "Trừ Tà",
+        "name": "Nghi Lễ Trục Xuất",
         "description": "Trục xuất kẻ xấu xa bằng cơn thịnh nộ Thần Thánh, gây {damage} sát thương Thần Thánh."
       },
       "consecration": {
-        "name": "Thánh Hóa",
+        "name": "Thánh Địa",
         "description": "Thánh hóa mặt đất bên dưới ngươi, thiêu đốt kẻ địch lân cận gây {damage} sát thương Thần Thánh."
       },
       "righteous_fury": {
-        "name": "Phẫn Nộ Chính Nghĩa",
+        "name": "Lời Thề Rực Cháy",
         "description": "Tăng 60% mối đe dọa tạo ra từ sát thương Thánh của bạn trong 30 phút. Nền tảng của thánh kỵ sĩ giữ aggro."
       },
       "retribution_aura": {
-        "name": "Hào Quang Báo Phục",
+        "name": "Hào Quang Báo Đền",
         "description": "Bao bọc bạn trong năng lượng thánh thiện trong 30 phút, gây 5 sát thương Thánh cho bất kỳ kẻ địch nào đánh cận chiến bạn."
       },
       "tame_beast": {
-        "name": "Thuần Thú",
+        "name": "Kết Giao Hoang Dã",
         "description": "Bắt đầu thuần hóa một mãnh thú làm bạn đồng hành. Nó phải bằng hoặc thấp hơn cấp của bạn và không phải tinh nhuệ. Thú cưng đi theo bạn, tấn công kẻ địch và tự giữ đe dọa. Bạn chỉ có thể có một thú cưng cùng lúc."
       },
       "dismiss_pet": {
-        "name": "Giải Tán Thú",
+        "name": "Thả Bạn Đồng Hành",
         "description": "Thả thú cưng của bạn về lại nơi hoang dã."
       },
       "raptor_strike": {
-        "name": "Đòn Mãnh Cầm",
+        "name": "Đòn Moi Ruột",
         "description": "Một đòn cận chiến mạnh tăng sát thương thêm 5. Kích hoạt ở đòn đánh tiếp theo của bạn."
       },
       "aspect_of_the_hawk": {
-        "name": "Linh Khí Ưng",
-        "description": "Khoác lên linh khí ưng, tăng 20 sức mạnh tấn công trong 30 phút."
+        "name": "Lốt Diều Hâu",
+        "description": "Khoác lên lốt diều hâu, tăng 20 sức mạnh tấn công trong 30 phút."
       },
       "serpent_sting": {
-        "name": "Nọc Rắn",
+        "name": "Ngạnh Nọc Độc",
         "description": "Chích nọc mục tiêu, gây {damage} sát thương Tự Nhiên trong 15 giây."
       },
       "arcane_shot": {
-        "name": "Bắn Bí Thuật",
+        "name": "Bắn Tà Ác",
         "description": "Một phát bắn tức thời gây {damage} sát thương Bí Thuật."
       },
       "concussive_shot": {
-        "name": "Bắn Chấn Động",
+        "name": "Bắn Rúng Động",
         "description": "Làm choáng váng mục tiêu, giảm 50% tốc độ di chuyển trong 4 giây."
       },
       "mongoose_bite": {
-        "name": "Cắn Chồn",
+        "name": "Phản Nanh",
         "description": "Phản công sau khi mục tiêu né đòn, gây sát thương vũ khí cộng thêm 12. Không thể bị né."
       },
       "wing_clip": {
-        "name": "Cắt Cánh",
+        "name": "Nhát Chém Xiềng Xích",
         "description": "Gây một vết thương làm chậm kẻ địch 40% trong 10 giây."
       },
       "aspect_of_the_monkey": {
-        "name": "Linh Khí Khỉ",
-        "description": "Khoác lên linh khí khỉ, tăng tỷ lệ né đòn thêm 8% trong 30 phút."
+        "name": "Lốt Chồn",
+        "description": "Khoác lên lốt chồn, tăng tỷ lệ né đòn thêm 8% trong 30 phút."
       },
       "aspect_of_the_cheetah": {
-        "name": "Linh Khí Báo Săn",
-        "description": "Khoác lên linh khí báo săn, tăng tốc độ di chuyển thêm 30% trong 30 phút."
+        "name": "Lốt Tuấn Mã",
+        "description": "Khoác lên lốt tuấn mã, tăng tốc độ di chuyển thêm 30% trong 30 phút."
       },
       "aimed_shot": {
-        "name": "Nhắm Bắn",
-        "description": "Một phát bắn nhắm kỹ gây {damage} sát thương."
+        "name": "Kéo Cung Dài",
+        "description": "Một phát bắn được giương cung cẩn thận gây {damage} sát thương."
       },
       "rapid_fire": {
-        "name": "Bắn Liên Hoàn",
+        "name": "Giương Cung Cuồng Loạn",
         "description": "Tăng tốc độ tấn công của bạn thêm 40% trong 15 giây."
       },
       "smite": {
@@ -4871,71 +4876,71 @@ export const vi_VN: EnTranslations = {
         "description": "Trừng phạt kẻ địch gây {damage} sát thương Thánh."
       },
       "lesser_heal": {
-        "name": "Trị Liệu Sơ Cấp",
+        "name": "Lời Nguyện Thì Thầm",
         "description": "Trị liệu cho đồng minh {damage} máu."
       },
       "power_word_fortitude": {
-        "name": "Thánh Ngữ: Kiên Cường",
+        "name": "Kinh Cầu Kiên Định",
         "description": "Tăng Thể Lực của mục tiêu thêm 3 trong 30 phút."
       },
       "shadow_word_pain": {
-        "name": "Ám Ngữ: Thống Khổ",
+        "name": "Ai Ca Mục Rữa",
         "description": "Một lời ám tối gây {damage} sát thương Bóng Tối trong 18 giây."
       },
       "power_word_shield": {
-        "name": "Thánh Ngữ: Khiên Chắn",
+        "name": "Thánh Thi Hộ Mệnh",
         "description": "Che chắn mục tiêu, hấp thụ 48 sát thương trong 30 giây."
       },
       "renew": {
-        "name": "Hồi Sinh",
+        "name": "Ân Điển Vương Vấn",
         "description": "Trị liệu cho mục tiêu {damage} trong 15 giây."
       },
       "mind_blast": {
-        "name": "Nổ Tâm Trí",
+        "name": "Nứt Vỡ Tâm Trí",
         "description": "Nổ tung tâm trí của mục tiêu gây {damage} sát thương Bóng Tối."
       },
       "heal": {
-        "name": "Trị Liệu",
+        "name": "Lời Nguyện Trang Nghiêm",
         "description": "Một lời cầu nguyện chậm nhưng mạnh mẽ trị liệu cho đồng minh {damage} máu."
       },
       "mind_flay": {
-        "name": "Cào Xé Tâm Trí",
+        "name": "Kinh Cầu Thống Khổ",
         "description": "Công kích tâm trí mục tiêu bằng năng lượng Bóng Tối, gây {damage} sát thương mỗi giây trong 3 giây."
       },
       "flash_heal": {
-        "name": "Trị Liệu Nhanh",
+        "name": "Lời Nguyện Khẩn Cấp",
         "description": "Một lời cầu nguyện nhanh trị liệu cho đồng minh {damage} máu."
       },
       "lightning_bolt": {
-        "name": "Tia Sét",
+        "name": "Tia Hồ Quang",
         "description": "Phóng ra một tia sét gây {damage} sát thương Tự Nhiên."
       },
       "rockbiter_weapon": {
-        "name": "Vũ Khí Nghiền Đá",
+        "name": "Vũ Khí Khắc Đá",
         "description": "Phù phép vũ khí với cơn cuồng nộ của đá: mỗi cú vung gây thêm 5 sát thương trong 5 phút."
       },
       "healing_wave": {
-        "name": "Sóng Trị Liệu",
+        "name": "Dòng Nước Hàn Gắn",
         "description": "Trị liệu cho đồng minh {damage} máu."
       },
       "earth_shock": {
-        "name": "Chấn Địa",
+        "name": "Địa Giật",
         "description": "Lập tức giáng chấn động vào mục tiêu, gây {damage} sát thương Tự Nhiên."
       },
       "lightning_shield": {
-        "name": "Khiên Sét",
+        "name": "Bùa Hộ Sấm Sét",
         "description": "Bao quanh bạn bằng sét lốp bốp: kẻ tấn công cận chiến nhận 13 sát thương Tự Nhiên."
       },
       "flame_shock": {
-        "name": "Chấn Hỏa",
+        "name": "Giật Tàn Lửa",
         "description": "Thiêu đốt mục tiêu bằng lửa gây 25 sát thương cộng thêm {damage} trong 12 giây."
       },
       "flametongue_weapon": {
-        "name": "Vũ Khí Lưỡi Lửa",
+        "name": "Vũ Khí Khắc Hỏa",
         "description": "Phù phép vũ khí của bạn bằng lửa nguyên tố: mỗi đòn đánh gây thêm 8 sát thương Hỏa trong 5 phút."
       },
       "frost_shock": {
-        "name": "Chấn Băng",
+        "name": "Giật Băng Giá",
         "description": "Lập tức giáng băng giá vào mục tiêu gây {damage} sát thương Băng và làm chậm di chuyển của nó 50% trong 8 giây."
       },
       "frostbrand_weapon": {
@@ -4943,92 +4948,92 @@ export const vi_VN: EnTranslations = {
         "description": "Phù phép vũ khí của bạn bằng băng giá buốt lạnh: mỗi đòn đánh gây thêm 8 sát thương trong 5 phút."
       },
       "ghost_wolf": {
-        "name": "Sói Ma",
-        "description": "Biến bạn thành Sói Ma, tăng tốc độ di chuyển 40% trong 10 phút."
+        "name": "Shadewolf",
+        "description": "Biến bạn thành Shadewolf, tăng tốc độ di chuyển 40% trong 10 phút."
       },
       "stormstrike": {
-        "name": "Đòn Bão Tố",
+        "name": "Đòn Tổ Tiên",
         "description": "Dẫn dắt cơn bão qua vũ khí của bạn, tức thì đánh gây sát thương vũ khí cộng thêm {damage}."
       },
       "shadow_bolt": {
-        "name": "Tia Bóng Tối",
+        "name": "Tia U Ám",
         "description": "Phóng một tia bóng tối vào kẻ địch gây {damage} sát thương Bóng Tối."
       },
       "demon_skin": {
-        "name": "Da Quỷ",
+        "name": "Da Ác Quỷ",
         "description": "Lớp da quỷ tăng giáp của bạn thêm 30 trong 30 phút."
       },
       "immolate": {
-        "name": "Thiêu Đốt",
+        "name": "Khế Ước Rực Cháy",
         "description": "Thiêu đốt kẻ địch 11 sát thương Hỏa cùng thêm {damage} trong 15 giây."
       },
       "corruption": {
-        "name": "Hủ Hóa",
+        "name": "Hắc Hủ",
         "description": "Hủ hóa mục tiêu, gây {damage} sát thương Bóng Tối trong 18 giây."
       },
       "life_tap": {
-        "name": "Trích Sinh Lực",
+        "name": "Mặc Cả Nghiệt Ngã",
         "description": "Chuyển hóa 30 máu thành 30 mana."
       },
       "curse_of_agony": {
-        "name": "Lời Nguyền Thống Khổ",
+        "name": "Tà Chú Thống Khổ",
         "description": "Nguyền rủa mục tiêu bằng thống khổ: gây {damage} sát thương Bóng Tối trong 24 giây."
       },
       "drain_life": {
-        "name": "Hút Sinh Lực",
+        "name": "Nuốt Chửng",
         "description": "Hút sinh lực của mục tiêu, chuyển {damage} máu sang cho bạn mỗi giây trong 5 giây."
       },
       "fear": {
-        "name": "Gieo Sợ Hãi",
+        "name": "Giày Vò",
         "description": "Gieo nỗi kinh hoàng vào kẻ địch, khiến nó co rúm sợ hãi trong tối đa 8 giây. Mọi sát thương sẽ phá vỡ hiệu ứng."
       },
       "searing_pain": {
-        "name": "Đau Rát Bỏng",
+        "name": "Nung Đốt",
         "description": "Thiêu đốt kẻ địch bằng ngọn lửa đau đớn nhận {damage} sát thương Lửa. Niệm nhanh."
       },
       "shadowburn": {
-        "name": "Thiêu Bóng Tối",
-        "description": "Tức thì thiêu đốt mục tiêu bằng Ngọn Lửa Bóng Tối gây {damage} sát thương Bóng Tối."
+        "name": "Lửa Chạng Vạng",
+        "description": "Tức thì thiêu đốt mục tiêu bằng bóng tối nung cháy gây {damage} sát thương Bóng Tối."
       },
       "wrath": {
-        "name": "Thịnh Nộ",
+        "name": "Tia Hoang Dã",
         "description": "Phóng một tia năng lượng tự nhiên gây {damage} sát thương Tự Nhiên."
       },
       "healing_touch": {
-        "name": "Bàn Tay Trị Liệu",
+        "name": "Hàn Gắn Hoang Dã",
         "description": "Trị liệu cho đồng minh {damage} máu."
       },
       "mark_of_the_wild": {
-        "name": "Dấu Ấn Hoang Dã",
-        "description": "Đặt Dấu Ấn Hoang Dã lên một đồng minh, tăng giáp thêm 25 trong 30 phút."
+        "name": "Wildward",
+        "description": "Đặt Wildward lên một đồng minh, tăng giáp thêm 25 trong 30 phút."
       },
       "moonfire": {
-        "name": "Nguyệt Hỏa",
+        "name": "Bão Tố Nguyệt",
         "description": "Thiêu đốt kẻ địch bằng nguyệt hỏa gây {damage} sát thương Bí Thuật cùng sát thương theo thời gian."
       },
       "rejuvenation": {
-        "name": "Hồi Phục",
+        "name": "Hoa Nở Hoang Dã",
         "description": "Trị liệu cho mục tiêu {damage} máu trong 12 giây."
       },
       "thorns": {
-        "name": "Gai Nhọn",
+        "name": "Bụi Gai Hộ Thân",
         "description": "Gai nhọn mọc ra từ mục tiêu: kẻ tấn công cận chiến nhận 3 sát thương Tự Nhiên."
       },
       "entangling_roots": {
-        "name": "Rễ Trói",
+        "name": "Rễ Siết Chặt",
         "description": "Trói chân mục tiêu tại chỗ trong tối đa 12 giây."
       },
       "bear_form": {
-        "name": "Hình Gấu",
+        "name": "Bruin Form",
         "description": "Biến hình thành gấu: giáp +65%, sức mạnh tấn công +15, các đòn đánh của ngươi tích nộ khí và tạo thêm 30% đe dọa. Niệm lại để trở về hình pháp sư."
       },
       "maul": {
-        "name": "Vồ Mạnh",
-        "description": "Một đòn vồ tăng sát thương cận chiến thêm {damage} và gây ra lượng đe dọa lớn. Kích hoạt ở đòn đánh tiếp theo của bạn. Chỉ dùng được ở Hình Gấu."
+        "name": "Nghiền Xương",
+        "description": "Một đòn vồ tăng sát thương cận chiến thêm {damage} và gây ra lượng đe dọa lớn. Kích hoạt ở đòn đánh tiếp theo của bạn. Chỉ dùng được ở Bruin Form."
       },
       "growl": {
-        "name": "Gầm Gừ",
-        "description": "Gầm gừ với mục tiêu: mối đe dọa của bạn tăng lên ngang bằng kẻ địch mà nó căm ghét nhất và nó bị buộc phải tấn công bạn trong 3 giây. Chỉ dùng được ở Hình Gấu."
+        "name": "Hăm Dọa",
+        "description": "Gầm gừ với mục tiêu: mối đe dọa của bạn tăng lên ngang bằng kẻ địch mà nó căm ghét nhất và nó bị buộc phải tấn công bạn trong 3 giây. Chỉ dùng được ở Bruin Form."
       },
       "cat_form": {
         "name": "Hình Sói",
@@ -5039,43 +5044,43 @@ export const vi_VN: EnTranslations = {
         "description": "Cào kẻ địch gây sát thương vũ khí cộng thêm {damage}. Thưởng 1 điểm liên hoàn. Chỉ khi ở Hình Sói."
       },
       "ferocious_bite": {
-        "name": "Cắn Cuồng Bạo",
+        "name": "Cắn Xé Máu",
         "description": "Đòn kết liễu gây sát thương theo mỗi điểm liên hoàn. Chỉ dùng được ở Hình Sói."
       },
       "swipe": {
-        "name": "Quật Quét",
-        "description": "Quật quét các kẻ địch lân cận gây {damage} sát thương. Tạo thêm đe dọa. Chỉ dùng được ở Hình Gấu."
+        "name": "Vuốt Quét Ngang",
+        "description": "Quật quét các kẻ địch lân cận gây {damage} sát thương. Tạo thêm đe dọa. Chỉ dùng được ở Bruin Form."
       },
       "regrowth": {
-        "name": "Tái Sinh Trưởng",
+        "name": "Nở Hoa Lần Hai",
         "description": "Trị liệu cho đồng minh {damage} máu cùng một lượng bổ sung trong 21 giây."
       },
       "barkskin": {
-        "name": "Da Vỏ Cây",
+        "name": "Da Sồi",
         "description": "Da ngươi rắn lại như vỏ cây, tăng 150 giáp trong 15 giây."
       },
       "starfire": {
-        "name": "Tinh Hỏa",
+        "name": "Thiên Giáng",
         "description": "Gọi xuống một tia lửa tinh tú, gây {damage} sát thương Bí Thuật."
       },
       "travel_form": {
-        "name": "Hình Lữ Hành",
-        "description": "Tức thì biến thành hình lữ hành nhanh nhẹn, tăng 40% tốc độ di chuyển. Bạn không thể dùng các kỹ năng khác khi đã biến hình, nhưng có thể biến hình trong hoặc ngoài chiến đấu, lý tưởng để chạy trốn."
+        "name": "Fleet Form",
+        "description": "Tức thì biến thành Fleet Form nhanh nhẹn, tăng 40% tốc độ di chuyển. Bạn không thể dùng các kỹ năng khác khi đã biến hình, nhưng có thể biến hình trong hoặc ngoài chiến đấu, lý tưởng để chạy trốn."
       },
       "enrage": {
-        "name": "Phẫn Nộ",
-        "description": "Lập tức tạo ra 20 nộ khí. Chỉ dùng được ở Hình Gấu."
+        "name": "Khơi Bùng",
+        "description": "Lập tức tạo ra 20 nộ khí. Chỉ dùng được ở Bruin Form."
       },
       "bash": {
-        "name": "Đập Choáng",
-        "description": "Làm choáng mục tiêu trong 2 giây. Chỉ khi ở Hình Gấu."
+        "name": "Chấn Choáng",
+        "description": "Làm choáng mục tiêu trong 2 giây. Chỉ dùng được ở Bruin Form."
       },
       "faerie_fire": {
-        "name": "Lửa Tiên",
+        "name": "Ánh Ma Trơi",
         "description": "Giảm giáp của mục tiêu đi 35 trong 40 giây."
       },
       "hibernate": {
-        "name": "Ngủ Đông",
+        "name": "Giấc Ngủ Sâu",
         "description": "Buộc mục tiêu chìm vào giấc ngủ sâu trong tối đa 8 giây. Mọi sát thương sẽ đánh thức nó."
       },
       "dash": {
@@ -5083,15 +5088,15 @@ export const vi_VN: EnTranslations = {
         "description": "Lao về phía trước, tăng tốc độ di chuyển 50% trong 15 giây. Chỉ dùng được ở Hình Sói."
       },
       "pounce": {
-        "name": "Vồ Mồi",
+        "name": "Đòn Lẻn Vồ",
         "description": "Một đòn mở màn từ trạng thái ẩn thân làm choáng mục tiêu trong 2 giây. Tặng 1 điểm liên hoàn. Chỉ dùng được ở Hình Sói."
       },
       "insect_swarm": {
-        "name": "Bầy Côn Trùng",
+        "name": "Bầy Đốt Chích",
         "description": "Kẻ địch bị bầy côn trùng bủa vây, nhận {damage} sát thương Tự Nhiên trong 12 giây."
       },
       "tigers_fury": {
-        "name": "Phẫn Nộ Mãnh Hổ",
+        "name": "Huyết Sói",
         "description": "Tăng 40 sức mạnh tấn công trong 6 giây. Chỉ dùng được ở Hình Sói."
       },
       "rip": {
@@ -5099,67 +5104,67 @@ export const vi_VN: EnTranslations = {
         "description": "Đòn kết liễu gây sát thương Chảy Máu trong 12 giây. Tiêu hao điểm liên hoàn. Chỉ dùng được ở Hình Sói."
       },
       "mortal_strike": {
-        "name": "Đòn Trí Mạng",
+        "name": "Đòn Tàn Phế",
         "description": "Một đòn đánh hung hãn gây sát thương vũ khí cộng thêm {damage}. (Đặc trưng nhánh Vũ Khí)"
       },
       "bloodthirst": {
-        "name": "Khát Máu",
+        "name": "Trích Huyết",
         "description": "Tấn công tức thời trong cơn cuồng huyết gây {damage}. (Tuyệt chiêu Cuồng Nộ)"
       },
       "shield_slam": {
-        "name": "Giáng Khiên",
+        "name": "Giáng Nứt Khiên",
         "description": "Giáng khiên vào mục tiêu gây {damage} và lượng đe dọa khổng lồ. (Đặc trưng Hộ Vệ)"
       },
       "whirlwind": {
-        "name": "Lốc Xoáy",
+        "name": "Vòng Xoáy Lưỡi Kiếm",
         "description": "Xoay theo một vòng cung chết chóc, đánh tất cả kẻ địch lân cận gây {damage}. (Tài năng Cuồng Nộ)"
       },
       "berserker_rage": {
-        "name": "Cuồng Nộ Berserker",
-        "description": "Bước vào cơn cuồng nộ berserker, tạo 20 nộ khí. (Tài năng Chiến Binh)"
+        "name": "Thịnh Nộ Sục Sôi",
+        "description": "Bước vào cơn thịnh nộ sục sôi, tạo 20 nộ khí. (Tài năng Chiến Binh)"
       },
       "summon_imp": {
-        "name": "Triệu Hồi Tiểu Quỷ",
-        "description": "Triệu hồi một Tiểu Quỷ dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Tiểu Quỷ ném Tiễn Lửa vào kẻ địch của bạn từ xa. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
+        "name": "Triệu Hồi Emberkin",
+        "description": "Triệu hồi một Emberkin dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Emberkin ném Tiễn Tro vào kẻ địch của bạn từ xa. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
       },
       "summon_voidwalker": {
-        "name": "Triệu Hồi Quỷ Hư Không",
-        "description": "Triệu hồi một Quỷ Hư Không dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Quỷ Hư Không là con quỷ vững chãi khiêu khích kẻ địch của bạn và hứng chịu đòn tấn công. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
+        "name": "Triệu Hồi Gloomshade",
+        "description": "Triệu hồi một Gloomshade dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Gloomshade là con quỷ vững chãi khiêu khích kẻ địch của bạn và hứng chịu đòn tấn công. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
       },
       "summon_succubus": {
-        "name": "Triệu Hồi Mỹ Quỷ",
-        "description": "Triệu hồi một Mỹ Quỷ dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Mỹ Quỷ là con quỷ mong manh nhưng đánh nhanh và gây sát thương cận chiến mạnh. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
+        "name": "Triệu Hồi Duskborn",
+        "description": "Triệu hồi một Duskborn dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Duskborn là con quỷ mong manh nhưng đánh nhanh và gây sát thương cận chiến mạnh. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
       },
       "summon_felhunter": {
-        "name": "Triệu Hồi Thợ Săn Quỷ",
-        "description": "Triệu hồi một Thợ Săn Quỷ dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Thợ Săn Quỷ quấy rối kẻ địch từ xa bằng Cắn Bóng Tối và xuất sắc trong việc săn lùng các pháp sư niệm chú. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
+        "name": "Triệu Hồi Spellhound",
+        "description": "Triệu hồi một Spellhound dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Spellhound quấy rối kẻ địch từ xa bằng Cắn U Ám và xuất sắc trong việc săn lùng các pháp sư niệm chú. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
       },
       "summon_felguard": {
-        "name": "Triệu Hồi Vệ Binh Quỷ",
-        "description": "Triệu hồi một Vệ Binh Quỷ dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Vệ Binh Quỷ là con quỷ cận chiến bền bỉ lao vào trận chiến và tự đứng vững. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
+        "name": "Triệu Hồi Warfiend",
+        "description": "Triệu hồi một Warfiend dưới quyền chỉ huy của Thuật Sĩ Hắc Ám. Warfiend là con quỷ cận chiến bền bỉ lao vào trận chiến và tự đứng vững. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
       },
       "summon_infernal": {
-        "name": "Triệu Hồi Quỷ Hỏa Ngục",
-        "description": "Ràng buộc một Quỷ Hỏa Ngục theo ý chí của bạn, một cỗ máy hủy diệt đồ sộ với đòn cận chiến nghiền nát cùng lượng máu và giáp sâu nhất trong các loại quỷ. Thời gian hồi chiêu dài kìm hãm sức mạnh thô của nó. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
+        "name": "Triệu Hồi Pyre Colossus",
+        "description": "Ràng buộc một Pyre Colossus theo ý chí của bạn, một cỗ máy hủy diệt đồ sộ với đòn cận chiến nghiền nát cùng lượng máu và giáp sâu nhất trong các loại quỷ. Thời gian hồi chiêu dài kìm hãm sức mạnh thô của nó. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
       },
       "summon_doomguard": {
-        "name": "Triệu Hồi Vệ Binh Diệt Vong",
-        "description": "Ràng buộc một Vệ Binh Diệt Vong theo ý chí của bạn, một con quỷ tinh nhuệ trút sát thương Bóng Tối nặng nề từ xa. Thời gian hồi chiêu dài kìm hãm sức mạnh tàn phá của nó. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
+        "name": "Triệu Hồi Wraithborn",
+        "description": "Ràng buộc một Wraithborn theo ý chí của bạn, một con quỷ tinh nhuệ trút sát thương Bóng Tối nặng nề từ xa. Thời gian hồi chiêu dài kìm hãm sức mạnh tàn phá của nó. Triệu hồi một con quỷ mới sẽ giải tán con hiện tại. Bạn chỉ có thể có một con quỷ cùng lúc."
       },
       "bear_charge": {
-        "name": "Gấu Lao",
-        "description": "Lao vào kẻ địch, tạo 9 nộ khí và làm choáng nó trong 1 giây. Tầm 8-25 thước. Chỉ khi ở Hình Gấu."
+        "name": "Cú Lao Bruin",
+        "description": "Lao vào kẻ địch, tạo 9 nộ khí và làm choáng nó trong 1 giây. Tầm 8-25 thước. Chỉ dùng được ở Bruin Form."
       },
       "demoralizing_roar": {
-        "name": "Gầm Áp Chế",
-        "description": "Áp chế kẻ địch xung quanh, giảm sức tấn công của chúng đi 20 trong 20 giây. Chỉ dùng được ở Hình Gấu."
+        "name": "Tiếng Gầm Khiếp Đảm",
+        "description": "Áp chế kẻ địch xung quanh, giảm sức tấn công của chúng đi 20 trong 20 giây. Chỉ dùng được ở Bruin Form."
       },
       "prowl": {
-        "name": "Rình Mồi",
+        "name": "Rình Rập",
         "description": "Vào trạng thái ẩn thân khi ở Hình Sói, di chuyển chậm hơn 50%. Không thể dùng trong chiến đấu."
       },
       "rake": {
-        "name": "Cào Xé",
+        "name": "Lóc Xé",
         "description": "Một đòn mở màn từ trạng thái ẩn thân cào xé kẻ địch gây sát thương vũ khí cộng thêm {damage} và gây sát thương chảy máu trong 9 giây. Tặng 1 điểm liên hoàn. Chỉ dùng được ở Hình Sói."
       },
       "revive_pet": {
@@ -5169,10 +5174,10 @@ export const vi_VN: EnTranslations = {
     },
     "items": {
       "worn_sword": {
-        "name": "Đoản Kiếm Mòn Cũ"
+        "name": "Đoản Kiếm Rỗ Sét"
       },
       "gnarled_staff": {
-        "name": "Trượng Gỗ Xù Xì"
+        "name": "Trượng Gỗ Sồi Đầm Lầy"
       },
       "rusty_dagger": {
         "name": "Dao Găm Gỉ Sét"
@@ -5184,13 +5189,13 @@ export const vi_VN: EnTranslations = {
         "name": "Rìu Nhỏ Gỉ Sét"
       },
       "recruit_tunic": {
-        "name": "Áo Da của Tân Binh"
+        "name": "Áo Chẽn Của Dân Binh"
       },
       "apprentice_robe": {
-        "name": "Áo Choàng Học Việc"
+        "name": "Áo Choàng Sờn Rách"
       },
       "footpad_jerkin": {
-        "name": "Áo Da Của Kẻ Cướp Đường"
+        "name": "Áo Da Của Kẻ Móc Túi"
       },
       "redbrook_blade": {
         "name": "Đao Dân Quân Redbrook"
@@ -5220,22 +5225,22 @@ export const vi_VN: EnTranslations = {
         "name": "Quần Da Lông Greyjaw"
       },
       "baked_bread": {
-        "name": "Bánh Mì Mới Nướng"
+        "name": "Ổ Bánh Mì Quê"
       },
       "spring_water": {
-        "name": "Nước Suối Tươi Mát"
+        "name": "Nước Giếng Lạnh"
       },
       "roasted_boar": {
-        "name": "Thịt Lợn Rừng Quay"
+        "name": "Đùi Lợn Rừng Xiên Nướng"
       },
       "conjured_water": {
-        "name": "Nước Suối Triệu Hồi"
+        "name": "Nước Mưa Triệu Hồi"
       },
       "conjured_water2": {
-        "name": "Nước Khoáng Triệu Hồi"
+        "name": "Nước Giếng Triệu Hồi"
       },
       "conjured_water3": {
-        "name": "Nước Có Ga Triệu Hồi"
+        "name": "Nước Trong Triệu Hồi"
       },
       "eastbrook_arming_sword": {
         "name": "Kiếm Chiến Đông Khê"
@@ -5295,7 +5300,7 @@ export const vi_VN: EnTranslations = {
         "name": "Tinh Chất Ma Quái"
       },
       "webwood_silk": {
-        "name": "Tuyến Tơ Võng Lâm"
+        "name": "Tuyến Tơ Sableweb"
       },
       "supply_crate": {
         "name": "Thùng Tiếp Tế Bị Trộm"
@@ -5316,13 +5321,13 @@ export const vi_VN: EnTranslations = {
         "name": "Khăn Bịt Đỏ"
       },
       "tough_jerky": {
-        "name": "Thịt Khô Dai"
+        "name": "Thịt Khô Muối"
       },
       "mudfin_scale": {
-        "name": "Vảy Murloc Nhầy Nhụa"
+        "name": "Vảy Mudfin Nhầy Nhụa"
       },
       "tallow_candle": {
-        "name": "Nến Mỡ"
+        "name": "Cục Mỡ Nhờn"
       },
       "spider_leg": {
         "name": "Chân Nhện Co Giật"
@@ -5388,7 +5393,7 @@ export const vi_VN: EnTranslations = {
         "name": "Giày Bước Đầm"
       },
       "mistcallers_edge": {
-        "name": "Lưỡi Đao Của Kẻ Gọi Sương"
+        "name": "Lưỡi Đao Của Fogbinder"
       },
       "vaels_mist_staff": {
         "name": "Trượng Sương của Vael"
@@ -5532,7 +5537,7 @@ export const vi_VN: EnTranslations = {
         "name": "Trượng của Velkhar"
       },
       "shadowmeld_tunic": {
-        "name": "Áo Da Hòa Bóng"
+        "name": "Áo Chẽn Màn Đêm"
       },
       "gravewyrm_scale_hauberk": {
         "name": "Áo Giáp Vảy Mộ Long"
@@ -5601,13 +5606,13 @@ export const vi_VN: EnTranslations = {
         "name": "Vảy Wyrm Rạn Nứt"
       },
       "conjured_bread": {
-        "name": "Bánh Mì Triệu Hồi"
+        "name": "Bánh Yến Mạch Triệu Hồi"
       },
       "conjured_bread2": {
-        "name": "Bánh Mì Đen Triệu Hồi"
+        "name": "Ổ Bánh Đen Triệu Hồi"
       },
       "conjured_bread3": {
-        "name": "Bánh Cuộn Ngọt Triệu Hồi"
+        "name": "Bánh Mật Ong Triệu Hồi"
       },
       "roadwardens_helm": {
         "name": "Mũ Giáp của Lộ Vệ"
@@ -5712,7 +5717,7 @@ export const vi_VN: EnTranslations = {
         "name": "Túi dệt mộ"
       },
       "mistcallers_duffel": {
-        "name": "Túi vải của Kẻ Gọi Sương"
+        "name": "Túi vải của Fogbinder"
       },
       "copper_mining_pick": {
         "name": "Cuốc Khai Khoáng Đồng"
@@ -5742,7 +5747,7 @@ export const vi_VN: EnTranslations = {
         "name": "Liềm Lá Bạc"
       },
       "bristleback_maul": {
-        "name": "Vồ Lưng Gai"
+        "name": "Búa Gallowglass"
       },
       "broodmother_silk_robe": {
         "name": "Áo Choàng Lụa Nhền Nhện Mẹ"
@@ -5754,13 +5759,13 @@ export const vi_VN: EnTranslations = {
         "name": "Áo Da Kẻ Rình Mộ"
       },
       "deathlord_legguards": {
-        "name": "Giáp Chân Tử Vương"
+        "name": "Giáp Chân Barrowlord"
       },
       "deathlord_sabatons": {
-        "name": "Giày Sắt Tử Vương"
+        "name": "Giày Sắt Barrowlord"
       },
       "deathlord_warplate": {
-        "name": "Giáp Chiến Tử Vương"
+        "name": "Giáp Chiến Barrowlord"
       },
       "drogmar_warboots": {
         "name": "Giày Chiến Của Drogmar"
@@ -5838,13 +5843,13 @@ export const vi_VN: EnTranslations = {
         "name": "Giày Giẫm Đạp Của Mogger"
       },
       "necromancers_legwraps": {
-        "name": "Quấn Chân của Tử Linh Sư"
+        "name": "Quấn Chân Mournweave"
       },
       "necromancers_soulsteps": {
-        "name": "Bước Hồn của Tử Linh Sư"
+        "name": "Bước Hồn Mournweave"
       },
       "necromancers_starshroud": {
-        "name": "Tinh Sa của Tử Linh Sư"
+        "name": "Tinh Sa Mournweave"
       },
       "nhalias_dirgeblade": {
         "name": "Ai Kiếm của Nhalia"
@@ -5880,13 +5885,13 @@ export const vi_VN: EnTranslations = {
         "name": "Bước Hồn Long Giáo"
       },
       "wyrmshadow_harness": {
-        "name": "Đai Giáp Long Ảnh"
+        "name": "Đai Giáp Nightfang"
       },
       "wyrmshadow_legguards": {
-        "name": "Giáp Chân Long Ảnh"
+        "name": "Giáp Chân Nightfang"
       },
       "wyrmshadow_treads": {
-        "name": "Giày Long Ảnh"
+        "name": "Giày Nightfang"
       },
       "glimmerfin_koi": {
         "name": "Cá Koi Vây Lấp Lánh"
@@ -5904,7 +5909,7 @@ export const vi_VN: EnTranslations = {
         "name": "Cá Rô Sông Sống"
       },
       "raw_stonescale_carp": {
-        "name": "Cá Chép Vảy Đá Sống"
+        "name": "Cá Chép Vây Đá Phiến Sống"
       },
       "soggy_boot": {
         "name": "Giày Ướt Sũng"
@@ -6015,13 +6020,13 @@ export const vi_VN: EnTranslations = {
         "name": "Mã Tấu Vảy Trăng"
       },
       "moonshroud_breastplate": {
-        "name": "Giáp Ngực Màn Trăng"
+        "name": "Giáp Ngực Moonwrack"
       },
       "moonshroud_robe": {
-        "name": "Áo Choàng Màn Trăng"
+        "name": "Áo Choàng Moonwrack"
       },
       "moonshroud_tunic": {
-        "name": "Áo Choàng Nguyệt Sa"
+        "name": "Áo Chẽn Moonwrack"
       },
       "pale_pearl": {
         "name": "Ngọc Trai Nhợt Nhạt"
@@ -6057,7 +6062,7 @@ export const vi_VN: EnTranslations = {
         "name": "Giáp Vai Xương Mộ"
       },
       "deathlords_dread_visage": {
-        "name": "Mặt Nạ Kinh Hoàng Của Tử Vương"
+        "name": "Mặt Nạ Kinh Hoàng Của Barrowlord"
       },
       "gravewyrm_gauntlets": {
         "name": "Găng Tay Mộ Long"
@@ -6072,10 +6077,10 @@ export const vi_VN: EnTranslations = {
         "name": "Găng Tay Màn Sương"
       },
       "necromancers_soulspire_mantle": {
-        "name": "Áo Choàng Hồn Tháp của Tử Linh Sư"
+        "name": "Áo Choàng Hồn Tháp Mournweave"
       },
       "wyrmshadow_talongrips": {
-        "name": "Bao Tay Trảo Long Ảnh"
+        "name": "Bao Tay Trảo Nightfang"
       },
       "reliquary_plate_chest": {
         "name": "Áo Giáp Vệ Binh Thánh Tích"
@@ -6105,67 +6110,67 @@ export const vi_VN: EnTranslations = {
         "name": "Mũ Trùm Bóng Tối của Varric"
       },
       "siltguard_helm": {
-        "name": "Siltguard Helm"
+        "name": "Mũ Giáp Hộ Bùn"
       },
       "bulwark_rusted_pauldrons": {
-        "name": "Bulwark-Rusted Pauldrons"
+        "name": "Giáp Vai Rỉ Sét Thành Lũy"
       },
       "nhalias_bell_maul": {
-        "name": "Nhalia's Bell-Maul"
+        "name": "Chùy Chuông của Nhalia"
       },
       "reedstalker_jerkin": {
-        "name": "Reedstalker Jerkin"
+        "name": "Áo Da Kẻ Rình Lau Sậy"
       },
       "mirejaw_fang_knife": {
-        "name": "Mirejaw Fang-Knife"
+        "name": "Dao Nanh Mirejaw"
       },
       "widow_silk_hood": {
-        "name": "Widow-Silk Hood"
+        "name": "Mũ Trùm Tơ Góa Phụ"
       },
       "cantors_drowned_sash": {
-        "name": "Cantor's Drowned Sash"
+        "name": "Đai Lưng Chết Chìm của Lĩnh Xướng"
       },
       "corpse_candle_focus": {
-        "name": "Corpse-Candle Focus"
+        "name": "Pháp Khí Nến Tử Thi"
       },
       "nhalias_litany_rod": {
-        "name": "Nhalia's Litany Rod"
+        "name": "Gậy Kinh Cầu của Nhalia"
       },
       "blackwater_vanguard_chest": {
-        "name": "Blackwater Vanguard Chestguard"
+        "name": "Hộ Ngực Tiên Phong Nước Đen"
       },
       "siltstep_leggings": {
-        "name": "Siltstep Leggings"
+        "name": "Quần Giáp Bước Bùn"
       },
       "sunken_reliquary_hood": {
-        "name": "Sunken Reliquary Hood"
+        "name": "Mũ Trùm Thánh Tích Chìm"
       },
       "litany_legs": {
-        "name": "Silt-Walker Greaves"
+        "name": "Giáp Chân Kẻ Lội Bùn"
       },
       "litany_shoulder": {
-        "name": "Blackwater Drift Mantle"
+        "name": "Giáp Vai Trôi Dạt Nước Đen"
       },
       "litany_gloves_rog": {
-        "name": "Reed-Bound Handwraps"
+        "name": "Quấn Tay Bó Sậy"
       },
       "litany_plate_chest": {
-        "name": "Sump-Warden Cuirass"
+        "name": "Áo Giáp Vệ Quan Vũng Lầy"
       },
       "litany_leather_chest": {
-        "name": "Silt-Deep Vestment"
+        "name": "Y Phục Ngập Bùn"
       },
       "litany_cloth_chest": {
-        "name": "Choir-Drowned Raiment"
+        "name": "Lễ Phục Hợp Ca Chết Chìm"
       },
       "litany_helm": {
-        "name": "Reliquant's Drowned Cowl"
+        "name": "Mũ Trùm Chết Chìm của Người Giữ Thánh Tích"
       },
       "sister_nhalia_choir_plate": {
-        "name": "Sister Nhalia's Choir-Forged Plate"
+        "name": "Áo Giáp Rèn Hợp Ca của Sơ Nhalia"
       },
       "drowned_choir_fang": {
-        "name": "Drowned Choir-Fang"
+        "name": "Nanh Hợp Ca Chết Chìm"
       },
       "the_codfather": {
         "name": "Cá Bố Già"
@@ -6210,31 +6215,31 @@ export const vi_VN: EnTranslations = {
         "name": "Lõi Gỗ Của Vương Miện Bất Tử"
       },
       "kingsbane_last_oath": {
-        "name": "Kingsbane, Lời Thề Cuối Cùng Của Đỉnh Gai"
+        "name": "Thronebane, Lời Thề Cuối Cùng Của Đỉnh Gai"
       },
       "crownforged_dreadhelm": {
-        "name": "Mũ Kinh Hoàng Rèn Vương Miện"
+        "name": "Mũ Kinh Hoàng Bonewrought"
       },
       "crownforged_warspaulders": {
-        "name": "Giáp Vai Chiến Rèn Vương Miện"
+        "name": "Giáp Vai Chiến Bonewrought"
       },
       "nighttalon_crown": {
-        "name": "Vương Miện Dạ Trảo"
+        "name": "Vương Miện Direfang"
       },
       "nighttalon_shoulderguards": {
-        "name": "Giáp Vai Dạ Trảo"
+        "name": "Giáp Vai Direfang"
       },
       "soulflame_cowl": {
-        "name": "Mũ Trùm Hồn Hỏa"
+        "name": "Mũ Trùm Wraithfire"
       },
       "soulflame_mantle": {
-        "name": "Áo Choàng Hồn Hỏa"
+        "name": "Áo Choàng Wraithfire"
       },
       "stormcallers_crown": {
-        "name": "Vương Miện của Triệu Bão Sư"
+        "name": "Vương Miện Galecall"
       },
       "stormcallers_spaulders": {
-        "name": "Giáp Vai của Triệu Bão Sư"
+        "name": "Giáp Vai Galecall"
       },
       "unknown_alien_weaponry": {
         "name": "Vũ Khí Ngoài Hành Tinh Bí Ẩn"
@@ -6323,13 +6328,13 @@ export const vi_VN: EnTranslations = {
         "name": "Lợn Rừng"
       },
       "webwood_spider": {
-        "name": "Kẻ Rình Rừng Tơ"
+        "name": "Kẻ Rình Sableweb"
       },
       "mudfin_murloc": {
         "name": "Kẻ Lẩn Vây Bùn"
       },
       "tunnel_rat": {
-        "name": "Chuột Đào Hầm"
+        "name": "Thợ Đào Deeprock"
       },
       "vale_bandit": {
         "name": "Cướp Thung Lũng"
@@ -6344,7 +6349,7 @@ export const vi_VN: EnTranslations = {
         "name": "Kẻ Rình Đầm Lầy"
       },
       "deepfen_murloc": {
-        "name": "Quái Đớp Đầm Sâu"
+        "name": "Quái Đớp Deepfen"
       },
       "mire_widow": {
         "name": "Góa Phụ Đầm Bùn"
@@ -6377,7 +6382,7 @@ export const vi_VN: EnTranslations = {
         "name": "Kẻ Rình Sườn Núi"
       },
       "deeprock_kobold": {
-        "name": "Kẻ Đào Hầm Thạch Sâu"
+        "name": "Kẻ Đào Hầm Deeprock"
       },
       "thornpeak_ogre": {
         "name": "Quỷ Khổng Lồ Đỉnh Gai"
@@ -6431,13 +6436,13 @@ export const vi_VN: EnTranslations = {
         "name": "Hiệp Sĩ Chỉ Huy Olen"
       },
       "vael_the_mistcaller": {
-        "name": "Vael Kẻ Gọi Sương"
+        "name": "Vael Fogbinder"
       },
       "sanctum_boneguard": {
         "name": "Vệ Xương Thánh Đường"
       },
       "sanctum_drakonid": {
-        "name": "Nhân Long Thánh Đường"
+        "name": "Vệ Vảy Thánh Đường"
       },
       "raised_bonewalker": {
         "name": "Xác Xương Hồi Sinh"
@@ -6503,43 +6508,43 @@ export const vi_VN: EnTranslations = {
         "name": "Tế Đồ Tessa"
       },
       "drowned_cantor": {
-        "name": "Drowned Cantor"
+        "name": "Lĩnh Xướng Chết Chìm"
       },
       "reedbound_acolyte": {
-        "name": "Reedbound Acolyte"
+        "name": "Tu Đồ Bó Sậy"
       },
       "deepfen_spearjaw": {
-        "name": "Deepfen Spearjaw"
+        "name": "Hàm Giáo Deepfen"
       },
       "mirefen_widowling": {
-        "name": "Mirefen Widowling"
+        "name": "Góa Phụ Non Bùn Sâu"
       },
       "spider_egg_sac": {
-        "name": "Spider Egg-Sac"
+        "name": "Bọc Trứng Nhện"
       },
       "grave_silt_bulwark": {
-        "name": "Grave-Silt Bulwark"
+        "name": "Thành Lũy Bùn Mộ"
       },
       "sump_troll_devourer": {
-        "name": "Sump Troll Devourer"
+        "name": "Troll Vũng Lầy Háu Ăn"
       },
       "choir_thrall": {
-        "name": "Bog Thrall"
+        "name": "Nô Lệ Đầm Lầy"
       },
       "sister_nhalia_drowned_canticle": {
-        "name": "Sister Nhalia, the Drowned Canticle"
+        "name": "Sơ Nhalia, Bản Thánh Ca Chết Chìm"
       },
       "edda_reedhand": {
         "name": "Edda Reedhand"
       },
       "tolling_bell": {
-        "name": "Tolling Bell"
+        "name": "Chuông Ngân Vang"
       },
       "thunzharr_waking_peak": {
-        "name": "Thunzharr, the Waking Peak"
+        "name": "Thunzharr, Đỉnh Núi Thức Giấc"
       },
       "thunzharr_stormling": {
-        "name": "Roused Stormling"
+        "name": "Tinh Linh Bão Trỗi Dậy"
       },
       "ironvein_foreman": {
         "name": "Quản Đốc Mạch Sắt"
@@ -6572,13 +6577,13 @@ export const vi_VN: EnTranslations = {
         "name": "Vệ Xương Varkas"
       },
       "emberkin": {
-        "name": "Tiểu Quỷ"
+        "name": "Emberkin"
       },
       "gloomshade": {
-        "name": "Quỷ Hư Không"
+        "name": "Gloomshade"
       },
       "duskborn": {
-        "name": "Mỹ Quỷ"
+        "name": "Duskborn"
       },
       "grix_the_tunnelking": {
         "name": "Grix Vua Đường Hầm"
@@ -6602,16 +6607,16 @@ export const vi_VN: EnTranslations = {
         "name": "Kẻ Buộc Oan Hồn Maldrec"
       },
       "spellhound": {
-        "name": "Thợ Săn Quỷ"
+        "name": "Spellhound"
       },
       "warfiend": {
-        "name": "Vệ Binh Quỷ"
+        "name": "Warfiend"
       },
       "pyre_colossus": {
-        "name": "Quỷ Hỏa Ngục"
+        "name": "Pyre Colossus"
       },
       "wraithborn": {
-        "name": "Vệ Binh Diệt Vong"
+        "name": "Wraithborn"
       },
       "choirmother_selthe": {
         "name": "Mẫu Ca Selthe"
@@ -6684,12 +6689,12 @@ export const vi_VN: EnTranslations = {
       "fisherman_brandt": {
         "name": "Ngư Dân Brandt",
         "title": "Lão Thủy Thủ",
-        "greeting": "Grlmurlgrl- xin lỗi, ta nghe đám người cá đó lâu quá rồi."
+        "greeting": "Blrb-glub- xin lỗi, ta nghe đám người cá đó lâu quá rồi."
       },
       "foreman_odell": {
         "name": "Quản Đốc Odell",
         "title": "Quản Đốc Hầm Mỏ",
-        "greeting": "Cả khu khai quật bò lúc nhúc lũ sâu bọ đầu nến đó!"
+        "greeting": "Cả khu khai quật bò lúc nhúc lũ sâu bọ bám đầy bùn đất đó!"
       },
       "warden_fenwick": {
         "name": "Vệ Quan Fenwick",
@@ -6762,14 +6767,14 @@ export const vi_VN: EnTranslations = {
         "greeting": "Hầm thánh tích bên dưới lại dịch chuyển lần nữa."
       },
       "brother_halven_marsh": {
-        "name": "Brother Halven",
-        "title": "Reliquary Keeper",
-        "greeting": "The trail led north. Another reliquary, another rite. Choose your tier, and I'll hold the rope until you return."
+        "name": "Tu Huynh Halven",
+        "title": "Người Giữ Thánh Tích",
+        "greeting": "Dấu vết dẫn về phương bắc. Lại một hộp thánh tích nữa, lại một nghi lễ nữa. Chọn độ khó của ngươi đi, và ta sẽ giữ dây thừng cho đến khi ngươi trở về."
       },
       "spirit_healer": {
-        "name": "The Pale Keeper",
-        "title": "Warden of the Dead",
-        "greeting": "Rest now, spirit. I can return you to your body, but the crossing back leaves you weak."
+        "name": "Người Canh Giữ Nhợt Nhạt",
+        "title": "Người Gác Cõi Chết",
+        "greeting": "Nghỉ ngơi đi, hỡi linh hồn. Ta có thể đưa ngươi trở lại thân xác, nhưng chuyến vượt trở về sẽ khiến ngươi suy yếu."
       },
       "tidewatcher_ondrel": {
         "name": "Ondrel Vane",
@@ -6799,7 +6804,7 @@ export const vi_VN: EnTranslations = {
         }
       },
       "q_boars": {
-        "title": "Da Lưng Lông Cứng",
+        "title": "Da Lợn Rừng Lông Cứng",
         "text": "Da lợn lòi làm ra những chiếc túi du hành tốt nhất, và những đồng cỏ phía tây thị trấn nhung nhúc lũ thú đó. Hãy mang cho ta 5 tấm Da Lợn Lòi Lông Cứng và ta sẽ không để ngươi phí công.",
         "completion": "À, những tấm da lông cứng tuyệt hảo! Chúng sẽ bán được giá hời.",
         "objectives": {
@@ -6809,21 +6814,21 @@ export const vi_VN: EnTranslations = {
         }
       },
       "q_spiders": {
-        "title": "Hiểm Họa Rừng Mạng",
-        "text": "Bọn rình rập trong khu rừng phía đông nhả ra một loại tơ ta cần cho thuốc đắp - mà chúng cũng đã sinh sôi quá đông. Hãy tỉa bớt 6 con Kẻ Rình Rừng Mạng và cắt 4 tuyến tơ từ bụng chúng.",
+        "title": "Hiểm Họa Sableweb",
+        "text": "Bọn rình rập trong khu rừng phía đông nhả ra một loại tơ ta cần cho thuốc đắp, mà chúng cũng đã sinh sôi quá đông. Hãy tỉa bớt 6 con Kẻ Rình Sableweb và cắt 4 tuyến tơ từ bụng chúng.",
         "completion": "Ặc, vẫn còn giật giật. Hoàn hảo. Đây, ngươi đã xứng đáng với thứ này.",
         "objectives": {
           "0": {
-            "label": "Đã hạ Kẻ Rình Rừng Mạng"
+            "label": "Đã hạ Kẻ Rình Sableweb"
           },
           "1": {
-            "label": "Tuyến Tơ Rừng Mạng"
+            "label": "Tuyến Tơ Sableweb"
           }
         }
       },
       "q_murlocs": {
         "title": "Rắc Rối Bên Hồ",
-        "text": "Hai mươi năm ta câu cá ở Hồ Gương, chưa từng mất một tấm lưới cho đến khi lũ người-cá ằng ặc kia bò lên từ vùng nước nông. Hãy đẩy lùi bọn Mudfin - tiêu diệt 8 con. Và coi chừng đấy: nơi nào có một con murloc, nơi đó có năm con.",
+        "text": "Hai mươi năm ta câu cá ở Hồ Gương, chưa từng mất một tấm lưới cho đến khi lũ người cá ằng ặc kia bò lên từ vùng nước nông. Hãy đẩy lùi bọn Mudfin, tiêu diệt 8 con. Và coi chừng đấy: nơi nào có một con mudfin, nơi đó có năm con.",
         "completion": "Hà! Thế là chúng sẽ biết mà lo cho mấy vũng bùn của mình thôi.",
         "objectives": {
           "0": {
@@ -6833,11 +6838,11 @@ export const vi_VN: EnTranslations = {
       },
       "q_mine": {
         "title": "Chuột Trong Hầm Mỏ",
-        "text": "Chúng tôi vừa trúng một mạch đồng tốt thì lũ kobold sâu bọ đó ùa ra từ sườn đồi. Đám thợ của tôi sẽ không đặt chân vào hầm đào cho đến khi nó được dọn sạch. Hãy hạ 10 con Chuột Hầm Đào Bới.",
+        "text": "Chúng tôi vừa trúng một mạch đồng tốt thì lũ sâu bọ đào hang đó ùa ra từ sườn đồi. Đám thợ của tôi sẽ không đặt chân vào hầm đào cho đến khi nó được dọn sạch. Hãy hạ 10 con Kẻ Đào Hầm Deeprock.",
         "completion": "Ha! Trở lại làm việc nào, các chàng trai! Ngươi có lời cảm tạ của ta - và cả vàng của ta nữa.",
         "objectives": {
           "0": {
-            "label": "Đã hạ Chuột Hầm Đào Bới"
+            "label": "Đã hạ Kẻ Đào Hầm Deeprock"
           }
         }
       },
@@ -6893,7 +6898,7 @@ export const vi_VN: EnTranslations = {
       },
       "q_rite": {
         "title": "Nghi Lễ Trói Buộc",
-        "text": "Phải phá phong ấn hầm mộ bên dưới nhà nguyện nếu chúng ta muốn ngăn chặn Kẻ Gọi Mộ - nhưng chỉ một nghi lễ trói buộc mới cho phép người sống đi qua. Ta cần 4 cục Mỡ Thánh - lũ kobold đào hầm tích trữ nến cả thùng - và 6 Tinh Chất Ma Quái từ những kẻ chết không yên nghỉ.",
+        "text": "Phải phá phong ấn hầm mộ bên dưới nhà nguyện nếu chúng ta muốn ngăn chặn Gravecaller, nhưng chỉ một nghi lễ trói buộc mới cho phép người sống đi qua. Ta cần 4 cục Mỡ Thánh, lũ đào hang trong mỏ tích trữ mỡ cả thùng, và 6 Tinh Chất Ma Quái từ những kẻ chết không yên nghỉ.",
         "completion": "Đã xong. Con đường bên dưới đã rộng mở... và cầu Thánh Quang tha thứ cho ta vì đã mở nó ra. Hãy tập hợp những đồng đội mạnh nhất của ngươi trước khi xuống dưới, {playerName}. Không ai nên đối mặt với Hầm Mộ Rỗng một mình.",
         "objectives": {
           "0": {
@@ -6927,7 +6932,7 @@ export const vi_VN: EnTranslations = {
       "q_gravecallers_trail": {
         "title": "Dấu Vết Kẻ Triệu Mộ",
         "text": "Morthen đã chết, nhưng một câu hỏi cứ gặm nhấm ta: một giáo phái ẩn mình suốt một thế kỷ không dốc hết sức vào một nhà nguyện làng quê. Hắn giữ một cuốn ma thư - những nghi lễ, những thư từ của hắn. Nếu còn sót lại thứ gì, nó nằm trong phòng thánh của nhà nguyện đổ nát phía trên hầm mộ. Hãy lục soát tàn tích và mang cho ta bất cứ thứ gì còn lại từ những ghi chép của hắn, {playerName}.",
-        "completion": "Morthen đã viết thư cho một kẻ 'Triệu Sương' ở đầm lầy phía bắc. Giáo phái chưa chết, {playerName} - nó chỉ đơn thuần là đã kiên nhẫn.",
+        "completion": "Morthen đã viết thư cho một kẻ 'Fogbinder' ở đầm lầy phía bắc. Giáo phái chưa chết, {playerName}, nó chỉ đơn thuần là đã kiên nhẫn.",
         "objectives": {
           "0": {
             "label": "Ma Thư của Morthen"
@@ -6956,7 +6961,7 @@ export const vi_VN: EnTranslations = {
       },
       "q_fenbridge_muster": {
         "title": "Tập Hợp ở Fenbridge",
-        "text": "Những ghi chép của Morthen có nhắc đến một bậc thầy ở đầm lầy phía bắc - một kẻ 'Triệu Sương.' Giờ Vệ Quan Fenwick đã thổi tù và tập hợp ở Fenbridge, và ta không tin vào trùng hợp, {playerName}. Hãy đi theo con đường đắp về phía bắc, lấy lệnh tập hợp từ cột cổng, và trình nó cho Vệ Quan.",
+        "text": "Những ghi chép của Morthen có nhắc đến một bậc thầy ở đầm lầy phía bắc, một kẻ 'Fogbinder.' Giờ Vệ Quan Fenwick đã thổi tù và tập hợp ở Fenbridge, và ta không tin vào trùng hợp, {playerName}. Hãy đi theo con đường đắp về phía bắc, lấy lệnh tập hợp từ cột cổng, và trình nó cho Vệ Quan.",
         "completion": "Ấn của Aldric phải không? Vậy thì ngươi được đấy. Đầm lầy đã nuốt chửng cả những đội tuần tra của ta, và ta cần mọi lưỡi kiếm còn nổi.",
         "objectives": {
           "0": {
@@ -6996,17 +7001,17 @@ export const vi_VN: EnTranslations = {
       },
       "q_deepfen": {
         "title": "Deepfen Dậy Sóng",
-        "text": "Lũ murloc Deepfen đã quanh quẩn ở vùng nước nông của chúng suốt hai mươi năm. Giờ chúng tràn lên bờ đông như ruồi bu xác chết - và các vệ binh của ta nói chúng đang lôi những thứ gì đó lên từ đáy hồ. Dù thứ gì khuấy động chúng, ta muốn nó chấm dứt. Hãy tiêu diệt 12 con murloc đớp.",
+        "text": "Lũ mudfin Deepfen đã quanh quẩn ở vùng nước nông của chúng suốt hai mươi năm. Giờ chúng tràn lên bờ đông như ruồi bu xác chết, và các vệ binh của ta nói chúng đang lôi những thứ gì đó lên từ đáy hồ. Dù thứ gì khuấy động chúng, ta muốn nó chấm dứt. Hãy tiêu diệt 12 con quái đớp.",
         "completion": "Thế cũng đủ đẩy chúng trở lại bùn lầy một thời gian. Nhưng thứ gì đó đã khiến chúng đào bới, và ta quyết tìm cho ra đó là gì.",
         "objectives": {
           "0": {
-            "label": "Đã hạ Murloc Đớp Deepfen"
+            "label": "Đã hạ Quái Đớp Deepfen"
           }
         }
       },
       "q_idols": {
         "title": "Thần Tượng Của Đáy Sâu",
-        "text": "Các vệ binh của Fenwick nói lũ người cá nạo vét thần tượng từ đáy hồ và ôm chặt chúng như thánh tích. Nếu những thần tượng đó là thứ ta lo sợ, ta phải tận mắt nhìn chúng. Hãy lấy 5 cái từ lũ murloc đớp Deepfen - chúng sẽ không dễ dàng buông ra đâu.",
+        "text": "Các vệ binh của Fenwick nói lũ người cá nạo vét thần tượng từ đáy hồ và ôm chặt chúng như thánh tích. Nếu những thần tượng đó là thứ ta lo sợ, ta phải tận mắt nhìn chúng. Hãy lấy 5 cái từ lũ quái đớp Deepfen, chúng sẽ không dễ dàng buông ra đâu.",
         "completion": "Thủ công của bọn Triệu Mộ - cổ hơn Morthen, cổ hơn cả ta. Giáo phái không khởi đầu ở Eastbrook, {playerName}. Nó bắt đầu tại đây, và hồ nước đã giữ kín những bí mật của nó.",
         "objectives": {
           "0": {
@@ -7026,11 +7031,11 @@ export const vi_VN: EnTranslations = {
       },
       "q_deepfen_purge": {
         "title": "Trở Lại Vùng Nước Nông",
-        "text": "Aldric nói những thần tượng đó là do giáo phái tạo ra - nghĩa là lũ murloc đang lôi tà khí cổ xưa của đầm lầy lên từng ôm một. Ta sẽ không để nó trôi dạt lên con đường đắp của ta. Hãy trở lại vùng nước nông và chấm dứt việc nạo vét đó vĩnh viễn: thêm 14 con murloc đớp.",
+        "text": "Aldric nói những thần tượng đó là do giáo phái tạo ra, nghĩa là lũ mudfin đang lôi tà khí cổ xưa của đầm lầy lên từng ôm một. Ta sẽ không để nó trôi dạt lên con đường đắp của ta. Hãy trở lại vùng nước nông và chấm dứt việc nạo vét đó vĩnh viễn: thêm 14 con quái đớp.",
         "completion": "Tàn nhẫn và triệt để. Nếu đầm lầy này có ngày khô cạn, sẽ có công việc của vệ binh đang chờ ngươi.",
         "objectives": {
           "0": {
-            "label": "Đã hạ Murloc Đớp Deepfen"
+            "label": "Đã hạ Quái Đớp Deepfen"
           }
         }
       },
@@ -7133,7 +7138,7 @@ export const vi_VN: EnTranslations = {
       "q_summoners": {
         "title": "Chặn Đứng Cuộc Triệu Hồi",
         "text": "Những bản báo cáo của Maren nhắc đến các kẻ triệu hồi trong hàng ngũ tín đồ - những giọng nói gọi kẻ chết chìm trồi lên khỏi mặt nước như gọi chó săn bằng tiếng còi. Những mật thư của chúng sẽ vạch rõ chuỗi mệnh lệnh. Hãy bịt miệng 8 kẻ triệu hồi và mang về cho ta 4 mật thư của chúng.",
-        "completion": "Mỗi mật thư đều có chữ ký xác nhận 'Phó Tế Voss' - và đề gửi tiếp tới một 'Kẻ Gọi Sương' trong Pháo Đài. Chủ nhân của Morthen, {playerName}. Chúng ta đã tìm ra hắn.",
+        "completion": "Mỗi mật thư đều có chữ ký xác nhận 'Phó Tế Voss', và đề gửi tiếp tới một 'Fogbinder' trong Pháo Đài. Chủ nhân của Morthen, {playerName}. Chúng ta đã tìm ra hắn.",
         "objectives": {
           "0": {
             "label": "Đã hạ Pháp Sư Triệu Hồi Gọi Mộ"
@@ -7155,7 +7160,7 @@ export const vi_VN: EnTranslations = {
       },
       "q_bastion_door": {
         "title": "Pháo Đài Chìm",
-        "text": "Pháo Đài Chìm, thành lũy của một hiệp sĩ đã chìm xuống đầm lầy một thế kỷ trước, là nơi những lá thư của Voss chỉ đến, và là nơi gã Triệu Sương này hát những bài thánh ca chết chìm. Giáo phái đã yểm bùa cửa của nó bằng những phiến đá mộ. Hãy mang cho ta một trong những viên đá bùa đó, {playerName}, và ta sẽ tháo gỡ phong ấn.",
+        "text": "Pháo Đài Chìm, thành lũy của một hiệp sĩ đã chìm xuống đầm lầy một thế kỷ trước, là nơi những lá thư của Voss chỉ đến, và là nơi gã Fogbinder này hát những bài thánh ca chết chìm. Giáo phái đã yểm bùa cửa của nó bằng những phiến đá mộ. Hãy mang cho ta một trong những viên đá bùa đó, {playerName}, và ta sẽ tháo gỡ phong ấn.",
         "completion": "Lá bùa đứt ra như sợi dây thừng mục. Cánh cửa mở toang... và bóng tối bên dưới đang lắng nghe.",
         "objectives": {
           "0": {
@@ -7165,7 +7170,7 @@ export const vi_VN: EnTranslations = {
       },
       "q_olen": {
         "title": "Nỗi Nhục Của Hiệp Sĩ Chỉ Huy",
-        "text": "Hiệp Sĩ Chỉ Huy Olen đã trấn giữ Pháo Đài khi nó chìm xuống - chết đuối ngay vị trí của mình thay vì bỏ trốn. Mọi vệ binh đều học tên ngài với niềm tự hào. Giờ Kẻ Gọi Sương đã hồi sinh ngài thành một con rối để canh giữ chính cánh cửa mà ngài đã chết để bảo vệ. Nỗi nhục ấy phải chấm dứt, {playerName}. Hãy dẫn bốn đồng đội xuống dưới và ban cho Olen sự yên nghỉ mà ngài xứng đáng.",
+        "text": "Hiệp Sĩ Chỉ Huy Olen đã trấn giữ Pháo Đài khi nó chìm xuống, chết đuối ngay vị trí của mình thay vì bỏ trốn. Mọi vệ binh đều học tên ngài với niềm tự hào. Giờ Fogbinder đã hồi sinh ngài thành một con rối để canh giữ chính cánh cửa mà ngài đã chết để bảo vệ. Nỗi nhục ấy phải chấm dứt, {playerName}. Hãy dẫn bốn đồng đội xuống dưới và ban cho Olen sự yên nghỉ mà ngài xứng đáng.",
         "completion": "Vậy là cuối cùng phiên gác của ngài cũng đã kết thúc. Chính ta sẽ khắc tên ngài lên cổng thành. Cảm ơn ngươi, {playerName}.",
         "objectives": {
           "0": {
@@ -7174,12 +7179,12 @@ export const vi_VN: EnTranslations = {
         }
       },
       "q_mistcaller": {
-        "title": "Kẻ Gọi Sương",
-        "text": "Dưới đáy Pháo Đài, Vael Kẻ Gọi Sương đang chờ - chủ nhân của Morthen, chủ nhân của Voss, giọng nói đã nhấn chìm hàng trăm lữ khách để dựng nên một đạo quân cho riêng mình. Hắn vượt xa sức của bất kỳ một anh hùng đơn lẻ nào: hãy mang theo bốn đồng đội, không ít hơn. Hãy kết liễu hắn, {playerName}, và những kẻ chết nơi đầm lầy mới có thể yên nghỉ.",
+        "title": "Fogbinder",
+        "text": "Dưới đáy Pháo Đài, Vael Fogbinder đang chờ, chủ nhân của Morthen, chủ nhân của Voss, giọng nói đã nhấn chìm hàng trăm lữ khách để dựng nên một đạo quân cho riêng mình. Hắn vượt xa sức của bất kỳ một anh hùng đơn lẻ nào: hãy mang theo bốn đồng đội, không ít hơn. Hãy kết liễu hắn, {playerName}, và những kẻ chết nơi đầm lầy mới có thể yên nghỉ.",
         "completion": "Vael đã chết, và lần đầu tiên sau nhiều năm sương mù mới tan đi. Nhưng Maren đã nghe những lời cuối của hắn, và chúng khiến máu ta đông lại: 'Mộ Long đang cựa mình dưới những đỉnh núi.' Giáo phái này phụng sự thứ gì đó cổ xưa hơn ta từng đoán, {playerName}. Hãy nghỉ ngơi khi còn có thể - dãy núi sẽ là nơi tiếp theo.",
         "objectives": {
           "0": {
-            "label": "Đã hạ Vael Kẻ Gọi Sương"
+            "label": "Đã hạ Vael Fogbinder"
           }
         }
       },
@@ -7214,39 +7219,39 @@ export const vi_VN: EnTranslations = {
         }
       },
       "q_stalkers_return": {
-        "title": "The Stalkers Return",
-        "text": "Twelve dead, and the ridge crawls thicker than the day you started, {playerName}. Beasts do not throw themselves at a wall out of hunger. Something on the high ridge is pushing them down, and until I know what, the culling does not stop. Fourteen more.",
-        "completion": "Fourteen more, and still my patrols count fresh tracks by morning. My scout came back from the high ridge white as the snowline: prints the size of a shield, she says, and old kills no stalker would leave. Whatever walks up there is no ordinary cat.",
+        "title": "Lũ Rình Mồi Trở Lại",
+        "text": "Mười hai con đã chết, vậy mà sườn núi còn lúc nhúc hơn cả ngày ngươi bắt đầu, {playerName}. Thú dữ không tự lao mình vào tường thành chỉ vì đói. Có thứ gì đó trên sườn núi cao đang dồn chúng xuống, và chừng nào ta chưa biết đó là gì, cuộc tỉa bớt này chưa dừng lại. Thêm mười bốn con nữa.",
+        "completion": "Thêm mười bốn con, vậy mà sáng ra các đội tuần tra của ta vẫn đếm được dấu chân mới. Trinh sát của ta trở về từ sườn núi cao, mặt trắng bệch như ranh tuyết: cô ấy nói có những dấu chân to bằng tấm khiên, và những xác mồi cũ mà không con rình mồi nào chịu bỏ lại. Thứ đang đi lại trên đó không phải một con mèo bình thường.",
         "objectives": {
           "0": {
-            "label": "Ridge Stalker slain"
+            "label": "Đã hạ Kẻ Rình Sườn Núi"
           }
         }
       },
       "q_stalker_cloaks": {
-        "title": "Cloaks for the Watch",
-        "text": "Eight pelts lined the officers' cloaks, and now every soldier on the wall wants the same, {playerName}. They are right to want it: winter takes fingers first and apologies never. Ten more pelts from the ridges south of the gate, and the whole watch sleeps warm.",
-        "completion": "Ten good pelts, thick as any I have... no, look at these, {playerName}. Torn, half of them, and by no blade or spear. Claw marks wide as my hand, right through the winter coat. Something on that ridge is savaging its own kind.",
+        "title": "Áo Choàng Cho Đội Canh Gác",
+        "text": "Tám tấm da đã lót áo choàng cho các sĩ quan, và giờ mọi người lính trên tường thành đều muốn thứ tương tự, {playerName}. Họ muốn vậy là phải: mùa đông lấy đi những ngón tay trước tiên và chẳng bao giờ xin lỗi. Thêm mười tấm da từ các sườn núi phía nam cổng, và cả đội canh gác sẽ được ngủ ấm.",
+        "completion": "Mười tấm da tốt, dày chẳng kém bất kỳ tấm nào ta có... khoan, nhìn những tấm này xem, {playerName}. Một nửa bị xé rách, mà chẳng phải do lưỡi kiếm hay ngọn giáo nào. Vết vuốt rộng bằng bàn tay ta, xuyên thẳng qua lớp lông mùa đông. Có thứ gì đó trên sườn núi ấy đang cắn xé chính đồng loại của nó.",
         "objectives": {
           "0": {
-            "label": "Ridge Stalker Pelt"
+            "label": "Da Lông Rình Mồi Sườn Núi"
           }
         }
       },
       "q_old_cragmaw": {
-        "title": "Old Cragmaw",
-        "text": "The mountain folk put a name to the prints my scout found: Old Cragmaw, a scar-pelted tyrant of a cat that has outlived three generations of its own pack. It is the reason the stalkers flood my road, {playerName}. Its den sits on the western ridge above the road south. Bring a friend, and put the old devil down.",
-        "completion": "Down at last. The mountain folk swore that cat would outlive the wall itself. The stalkers will keep to their high snows now, {playerName}, and my patrols will walk the road without bleeding for it. The whole ridge is quieter for your work.",
+        "title": "Lão Cragmaw",
+        "text": "Dân miền núi đã gọi tên những dấu chân mà trinh sát của ta tìm thấy: Lão Cragmaw, một bạo chúa mèo lông đầy sẹo đã sống lâu hơn ba thế hệ của chính bầy đàn nó. Nó chính là lý do lũ rình mồi tràn xuống con đường của ta, {playerName}. Hang ổ của nó nằm trên sườn núi phía tây, bên trên con đường về nam. Hãy dẫn theo một người bạn, và hạ gục con quỷ già ấy.",
+        "completion": "Cuối cùng nó cũng gục ngã. Dân miền núi từng thề rằng con mèo ấy sẽ sống lâu hơn cả bức tường. Giờ lũ rình mồi sẽ chịu ở yên trên vùng tuyết cao của chúng, {playerName}, và các đội tuần tra của ta sẽ đi trên đường mà không phải đổ máu. Cả dải sườn núi yên ắng hơn nhờ công của ngươi.",
         "objectives": {
           "0": {
-            "label": "Old Cragmaw slain"
+            "label": "Đã hạ Lão Cragmaw"
           }
         }
       },
       "q_kobold_tunnels": {
         "title": "Rắc Rối Deeprock",
-        "text": "Lũ kobold ở Hang Deeprock đang đào sâu hơn bất kỳ con chuột mang nến nào nên đào - thẳng xuống dưới, như thể có thứ gì đó đang gọi chúng. Những đường hầm của chúng chạy bên dưới bức tường của chúng ta, {playerName}. Hãy chấm dứt chuyện này: giết mười hai Kẻ Đào Hầm Deeprock.",
-        "completion": "Thẳng xuống dưới, từng đường hầm một - lũ kobold không tự đào như thế đâu. Ta phải tra cứu sách vở của mình.",
+        "text": "Lũ đào hầm ở Hang Deeprock đang đào sâu hơn bất kỳ con chuột hầm nào nên đào, thẳng xuống dưới, như thể có thứ gì đó đang gọi chúng. Những đường hầm của chúng chạy bên dưới bức tường của chúng ta, {playerName}. Hãy chấm dứt chuyện này: giết mười hai Kẻ Đào Hầm Deeprock.",
+        "completion": "Thẳng xuống dưới, từng đường hầm một, lũ đào hang không tự đào như thế đâu. Ta phải tra cứu sách vở của mình.",
         "objectives": {
           "0": {
             "label": "Đã hạ Kẻ Đào Hầm Deeprock"
@@ -7255,7 +7260,7 @@ export const vi_VN: EnTranslations = {
       },
       "q_glowing_wax": {
         "title": "Sáp Kỳ Lạ",
-        "text": "Caddis cho ta xem một cây nến lấy từ một trong những kẻ đào hầm đó - sáp phát sáng, {playerName}, và nó ấm như nhịp tim. Ông ấy muốn thêm để nghiên cứu, còn ta muốn nó khỏi danh sách trưng dụng của ta. Hãy mang về sáu cục sáp phát sáng.",
+        "text": "Caddis cho ta xem một cục sáp lấy từ một trong những kẻ đào hầm đó, nó phát sáng, {playerName}, và ấm như nhịp tim. Ông ấy muốn thêm để nghiên cứu, còn ta muốn nó khỏi danh sách trưng dụng của ta. Hãy mang về sáu cục sáp phát sáng.",
         "completion": "Vẫn còn ấm. Bậc Học Giả nói ánh sáng này chẳng khớp với ngọn lửa nào ông ấy biết. Ta thì nói đó là rắc rối của ngọn núi, và ta nói thế một cách nhẹ nhàng.",
         "objectives": {
           "0": {
@@ -7642,7 +7647,7 @@ export const vi_VN: EnTranslations = {
             "label": "Hồ Gương"
           },
           "4": {
-            "label": "Rừng Tơ Nhện"
+            "label": "Sableweb"
           },
           "5": {
             "label": "Mỏ Đồng"
@@ -7767,9 +7772,9 @@ export const vi_VN: EnTranslations = {
         "leaveText": "Bạn trèo trở lại chỗ Tu Huynh Halven tại tàn tích thánh tích."
       },
       "drowned_litany": {
-        "name": "The Drowned Litany",
-        "enterText": "You descend into the drowned shrine at the marsh's edge.",
-        "leaveText": "You climb back to Brother Halven at the marsh's edge."
+        "name": "Kinh Cầu Chết Chìm",
+        "enterText": "Bạn đi xuống ngôi miếu chết chìm nơi rìa đầm lầy.",
+        "leaveText": "Bạn trèo trở lại chỗ Tu Huynh Halven nơi rìa đầm lầy."
       }
     },
     "letters": {
@@ -7795,38 +7800,50 @@ export const vi_VN: EnTranslations = {
       }
     },
     "itemSets": {
+      "boundstone_vanguard": {
+        "name": "Bộ Tiên Phong Đá Trói",
+        "bonus3": "Tăng tốc độ tấn công cùng thi triển thêm 15%."
+      },
       "crownforged": {
-        "name": "Bộ chiến Crownforged",
+        "name": "Bộ Lễ Phục Bonewrought",
         "bonus2": "Tăng sức mạnh tấn công thêm 40.",
-        "bonus3": "Tăng sức mạnh thêm 15 và thể lực thêm 15."
+        "bonus3": "Tăng sức mạnh thêm 15, thể lực thêm 15 và tốc độ tấn công cùng thi triển thêm 15%."
       },
       "deathlord": {
-        "name": "Bộ chiến Deathlord",
+        "name": "Bộ Chiến Barrowlord",
         "bonus2": "Tăng sức mạnh tấn công thêm 40.",
         "bonus3": "Tăng sức mạnh thêm 15 và thể lực thêm 15."
       },
+      "greyjaw_stalker": {
+        "name": "Bộ Kẻ Rình Rập Greyjaw",
+        "bonus3": "Tăng tốc độ tấn công cùng thi triển thêm 15%."
+      },
       "necromancers": {
-        "name": "Áo choàng pháp sư gọi hồn",
+        "name": "Y Phục Mournweave",
         "bonus2": "Bạn không thể bị đẩy lùi (kháng đẩy lùi 100%).",
         "bonus3": "Tăng trí tuệ thêm 10 và thể lực thêm 10."
       },
       "nighttalon": {
-        "name": "Bộ da Móng Đêm",
+        "name": "Bộ Da Direfang",
         "bonus2": "Tăng sức mạnh tấn công thêm 40.",
-        "bonus3": "Tăng nhanh nhẹn thêm 15 và tỉ lệ chí mạng thêm 2%."
+        "bonus3": "Tăng nhanh nhẹn thêm 15, tỉ lệ chí mạng thêm 2% và tốc độ tấn công cùng thi triển thêm 15%."
       },
       "soulflame": {
-        "name": "Áo choàng Lửa Linh Hồn",
+        "name": "Lễ Phục Wraithfire",
         "bonus2": "Bạn không thể bị đẩy lùi (kháng đẩy lùi 100%).",
-        "bonus3": "Tăng trí tuệ thêm 15 và tinh thần thêm 15."
+        "bonus3": "Tăng trí tuệ thêm 15, tinh thần thêm 15 và tốc độ tấn công cùng thi triển thêm 15%."
       },
       "stormcallers": {
-        "name": "Áo choàng Gọi Bão",
+        "name": "Áo Lễ Galecall",
         "bonus2": "Bạn không thể bị đẩy lùi (kháng đẩy lùi 100%).",
-        "bonus3": "Tăng trí tuệ thêm 15 và tinh thần thêm 15."
+        "bonus3": "Tăng trí tuệ thêm 15, tinh thần thêm 15 và tốc độ tấn công cùng thi triển thêm 15%."
+      },
+      "vale_arcanist": {
+        "name": "Bộ Arcanist Thung Khê",
+        "bonus3": "Tăng tốc độ tấn công cùng thi triển thêm 15%."
       },
       "wyrmshadow": {
-        "name": "Bộ Bóng Wyrm",
+        "name": "Áo Lễ Nightfang",
         "bonus2": "Tăng sức mạnh tấn công thêm 40.",
         "bonus3": "Tăng nhanh nhẹn thêm 15 và tỉ lệ chí mạng thêm 2%."
       }
@@ -7840,11 +7857,11 @@ export const vi_VN: EnTranslations = {
     "delveLockedChestInteract": "Nhấn F để cạy khóa",
     "delveRewardChestInteract": "Nhấn F để nhận chiến lợi phẩm",
     "delveSurfaceExitInteract": "Nhấn F để leo lên",
-    "delveReliquaryInteract": "Drowned Reliquary: Press F to begin the rite",
-    "delveRiteShrineBellInteract": "Bell Shrine: Press F to ring it",
-    "delveRiteShrineCandleInteract": "Candle Shrine: Press F to touch it",
-    "delveRiteShrineReedInteract": "Reed Shrine: Press F to touch it",
-    "delveRiteShrineSkullInteract": "Skull Shrine: Press F to touch it",
-    "mailboxName": "Mailbox"
+    "delveReliquaryInteract": "Hộp Thánh Tích Chết Chìm: Nhấn F để bắt đầu nghi lễ",
+    "delveRiteShrineBellInteract": "Miếu Chuông: Nhấn F để rung chuông",
+    "delveRiteShrineCandleInteract": "Miếu Nến: Nhấn F để chạm vào",
+    "delveRiteShrineReedInteract": "Miếu Lau Sậy: Nhấn F để chạm vào",
+    "delveRiteShrineSkullInteract": "Miếu Đầu Lâu: Nhấn F để chạm vào",
+    "mailboxName": "Hòm Thư"
   }
 };

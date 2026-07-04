@@ -139,9 +139,16 @@ export class MailboxWindow {
         if (coin) coin.value = '0';
       }
       this.renderParcels();
+      // Escrow left the purse and bags the moment the send resolved: repaint the
+      // bags window now (it rides alongside the Send tab), not on mailbox close.
+      this.deps.syncBags(this.isSendTab);
     }
     if (code === 'collected' || code === 'letterGone' || code === 'takeParcelsFirst') {
       this.lastSig = '';
+    }
+    if (code === 'collected') {
+      // Coin and parcels just landed in the purse and bags: repaint if open.
+      this.deps.syncBags(false);
     }
   }
 
@@ -375,6 +382,17 @@ export class MailboxWindow {
     this.renderParcels();
     // Bags ride alongside so parcels can be clicked straight onto the letter.
     this.deps.syncBags(true);
+    // The coin inputs seed "0": select it on focus so typing replaces the value
+    // (clicking into gold and typing 1 must mean 1g, not the 10 you get by
+    // appending). The once-only mouseup swallow keeps the click-to-focus gesture
+    // from collapsing the selection again; a second click still places the caret.
+    for (const id of ['mail-g', 'mail-s', 'mail-c']) {
+      const coin = body.querySelector<HTMLInputElement>(`#${id}`);
+      coin?.addEventListener('focus', () => {
+        coin.select();
+        coin.addEventListener('mouseup', (e) => e.preventDefault(), { once: true });
+      });
+    }
     body.querySelector('#mail-send-btn')?.addEventListener('click', () => {
       const root = this.deps.root();
       const read = (id: string) =>

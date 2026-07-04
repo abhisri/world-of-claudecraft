@@ -2808,10 +2808,34 @@ export class Renderer {
   handleEvent(ev: SimEvent): void {
     switch (ev.type) {
       case 'spellfx':
+        if (ev.fx === 'windup') {
+          // A petSpell windup telegraph: start the throw animation NOW; the
+          // projectile for this throw follows petSpell.windup later, timed to
+          // the clip's release pose (the acolyte def's attackTimeScale is
+          // tuned so both meet).
+          this.triggerAttack(ev.sourceId);
+          break;
+        }
         if (ev.fx === 'projectile') this.vfx.projectile(ev.sourceId, ev.targetId, ev.school);
         else if (ev.fx === 'beam') this.vfx.beam(ev.sourceId, ev.targetId, ev.school);
         else if (ev.fx === 'tick') this.vfx.tick(ev.targetId, ev.school);
         else this.vfx.nova(ev.targetId, ev.school);
+        // A mob that hurls an instant bolt with NO windup (the warlock
+        // demon's bolt) has no cast state for the looping cast channel, and
+        // the damage event that animates melee fires on ARRIVAL and only for
+        // the physical school: play the shooter's attack one-shot at launch
+        // so the throw reads. A windup-telegraphed throw already started its
+        // one-shot above (still mid-flight at the release: skip the
+        // retrigger). Real casts (castingAbility set) animate via the cast
+        // channel; players animate through their own cast/swing paths.
+        if (ev.fx === 'projectile' || ev.fx === 'beam') {
+          const src = this.sim.entities.get(ev.sourceId);
+          if (src && src.kind === 'mob' && !src.castingAbility) {
+            const view = this.views.get(ev.sourceId);
+            const vis = view ? this.activeVisual(view) : null;
+            if (!vis?.isMidOneShot) this.triggerAttack(ev.sourceId);
+          }
+        }
         break;
       case 'spellfxAt': {
         // Ground-targeted impact: burst draped onto the terrain where the spell

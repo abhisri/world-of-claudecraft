@@ -778,6 +778,9 @@ function blankEntity(id: number): Entity {
     attackPower: 0,
     rangedPower: 0,
     spellPower: 0,
+    meleeHaste: 0,
+    rangedHaste: 0,
+    spellHaste: 0,
     critChance: 0.05,
     dodgeChance: 0.05,
     moveSpeed: 7,
@@ -793,6 +796,7 @@ function blankEntity(id: number): Entity {
     castingAbility: null,
     castRemaining: 0,
     castTotal: 0,
+    castTargetId: null,
     castAim: null,
     channeling: false,
     channelTickTimer: 0,
@@ -1549,6 +1553,9 @@ export class ClientWorld implements IWorld {
       e.attackPower = s.ap ?? 0;
       e.rangedPower = s.rp ?? 0;
       e.spellPower = s.sp ?? 0;
+      // Spell haste feeds the hasted-cast-time tooltip; melee/ranged haste need
+      // no wiring (the swing timers already ride the snapshot).
+      e.spellHaste = s.sh ?? 0;
       e.critChance = s.crit ?? 0.05;
       e.dodgeChance = s.dodge ?? 0.05;
       e.weapon = s.weapon ?? e.weapon;

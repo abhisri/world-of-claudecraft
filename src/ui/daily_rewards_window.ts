@@ -29,6 +29,13 @@ export interface DailyRewardsWindowDeps {
   onWalletConnect?(): void;
   showChestButton?(): boolean;
   setShowChestButton?(show: boolean): void;
+  confirmDialog?(
+    title: string,
+    body: string,
+    okText: string,
+    cancelText: string,
+    onOk: () => void,
+  ): void;
 }
 
 export class DailyRewardsWindow {
@@ -145,7 +152,22 @@ export class DailyRewardsWindow {
         this.deps.onWalletConnect?.();
       });
     body.querySelector<HTMLButtonElement>('[data-chest-toggle]')?.addEventListener('click', () => {
-      this.deps.setShowChestButton?.(!this.showChestButton());
+      if (this.showChestButton()) {
+        // Hiding the HUD shortcut is easy to trigger by accident amid the task
+        // list and not obviously reversible, so confirm before persisting it.
+        this.deps.confirmDialog?.(
+          t('hudChrome.dailyRewards.hideChestConfirmTitle'),
+          t('hudChrome.dailyRewards.hideChestConfirmBody'),
+          t('hudChrome.dailyRewards.hideChestConfirmOk'),
+          t('hudChrome.dailyRewards.hideChestConfirmCancel'),
+          () => {
+            this.deps.setShowChestButton?.(false);
+            this.paint(view);
+          },
+        );
+        return;
+      }
+      this.deps.setShowChestButton?.(true);
       this.paint(view);
     });
   }
@@ -202,6 +224,7 @@ export class DailyRewardsWindow {
     const reason = reasonText(view.lockReason);
     return (
       `<p class="dr-intro">${esc(t('hudChrome.dailyRewards.intro'))}</p>` +
+      `<p class="dr-disclaimer">${esc(t('hudChrome.dailyRewards.disclaimer'))}</p>` +
       `<div class="dr-summary">` +
       `<div><span>${esc(t('hudChrome.dailyRewards.prize'))}</span><strong>${esc(prize)}</strong></div>` +
       `<div><span>${esc(t('hudChrome.dailyRewards.reset'))}</span><strong>${esc(reset)}</strong></div>` +

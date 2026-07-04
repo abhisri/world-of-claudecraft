@@ -12,7 +12,6 @@ import {
   type SocialTransport,
   validateGuildName,
 } from '../server/social';
-import { applyGameConfig } from '../src/sim/game_config';
 
 // ---------------------------------------------------------------------------
 // In-memory fakes — let us exercise the full SocialService logic (friends,
@@ -569,6 +568,40 @@ describe('guilds', () => {
     expect(h.tx.eventsFor(2).some((e) => e.type === 'guildInvite')).toBe(true);
   });
 
+  it('never delivers a guild invite to a target who ignores the inviter, looking like a decline', async () => {
+    await h.svc.guildCreate(h.actor(1), 'Knights');
+    await h.svc.blockAdd(h.actor(2), 'Aleph'); // Bet ignores Aleph
+    h.tx.clear();
+    await h.svc.guildInvite(h.actor(1), 'Bet');
+    // the inviter sees only the ordinary confirmation, no error
+    expect(h.tx.textFor(1)).toContain('You have invited Bet to the guild.');
+    expect(h.tx.errorsFor(1)).toHaveLength(0);
+    // the target never sees the invite
+    expect(h.tx.eventsFor(2).some((e) => e.type === 'guildInvite')).toBe(false);
+    // and no pending state was created: accepting reports the usual lapse
+    await h.svc.guildAccept(h.actor(2));
+    expect(h.tx.errorsFor(2).join()).toMatch(/expired/i);
+    expect((await h.svc.snapshot(2)).guild).toBeNull();
+    // other guilds can still invite the target right away
+    await h.svc.guildCreate(h.actor(3), 'Raiders');
+    h.tx.clear();
+    await h.svc.guildInvite(h.actor(3), 'Bet');
+    expect(h.tx.eventsFor(2).some((e) => e.type === 'guildInvite')).toBe(true);
+  });
+
+  it('unignoring the inviter restores their guild invites', async () => {
+    await h.svc.guildCreate(h.actor(1), 'Knights');
+    await h.svc.blockAdd(h.actor(2), 'Aleph');
+    await h.svc.guildInvite(h.actor(1), 'Bet');
+    expect(h.tx.eventsFor(2).some((e) => e.type === 'guildInvite')).toBe(false);
+    await h.svc.blockRemove(h.actor(2), 'Aleph');
+    h.tx.clear();
+    await h.svc.guildInvite(h.actor(1), 'Bet');
+    expect(h.tx.eventsFor(2).some((e) => e.type === 'guildInvite')).toBe(true);
+    await h.svc.guildAccept(h.actor(2));
+    expect((await h.svc.snapshot(2)).guild?.name).toBe('Knights');
+  });
+
   it('routes guild chat only to guild members', async () => {
     await h.svc.guildCreate(h.actor(1), 'Knights');
     await h.svc.guildInvite(h.actor(1), 'Bet');
@@ -836,25 +869,6 @@ describe('guild calendar events', () => {
     await h.svc.guildEventCreate(h.actor(1), { day: NEXT_WEEK, hour: 20, title: '   ', note: '' });
     expect(resultsFor(h, 1)).toEqual(['badInput', 'badInput', 'badInput', 'badInput']);
     expect((await h.svc.snapshot(1)).guild?.events).toHaveLength(0);
-  });
-
-  it('honors a housekeeping eventLimit override', async () => {
-    applyGameConfig({ calendar: { eventLimit: 2 } });
-    try {
-      const h = await seatedGuild();
-      for (let i = 0; i < 3; i++) {
-        await h.svc.guildEventCreate(h.actor(1), {
-          day: NEXT_WEEK,
-          hour: null,
-          title: `Event ${i}`,
-          note: '',
-        });
-      }
-      expect(resultsFor(h, 1).filter((c) => c === 'calendarFull')).toHaveLength(1);
-      expect((await h.svc.snapshot(1)).guild?.events).toHaveLength(2);
-    } finally {
-      applyGameConfig({});
-    }
   });
 
   it('caps the upcoming calendar and reports calendarFull', async () => {

@@ -63,6 +63,23 @@ last_login DDL consumed only by the WS social hub). Migrated set STAYS 45; no co
 RouteDef, deviation, or premise changes. Full record: progress.md "v0.20.0 release merge,
 fourth slice".
 
+FIFTH v0.20.0 RELEASE-MERGE SLICE (2026-07-04, the release-tip merge): the release
+REVERTED the whole housekeeping feature (revert of PR #1340 plus the calendar-caps
+follow-up; the feature never reached main), so this merge mirrors the delete end to end:
+housekeeping.ts/housekeeping_api.ts/housekeeping_db.ts, src/sim/game_config.ts, the admin
+SPA pages, the 11 housekeeping RouteDefs in server/admin.ts (and housekeepingHandler +
+the AdminRuntime housekeepingSummary member), the 11 surface-corpus rows, the four
+housekeeping parity 401 pins, and carve-out (d) below (retired in place). The release-merge
+migrated set drops 45 -> 34; the admin surface now counts 38 RouteDefs. The liveGame() deferred
+construction SURVIVES the revert (the import-main harnesses and the module-scope
+configure*Runtime closures still need lazy first-touch; tests/server/game_boot_order.test.ts
+keeps the laziness pin, the applyGameConfigAtBoot order pin is deleted with the feature).
+Non-housekeeping release deltas in the slice: mandatory signup email +
+POST /api/account/email/set-initial were already migrated in an earlier slice (both twins
+present); the rest is WS/sim/UI surface (one-online-character-per-account, mail hardening,
+block-invites, haste item sets, cast-target locking, chat tab strip, delve fixes) with no
+HTTP route changes. Full record: progress.md "v0.20.0 release merge, fifth slice".
+
 loadConfig(env) is now the validated FAIL-FAST boot edge, called once as startServer's
 first step (before the DB retry loop) and memoized behind main.ts activeConfig() (+
 resetActiveConfigForTests) so request-time consumers read lazily and a bare import stays
@@ -899,7 +916,8 @@ the X-ms constant; X is TBD, see open items.)
   that matches its own dispatched paths behind a `startsWith` prefix arm therefore has two
   compliant shapes: (a) it compares FULL paths (daily_rewards.ts): add it to
   DISPATCHER_SOURCES + completeness.test.ts's LEGACY_SOURCE_URLS; or (b) it compares sliced
-  SUFFIXES the text scan cannot see (housekeeping_api.ts): it MUST be router-owned, because
+  SUFFIXES the text scan cannot see (the since-reverted housekeeping_api.ts was the one
+  example): it MUST be router-owned, because
   only its RouteDefs make it visible to the corpus-derived gates. A suffix-comparing module
   with NO RouteDefs is invisible exactly as the six daily-rewards routes were.
 - **Phase 9 dispatcher now fronts /api (load-bearing for every migration phase).** The new
@@ -1008,9 +1026,7 @@ shapes. At deletion each flips to the table's pre-auth shape (the `planned405Bef
 the dispatcher will serve `methodNotAllowed` / `notFound` itself once the delegate is gone):
 - **(a) HEAD-to-GET delegation.** The router synthesizes HEAD from GET (`head: true`) and the
   dispatcher delegates a head match, so HEAD stays byte-identical old-vs-new while the ladder is
-  retained. At deletion HEAD is served AS GET (a deliberate behavior change), and the
-  housekeeping HEAD shape flips from its post-auth in-family 405 to a GET-served response, NOT
-  from 404.
+  retained. At deletion HEAD is served AS GET (a deliberate behavior change).
 - **(b) The `oauthInternalOffTable405` set.** DECISION RECORDED HERE: at the deletion, migrate
   GET /oauth/authorize and GET /oauth/device (the HTML consent/device pages, off-table and
   delegate-served today) onto `meta.envelope 'html'` RouteDefs IN the deletion PR (table-owned,
@@ -1023,9 +1039,10 @@ the dispatcher will serve `methodNotAllowed` / `notFound` itself once the delega
   `planned405BeforeAuth` class), and the ops family's family-wide PRE-PATH 401 becomes per-route
   table auth at deletion (unknown ops subpaths become pre-auth 404). Recreation-or-loss of the
   family-wide pre-path 401 is adjudicated in the deletion PR (per `dailyRewardsOpsBodyValidationRemap`).
-- **(d) The v0.20.0 housekeeping in-family shapes.** An unknown `/admin/api/housekeeping/`
-  sub-path or a non-GET/POST method has no RouteDef and delegates today (admin 401 precedes the
-  sub-dispatcher's in-family 404/405). At deletion these flip to the table's pre-auth 404/405.
+- **(d) RETIRED (was the v0.20.0 housekeeping in-family shapes).** The fifth v0.20.0 slice
+  brought the release's full housekeeping revert, so the family, its 11 RouteDefs, and these
+  in-family shapes no longer exist; nothing to carve out. Kept lettered so cross-references to
+  (e) stay stable.
 - **(e) The v0.20.0 third-slice maps/assets wrong-method shapes.** A wrong method on an
   `/api/maps` or `/api/assets` path has no RouteDef and delegates to the ladder terminal 404
   today; at deletion it flips to the table's pre-auth 405 (`planned405BeforeAuth`). GET

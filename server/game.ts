@@ -14,7 +14,6 @@ import {
 } from '../src/sim/data';
 import { devTierIndexForMergedPrs } from '../src/sim/dev_tier';
 import { parseRelayCommand } from '../src/sim/discord_relay';
-import { TUNING } from '../src/sim/game_config';
 import type { PickAction } from '../src/sim/lockpick';
 import { sanitizeMarketQuery } from '../src/sim/market_query';
 import { parseMoveInputFrame } from '../src/sim/move_input';
@@ -136,7 +135,10 @@ const CHAT_RATE_ERROR_COOLDOWN_SECONDS = 4;
 const CHAT_COOLDOWN_SECONDS = 20;
 const CHAT_RATE_VIOLATIONS_FOR_COOLDOWN = 3;
 const WHO_RESULT_LIMIT = 50;
-const MAX_ACTIVE_SESSIONS_PER_ACCOUNT = 2;
+// One live session per account: Ravenpost mail (v0.20.0) moves coin and goods
+// between an account's characters, so the old allowance of a second online
+// character (self-trade by dual-boxing) is no longer needed. GMs are exempt.
+const MAX_ACTIVE_SESSIONS_PER_ACCOUNT = 1;
 const RESTART_COUNTDOWN_TOTAL_SECONDS = 600;
 const RESTART_COUNTDOWN_STEPS = [
   { atSeconds: 0, text: 'Server restart in 10 minutes.' },
@@ -789,13 +791,9 @@ export class GameServer {
 
   constructor() {
     this.sim = new Sim({
-      // The housekeeping override layer (applied in main() before this ctor
-      // runs) may retarget the seed and the mob respawn base; the TUNING
-      // defaults reproduce the historical values exactly.
-      seed: TUNING.worldSeed ?? WORLD_SEED,
+      seed: WORLD_SEED,
       playerClass: 'warrior',
       noPlayer: true,
-      respawnSeconds: TUNING.respawnSeconds,
       devCommands: process.env.ALLOW_DEV_COMMANDS === '1',
       lockoutNowMs: () => Date.now(),
       // Raid lockouts end at the next 3 AM (the classic daily reset) in this realm's civil
@@ -1846,12 +1844,6 @@ export class GameServer {
   // Admin dashboard views (read-only)
   // -------------------------------------------------------------------------
 
-  // World facts the housekeeping overview shows (the seed actually in use and
-  // whether dev commands are on).
-  housekeepingSummary(): { worldSeed: number; devCommands: boolean } {
-    return { worldSeed: this.sim.cfg.seed, devCommands: this.sim.devCommands };
-  }
-
   adminStats(): AdminServerStats {
     const mem = process.memoryUsage();
     return {
@@ -2393,7 +2385,7 @@ export class GameServer {
           const afterDone = sim.meta(pid)?.questsDone.has(msg.quest) ?? false;
           if (!beforeDone && afterDone) {
             void dailyRewardService
-              .recordQuestCompletion(session.accountId, msg.quest)
+              .recordQuestCompletion(session.accountId, session.characterId, msg.quest)
               .then((points) => {
                 if (points > 0) this.sendDailyRewardPointsGained(session, points);
               })
@@ -2901,6 +2893,16 @@ export class GameServer {
         const copper = msg.copper;
         const live = this.sessionByName(to);
         if (live) {
+          // A recipient who has blocked (== ignored) the sender never receives
+          // their letter. Refuse BEFORE the sim escrow so no copper, postage or
+          // items are taken, and reveal nothing more than "no such recipient".
+          if (live.blockedIds.has(session.characterId)) {
+            this.send(session, {
+              t: 'events',
+              list: [{ type: 'mailResult', code: 'noRecipient', pid }],
+            });
+            break;
+          }
           sim.mailSendResolved(
             { key: String(live.characterId), name: live.name },
             subject,
@@ -2916,10 +2918,21 @@ export class GameServer {
         // still this session before touching the sim.
         void this.socialDb
           .findCharacterByName(to)
-          .then((target) => {
+          .then(async (target) => {
             if (this.clients.get(pid) !== session) return;
             if (!target) {
               // Structured outcome, localized client-side (the sim's mailResult shape).
+              this.send(session, {
+                t: 'events',
+                list: [{ type: 'mailResult', code: 'noRecipient', pid }],
+              });
+              return;
+            }
+            // Offline recipient block check (same rule as the online path above):
+            // a sender the recipient has blocked is refused before any escrow.
+            const blockedBy = await this.socialDb.blockedIds(target.id);
+            if (this.clients.get(pid) !== session) return;
+            if (blockedBy.includes(session.characterId)) {
               this.send(session, {
                 t: 'events',
                 list: [{ type: 'mailResult', code: 'noRecipient', pid }],
@@ -3320,6 +3333,7 @@ export class GameServer {
       queued: p.queuedOnSwing,
       ap: p.attackPower,
       sp: p.spellPower,
+      sh: p.spellHaste,
       crit: p.critChance,
       dodge: p.dodgeChance,
       eat: p.eating ? { remaining: round2(p.eating.remaining) } : null,
@@ -3610,6 +3624,10 @@ export class GameServer {
   private routeEvents(events: SimEvent[]): void {
     if (events.length === 0 || this.clients.size === 0) return;
     const eventTime = Date.now();
+    // ignore list: social invites from blocked senders are resolved once per
+    // batch (dropped for every session and declined in the sim), not per
+    // receiving session, so spectators of the target never see them either.
+    const suppressedInvites = this.suppressBlockedSocialInvites(events);
     // Guard each session: a throw while routing events to one player must not
     // drop this tick's events for every other session (server/CLAUDE.md).
     forEachGuarded(
@@ -3628,6 +3646,7 @@ export class GameServer {
         }
         const mine: SimEvent[] = [];
         for (const ev of events) {
+          if (suppressedInvites !== null && suppressedInvites.has(ev)) continue;
           // ignore list: drop chat originating from a character this player has
           // blocked, before it ever reaches their client
           if (
@@ -3703,6 +3722,35 @@ export class GameServer {
     if (fromPid === recipient.pid) return false;
     const sender = this.clients.get(fromPid);
     return sender ? recipient.blockedIds.has(sender.characterId) : false;
+  }
+
+  // ignore list: a party invite, trade request, or duel challenge from a
+  // character the target has blocked never reaches the target's client (every
+  // path: pinvite/trade_req/duel_req by id, and /invite by name via sim chat).
+  // The sim has already recorded a pending invite by the time the event routes,
+  // so it is declined on the target's behalf through the same sim call a real
+  // decline command dispatches: the pending state clears immediately (an
+  // unblocked player can invite right away) and the sender sees only the
+  // ordinary declined outcome on the next tick. Trade has no decline command (a
+  // real target simply lets the request lapse), so its invite is removed
+  // silently, which is exactly what the sender would observe anyway. Returns
+  // the events to drop for every session, or null when nothing is suppressed.
+  private suppressBlockedSocialInvites(events: SimEvent[]): Set<SimEvent> | null {
+    let suppressed: Set<SimEvent> | null = null;
+    for (const ev of events) {
+      if (ev.type !== 'partyInvite' && ev.type !== 'tradeRequest' && ev.type !== 'duelRequest')
+        continue;
+      if (ev.pid === undefined) continue;
+      const target = this.clients.get(ev.pid);
+      if (!target || target.blockedIds.size === 0) continue;
+      if (!this.isBlockedSender(target, ev.fromPid)) continue;
+      suppressed ??= new Set();
+      suppressed.add(ev);
+      if (ev.type === 'partyInvite') this.sim.partyDecline(ev.pid);
+      else if (ev.type === 'duelRequest') this.sim.duelDecline(ev.pid);
+      else this.sim.tradeInvites.delete(ev.pid);
+    }
+    return suppressed;
   }
 
   private eventAnchor(ev: SimEvent): { x: number; y: number; z: number } | null {

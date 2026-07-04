@@ -1755,6 +1755,36 @@ closed set of three). Targeted suites green at the merged tip (command_schema,
 world_api_parity, game_sessions, snapshots, architecture, localization_fixes,
 parity/coverage, social_system, social_frames, delves); tsc 0.
 
+## v0.20.0 release merge, fifth slice (2026-07-04): the housekeeping revert + release tip
+
+Merge of release tip d4e1340f3 (40 commits). The defining change is a REMOVAL: the release
+reverted the whole housekeeping feature (revert of PR #1340 plus the calendar-caps
+follow-up b9b3378f7; the feature never reached main), so the merge mirrors the delete end
+to end on the branch: housekeeping.ts / housekeeping_api.ts / housekeeping_db.ts,
+src/sim/game_config.ts, the game_config_overrides DDL, the admin SPA housekeeping pages,
+the 11 housekeeping RouteDefs + housekeepingHandler + the AdminRuntime housekeepingSummary
+member in server/admin.ts, the 11 surface-corpus rows, the 4 housekeeping parity 401 pins,
+the http/CLAUDE.md testing-seam note, and state.md carve-out (d) (retired in place; the
+release-merge migrated set drops 45 -> 34, the admin surface counts 38 RouteDefs). The
+liveGame() deferred construction SURVIVES the revert (the import-main harnesses and the
+module-scope configure*Runtime closures still need lazy first-touch);
+tests/server/game_boot_order.test.ts keeps the laziness pin and drops the
+applyGameConfigAtBoot source-order pin with the feature.
+
+Remaining release deltas carried no HTTP route surface: the daily-rewards repeat-quest
+halving is shared-module logic inside DailyRewardService (both dispatch arms), the Play
+Integrity nonce normalization lives in native_attestation.ts (a shared helper imported by
+BOTH twins: auth_routes.ts and the main.ts ladder), the admin live-evidence work is
+SPA + admin-i18n only, and one-online-character-per-account / mail hardening /
+block-invites / haste sets / cast-target locking are WS + sim surface with release-side
+test pins. Code conflicts: main.ts (4 hunks: housekeeping imports/boot-apply, the
+liveGame block vs release's module-scope construction, the ws import), admin.ts (import
+block), server/CLAUDE.md, plus the housekeeping_api.ts modify/delete. i18n conflicts:
+hud_chrome hide-chest keys (take release) and the 5 non-Latin overlays where the release's
+de-IP reword (afbb90520) of realm.noRealms/realm.loading wins over the branch's stale
+transliterations while keeping the branch's errors.api.* fills; generated artifacts
+regenerated, never hand-merged.
+
 ## Phase 25: Docs + new:endpoint scaffold + flag-default flip
 
 Deliverables:

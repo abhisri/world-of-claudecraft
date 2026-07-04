@@ -84,9 +84,6 @@ gated by exit criteria the release records in `docs/api-pipeline/state.md` under
 `## Old-ladder deletion exit criteria (next release)`; do not delete the ladder before they are met.
 
 ## Testing seam notes
-- The housekeeping handlers migrated onto RouteDefs reach Postgres via `housekeeping_db` directly,
-  NOT the Phase 17 `setAdminDbForTests` bundle; a future pool-less dispatcher-level test of that
-  family must `vi.mock` `housekeeping_db` instead.
 - Endpoint unit tests drive handlers through `routes` + a `configure<Domain>Runtime` injection + the
   `fakeCtx`/`FakeDb` helpers in `tests/server/helpers/`, not a pg `sql.includes()` mock. The full
   recipe (rungs + exemplar) lives in `server/CLAUDE.md` (Adding an endpoint / Endpoint tests).

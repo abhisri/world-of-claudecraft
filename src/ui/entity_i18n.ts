@@ -423,7 +423,11 @@ export function entityTranslationManifest(): EntityTranslationManifestEntry[] {
     );
   }
   for (const set of Object.values(ITEM_SETS).sort(compareById)) {
-    const fields: ('name' | 'bonus2' | 'bonus3')[] = ['name', 'bonus2', 'bonus3'];
+    // Only tiers the set actually has: the leveling haste kits carry a single
+    // 3-piece tier, so registering a bonus2 row would emit an id-fallback string.
+    const fields: ('name' | 'bonus2' | 'bonus3')[] = ['name'];
+    if (set.bonuses.some((b) => b.pieces === 2)) fields.push('bonus2');
+    if (set.bonuses.some((b) => b.pieces === 3)) fields.push('bonus3');
     for (const field of fields) {
       entries.push(
         entry(

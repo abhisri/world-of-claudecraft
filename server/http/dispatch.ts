@@ -84,14 +84,11 @@ export function createApiDispatcher(deps: ApiDispatcherDeps): ApiDispatcher {
     if (match.head) {
       // A HEAD request resolves to a matched GET route (the Phase 4 router
       // synthesizes HEAD from GET, head:true). The legacy ladder answers HEAD with
-      // a 404 (every === arm gates on GET; the one exception is the v0.20.0
-      // housekeeping family, whose prefix sub-dispatcher answers a post-auth
-      // in-family 405 to any non-GET/POST method, HEAD included), so while the
-      // legacy arms are retained (until the ladder-deletion PR) a HEAD match
-      // delegates too, keeping the migration byte-identical old-vs-new: both arms
-      // run the same code either way. Serving HEAD as GET is a deliberate behavior
-      // change deferred to the ladder deletion (next release); note the housekeeping
-      // HEAD shape flips from that 405 to a GET-served response there, not from 404.
+      // a 404 (every === arm gates on GET), so while the legacy arms are retained
+      // (until the ladder-deletion PR) a HEAD match delegates too, keeping the
+      // migration byte-identical old-vs-new: both arms run the same code either
+      // way. Serving HEAD as GET is a deliberate behavior change deferred to the
+      // ladder deletion (next release).
       delegateWithReqId(deps.delegate, req, res);
       return;
     }

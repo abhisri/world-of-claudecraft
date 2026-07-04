@@ -188,6 +188,7 @@ export const zh_CN: EnTranslations = {
       "loading": "正在加载每日奖励...",
       "error": "无法加载每日奖励。",
       "intro": "在已验证的钱包中持有足够的 WOC 即可解锁每日奖励。通过每日一次转盘和轮换任务赚取积分，然后攀登每日排行榜，赢取奖池分成。",
+      "disclaimer": "WOC 价格可能快速波动。我们建议持有高于 $20 USD 最低要求的数量，避免正常价格波动导致奖励被锁定。这不是财务建议。",
       "prize": "奖池",
       "reset": "重置",
       "endsIn": "{time}后结束",
@@ -211,6 +212,10 @@ export const zh_CN: EnTranslations = {
       "pointsGained": "已获得 {points} 每日奖励积分。",
       "showChestButton": "显示宝箱",
       "hideChestButton": "隐藏宝箱",
+      "hideChestConfirmTitle": "隐藏每日奖励宝箱？",
+      "hideChestConfirmBody": "这会从您的界面上移除宝箱快捷方式。奖励、资格和此面板仍然可用；您可以在选项中重新显示该快捷方式。",
+      "hideChestConfirmOk": "隐藏宝箱",
+      "hideChestConfirmCancel": "取消",
       "leaderboard": "每日排行榜",
       "totalPlayer": "今天 {count} 名玩家",
       "totalPlayers": "今天 {count} 名玩家",
@@ -764,7 +769,7 @@ export const zh_CN: EnTranslations = {
       "capacity": "{used}/{total}",
       "capacityAria": "背包格已用：{used}/{total}",
       "backpack": "背包",
-      "bagSocketAria": "{name}: {slots}",
+      "bagSocketAria": "{name}：{slots}",
       "socketEmpty": "空背包栏位",
       "unequipHint": "点击移除此背包"
     },
@@ -830,13 +835,13 @@ export const zh_CN: EnTranslations = {
       "disarm": "已缴械：无法使用武器攻击",
       "lockout": "法术学派被锁定",
       "imbue": "武器附有额外效果",
-      "imbueRange": "武器已附魔：审判时附加 {min} 到 {max} 点额外伤害",
+      "imbueRange": "武器已附魔：裁决时附加 {min} 到 {max} 点额外伤害",
       "stealth": "已隐匿；移动速度降低 {pct}%",
-      "formBear": "熊形态：生命值和护甲提高",
+      "formBear": "巨熊形态：生命值和护甲提高",
       "formCat": "猫形态：近战伤害与能量",
-      "formTravel": "旅行形态：移动速度提高 {pct}%",
-      "defensiveStance": "防御姿态：受到的伤害降低，威胁值提高",
-      "righteousFury": "正义之怒：神圣伤害产生的威胁值大幅提高",
+      "formTravel": "迅捷形态：移动速度提高 {pct}%",
+      "defensiveStance": "戒备姿态：受到的伤害降低，威胁值提高",
+      "righteousFury": "炽燃誓约：神圣伤害产生的威胁值大幅提高",
       "scale": "体型增大 {pct}%",
       "jump": "跳跃高度提高 {pct}%",
       "school": {
@@ -1061,18 +1066,18 @@ export const zh_CN: EnTranslations = {
       "close": "关闭邮箱",
       "tabInbox": "收件箱",
       "tabInboxWithCount": "收件箱（{count}）",
-      "tabSend": "Send",
+      "tabSend": "寄信",
       "empty": "你的邮箱是空的。",
       "truncated": "显示最新的 {shown} 封信（共 {total} 封）。",
       "attachmentsBadge": "附有包裹",
       "unreadBadge": "未读",
-      "back": "Back",
+      "back": "返回",
       "take": "领取附件",
       "delete": "删除信件",
       "deleteAria": "删除信件 {subject}",
       "openAria": "阅读来自 {name} 的信件 {subject}",
       "noSubject": "（无主题）",
-      "toLabel": "To",
+      "toLabel": "收件人",
       "toPlaceholder": "角色名字",
       "subjectLabel": "主题",
       "bodyLabel": "内容",
@@ -1363,7 +1368,7 @@ export const zh_CN: EnTranslations = {
         "valeName": "东溪谷地",
         "valeBlurb": "翠绿的丘陵与古老的林地,一切冒险由此启程。",
         "marshName": "泥沼湿地",
-        "marshBlurb": "沉没的沼泽与遭潮水侵蚀的废墟,鱼人与更可怕之物的栖身之所。",
+        "marshBlurb": "沉没的沼泽与遭潮水侵蚀的废墟，泥鳍与更可怕之物的栖身之所。",
         "peaksName": "荆棘峰高地",
         "peaksBlurb": "狂风侵蚀的山脊,向上攀升,直抵这片国度最寒冷的险境。"
       },
@@ -1385,12 +1390,12 @@ export const zh_CN: EnTranslations = {
         "q2": "我需要加密货币钱包吗?",
         "a2": "不需要。没有钱包也能完整畅玩游戏。可选的社区代币仅用于解锁外观装饰,绝不影响战力。",
         "q3": "可以离线游玩吗?",
-        "a3": "可以。浏览器中有即开即玩的单人模式,此外还有共享的在线服务器。",
+        "a3": "可以。浏览器中有即开即玩的单人模式，此外还有共享的在线世界。",
         "q4": "升到满级要多久?",
         "a4": "等级上限为 {cap} 级,需横跨三大区域,通过任务、地下城与探索逐步达成。"
       },
       "community": {
-        "heading": "加入这片国度",
+        "heading": "加入这个世界",
         "body": "现在就加入,或者来打个招呼。有伙伴相伴,世界会更精彩。",
         "play": "立即游玩",
         "discord": "加入 Discord",
@@ -1424,7 +1429,7 @@ export const zh_CN: EnTranslations = {
       "groupingTitle": "携手同行",
       "groupingBody": "邀请他人组队,即可共享任务进度并挑战地下城。世界中的大部分内容都可单人完成,因此组队是一种选择,而非负担。",
       "onlineTitle": "在线或离线",
-      "onlineBody": "在共享的在线服务器与其他所有人一同游玩,或在浏览器中开启一个即开即玩的离线世界来熟悉门道。",
+      "onlineBody": "在共享的在线世界与其他所有人一同游玩，或在浏览器中开启一个即开即玩的离线世界来熟悉门道。",
       "reassure": "天赋在 10 级解锁,并且随时可以重置,所以你早期的选择绝非一成不变。放心大胆地尝试吧。",
       "controlsLink": "查看完整操作键参考"
     },
@@ -1460,7 +1465,7 @@ export const zh_CN: EnTranslations = {
       "growBody": "每次升级都会让你更加坚韧,并解锁新的技能,一路直至 {cap} 级的等级上限。做任务是升级最快的途径,地下城与探索则能加以补充。",
       "effectsTitle": "增益、减益与控制",
       "effectsBody": "许多技能会施加持续存在的效果。有益的（增益）会提升你的属性、为你护盾，或一点点地治疗你；有害的（减益）则以持续伤害消耗你的生命，或削弱你。留意动作条附近的小图标，便能看清你身上有哪些效果、还能持续多久。",
-      "ccBody": "控制是一类特殊的减益，会限制目标能做的事：眩晕、定身与减速，让人无法施法的沉默，缴械，恐惧，以及能让敌人暂时无害的变形术。其中一些，比如定身、恐惧和变形术，若施加得太过频繁就会失效，因此无法被无限连控。",
+      "ccBody": "控制是一类特殊的减益，会限制目标能做的事：眩晕、定身与减速，让人无法施法的沉默，缴械，恐惧，以及能让敌人暂时无害的变形。其中一些，比如定身、恐惧和变形，若施加得太过频繁就会失效，因此无法被无限连控。",
       "deathTitle": "当你倒下时",
       "deathBody": "若你的生命值归零，你便会倒下。释放你的灵魂，便能在最近的墓地以满血复活，再返回原处，因此一次死亡只会耗去你些许时间，而非你的进度。两场战斗之间，坐下进食饮水，让自己以满状态迎接下一战。"
     },
@@ -1601,12 +1606,12 @@ export const zh_CN: EnTranslations = {
       "charge": "冲向远处的敌人，以一次短暂的昏迷开场。",
       "rend": "造成一道流血，让目标随时间逐渐被消耗。",
       "thunder_clap": "打击你周围的一切，并减缓它们的攻击速度。",
-      "seal_of_righteousness": "为你的挥击附加神圣伤害，再用审判将其释放出去。",
+      "seal_of_righteousness": "为你的挥击附加神圣伤害，再用裁决将其释放出去。",
       "holy_light": "稳健而可观的治疗，用于把盟友或自己奶满。",
       "devotion_aura": "持续的自我增益，提升护甲让攻击伤害更低。",
       "judgement": "消耗你激活的圣印，从近距离打击敌人。",
       "blessing_of_might": "提升友方目标的攻击强度，开怪前施放正合适。",
-      "divine_protection": "一道快速的神圣护盾，在局势吃紧时吸收伤害。",
+      "divine_protection": "一道快速的守护结界，在局势吃紧时吸收伤害。",
       "raptor_strike": "一记沉重的近战挥击，用于有东西贴近你时。",
       "aspect_of_the_hawk": "持续保持的姿态，强化你的远程攻击强度。",
       "serpent_sting": "施加一道毒液，随时间造成自然流血伤害。",
@@ -1638,7 +1643,7 @@ export const zh_CN: EnTranslations = {
       "conjure_water": "制造饮品以恢复法力，让你在两次开怪之间补给。",
       "conjure_food": "制造食物，坐下进食时可以恢复生命值。",
       "shadow_bolt": "向目标施放一道暗影箭，是你的常用输出。",
-      "summon_imp": "召唤一只小鬼，从远处向敌人投掷火焰箭。",
+      "summon_imp": "召唤一只烬裔，从远处向敌人投掷火焰箭。",
       "demon_skin": "持续的自我增益，强化皮肤并提升护甲。",
       "immolate": "点燃目标，打出一记起手伤害并留下持续燃烧。",
       "corruption": "用暗影腐蚀目标，在你做别的事时持续造成伤害。",
@@ -1670,7 +1675,7 @@ export const zh_CN: EnTranslations = {
         "old_greyjaw": "一头浑身伤疤的老狼，从未被任何陷阱困住，三条猎犬和一名马童的手臂都算在它头上。它独自在密林深处狩猎，战斗拖得越久就越发狂暴。",
         "grubjaw": "一头贪婪到连其他巨魔都不愿与之为伍的沼泽巨魔，据说曾把一名商人最后两头驮货的骡子连同挽具一同吞下。",
         "shardlord_kazzix": "一个化作魁梧身形的风暴元素，徘徊在风暴岩之上遥远的峭壁间，身上的心石值得你冒着雷电去夺取。",
-        "mirejaw_frenzy": "一只沼泽鱼人，会在战斗中将自己鞭策进狂乱的扑腾，是一支喧闹而极具地盘意识的鱼群中嗓门最大的那个。",
+        "mirejaw_frenzy": "一只沼泽泥鳍，会在战斗中把自己鞭策进狂乱的扑腾，是一支喧闹而极具地盘意识的鱼群中嗓门最大的那个。",
         "gravecaller_cultist": "死亡邪教身披长袍的仆从，他们的勾当玷污了从谷地到峰巅的每一处坟墓。他们聚集之处，死者难以安息。"
       }
     },
@@ -1684,12 +1689,12 @@ export const zh_CN: EnTranslations = {
         "desc": "结网的织丝者与剧毒的潜伏者，盘踞在阴暗错综之地。猎人可以像驯服野兽那样驯服它们。"
       },
       "mudfin": {
-        "name": "鱼人",
+        "name": "泥鳍",
         "desc": "两栖的沼泽居民，成群涌入浅滩，吵闹而极具地盘意识。"
       },
       "burrower": {
-        "name": "狗头人",
-        "desc": "头顶蜡烛的掘地者，在矿洞与地穴中繁衍，凶狠地守护着自己的矿石。"
+        "name": "穴居者",
+        "desc": "沾满泥污的掘地者，在矿洞与地穴中繁衍，凶狠地守护着自己的矿石。"
       },
       "humanoid": {
         "name": "人型生物",
@@ -1725,7 +1730,7 @@ export const zh_CN: EnTranslations = {
       "places": "值得一看的地点",
       "residents": "你将遇见的人",
       "valeBlurb": "青翠的起始山谷，新英雄在东溪镇周边的野狼与盗匪身上磨砺技艺。",
-      "marshBlurb": "一片被洪水淹没、迷雾与废墟交织的国度。鱼人涌入浅滩，水下有更古老之物蠢蠢欲动，由桥镇芬桥镇守望着。",
+      "marshBlurb": "一片被洪水淹没、迷雾与废墟交织的国度。泥鳍涌入浅滩，水下有更古老之物蠢蠢欲动，由桥镇芬桥镇守望着。",
       "peaksBlurb": "风蚀的山脊与古老的矿坑向上攀升，通往这片王国中最寒冷、最高处的危险之地，由高守哨站镇守。",
       "valeGreeting": "把你的刀剑带在身边。谷地已不复往日。",
       "valeGreeter": "雷德布鲁克元帅，东溪",
@@ -1733,9 +1738,9 @@ export const zh_CN: EnTranslations = {
       "marshGreeter": "守望者芬威克，芬桥",
       "peaksGreeting": "这堵墙已守了两百年。在我当值时它绝不会破，但它在呻吟。",
       "peaksGreeter": "塞萨莉队长，高守哨站",
-      "valePlaceNotes": "Eastbrook 是你的第一个大本营。Wolf Run 与 Boar Meadow 是温和的狩猎场；Mirror Lake 是供垂钓的静水；the Webwood 与 the Copper Dig 藏着蜘蛛和贪婪掘矿的家伙；一处 Bandit Camp 与 the Fallen Chapel 里有更棘手的活儿；Reliquary Hill 向下通往 the Collapsed Reliquary，这是这片位面的首个探险地；而 Brightwood Glade 则是北方一片宁静、阳光普照的林地。",
-      "marshPlaceNotes": "芬桥守着唯一一条干燥的道路。潜行者芦苇荡与深沼浅滩里满是沼泽野兽和鱼人；寡妇密林被蛛网织得密不透风；溺亡礼拜堂与巨魔土丘藏着更古老的危险；唤墓者营地是邪教的盘踞之处，沉没堡垒则是这片湿地的副本核心。",
-      "peaksPlaceNotes": "高守哨站扼守着城墙。潜猎者山脊与深岩洞穴属于山脊猫和狗头人；食人魔丘陵与卓格玛的战营属于受雇的莽夫；风暴岩中元素噼啪作响，饮月之池在它下方泛着微光；蜿龙教帐篷与亡魂之野环绕着邪教的制高点，墓龙圣所则居于其巅。",
+      "valePlaceNotes": "东溪镇是你的第一个大本营。狼奔谷与野猪草甸是温和的狩猎场；镜湖是供垂钓的静水；墨网林与铜矿坑藏着蜘蛛和贪婪掘矿的家伙；一处强盗营地与陷落礼拜堂里有更棘手的活儿；圣物丘向下通往坍塌圣物库，这是这片位面的首个探险地；而明林空地则是北方一片宁静、阳光普照的林地。",
+      "marshPlaceNotes": "芬桥守着唯一一条干燥的道路。潜行者芦苇荡与深沼浅滩里满是沼泽野兽和泥鳍；寡妇密林被蛛网织得密不透风；溺亡礼拜堂与巨魔土丘藏着更古老的危险；唤墓者营地是邪教的盘踞之处，沉没堡垒则是这片湿地的副本核心。",
+      "peaksPlaceNotes": "高守哨站扼守着城墙。潜猎者山脊与深岩洞穴属于山脊猫和穴居者；食人魔丘陵与卓格玛的战营属于受雇的莽夫；风暴岩中元素噼啪作响，饮月之池在它下方泛着微光；蜿龙教帐篷与亡魂之野环绕着邪教的制高点，墓龙圣所则居于其巅。",
       "gladeTitle": "宁静一隅：明木林地",
       "gladeBody": "the Vale 里的故事并不全都关于亡者。北方有一片阳光照耀的林地，名为 Brightwood Glade，自有它更为温和的节奏：尽是安静的小径，以及枝叶下斑驳的光影。它是你所追寻的踪迹之外一段柔和的对照，若道路给你余裕闲逛，很值得去看一看。"
     },
@@ -1770,7 +1775,7 @@ export const zh_CN: EnTranslations = {
       "sagaValeTitle": "谷地：印玺上的一个名字",
       "sagaValeBody": "在东溪，死者无法安息，而其背后的印记属于一个早被认为已然消亡的教派。循迹追查到一名在礼拜堂地穴中作业的唤墓者，他自己的文书又将你指向北方的湿地。",
       "sagaMarshTitle": "湿地：一笔灵魂的贡赋",
-      "sagaMarshBody": "在泥沼，溺亡绝非意外。有人正像填满纳贡之箱一般填满这片湿地，从每一个被湖水吞没的旅人身上唤起听命的死者。沿着命令的链条向上追查，直至沉没堡垒中的一名唤雾者，他的临终之言道出了某种更为古老、正在峰巅之下蠢动之物。",
+      "sagaMarshBody": "在泥沼，溺亡绝非意外。有人正像填满纳贡之箱一般填满这片湿地，从每一个被湖水吞没的旅人身上唤起听命的死者。沿着命令的链条向上追查，直至沉没堡垒中的一名缚雾者，他的临终之言道出了某种更为古老、正在峰巅之下蠢动之物。",
       "sagaPeaksTitle": "峰巅：贡赋所为何来",
       "sagaPeaksBody": "在 Thornpeak，整个图谋终于水落石出。自 the Vale 以来被窃走的每一个灵魂，都是为这座山岳腹心深处邪教的阴森勾当而倾注的贡赋。始于一座礼拜堂院落的踪迹在此终结，化作一场五人的深入，去直面这一切背后的黑手。至于谁在尽头等候，我们就留给你自己去揭晓吧。",
       "sideTitle": "主路之外的支线",
@@ -2125,9 +2130,9 @@ export const zh_CN: EnTranslations = {
       "undoCountTitle": "可撤销 {count} 步（Ctrl+Z 撤销，Ctrl+Y 重做）",
       "autosave": "自动保存",
       "autosaveTitle": "有未保存的更改时自动保存地图。保存失败时会自动关闭。",
-      "undo": "Undo",
+      "undo": "撤销",
       "undoTitle": "撤销上一次更改（Ctrl+Z）",
-      "redo": "Redo",
+      "redo": "重做",
       "redoTitle": "重做上一次撤销的更改（Ctrl+Y）",
       "offline": "离线",
       "offlineTitle": "未登录：地图只保存到此浏览器。请在游戏中登录以在线保存。",
@@ -2573,7 +2578,7 @@ export const zh_CN: EnTranslations = {
   },
   "highscores": {
     "title": "高分排行榜",
-    "desc": "追踪服务器中最伟大的英雄，并对比你的游戏进度。"
+    "desc": "追踪这个世界中最伟大的英雄，并对比你的游戏进度。"
   },
   "wiki": {
     "title": "游戏百科与指南",
@@ -2599,7 +2604,7 @@ export const zh_CN: EnTranslations = {
   },
   "mode": {
     "onlineTitle": "在线游玩",
-    "onlineDesc": "登录服务器。你的角色数据保存在服务器上，与其他在线玩家共享同一个世界。",
+    "onlineDesc": "登录这个世界。你的角色数据保存在服务器上，与其他所有在线玩家共享同一个世界。",
     "onlineAria": "在线游玩：登录持久共享的联机世界",
     "offlineTitle": "单机试玩",
     "offlineDesc": "在浏览器中直接开启单人世界。所有数据均不保存：非常适合快速试玩或功能测试。",
@@ -2610,8 +2615,8 @@ export const zh_CN: EnTranslations = {
     "serverOffline": "离线",
     "play": "开始游戏",
     "playAria": "开始游玩 World of ClaudeCraft",
-    "serverLabel": "选择你的服务器",
-    "serverAria": "选择服务器：在线或离线",
+    "serverLabel": "选择你的世界",
+    "serverAria": "选择世界：在线或离线",
     "serverOfflineSub": "即时本地世界",
     "caLabel": "$WOC 合约地址",
     "caCopyAria": "复制合约地址",
@@ -2658,7 +2663,7 @@ export const zh_CN: EnTranslations = {
       "title": "添加找回邮箱",
       "body": "设置一个邮箱地址，以便您可以找回自己的账户。我们仅在您需要重置密码时，用它来确认您是本账户的所有者。",
       "save": "保存邮箱",
-      "logOut": "Log out",
+      "logOut": "退出登录",
       "invalid": "请输入有效的邮箱地址。",
       "failed": "无法保存您的邮箱，请重试。"
     }
@@ -2814,7 +2819,7 @@ export const zh_CN: EnTranslations = {
     "renderFailedStatus": "卡片渲染失败。",
     "levelClass": "{level}级 - {className}",
     "topPercent": "前 {percent}%",
-    "realmSubtitle": "{realm} 服务器",
+    "realmSubtitle": "{realm} 世界",
     "defaultRealm": "ClaudeCraft 世界",
     "brandWordmark": "WORLD OF CLAUDECRAFT",
     "recruited": "已招募 {count} 人",
@@ -2823,7 +2828,7 @@ export const zh_CN: EnTranslations = {
     "footerCta": "铸就你的传说：{siteUrl}",
     "arenaStat": "竞技场",
     "shareTierBit": "，{tier}级 $WOC 持有者",
-    "shareText": "我正在 World of ClaudeCraft 中铸就传说：{level}级 {className}{tierBit}。加入我的服务器：",
+    "shareText": "我正在 World of ClaudeCraft 中铸就传说：{level}级 {className}{tierBit}。加入我的世界：",
     "nativeShareTitle": "ClaudeCraft 世界",
     "fileNameFallback": "玩家",
     "actionShareX": "分享到 X",
@@ -3022,9 +3027,9 @@ export const zh_CN: EnTranslations = {
   "delveRiteUi": {
     "title": "溺亡圣髑仪式",
     "blurb": "神龛将依序亮起。依次激活每一座神龛以重复顺序。触碰错误会导致本次尝试失败并重演顺序，完美无误的尝试将赢得最丰厚的战利品，而用尽尝试次数则会以最寒酸的方式打开圣髑匣。选择仪式将如何考验你。",
-    "easy": "Easy",
+    "easy": "简单",
     "medium": "中等",
-    "hard": "Hard",
+    "hard": "困难",
     "guideWatch": "选择后，四座神龛会依次亮起。记住顺序。",
     "guideRepeat": "神龛熄灭后，按同样的顺序走到每座神龛前按 F（互动）。",
     "guideStakes": "按错神龛会被黑水泼溅并损失一次尝试。完成整个顺序即可开启圣物匣。",
@@ -3148,7 +3153,7 @@ export const zh_CN: EnTranslations = {
       "sluice_valve": "水闸阀门",
       "grave_tablet": "墓碑石板",
       "corpse_candle": "尸烛",
-      "bell_rope": "Bell Rope"
+      "bell_rope": "钟绳"
     },
     "companion": {
       "barkLine": "{name}：{line}",
@@ -3309,7 +3314,7 @@ export const zh_CN: EnTranslations = {
         "desc": "你的物理打击造成的伤害提高15%。"
       },
       "aug_spellfire": {
-        "name": "法术烈焰",
+        "name": "冥火",
         "desc": "你的法术伤害提高15%。"
       },
       "aug_toughness": {
@@ -3353,7 +3358,7 @@ export const zh_CN: EnTranslations = {
         "desc": "全部种类伤害+18%，移动速度+12%。"
       },
       "aug_lightwell": {
-        "name": "圣光之井",
+        "name": "墓光",
         "desc": "+30%治疗和+15%最大生命值。成为团队的支柱。"
       },
       "aug_bounty_hunter": {
@@ -3404,13 +3409,13 @@ export const zh_CN: EnTranslations = {
   },
   "seo": {
     "title": "World of ClaudeCraft：经典风格网页 MMO",
-    "description": "在 World of ClaudeCraft 展开史诗冒险。这是一款可直接在浏览器中游玩的经典风格微型 MMO。加入持续共享的服务器，提升职业等级，击败敌人。",
+    "description": "在 World of ClaudeCraft 展开史诗冒险。这是一款可直接在浏览器中游玩的经典风格微型 MMO。加入持续共享的世界，提升职业等级，击败敌人！",
     "genre": "MMORPG",
     "playMode": "多人游戏",
     "applicationCategory": "游戏",
     "operatingSystem": "网页浏览器",
     "officialLabel": "World of ClaudeCraft 官方网站",
-    "officialBody": "worldofclaudecraft.com 是 Claudemoon 服务器的官方免费浏览器 MMO。你可以用持久角色在线游玩，也可以离线单人探索，阅读 wiki，并从本站访问已验证的社区链接。"
+    "officialBody": "worldofclaudecraft.com 是 Claudemoon 世界的官方免费浏览器 MMO。你可以用持久角色在线游玩，也可以离线单人探索，阅读 wiki，并从本站访问已验证的社区链接。"
   },
   "a11y": {
     "goHome": "前往主页",
@@ -3588,13 +3593,13 @@ export const zh_CN: EnTranslations = {
     },
     "lore": {
       "warrior": "战士是久经沙场的近战斗士，会在造成或承受伤害时积累怒气。他们能承受重击，也能用强力武器碾碎敌人。",
-      "paladin": "圣骑士是神圣的十字军，以祝福支援盟友，用圣光治疗伤口，并身披重甲保护弱者。",
+      "paladin": "圣骑士是神圣的十字军，以祝福支援盟友，用愈疗之光治愈伤口，并身披重甲保护弱者。",
       "hunter": "猎人是远程专家，与驯服的野兽并肩作战，用瞄准与急速射击向敌人倾泻箭矢，以钉刺和震荡射击减速对手，并随机应变地切换守护形态。",
       "rogue": "潜行者是隐秘刺客，消耗能量和连击点，从阴影中发动背刺与终结技。",
-      "priest": "牧师召唤圣光治疗并保护盟友，也能用暗影魔法汲取敌人的生命。",
+      "priest": "牧师召唤愈疗之光来治疗并保护盟友，也能用暗影魔法汲取敌人的生命。",
       "shaman": "萨满掌控元素，强化武器，以闪电震击敌人，并恢复盟友。",
-      "mage": "法师操纵火焰、冰霜与奥术来毁灭敌人，召唤清水，并冻结威胁。",
-      "warlock": "术士召唤恶魔，施放诅咒和持续伤害魔法，并吸取生命来维持自身。",
+      "mage": "法师操纵火焰、冰霜与奥术之力来毁灭敌人，召唤清水，并冻结威胁。",
+      "warlock": "术士召唤恶魔，施放诅咒和持续伤害魔法，并从敌人身上吸取生命来维持自身。",
       "druid": "德鲁伊引导自然之力，治疗伤口，缠绕敌人，并变形成动物来防御或输出。"
     },
     "aria": "{className} 职业详情：职责 {role}。初始属性：力量 {str}，敏捷 {agi}，耐力 {sta}，智力 {int}，精神 {spi}。",
@@ -3942,9 +3947,9 @@ export const zh_CN: EnTranslations = {
       "requiresCombo": "该技能需要连击点。",
       "requiresForm": "你必须处于{form}形态。",
       "cantInForm": "{form}形态下无法这样做。",
-      "bear": "熊",
+      "bear": "巨熊",
       "cat": "狼",
-      "travel": "旅行",
+      "travel": "迅捷",
       "shapeshifted": "变形状态下不能这样做。",
       "stealthed": "你必须处于潜行状态。",
       "inCombat": "战斗中不能这样做。",
@@ -4354,7 +4359,7 @@ export const zh_CN: EnTranslations = {
       "tool": "工具",
       "potion": "药水",
       "elixir": "药剂",
-      "bag": "Bag"
+      "bag": "背包"
     },
     "stats": {
       "armor": "护甲",
@@ -4397,7 +4402,7 @@ export const zh_CN: EnTranslations = {
       "clickUseInstant": "点击在战斗中立即使用",
       "clickUse": "点击使用",
       "clickBuyback": "点击回购",
-      "bagSlots": "{slots} Slot Bag"
+      "bagSlots": "{slots} 格背包"
     },
     "bags": {
       "title": "背包",
@@ -4559,175 +4564,175 @@ export const zh_CN: EnTranslations = {
         "description": "撼动目标区域，重击敌人，造成 {damage} 点自然伤害。"
       },
       "heroic_strike": {
-        "name": "英勇打击",
+        "name": "劫掠打击",
         "description": "一次强力攻击，使近战伤害提高 {damage}。在你的下一次挥击时触发。"
       },
       "battle_shout": {
-        "name": "战斗怒吼",
+        "name": "铁血怒吼",
         "description": "使你的攻击强度提高 20，持续 2 分钟。"
       },
       "commanding_shout": {
-        "name": "命令怒吼",
+        "name": "鼓舞呐喊",
         "description": "使你的耐力提高 6，持续 2 分钟。"
       },
       "demoralizing_shout": {
-        "name": "挫志怒吼",
+        "name": "恐怖嚎叫",
         "description": "发出可怕的怒吼，使附近所有敌人的攻击强度降低 30，持续 30 秒。"
       },
       "charge": {
-        "name": "冲锋",
+        "name": "突进",
         "description": "向一名敌人冲锋，产生 9 点怒气并使其昏迷 1 秒。8-25 码距离。"
       },
       "rend": {
-        "name": "撕裂",
+        "name": "深创",
         "description": "撕裂目标，使其在 9 秒内流血并受到 {damage} 点伤害。"
       },
       "thunder_clap": {
-        "name": "雷霆一击",
+        "name": "震地一击",
         "description": "轰击附近敌人，造成 {damage} 点伤害，并使其攻击速度降低 10%，持续 10 秒。"
       },
       "hamstring": {
-        "name": "断筋",
+        "name": "致跛斩",
         "description": "重创敌人，造成 5 点伤害，并使其移动速度降低 50%，持续 15 秒。"
       },
       "bloodrage": {
-        "name": "血性狂暴",
+        "name": "血之代价",
         "description": "以生命值为代价产生 10 点怒气。"
       },
       "overpower": {
-        "name": "压制",
+        "name": "血手",
         "description": "立即攻击，造成武器伤害 +5。只能在目标躲闪后使用。无法被躲闪。"
       },
       "execute": {
-        "name": "斩杀",
+        "name": "早赴黄泉",
         "description": "尝试终结受伤的敌人，造成 {damage} 点伤害。只能对生命值低于 20% 的敌人使用。"
       },
       "slam": {
-        "name": "猛击",
+        "name": "蛮力挥击",
         "description": "猛击对手，造成武器伤害加 {damage}。"
       },
       "cleave": {
-        "name": "顺劈斩",
+        "name": "收割弧斩",
         "description": "横扫一击，对你前方所有敌人造成 {damage} 点伤害。"
       },
       "defensive_stance": {
-        "name": "防御姿态",
+        "name": "戒备姿态",
         "description": "防御战斗姿态：你产生的威胁值提高 30%，但造成和受到的伤害降低 10%。再次施放可离开该姿态。"
       },
       "sunder_armor": {
-        "name": "破甲攻击",
+        "name": "削甲",
         "description": "撕裂目标的护甲，每次使其降低 {damage}。最多叠加 5 次。产生大量威胁值。"
       },
       "taunt": {
-        "name": "嘲讽",
+        "name": "挑衅",
         "description": "嘲讽目标：你的威胁值提高到其最仇恨敌人的水平，并强迫其攻击你 3 秒。"
       },
       "fireball": {
-        "name": "火球术",
+        "name": "余烬弹",
         "description": "投掷一团火球，造成 {damage} 点火焰伤害，并附加持续伤害。"
       },
       "frost_armor": {
-        "name": "霜甲术",
+        "name": "白霜护罩",
         "description": "以寒霜包裹自身，使护甲提高 30，持续 30 分钟。"
       },
       "arcane_intellect": {
-        "name": "奥术智慧",
+        "name": "以太睿智",
         "description": "使智力提高 2，持续 30 分钟。"
       },
       "frostbolt": {
-        "name": "寒冰箭",
+        "name": "凛霜之矛",
         "description": "发射一支寒冰箭，造成 {damage} 点冰霜伤害，并使移动速度降低 40%。"
       },
       "conjure_water": {
-        "name": "造水术",
+        "name": "束水术",
         "description": "制造 2 瓶水，饮用后恢复法力。更高等级可制造更纯净的水。"
       },
       "conjure_food": {
-        "name": "造食术",
+        "name": "束食术",
         "description": "制造 2 份面包，食用后恢复生命值。更高等级可制造更丰盛的食物。"
       },
       "fire_blast": {
-        "name": "火焰冲击",
+        "name": "余烬坠",
         "description": "冲击敌人，造成 {damage} 点火焰伤害。瞬发。"
       },
       "arcane_missiles": {
-        "name": "奥术飞弹",
-        "description": "向敌人发射奥术飞弹，持续 3 秒，每秒造成 {damage} 点奥术伤害。"
+        "name": "以太飞镖",
+        "description": "向敌人发射以太飞镖，持续 3 秒，每秒造成 {damage} 点奥术伤害。"
       },
       "polymorph": {
-        "name": "变形术",
-        "description": "将敌人变成绵羊，最多持续 15 秒。绵羊会四处游荡并快速恢复。任何伤害都会打破效果。仅限野兽和人型生物。"
+        "name": "蛊惑",
+        "description": "将敌人变成蟾蜍，最多持续 15 秒。蟾蜍会四处游荡并快速恢复。任何伤害都会打破效果。仅限野兽和人型生物。"
       },
       "frost_nova": {
-        "name": "冰霜新星",
+        "name": "冰缚",
         "description": "将附近所有敌人冻结在原地，最多持续 8 秒，并造成 {damage} 点冰霜伤害。"
       },
       "arcane_explosion": {
-        "name": "魔爆术",
+        "name": "以太爆发",
         "description": "奥术能量爆发，对附近所有敌人造成 {damage} 点奥术伤害。"
       },
       "scorch": {
-        "name": "灼烧",
+        "name": "灼烫",
         "description": "灼烧敌人，造成 {damage} 点火焰伤害。施法迅速。"
       },
       "pyroblast": {
-        "name": "炎爆术",
+        "name": "烈焰长矛",
         "description": "投掷一颗巨大的火焰陨石，造成 {damage} 点火焰伤害，并在一段时间内造成额外伤害。"
       },
       "ice_barrier": {
-        "name": "寒冰护体",
+        "name": "霜帷",
         "description": "以冰霜护盾保护你，吸收 130 点伤害，持续 60 秒。"
       },
       "sinister_strike": {
-        "name": "影袭",
+        "name": "邪恶斩击",
         "description": "立即攻击，造成武器伤害加 {damage}。奖励 1 个连击点。"
       },
       "eviscerate": {
-        "name": "剔骨",
+        "name": "长眠",
         "description": "终结技，根据连击点数造成伤害。"
       },
       "backstab": {
-        "name": "背刺",
+        "name": "卑劣突刺",
         "description": "背刺目标，造成 150% 武器伤害加 {damage}。必须位于目标背后。需要匕首。奖励 1 个连击点。"
       },
       "gouge": {
-        "name": "凿击",
+        "name": "戳眼",
         "description": "攻击目标，使其瘫痪 4 秒。任何伤害都会打破效果。奖励 1 个连击点。"
       },
       "evasion": {
-        "name": "闪避",
+        "name": "鬼步",
         "description": "使你的躲闪几率提高 50%，持续 15 秒。"
       },
       "slice_and_dice": {
-        "name": "切割",
+        "name": "割喉节奏",
         "description": "终结技，使近战攻击速度提高 30%。每个连击点都会延长持续时间。"
       },
       "sprint": {
-        "name": "疾跑",
+        "name": "疾足",
         "description": "使你的移动速度提高 70%，持续 15 秒。"
       },
       "kidney_shot": {
-        "name": "肾击",
+        "name": "下作一击",
         "description": "终结技，使目标昏迷。每个连击点使持续时间延长 1 秒。"
       },
       "ambush": {
-        "name": "伏击",
+        "name": "潜伏突袭",
         "description": "伏击目标，造成 250% 武器伤害加 {damage}。必须处于潜行并位于目标背后。需要匕首。奖励 1 个连击点。"
       },
       "stealth": {
-        "name": "潜行",
-        "description": "将你隐藏在阴影中：敌人几乎无法察觉你，但你的移动速度降低 50%。攻击或受到伤害会打破潜行。再次施放可现身。"
+        "name": "暮帷",
+        "description": "将你隐藏在阴影中：敌人几乎无法察觉你，但你的移动速度降低 50%。攻击或受到伤害会打破暮帷。再次施放可现身。"
       },
       "adrenaline_rush": {
-        "name": "冲动",
+        "name": "血脉疾涌",
         "description": "热血沸腾，立即恢复 60 点能量。"
       },
       "garrote": {
-        "name": "锁喉",
+        "name": "绞喉线",
         "description": "勒住敌人的喉咙，立即造成伤害，并使其流血，在 18 秒内受到 {damage} 点伤害。必须处于潜行状态。奖励 1 个连击点。"
       },
       "cheap_shot": {
-        "name": "偷袭",
+        "name": "击腹拳",
         "description": "攻击目标，使其昏迷 4 秒。必须处于潜行状态。奖励 2 个连击点。"
       },
       "sap": {
@@ -4735,135 +4740,135 @@ export const zh_CN: EnTranslations = {
         "description": "使目标无法行动，持续 8 秒。必须处于潜行状态且不在战斗中。任何伤害都会打破效果。"
       },
       "crippling_poison": {
-        "name": "致残毒药",
-        "description": "以致残毒药攻击目标，造成 {damage} 点自然伤害，并使其移动速度降低 50%，持续 12 秒。"
+        "name": "沉铅毒液",
+        "description": "以沉铅毒液攻击目标，造成 {damage} 点自然伤害，并使其移动速度降低 50%，持续 12 秒。"
       },
       "expose_armor": {
-        "name": "破甲",
+        "name": "护甲突破",
         "description": "终结技，使目标护甲值降低。消耗的连击点越多，削减得越深。"
       },
       "rupture": {
-        "name": "割裂",
+        "name": "血流不止",
         "description": "终结技，撕裂目标，使其流血，在 16 秒内受到 {damage} 点伤害。"
       },
       "vanish": {
-        "name": "消失",
-        "description": "从视野中消失，即使在战斗中也能进入潜行状态。隐身时你的移动速度降低 50%。持续最多 10 秒。"
+        "name": "烟遁",
+        "description": "从视野中消失，即使在战斗中也能进入暮帷状态。隐身时你的移动速度降低 50%。持续最多 10 秒。"
       },
       "instant_poison": {
-        "name": "速效毒药",
+        "name": "蝰蛇之咬",
         "description": "为你的武器淬毒，持续 30 分钟，使你的每次近战攻击额外造成 8 点自然伤害。"
       },
       "deadly_poison": {
-        "name": "致命毒药",
+        "name": "溃烂毒液",
         "description": "为你的武器淬毒，持续 30 分钟，使你的每次近战攻击额外造成 14 点自然伤害。"
       },
       "blind": {
-        "name": "致盲",
+        "name": "扬尘",
         "description": "使目标失明，导致其神志不清地四处游荡，持续 8 秒。任何伤害都会打破效果。"
       },
       "seal_of_righteousness": {
-        "name": "正义圣印",
-        "description": "使你充满神圣能量，持续 30 秒，使每次近战挥击造成 4 点额外神圣伤害。可用审判释放。"
+        "name": "誓约烙印",
+        "description": "使你充满神圣能量，持续 30 秒，使每次近战挥击造成 4 点额外神圣伤害。可用裁决释放。"
       },
       "holy_light": {
-        "name": "圣光术",
+        "name": "愈疗之光",
         "description": "为一个友方目标恢复 {damage} 点生命值。"
       },
       "devotion_aura": {
-        "name": "虔诚光环",
+        "name": "坚定光环",
         "description": "使你的护甲提高 40，持续 30 分钟。"
       },
       "judgement": {
-        "name": "审判",
-        "description": "对敌人释放你当前的圣印，消耗它并造成对应的审判伤害。"
+        "name": "裁决",
+        "description": "对敌人释放你当前的圣印，将其消耗以造成它所储存的神圣伤害。"
       },
       "blessing_of_might": {
-        "name": "力量祝福",
+        "name": "钢铁誓约",
         "description": "为一个友方目标施加祝福，使攻击强度提高 15，持续 5 分钟。"
       },
       "divine_protection": {
-        "name": "圣佑术",
-        "description": "神圣护盾吸收 50 点伤害，持续 10 秒。"
+        "name": "信仰守护",
+        "description": "一道守护结界吸收 50 点伤害，持续 10 秒。"
       },
       "hammer_of_justice": {
-        "name": "制裁之锤",
+        "name": "碎裂法槌",
         "description": "使目标昏迷 3 秒。"
       },
       "lay_on_hands": {
-        "name": "圣疗术",
+        "name": "临终圣礼",
         "description": "巨大的治疗涌流：恢复 250 点生命值。10 分钟冷却时间。"
       },
       "flash_of_light": {
-        "name": "圣光闪现",
-        "description": "快速而高效的圣光，为一个友方目标恢复 {damage} 点生命值。"
+        "name": "圣光愈合",
+        "description": "一道快速而高效的圣光爆发，为一个友方目标恢复 {damage} 点生命值。"
       },
       "exorcism": {
-        "name": "驱邪术",
+        "name": "驱逐仪式",
         "description": "以神圣怒火驱逐邪恶，造成 {damage} 点神圣伤害。"
       },
       "consecration": {
-        "name": "奉献",
+        "name": "神圣领域",
         "description": "奉献你脚下的土地，灼烧附近敌人，造成 {damage} 点神圣伤害。"
       },
       "righteous_fury": {
-        "name": "正义之怒",
+        "name": "炽燃誓约",
         "description": "使你的神圣伤害产生的威胁值提高 60%，持续 30 分钟。防护圣骑士的核心技能。"
       },
       "retribution_aura": {
-        "name": "惩戒光环",
+        "name": "报偿光环",
         "description": "以神圣能量环绕自身，持续 30 分钟，对任何近战攻击你的敌人造成 5 点神圣伤害。"
       },
       "tame_beast": {
-        "name": "驯服野兽",
+        "name": "野性羁绊",
         "description": "开始驯服一只野兽作为你的伙伴。它必须不高于你的等级，且不能是精英。你的宠物会跟随你、攻击敌人，并保持自己的威胁值。同一时间只能拥有一只宠物。"
       },
       "dismiss_pet": {
-        "name": "解散宠物",
+        "name": "遣散伙伴",
         "description": "将你的宠物放归野外。"
       },
       "raptor_strike": {
-        "name": "猛禽一击",
+        "name": "剖膛一击",
         "description": "一次强力近战攻击，使伤害提高 5。在你的下一次挥击时触发。"
       },
       "aspect_of_the_hawk": {
-        "name": "雄鹰守护",
-        "description": "获得雄鹰守护，使攻击强度提高 20，持续 30 分钟。"
+        "name": "鹞鹰之姿",
+        "description": "化为鹞鹰之姿，使攻击强度提高 20，持续 30 分钟。"
       },
       "serpent_sting": {
-        "name": "毒蛇钉刺",
+        "name": "毒液倒刺",
         "description": "钉刺目标，在 15 秒内造成 {damage} 点自然伤害。"
       },
       "arcane_shot": {
-        "name": "奥术射击",
+        "name": "凶邪射击",
         "description": "瞬发射击，造成 {damage} 点奥术伤害。"
       },
       "concussive_shot": {
-        "name": "震荡射击",
+        "name": "震颤射击",
         "description": "使目标眩晕迟缓，移动速度降低 50%，持续 4 秒。"
       },
       "mongoose_bite": {
-        "name": "猫鼬撕咬",
+        "name": "反噬獠牙",
         "description": "在目标躲闪后反击，造成武器伤害加 12。无法被躲闪。"
       },
       "wing_clip": {
-        "name": "摔绊",
+        "name": "束缚斩",
         "description": "造成伤口，使敌人移动速度降低 40%，持续 10 秒。"
       },
       "aspect_of_the_monkey": {
-        "name": "猿猴守护",
-        "description": "获得猿猴守护，使躲闪几率提高 8%，持续 30 分钟。"
+        "name": "松貂之姿",
+        "description": "化为松貂之姿，使躲闪几率提高 8%，持续 30 分钟。"
       },
       "aspect_of_the_cheetah": {
-        "name": "猎豹守护",
-        "description": "获得猎豹守护，使移动速度提高 30%，持续 30 分钟。"
+        "name": "骏马之姿",
+        "description": "化为骏马之姿，使移动速度提高 30%，持续 30 分钟。"
       },
       "aimed_shot": {
-        "name": "瞄准射击",
-        "description": "一次精心瞄准的射击，造成 {damage} 点伤害。"
+        "name": "引弓长射",
+        "description": "一次精心引弓的射击，造成 {damage} 点伤害。"
       },
       "rapid_fire": {
-        "name": "急速射击",
+        "name": "狂热引弓",
         "description": "使你的攻击速度提高 40%，持续 15 秒。"
       },
       "smite": {
@@ -4871,164 +4876,164 @@ export const zh_CN: EnTranslations = {
         "description": "惩击敌人，造成 {damage} 点神圣伤害。"
       },
       "lesser_heal": {
-        "name": "次级治疗术",
+        "name": "低语祈祷",
         "description": "为一个友方目标恢复 {damage} 点生命值。"
       },
       "power_word_fortitude": {
-        "name": "真言术：韧",
+        "name": "坚毅连祷",
         "description": "使目标的耐力提高 3，持续 30 分钟。"
       },
       "shadow_word_pain": {
-        "name": "暗言术：痛",
+        "name": "腐朽挽歌",
         "description": "黑暗之语在 18 秒内造成 {damage} 点暗影伤害。"
       },
       "power_word_shield": {
-        "name": "真言术：盾",
+        "name": "守护圣咏",
         "description": "保护目标，吸收 48 点伤害，持续 30 秒。"
       },
       "renew": {
-        "name": "恢复",
+        "name": "萦绕恩泽",
         "description": "在 15 秒内为目标恢复 {damage} 点生命值。"
       },
       "mind_blast": {
-        "name": "心灵震爆",
+        "name": "碎心术",
         "description": "震击目标的心灵，造成 {damage} 点暗影伤害。"
       },
       "heal": {
-        "name": "治疗术",
+        "name": "庄严祈祷",
         "description": "缓慢但强大的祈祷，为一个友方目标恢复 {damage} 点生命值。"
       },
       "mind_flay": {
-        "name": "精神鞭笞",
+        "name": "悲苦连祷",
         "description": "用暗影能量攻击目标的心灵，持续 3 秒，每秒造成 {damage} 点伤害。"
       },
       "flash_heal": {
-        "name": "快速治疗",
+        "name": "紧急祈祷",
         "description": "快速祈祷，为一个友方目标恢复 {damage} 点生命值。"
       },
       "lightning_bolt": {
-        "name": "闪电箭",
+        "name": "电弧箭",
         "description": "投掷一道闪电，造成 {damage} 点自然伤害。"
       },
       "rockbiter_weapon": {
-        "name": "石化武器",
+        "name": "缚石武器",
         "description": "以大地之怒灌注你的武器：每次挥击额外造成 5 点伤害，持续 5 分钟。"
       },
       "healing_wave": {
-        "name": "治疗波",
+        "name": "治愈之水",
         "description": "为一个友方目标恢复 {damage} 点生命值。"
       },
       "earth_shock": {
-        "name": "地震术",
+        "name": "大地震击",
         "description": "立即以震荡之力冲击目标，造成 {damage} 点自然伤害。"
       },
       "lightning_shield": {
-        "name": "闪电之盾",
+        "name": "雷霆护罩",
         "description": "以爆裂闪电环绕自身：近战攻击者会受到 13 点自然伤害。"
       },
       "flame_shock": {
-        "name": "烈焰震击",
+        "name": "余烬震击",
         "description": "用火焰灼烧目标，造成 25 点伤害，并在 12 秒内额外造成 {damage}。"
       },
       "flametongue_weapon": {
-        "name": "火舌武器",
+        "name": "焰烙武器",
         "description": "用元素之火灌注你的武器：每次挥击额外造成 8 点火焰伤害，持续 5 分钟。"
       },
       "frost_shock": {
-        "name": "冰霜震击",
+        "name": "凛霜震击",
         "description": "立即以冰霜冲击目标，造成 {damage} 点冰霜伤害，并使其移动速度降低 50%，持续 8 秒。"
       },
       "frostbrand_weapon": {
-        "name": "霜刃武器",
+        "name": "缚霜武器",
         "description": "为你的武器附上刺骨寒霜：每次挥击额外造成 8 点伤害，持续 5 分钟。"
       },
       "ghost_wolf": {
-        "name": "幽魂之狼",
-        "description": "变成幽魂之狼，使移动速度提高 40%，持续 10 分钟。"
+        "name": "影狼",
+        "description": "化身为影狼，使移动速度提高 40%，持续 10 分钟。"
       },
       "stormstrike": {
-        "name": "风暴打击",
+        "name": "先祖打击",
         "description": "将风暴导入武器，立即攻击并造成武器伤害加 {damage}。"
       },
       "shadow_bolt": {
-        "name": "暗影箭",
+        "name": "幽暗箭",
         "description": "向敌人发射暗影箭，造成 {damage} 点暗影伤害。"
       },
       "demon_skin": {
-        "name": "恶魔皮肤",
+        "name": "邪魔硬皮",
         "description": "恶魔皮肤使你的护甲提高 30，持续 30 分钟。"
       },
       "immolate": {
-        "name": "献祭",
+        "name": "燃烧契约",
         "description": "灼烧敌人，造成 11 点火焰伤害，并在 15 秒内额外造成 {damage}。"
       },
       "corruption": {
-        "name": "腐蚀术",
+        "name": "黑腐术",
         "description": "腐蚀目标，在 18 秒内造成 {damage} 点暗影伤害。"
       },
       "life_tap": {
-        "name": "生命分流",
+        "name": "苛酷交易",
         "description": "将 30 点生命值转化为 30 点法力值。"
       },
       "curse_of_agony": {
-        "name": "痛苦诅咒",
+        "name": "苦楚妖术",
         "description": "以痛苦诅咒目标：在 24 秒内造成 {damage} 点暗影伤害。"
       },
       "drain_life": {
-        "name": "吸取生命",
+        "name": "吞噬",
         "description": "吸取目标的生命，持续 5 秒，每秒向你转移 {damage} 点生命值。"
       },
       "fear": {
-        "name": "恐惧",
+        "name": "惊惧",
         "description": "使敌人陷入恐惧并畏缩，最多持续 8 秒。任何伤害都会打破效果。"
       },
       "searing_pain": {
-        "name": "灼热之痛",
+        "name": "焦灼",
         "description": "以痛苦烈焰灼烧敌人，造成 {damage} 点火焰伤害。施法迅速。"
       },
       "shadowburn": {
-        "name": "暗影灼烧",
-        "description": "立即以暗影烈焰轰击目标，造成 {damage} 点暗影伤害。"
+        "name": "暮火",
+        "description": "立即以灼热暗影轰击目标，造成 {damage} 点暗影伤害。"
       },
       "wrath": {
-        "name": "愤怒",
+        "name": "野性弹",
         "description": "投掷一道自然能量箭，造成 {damage} 点自然伤害。"
       },
       "healing_touch": {
-        "name": "治疗之触",
+        "name": "野性愈合",
         "description": "为一个友方目标恢复 {damage} 点生命值。"
       },
       "mark_of_the_wild": {
-        "name": "野性印记",
-        "description": "为一个友方目标施加野性印记，使护甲提高 25，持续 30 分钟。"
+        "name": "野性守护",
+        "description": "为一个友方目标施加野性守护，使护甲提高 25，持续 30 分钟。"
       },
       "moonfire": {
-        "name": "月火术",
+        "name": "月光风暴",
         "description": "以月火灼烧敌人，造成 {damage} 点奥术伤害，并附加持续伤害。"
       },
       "rejuvenation": {
-        "name": "回春术",
+        "name": "野性绽放",
         "description": "在 12 秒内为目标恢复 {damage} 点生命值。"
       },
       "thorns": {
-        "name": "荆棘术",
+        "name": "荆棘守护",
         "description": "目标身上长出荆棘：近战攻击者受到 3 点自然伤害。"
       },
       "entangling_roots": {
-        "name": "纠缠根须",
+        "name": "缠握根须",
         "description": "将目标缠绕在原地，最多持续 12 秒。"
       },
       "bear_form": {
-        "name": "熊形态",
+        "name": "巨熊形态",
         "description": "变形为熊：护甲 +65%，攻击强度 +15，你的攻击会产生怒气并额外产生 30% 威胁值。再次施放可返回施法者形态。"
       },
       "maul": {
-        "name": "槌击",
-        "description": "一次猛击攻击，使近战伤害提高 {damage}，并产生大量威胁值。在你的下一次挥击时触发。仅限熊形态。"
+        "name": "碎骨击",
+        "description": "一次猛击攻击，使近战伤害提高 {damage}，并产生大量威胁值。在你的下一次挥击时触发。仅限巨熊形态。"
       },
       "growl": {
-        "name": "低吼",
-        "description": "对目标低吼：你的威胁值提高到其最仇恨敌人的水平，并强迫其攻击你 3 秒。仅限熊形态。"
+        "name": "威吓",
+        "description": "对目标低吼：你的威胁值提高到其最仇恨敌人的水平，并强迫其攻击你 3 秒。仅限巨熊形态。"
       },
       "cat_form": {
         "name": "狼形态",
@@ -5039,43 +5044,43 @@ export const zh_CN: EnTranslations = {
         "description": "用利爪攻击敌人，造成武器伤害加 {damage}。奖励 1 个连击点。仅限狼形态。"
       },
       "ferocious_bite": {
-        "name": "凶猛撕咬",
+        "name": "血噬",
         "description": "终结技，根据连击点数造成伤害。仅限狼形态。"
       },
       "swipe": {
-        "name": "横扫",
-        "description": "横扫附近敌人，造成 {damage} 点伤害。造成额外威胁值。仅限熊形态。"
+        "name": "横扫利爪",
+        "description": "横扫附近敌人，造成 {damage} 点伤害。造成额外威胁值。仅限巨熊形态。"
       },
       "regrowth": {
-        "name": "愈合",
+        "name": "二度绽放",
         "description": "为一个友方目标恢复 {damage} 点生命值，并在 21 秒内额外恢复一定生命值。"
       },
       "barkskin": {
-        "name": "树皮术",
+        "name": "橡树皮",
         "description": "你的皮肤硬化如树皮，使护甲提高 150，持续 15 秒。"
       },
       "starfire": {
-        "name": "星火术",
+        "name": "天陨",
         "description": "召下一道星辰之火，造成 {damage} 点奥术伤害。"
       },
       "travel_form": {
-        "name": "旅行形态",
-        "description": "化为迅捷的旅行形态，使移动速度提高 40%。无法在战斗中使用。"
+        "name": "迅捷形态",
+        "description": "立刻化为轻捷的迅捷形态，使移动速度提高 40%。变形状态下你无法使用其他技能，但可以在战斗中或脱离战斗时变形，非常适合逃离。"
       },
       "enrage": {
-        "name": "激怒",
-        "description": "立即生成 20 点怒气。仅限熊形态。"
+        "name": "煽怒",
+        "description": "立即生成 20 点怒气。仅限巨熊形态。"
       },
       "bash": {
-        "name": "重击",
-        "description": "昏迷目标 2 秒。仅限熊形态。"
+        "name": "震荡击",
+        "description": "昏迷目标 2 秒。仅限巨熊形态。"
       },
       "faerie_fire": {
-        "name": "精灵之火",
+        "name": "巫光",
         "description": "使目标的护甲降低 35，持续 40 秒。"
       },
       "hibernate": {
-        "name": "休眠",
+        "name": "沉眠",
         "description": "迫使目标陷入深度睡眠，最多持续 8 秒。任何伤害都会将其唤醒。"
       },
       "dash": {
@@ -5083,15 +5088,15 @@ export const zh_CN: EnTranslations = {
         "description": "向前冲刺，使移动速度提高 50%，持续 15 秒。仅限狼形态。"
       },
       "pounce": {
-        "name": "扑击",
+        "name": "匿袭",
         "description": "一个潜行开场技，昏迷目标 2 秒。奖励 1 个连击点。仅限狼形态。"
       },
       "insect_swarm": {
-        "name": "虫群",
+        "name": "蜇刺虫群",
         "description": "敌人被虫群侵袭，在 12 秒内受到 {damage} 点自然伤害。"
       },
       "tigers_fury": {
-        "name": "猛虎之怒",
+        "name": "狼血",
         "description": "使攻击强度提高 40，持续 6 秒。仅限狼形态。"
       },
       "rip": {
@@ -5099,67 +5104,67 @@ export const zh_CN: EnTranslations = {
         "description": "终结技，在 12 秒内造成流血伤害。消耗连击点。仅限狼形态。"
       },
       "mortal_strike": {
-        "name": "致死打击",
+        "name": "致残打击",
         "description": "凶狠打击，造成武器伤害外加 {damage} 点伤害。（武器专精标志技能）"
       },
       "bloodthirst": {
-        "name": "嗜血",
+        "name": "放血",
         "description": "在鲜血狂怒中立即攻击，造成 {damage} 点伤害。（狂怒专精标志技能）"
       },
       "shield_slam": {
-        "name": "盾牌猛击",
+        "name": "碎盾击",
         "description": "用盾牌猛击目标，造成 {damage} 点伤害并产生巨量威胁。（防护专精标志技能）"
       },
       "whirlwind": {
-        "name": "旋风斩",
+        "name": "利刃回旋",
         "description": "以致命弧线旋转，打击附近所有敌人，造成 {damage} 点伤害。（狂怒天赋）"
       },
       "berserker_rage": {
-        "name": "狂暴之怒",
-        "description": "进入狂暴之怒，产生 20 点怒气。（战士天赋）"
+        "name": "沸腾之怒",
+        "description": "进入沸腾之怒，产生 20 点怒气。（战士天赋）"
       },
       "summon_imp": {
-        "name": "召唤小鬼",
-        "description": "召唤一只听从术士命令的小鬼。小鬼会从远处向你的敌人投掷火焰箭。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+        "name": "召唤烬裔",
+        "description": "召唤一只听从术士命令的烬裔。烬裔会从远处向你的敌人投掷灰烬箭。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "summon_voidwalker": {
-        "name": "召唤虚空行者",
-        "description": "召唤一只听从术士命令的虚空行者。虚空行者是一种坚韧的恶魔，会嘲讽你的敌人并承受打击。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+        "name": "召唤幽影",
+        "description": "召唤一只听从术士命令的幽影。幽影是一种坚韧的恶魔，会嘲讽你的敌人并承受打击。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "summon_succubus": {
-        "name": "召唤魅魔",
-        "description": "召唤一只听从术士命令的魅魔。魅魔是一种脆弱的恶魔，会快速出手并在近战中造成重创。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+        "name": "召唤暮裔",
+        "description": "召唤一只听从术士命令的暮裔。暮裔是一种脆弱的恶魔，会快速出手并在近战中造成重创。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "summon_felhunter": {
-        "name": "召唤地狱猎犬",
-        "description": "召唤一只听从术士命令的地狱猎犬。地狱猎犬会用暗影撕咬从远处骚扰敌人，擅长猎杀施法者。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+        "name": "召唤噬法猎犬",
+        "description": "召唤一只听从术士命令的噬法猎犬。噬法猎犬会用幽暗撕咬从远处骚扰敌人，擅长猎杀施法者。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "summon_felguard": {
-        "name": "召唤恶魔卫士",
-        "description": "召唤一只听从术士命令的恶魔卫士。恶魔卫士是一种坚韧的近战恶魔，会冲入战斗并独当一面。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+        "name": "召唤战魔",
+        "description": "召唤一只听从术士命令的战魔。战魔是一种坚韧的近战恶魔，会冲入战斗并独当一面。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "summon_infernal": {
-        "name": "召唤地狱火",
-        "description": "将一只地狱火束缚于你的意志之下——这是一头庞大的破坏巨兽，拥有毁灭性的近战能力，以及所有恶魔中最深厚的生命与护甲。漫长的冷却时间限制了它的原始威力。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+        "name": "召唤焚炎巨像",
+        "description": "将一只焚炎巨像束缚于你的意志之下，这是一头庞大的破坏巨兽，拥有毁灭性的近战能力，以及所有恶魔中最深厚的生命与护甲。漫长的冷却时间限制了它的原始威力。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "summon_doomguard": {
-        "name": "召唤末日守卫",
-        "description": "将一只末日守卫束缚于你的意志之下——这是一种精英恶魔，会从远处倾泻沉重的暗影伤害。漫长的冷却时间限制了它的毁灭性威力。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
+        "name": "召唤亡魂裔",
+        "description": "将一只亡魂裔束缚于你的意志之下，这是一种精英恶魔，会从远处倾泻沉重的暗影伤害。漫长的冷却时间限制了它的毁灭性威力。召唤新的恶魔会驱散你当前的恶魔。你同时只能拥有一只恶魔。"
       },
       "bear_charge": {
-        "name": "野熊冲锋",
-        "description": "冲向一名敌人，生成9点怒气并将其昏迷1秒。射程8-25码。仅限熊形态使用。"
+        "name": "巨熊冲锋",
+        "description": "冲向一名敌人，生成9点怒气并将其昏迷1秒。射程8-25码。仅限巨熊形态使用。"
       },
       "demoralizing_roar": {
-        "name": "挫志怒吼",
-        "description": "震慑附近的敌人，使其攻击强度降低20点，持续20秒。仅限熊形态使用。"
+        "name": "怯懦咆哮",
+        "description": "震慑附近的敌人，使其攻击强度降低 20 点，持续 20 秒。仅限巨熊形态使用。"
       },
       "prowl": {
         "name": "潜行",
         "description": "在狼形态下进入潜行状态，移动速度降低 50%。无法在战斗中使用。"
       },
       "rake": {
-        "name": "撕抓",
+        "name": "剐削",
         "description": "一记潜行起手技，以武器伤害外加{damage}撕抓敌人，并造成持续9秒的流血伤害。获得1点连击点数。仅限狼形态使用。"
       },
       "revive_pet": {
@@ -5169,10 +5174,10 @@ export const zh_CN: EnTranslations = {
     },
     "items": {
       "worn_sword": {
-        "name": "破旧短剑"
+        "name": "斑驳短剑"
       },
       "gnarled_staff": {
-        "name": "多节法杖"
+        "name": "沼橡法杖"
       },
       "rusty_dagger": {
         "name": "生锈匕首"
@@ -5184,13 +5189,13 @@ export const zh_CN: EnTranslations = {
         "name": "生锈手斧"
       },
       "recruit_tunic": {
-        "name": "新兵外套"
+        "name": "征募兵外套"
       },
       "apprentice_robe": {
-        "name": "学徒长袍"
+        "name": "褴褛长袍"
       },
       "footpad_jerkin": {
-        "name": "窃贼皮甲"
+        "name": "扒手皮甲"
       },
       "redbrook_blade": {
         "name": "赤溪民兵之刃"
@@ -5220,22 +5225,22 @@ export const zh_CN: EnTranslations = {
         "name": "灰颚毛皮护腿"
       },
       "baked_bread": {
-        "name": "新烤面包"
+        "name": "农家面包"
       },
       "spring_water": {
-        "name": "清爽泉水"
+        "name": "冰凉井水"
       },
       "roasted_boar": {
-        "name": "烤野猪肉"
+        "name": "炙烤野猪后腿"
       },
       "conjured_water": {
-        "name": "魔法泉水"
+        "name": "魔法雨水"
       },
       "conjured_water2": {
-        "name": "魔法矿泉水"
+        "name": "魔法井水"
       },
       "conjured_water3": {
-        "name": "魔法气泡水"
+        "name": "魔法清水"
       },
       "eastbrook_arming_sword": {
         "name": "东溪武装剑"
@@ -5295,7 +5300,7 @@ export const zh_CN: EnTranslations = {
         "name": "幽魂精华"
       },
       "webwood_silk": {
-        "name": "网木丝腺"
+        "name": "墨网丝腺"
       },
       "supply_crate": {
         "name": "被盗补给箱"
@@ -5316,13 +5321,13 @@ export const zh_CN: EnTranslations = {
         "name": "红色面巾"
       },
       "tough_jerky": {
-        "name": "硬肉干"
+        "name": "盐渍肉干"
       },
       "mudfin_scale": {
-        "name": "黏滑鱼人鳞片"
+        "name": "黏滑泥鳍鳞片"
       },
       "tallow_candle": {
-        "name": "油脂蜡烛"
+        "name": "油腻兽脂块"
       },
       "spider_leg": {
         "name": "抽搐的蜘蛛腿"
@@ -5388,7 +5393,7 @@ export const zh_CN: EnTranslations = {
         "name": "沼行者长靴"
       },
       "mistcallers_edge": {
-        "name": "唤雾者之锋"
+        "name": "缚雾者之锋"
       },
       "vaels_mist_staff": {
         "name": "维尔的雾杖"
@@ -5532,7 +5537,7 @@ export const zh_CN: EnTranslations = {
         "name": "维尔卡法杖"
       },
       "shadowmeld_tunic": {
-        "name": "融影外套"
+        "name": "夜帷外衣"
       },
       "gravewyrm_scale_hauberk": {
         "name": "墓龙鳞锁甲"
@@ -5601,13 +5606,13 @@ export const zh_CN: EnTranslations = {
         "name": "裂开的龙鳞"
       },
       "conjured_bread": {
-        "name": "魔法面包"
+        "name": "魔法燕麦饼"
       },
       "conjured_bread2": {
-        "name": "魔法黑麦面包"
+        "name": "魔法黑面包"
       },
       "conjured_bread3": {
-        "name": "魔法甜面包"
+        "name": "魔法蜜糕"
       },
       "roadwardens_helm": {
         "name": "路卫头盔"
@@ -5712,7 +5717,7 @@ export const zh_CN: EnTranslations = {
         "name": "墓织袋"
       },
       "mistcallers_duffel": {
-        "name": "唤雾者行囊"
+        "name": "缚雾者行囊"
       },
       "copper_mining_pick": {
         "name": "铜制采矿镐"
@@ -5742,7 +5747,7 @@ export const zh_CN: EnTranslations = {
         "name": "银叶镰刀"
       },
       "bristleback_maul": {
-        "name": "硬鬃重槌"
+        "name": "加洛格拉斯之锤"
       },
       "broodmother_silk_robe": {
         "name": "蛛母丝袍"
@@ -5751,16 +5756,16 @@ export const zh_CN: EnTranslations = {
         "name": "墓骨护胫"
       },
       "cryptstalker_jerkin": {
-        "name": "穴伏者皮甲"
+        "name": "墓伏者皮甲"
       },
       "deathlord_legguards": {
-        "name": "死亡领主腿甲"
+        "name": "冢主腿甲"
       },
       "deathlord_sabatons": {
-        "name": "死亡领主护胫"
+        "name": "冢主护胫"
       },
       "deathlord_warplate": {
-        "name": "死亡领主战甲"
+        "name": "冢主战甲"
       },
       "drogmar_warboots": {
         "name": "德罗格玛的战靴"
@@ -5838,13 +5843,13 @@ export const zh_CN: EnTranslations = {
         "name": "莫格的践踏靴"
       },
       "necromancers_legwraps": {
-        "name": "死灵法师腿缠"
+        "name": "哀织腿缠"
       },
       "necromancers_soulsteps": {
-        "name": "死灵法师魂步"
+        "name": "哀织魂步"
       },
       "necromancers_starshroud": {
-        "name": "死灵法师星幕"
+        "name": "哀织星幕"
       },
       "nhalias_dirgeblade": {
         "name": "娜莉娅的挽歌刃"
@@ -5880,13 +5885,13 @@ export const zh_CN: EnTranslations = {
         "name": "龙教魂步"
       },
       "wyrmshadow_harness": {
-        "name": "龙影挽具"
+        "name": "夜牙挽具"
       },
       "wyrmshadow_legguards": {
-        "name": "龙影腿甲"
+        "name": "夜牙腿甲"
       },
       "wyrmshadow_treads": {
-        "name": "龙影足垫"
+        "name": "夜牙足垫"
       },
       "glimmerfin_koi": {
         "name": "微光鳍锦鲤"
@@ -5904,7 +5909,7 @@ export const zh_CN: EnTranslations = {
         "name": "生河鲈鱼"
       },
       "raw_stonescale_carp": {
-        "name": "生石鳞鲤鱼"
+        "name": "生板鳍鲤鱼"
       },
       "soggy_boot": {
         "name": "湿透的靴子"
@@ -6015,13 +6020,13 @@ export const zh_CN: EnTranslations = {
         "name": "月鳞军刀"
       },
       "moonshroud_breastplate": {
-        "name": "月帷胸甲"
+        "name": "月殇胸甲"
       },
       "moonshroud_robe": {
-        "name": "月帷长袍"
+        "name": "月殇长袍"
       },
       "moonshroud_tunic": {
-        "name": "月帷外衣"
+        "name": "月殇外衣"
       },
       "pale_pearl": {
         "name": "苍白之珠"
@@ -6057,7 +6062,7 @@ export const zh_CN: EnTranslations = {
         "name": "墓骨肩甲"
       },
       "deathlords_dread_visage": {
-        "name": "死亡领主恐惧面甲"
+        "name": "冢主恐惧面甲"
       },
       "gravewyrm_gauntlets": {
         "name": "墓龙护手"
@@ -6072,10 +6077,10 @@ export const zh_CN: EnTranslations = {
         "name": "雾幕握套"
       },
       "necromancers_soulspire_mantle": {
-        "name": "死灵法师魂尖披肩"
+        "name": "哀织魂尖披肩"
       },
       "wyrmshadow_talongrips": {
-        "name": "龙影利爪握套"
+        "name": "夜牙利爪握套"
       },
       "reliquary_plate_chest": {
         "name": "圣物库守卫锁甲"
@@ -6210,19 +6215,19 @@ export const zh_CN: EnTranslations = {
         "name": "不朽王冠之心木"
       },
       "kingsbane_last_oath": {
-        "name": "弑王者，荆峰的最后誓言"
+        "name": "弑座者，荆峰的最后誓言"
       },
       "crownforged_dreadhelm": {
-        "name": "铸冠恐惧头盔"
+        "name": "骨铸恐惧头盔"
       },
       "crownforged_warspaulders": {
-        "name": "铸冠战肩甲"
+        "name": "骨铸战肩甲"
       },
       "nighttalon_crown": {
-        "name": "夜爪之冠"
+        "name": "恐牙之冠"
       },
       "nighttalon_shoulderguards": {
-        "name": "夜爪护肩"
+        "name": "恐牙护肩"
       },
       "soulflame_cowl": {
         "name": "魂焰兜帽"
@@ -6231,10 +6236,10 @@ export const zh_CN: EnTranslations = {
         "name": "魂焰披肩"
       },
       "stormcallers_crown": {
-        "name": "唤雷者之冠"
+        "name": "唤风之冠"
       },
       "stormcallers_spaulders": {
-        "name": "唤雷者肩甲"
+        "name": "唤风肩甲"
       },
       "unknown_alien_weaponry": {
         "name": "未知异星武器"
@@ -6323,13 +6328,13 @@ export const zh_CN: EnTranslations = {
         "name": "野猪"
       },
       "webwood_spider": {
-        "name": "网木潜伏者"
+        "name": "墨网潜伏者"
       },
       "mudfin_murloc": {
         "name": "泥鳍潜伏者"
       },
       "tunnel_rat": {
-        "name": "地道鼠掘地者"
+        "name": "深岩挖掘者"
       },
       "vale_bandit": {
         "name": "谷地强盗"
@@ -6431,13 +6436,13 @@ export const zh_CN: EnTranslations = {
         "name": "骑士指挥官奥伦"
       },
       "vael_the_mistcaller": {
-        "name": "唤雾者维尔"
+        "name": "缚雾者维尔"
       },
       "sanctum_boneguard": {
         "name": "圣所骨卫"
       },
       "sanctum_drakonid": {
-        "name": "圣所龙人"
+        "name": "圣所鳞卫"
       },
       "raised_bonewalker": {
         "name": "复生骨行者"
@@ -6572,13 +6577,13 @@ export const zh_CN: EnTranslations = {
         "name": "瓦尔卡斯骨卫"
       },
       "emberkin": {
-        "name": "小鬼"
+        "name": "烬裔"
       },
       "gloomshade": {
-        "name": "虚空行者"
+        "name": "幽影"
       },
       "duskborn": {
-        "name": "魅魔"
+        "name": "暮裔"
       },
       "grix_the_tunnelking": {
         "name": "隧道之王格里克斯"
@@ -6602,16 +6607,16 @@ export const zh_CN: EnTranslations = {
         "name": "缚魂者玛尔德雷克"
       },
       "spellhound": {
-        "name": "地狱猎犬"
+        "name": "噬法猎犬"
       },
       "warfiend": {
-        "name": "恶魔卫士"
+        "name": "战魔"
       },
       "pyre_colossus": {
-        "name": "地狱火"
+        "name": "焚炎巨像"
       },
       "wraithborn": {
-        "name": "末日守卫"
+        "name": "亡魂裔"
       },
       "choirmother_selthe": {
         "name": "唱诗母塞尔瑟"
@@ -6684,12 +6689,12 @@ export const zh_CN: EnTranslations = {
       "fisherman_brandt": {
         "name": "布兰特渔夫",
         "title": "老水手",
-        "greeting": "咕噜鱼噜... 抱歉，我听那些鱼人说话太久了。"
+        "greeting": "噗噜咕噜... 抱歉，我听那些鱼人说话太久了。"
       },
       "foreman_odell": {
         "name": "奥德尔工头",
         "title": "矿井工头",
-        "greeting": "整条矿道都挤满了那些头顶蜡烛的害虫！"
+        "greeting": "整条矿道都爬满了那些沾满泥污的害虫！"
       },
       "warden_fenwick": {
         "name": "芬威克守望者",
@@ -6799,7 +6804,7 @@ export const zh_CN: EnTranslations = {
         }
       },
       "q_boars": {
-        "title": "硬鬃皮",
+        "title": "粗鬃野猪皮",
         "text": "野猪皮能做最好的行囊，镇外草地到处都是野猪。带回5张硬鬃野猪皮。",
         "completion": "好结实的硬鬃皮！这些能卖个好价钱。",
         "objectives": {
@@ -6809,21 +6814,21 @@ export const zh_CN: EnTranslations = {
         }
       },
       "q_spiders": {
-        "title": "网木之患",
-        "text": "网木潜伏者的丝能做药敷，但它们已经太多。杀死6只，再取4枚丝腺。",
+        "title": "墨网之患",
+        "text": "东部林中的潜伏者会吐出一种丝，我制作药膏正需要它，何况它们的数量也已经太过泛滥。清剿 6 只墨网潜伏者，再从它们腹中割下 4 枚丝腺。",
         "completion": "呃，还在抽动。正合适。这是你应得的。",
         "objectives": {
           "0": {
-            "label": "击败网木潜伏者"
+            "label": "击败墨网潜伏者"
           },
           "1": {
-            "label": "网木丝腺"
+            "label": "墨网丝腺"
           }
         }
       },
       "q_murlocs": {
         "title": "湖边麻烦",
-        "text": "我在镜湖打了二十年鱼，直到那些鱼人爬出浅滩。击退8个泥鳍潜伏者，小心它们成群而来。",
+        "text": "我在镜湖打了二十年鱼，从没丢过一张网，直到那些咕咕作响的鱼人从浅滩里爬了出来。把泥鳍赶回去，杀死其中 8 只。也当心你自己：有一只泥鳍的地方，就有五只。",
         "completion": "哈！这会教它们待在自己的泥坑里。",
         "objectives": {
           "0": {
@@ -6833,11 +6838,11 @@ export const zh_CN: EnTranslations = {
       },
       "q_mine": {
         "title": "矿洞里的鼠患",
-        "text": "我们刚挖到好铜脉，地道鼠就从山坡里涌出来。放倒10个地道鼠掘地者，让矿工回去开工。",
+        "text": "我们刚挖到一条上好的铜矿脉，那些掘地的害虫就从山坡里涌了出来。矿道清理干净之前，我的工人一步也不肯踏进去。放倒 10 个深岩挖掘者。",
         "completion": "哈！回去干活吧，伙计们！这是我的谢意和酬劳。",
         "objectives": {
           "0": {
-            "label": "击败地道鼠掘地者"
+            "label": "击败深岩挖掘者"
           }
         }
       },
@@ -6893,7 +6898,7 @@ export const zh_CN: EnTranslations = {
       },
       "q_rite": {
         "title": "束缚仪式",
-        "text": "必须开启礼拜堂下的墓穴，但只有束缚仪式能让生者通过。我需要4块祝福油脂和6份幽魂精华。",
+        "text": "如果我们要阻止唤墓者，就必须解开礼拜堂下方墓穴的封印，但只有束缚仪式才能让生者通过。我需要 4 块祝福兽脂，矿井里的穴居者会成箱地囤积兽脂，还需要从不安的亡者身上取得 6 份幽魂精华。",
         "completion": "完成了。下方的路已经打开...召集最强的同伴再下去，{playerName}。",
         "objectives": {
           "0": {
@@ -6927,7 +6932,7 @@ export const zh_CN: EnTranslations = {
       "q_gravecallers_trail": {
         "title": "唤墓者的踪迹",
         "text": "莫森死了，但潜伏百年的教派不会只为一座村庄礼拜堂现身。去废墟里找他的魔典，{playerName}。",
-        "completion": "莫森写信给北方湿地的一名唤雾者。{playerName}，教派并未死去，只是在等待。",
+        "completion": "莫森曾写信给北方湿地的一名『缚雾者』。这个教派并未消亡，{playerName}，它只是一直在耐心等待。",
         "objectives": {
           "0": {
             "label": "莫森的魔典"
@@ -6956,7 +6961,7 @@ export const zh_CN: EnTranslations = {
       },
       "q_fenbridge_muster": {
         "title": "芬桥集结",
-        "text": "莫森的书信提到北方沼泽里有一位主人。{playerName}，取下芬桥门柱上的集结令，交给守望者。",
+        "text": "莫森的著述提到北方沼泽中有一位主人，一名『缚雾者』。如今守望者芬威克在芬桥吹响了集结号角，而我不相信巧合，{playerName}。沿堤道北上，从门柱上取下集结令，交给守望者。",
         "completion": "奥德里克的印记？那你能用。湿地正把我的巡逻队整支吞掉。",
         "objectives": {
           "0": {
@@ -6996,7 +7001,7 @@ export const zh_CN: EnTranslations = {
       },
       "q_deepfen": {
         "title": "深沼躁动",
-        "text": "深沼鱼人二十年都待在浅滩，如今却从湖底拖东西上来。击杀12个钳咬鱼人。",
+        "text": "深沼泥鳍二十年来一直守着它们的浅滩。如今它们却像腐尸上的苍蝇般涌向东岸，我的守卫说它们正从湖床往上拖拽着什么东西。无论是什么惊动了它们，我都要让它停下。清剿 12 只钳咬鱼人。",
         "completion": "这会把它们赶回泥里一阵子。但一定有什么让它们开始挖掘。",
         "objectives": {
           "0": {
@@ -7026,7 +7031,7 @@ export const zh_CN: EnTranslations = {
       },
       "q_deepfen_purge": {
         "title": "回到浅滩",
-        "text": "这些神像是邪教造物，鱼人正一捧一捧把湿地旧恶挖上来。回浅滩再杀14个。",
+        "text": "奥德里克说那些神像是邪教的造物，这意味着泥鳍正一捧一捧地把沼泽里古老的邪恶打捞上来。我绝不会让它冲上我的堤道。回到浅滩，彻底终结这场打捞：再杀 14 只钳咬鱼人。",
         "completion": "冷酷又彻底。如果这片湿地有天干涸，你倒适合做守望者。",
         "objectives": {
           "0": {
@@ -7133,7 +7138,7 @@ export const zh_CN: EnTranslations = {
       "q_summoners": {
         "title": "阻止召唤",
         "text": "玛伦报告说召唤师能像吹哨唤犬一样，把溺亡者从水里叫起。杀8个，带回4份密文。",
-        "completion": "每份密文都由执事沃斯副署，并递往堡垒里的唤雾者。莫森的主人，{playerName}，我们找到他了。",
+        "completion": "每一份密文都由『执事沃斯』副署，并转递给堡垒中的一名『缚雾者』。莫森的主人，{playerName}，我们找到他了。",
         "objectives": {
           "0": {
             "label": "击败唤墓者召唤师"
@@ -7155,7 +7160,7 @@ export const zh_CN: EnTranslations = {
       },
       "q_bastion_door": {
         "title": "沉没堡垒",
-        "text": "沉没堡垒就是唤雾者唱颂溺水圣歌的地方。邪教用墓石封住门，{playerName}，带回一块护符石。",
+        "text": "沉没堡垒，一座百年前沉入沼泽的骑士要塞，正是沃斯的信件所指之处，也是这名缚雾者唱颂溺水圣歌的地方。邪教用墓石封住了它的大门。{playerName}，给我带回一块护符石，我便能解开封印。",
         "completion": "结界像烂绳一样分开。门开了，门后的黑暗正在聆听。",
         "objectives": {
           "0": {
@@ -7165,7 +7170,7 @@ export const zh_CN: EnTranslations = {
       },
       "q_olen": {
         "title": "骑士指挥官的耻辱",
-        "text": "奥伦守着堡垒直到沉没，如今却被唤雾者当傀儡守门。这耻辱该结束了，{playerName}。带四名同伴下去，给他应得的安息。",
+        "text": "骑士统帅奥伦在堡垒沉没时依然坚守，宁愿溺死在自己的岗位上也不肯弃守。每一位守望者都以自豪之心铭记他的名字。如今缚雾者却把他复生为傀儡，让他守卫那扇他曾以生命捍卫的大门。这份耻辱到此为止，{playerName}。带上四名同伴下去，给予奥伦他应得的安息。",
         "completion": "他的守望终于结束。我会亲自把他的名字刻在门上。谢谢你，{playerName}。",
         "objectives": {
           "0": {
@@ -7174,12 +7179,12 @@ export const zh_CN: EnTranslations = {
         }
       },
       "q_mistcaller": {
-        "title": "唤雾者",
-        "text": "维尔在堡垒底部等待，他的声音淹死百名旅人来筑军。带四名同伴，终结他，{playerName}。",
+        "title": "缚雾者",
+        "text": "堡垒的最深处，缚雾者维尔正在等待，他是莫森的主人，也是沃斯的主人，正是这个声音溺死了上百名旅人，为自己招募起一支大军。他远非任何单枪匹马的英雄所能匹敌：带上四名同伴，一个也不能少。终结他，{playerName}，沼泽的亡者或许才能终于安息。",
         "completion": "维尔死了，雾第一次散开。但他的遗言让我血冷：{playerName}，墓龙在群峰下苏醒。",
         "objectives": {
           "0": {
-            "label": "击败唤雾者维尔"
+            "label": "击败缚雾者维尔"
           }
         }
       },
@@ -7245,8 +7250,8 @@ export const zh_CN: EnTranslations = {
       },
       "q_kobold_tunnels": {
         "title": "深岩麻烦",
-        "text": "深岩的狗头人往不该挖的深处直挖，像有东西在呼唤。它们的隧道就在我们城墙下，{playerName}。杀12个深岩掘地者。",
-        "completion": "每条竖井都笔直向下。狗头人不会自己这样挖。",
+        "text": "深岩洞穴里的掘地者挖得比任何地洞鼠该挖的都要深，笔直向下，仿佛有什么东西在召唤它们。它们的隧道一直延伸到我们的城墙之下，{playerName}。让一切坍塌：杀死十二个深岩掘地者。",
+        "completion": "每一条竖井都笔直向下，穴居者不会自己这样挖掘。我必须查阅我的典籍。",
         "objectives": {
           "0": {
             "label": "击败深岩掘地者"
@@ -7255,7 +7260,7 @@ export const zh_CN: EnTranslations = {
       },
       "q_glowing_wax": {
         "title": "奇异蜡块",
-        "text": "凯迪斯给我看了一支从掘地者身上拿来的蜡，{playerName}，发光又温热如心跳。带回6块发光蜡块。",
+        "text": "凯迪斯给我看了一块从那些掘地者身上取下的蜡块，{playerName}，它会发光，还像心跳一样温热。他想要更多用于研究，而我想把它从我的补给清单上划掉。带回六块发光的蜡块。",
         "completion": "还暖着。博学者说这光不属于任何他知道的火焰。",
         "objectives": {
           "0": {
@@ -7642,7 +7647,7 @@ export const zh_CN: EnTranslations = {
             "label": "镜湖"
           },
           "4": {
-            "label": "网木林"
+            "label": "墨网林"
           },
           "5": {
             "label": "铜矿坑"
@@ -7795,38 +7800,50 @@ export const zh_CN: EnTranslations = {
       }
     },
     "itemSets": {
+      "boundstone_vanguard": {
+        "name": "缚石先锋",
+        "bonus3": "攻击速度和施法速度提高 15%。"
+      },
       "crownforged": {
-        "name": "铸冠战装",
+        "name": "骨铸战装",
         "bonus2": "攻击强度提高 40 点。",
-        "bonus3": "力量提高 15 点，耐力提高 15 点。"
+        "bonus3": "力量提高 15 点，耐力提高 15 点，攻击速度和施法速度提高 15%。"
       },
       "deathlord": {
-        "name": "死王战甲",
+        "name": "冢主战甲",
         "bonus2": "攻击强度提高 40 点。",
         "bonus3": "力量提高 15 点，耐力提高 15 点。"
       },
+      "greyjaw_stalker": {
+        "name": "灰颚追猎者装备",
+        "bonus3": "攻击速度和施法速度提高 15%。"
+      },
       "necromancers": {
-        "name": "死灵法师法衣",
+        "name": "哀织法衣",
         "bonus2": "你不会被击退（击退抗性 100%）。",
         "bonus3": "智力提高 10 点，耐力提高 10 点。"
       },
       "nighttalon": {
-        "name": "夜爪皮甲",
+        "name": "恐牙皮甲",
         "bonus2": "攻击强度提高 40 点。",
-        "bonus3": "敏捷提高 15 点，致命一击几率提高 2%。"
+        "bonus3": "敏捷提高 15 点，致命一击几率提高 2%，攻击速度和施法速度提高 15%。"
       },
       "soulflame": {
         "name": "魂焰法衣",
         "bonus2": "你不会被击退（击退抗性 100%）。",
-        "bonus3": "智力提高 15 点，精神提高 15 点。"
+        "bonus3": "智力提高 15 点，精神提高 15 点，攻击速度和施法速度提高 15%。"
       },
       "stormcallers": {
-        "name": "唤雷者法衣",
+        "name": "唤风法衣",
         "bonus2": "你不会被击退（击退抗性 100%）。",
-        "bonus3": "智力提高 15 点，精神提高 15 点。"
+        "bonus3": "智力提高 15 点，精神提高 15 点，攻击速度和施法速度提高 15%。"
+      },
+      "vale_arcanist": {
+        "name": "谷地秘法师法衣",
+        "bonus3": "攻击速度和施法速度提高 15%。"
       },
       "wyrmshadow": {
-        "name": "龙影外衣",
+        "name": "夜牙法衣",
         "bonus2": "攻击强度提高 40 点。",
         "bonus3": "敏捷提高 15 点，致命一击几率提高 2%。"
       }

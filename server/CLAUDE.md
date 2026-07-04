@@ -17,7 +17,6 @@ Postgres and serves the built client from `dist/`.
 | `social.ts`/`social_db.ts` | friends/guilds/blocks/presence, logic / SQL |
 | `admin.ts`/`admin_db.ts`, `moderation_db.ts` | admin API + dashboard reads / moderation writes |
 | `chat_filter.ts`/`chat_filter_db.ts` | host-agnostic profanity/slur filter (soft cosmetic + hard server-enforced tiers) / admin word-list SQL |
-| `housekeeping.ts`/`housekeeping_api.ts`/`housekeeping_db.ts` | game-config override layer (the admin Housekeeping section): boot-time apply + admin catalogs (DB-free logic) / `/admin/api/housekeeping/*` wiring / per-realm JSONB SQL. Overrides validate + apply via `src/sim/game_config.ts` in `startServer()` BEFORE the world's first construction touch (`liveGame()` in main.ts memoizes; production first-touches it right after the apply); saved edits take effect on the next restart. Served on BOTH dispatch arms: the legacy `handleAdminApi` prefix delegation and 11 migrated RouteDefs sharing one handler that calls `handleHousekeepingApi` whole |
 | `bot_detector/contract.ts` / `stub.ts` | `BotDetector` seam (`#bot-detector`): the contract interface / the no-op stub used when the private clone is absent |
 | `turnstile.ts`, `web_login_guard.ts` | Cloudflare Turnstile siteverify / auth-endpoint Origin guard (anti-bot) |
 | `realm.ts` | `REALM`, `REALM_DIRECTORY`, `REALM_ORIGINS` from `REALM_NAME`/`REALMS` env |
@@ -144,9 +143,7 @@ Test a migrated endpoint through its `routes` + `configure<Domain>Runtime` + the
 `FakeCharactersDb`/`FakeLeaderboardDb`/`FakeReportsDb` are type-only fakes with zero runtime `pg`.
 Exemplar: `tests/server/leaderboard.test.ts` (unit-tests the pure read functions with a `FakeDb`,
 then drives handlers via `routes` + `configureLeaderboardRuntime` + `fakeCtx`). This REPLACES the old
-`vi.mock('../server/db')` + `sql.includes()` idiom for NEW endpoint tests. One seam caveat for the
-migrated housekeeping family is recorded in `server/http/CLAUDE.md` (Testing seam notes): it reaches
-Postgres via `housekeeping_db` directly, so a pool-less dispatcher-level test must `vi.mock` that.
+`vi.mock('../server/db')` + `sql.includes()` idiom for NEW endpoint tests.
 
 ## i18n: player-facing text is English at the source
 - Like the sim, `server/` is **language-agnostic** (no `t()`, no DOM). `game.ts` emits

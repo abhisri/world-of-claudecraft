@@ -132,6 +132,7 @@ export function updateCasting(ctx: SimContext, p: Entity, meta: PlayerMeta): voi
       // completed ground-targeted channels drop their aim like every other
       // resolve path: castAim is always cleared on resolve
       p.castAim = null;
+      p.castTargetId = null;
       ctx.emit({ type: 'castStop', entityId: p.id, success: true });
     }
     return;
@@ -151,6 +152,7 @@ export function updateCasting(ctx: SimContext, p: Entity, meta: PlayerMeta): voi
     // the aim point is consumed by the resolved area effects; drop it so a later
     // non-aimed cast can't inherit a stale target point.
     p.castAim = null;
+    p.castTargetId = null;
   }
 }
 
@@ -159,6 +161,7 @@ export function cancelCast(ctx: SimContext, p: Entity): void {
   p.castRemaining = 0;
   p.channeling = false;
   p.castAim = null;
+  p.castTargetId = null;
   ctx.emit({ type: 'castStop', entityId: p.id, success: false });
 }
 
@@ -413,6 +416,7 @@ export function castAbility(
     if (!p.autoAttack && target) ctx.startAutoAttack(p.id);
     return;
   }
+  p.castTargetId = target?.id ?? null;
 
   const gcd = ctx.playerGcdFor(meta.cls);
   // A channel keeps its duration, so it must not eat a next_cast_instant charge.
@@ -434,25 +438,31 @@ export function castAbility(
   if (ability.channel) {
     spendResource(p, res.cost);
     armAbilityCooldown(p, ability.id, res.cooldown);
+    // Spell haste (item-set bonus) shortens the whole channel and so each tick.
+    const channelDuration = ability.channel.duration / (1 + p.spellHaste);
     p.castingAbility = ability.id;
-    p.castTotal = ability.channel.duration;
-    p.castRemaining = ability.channel.duration;
+    p.castTotal = channelDuration;
+    p.castRemaining = channelDuration;
     p.channeling = true;
-    p.channelTickEvery = ability.channel.duration / ability.channel.ticks;
+    p.channelTickEvery = channelDuration / ability.channel.ticks;
     p.channelTickTimer = p.channelTickEvery;
     p.gcdRemaining = Math.max(p.gcdRemaining, gcd);
     ctx.emit({
       type: 'castStart',
       entityId: p.id,
       ability: ability.id,
-      time: ability.channel.duration,
+      time: channelDuration,
     });
     return;
   }
 
   if (castTime > 0 && !togglingOff) {
-    // Curse of Tongues stretches the resolved (already haste-adjusted) cast time.
-    const stretchedCastTime = castTime * tonguesMult(p);
+    // Spell haste (item-set bonus) shortens the cast; Curse of Tongues stretches it.
+    // Physical-school casts (Slam) ride spellHaste too: set-bonus haste is ONE stat,
+    // so meleeHaste always equals spellHaste and the classic melee-haste scaling
+    // falls out identically. If the haste channels ever split, give physical casts
+    // p.meleeHaste here (and mirror `mh` over the wire for the tooltip).
+    const stretchedCastTime = (castTime * tonguesMult(p)) / (1 + p.spellHaste);
     p.castingAbility = ability.id;
     p.castTotal = stretchedCastTime;
     p.castRemaining = stretchedCastTime;
@@ -465,6 +475,7 @@ export function castAbility(
   applyAbility(ctx, p, meta, res);
   // instant ground-targeted cast: its effects have consumed the aim point.
   p.castAim = null;
+  p.castTargetId = null;
 }
 
 export function spendResource(p: Entity, cost: number): void {
@@ -540,7 +551,7 @@ function applyChannelTick(ctx: SimContext, p: Entity, res: ResolvedAbility): voi
     return;
   }
 
-  const target = p.targetId !== null ? ctx.entities.get(p.targetId) : null;
+  const target = p.castTargetId !== null ? ctx.entities.get(p.castTargetId) : null;
   if (!target || target.dead || !ctx.isHostileTo(p, target)) {
     cancelCast(ctx, p);
     return;
@@ -649,7 +660,7 @@ function applyAbility(ctx: SimContext, p: Entity, meta: PlayerMeta, res: Resolve
 
   let target: Entity | null = null;
   if (ability.requiresTarget && ability.targetType === 'friendly') {
-    const cur = p.targetId !== null ? (ctx.entities.get(p.targetId) ?? null) : null;
+    const cur = p.castTargetId !== null ? (ctx.entities.get(p.castTargetId) ?? null) : null;
     target = cur && !cur.dead && ctx.isFriendlyTo(p, cur) ? cur : p;
     if (dist2d(p.pos, target.pos) > Math.max(ability.range, 5) + 2) {
       ctx.error(p.id, 'Out of range.');
@@ -660,7 +671,7 @@ function applyAbility(ctx: SimContext, p: Entity, meta: PlayerMeta, res: Resolve
       return;
     }
   } else if (ability.requiresTarget) {
-    target = p.targetId !== null ? (ctx.entities.get(p.targetId) ?? null) : null;
+    target = p.castTargetId !== null ? (ctx.entities.get(p.castTargetId) ?? null) : null;
     if (!target || target.dead || !ctx.isHostileTo(p, target)) {
       ctx.error(p.id, 'You have no target.');
       return;

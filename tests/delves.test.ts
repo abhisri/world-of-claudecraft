@@ -33,6 +33,7 @@ import { solveLockActions } from '../src/sim/lockpick';
 import { PLAYER_BODY_RADIUS } from '../src/sim/pathfind';
 import { Rng } from '../src/sim/rng';
 import { DELVE_IMPLEMENTED_AFFIXES, Sim } from '../src/sim/sim';
+import { DT } from '../src/sim/types';
 import { terrainHeight } from '../src/sim/world';
 
 function makeSim(cls: 'warrior' | 'warlock' = 'warrior', seed = 42) {
@@ -1647,6 +1648,58 @@ describe('The Drowned Litany (Phase 4 enemy kits)', () => {
     expect(p.hp, 'acolyte should land ranged Rotwater Vials').toBeLessThan(hp0);
     expect(minDist, 'acolyte should hold at range, never melee').toBeGreaterThan(8);
   });
+
+  it('the Reedbound Acolyte telegraphs its vial: windup event, release exactly windup ticks later, cadence preserved', () => {
+    const sim = makeSim('warrior');
+    enterLitany(sim);
+    const run = sim.delveRunForPlayer(sim.playerId)!;
+    const p = sim.player;
+    const acolyte = createMob(990302, MOBS.reedbound_acolyte, 13, {
+      x: p.pos.x,
+      y: 0,
+      z: p.pos.z + 14,
+    });
+    (sim as any).addEntity(acolyte);
+    run.mobIds.push(acolyte.id);
+
+    const spell = MOBS.reedbound_acolyte.petSpell!;
+    expect(spell.windup, 'the vial throw carries a windup for the cast animation').toBeCloseTo(
+      0.85,
+    );
+    const windupTicks = Math.round((spell.windup ?? 0) / DT);
+    const cadenceTicks = Math.round(spell.every / DT);
+
+    // Record the tick of every windup / projectile spellfx the acolyte emits and
+    // every damage event it lands on the player.
+    const windups: number[] = [];
+    const projectiles: number[] = [];
+    const damages: number[] = [];
+    for (let i = 0; i < 20 * 10 && projectiles.length < 2; i++) {
+      // tick() drains and returns this tick's events (sim.events is reset).
+      const evs = sim.tick() as any[];
+      for (const ev of evs) {
+        if (ev.type === 'spellfx' && ev.sourceId === acolyte.id) {
+          if (ev.fx === 'windup') windups.push(i);
+          if (ev.fx === 'projectile') projectiles.push(i);
+        }
+        if (ev.type === 'damage' && ev.sourceId === acolyte.id && ev.targetId === p.id) {
+          damages.push(i);
+        }
+      }
+    }
+
+    expect(windups.length, 'a windup telegraph precedes each vial').toBeGreaterThanOrEqual(2);
+    expect(projectiles.length).toBe(2);
+    // The release (projectile + its damage) lands exactly the windup after the telegraph.
+    expect(projectiles[0] - windups[0]).toBe(windupTicks);
+    expect(projectiles[1] - windups[1]).toBe(windupTicks);
+    expect(damages[0]).toBe(projectiles[0]);
+    // Fire-to-fire cadence stays spell.every (one tick of float wobble on the
+    // swing timer, same as the pre-windup path): the windup eats into the
+    // cycle, it does not extend it to every + windup.
+    expect(projectiles[1] - projectiles[0]).toBeGreaterThanOrEqual(cadenceTicks);
+    expect(projectiles[1] - projectiles[0]).toBeLessThanOrEqual(cadenceTicks + 1);
+  });
 });
 
 describe('The Drowned Litany (Phase 3 static Blackwater hazard)', () => {
@@ -2547,6 +2600,72 @@ describe('The Drowned Litany (Phase 6 boss mechanics)', () => {
       return run.nhaliaBoss!.marks.map((m) => [Math.round(m.x * 10), Math.round(m.z * 10)]);
     };
     expect(runMark(42)).toEqual(runMark(42));
+  });
+
+  it('an evade re-arms the encounter to fresh-pull state and despawns bells and adds', () => {
+    const sim = makeSim();
+    const run = enterLitanyApse(sim);
+    const boss = nhalia(sim);
+    boss.inCombat = true;
+
+    // First pull: below 70% fires the first Cantor phase; force a bell volley too.
+    boss.hp = Math.ceil(boss.maxHp * 0.69);
+    run.nhaliaBoss!.bellVolleyTimer = 0.001;
+    (sim as any).updateDelveRuns();
+    expect(run.nhaliaBoss?.firedCantorPhases).toBe(1);
+    const bellIds = run.nhaliaBoss!.bells.map((b) => b.entityId);
+    expect(bellIds.length).toBeGreaterThan(0);
+    const cantorIds = [...sim.entities.values()]
+      .filter((e) => e.templateId === 'drowned_cantor')
+      .map((e) => e.id);
+    expect(cantorIds.length).toBe(2);
+
+    // Kited past the leash: the evade arrival reset (same entry the wipe path uses).
+    (sim as any).resetEvadingMob(boss);
+
+    expect(boss.hp).toBe(boss.maxHp);
+    expect(boss.auras.some((a) => a.id === 'nhalia_cantor_shield')).toBe(false);
+    expect(run.nhaliaBoss?.firedCantorPhases).toBe(0);
+    expect(run.nhaliaBoss?.finalBellFired).toBe(false);
+    expect(run.nhaliaBoss?.marks).toEqual([]);
+    expect(run.nhaliaBoss?.bells).toEqual([]);
+    expect(run.nhaliaBoss?.cantorShieldAdds).toEqual([]);
+    for (const id of bellIds) expect(sim.entities.has(id)).toBe(false);
+    for (const id of cantorIds) expect(sim.entities.has(id)).toBe(false);
+  });
+
+  it('a re-pull after an evade fires the 70% phase and the Final Bell again', () => {
+    const sim = makeSim();
+    const run = enterLitanyApse(sim);
+    const boss = nhalia(sim);
+    boss.inCombat = true;
+    boss.hp = Math.ceil(boss.maxHp * 0.69);
+    (sim as any).updateDelveRuns();
+    expect(run.nhaliaBoss?.firedCantorPhases).toBe(1);
+
+    (sim as any).resetEvadingMob(boss);
+    expect(run.nhaliaBoss?.firedCantorPhases).toBe(0);
+
+    // Re-pull: the 70% Cantor phase fires again, shield and all.
+    boss.inCombat = true;
+    boss.hp = Math.ceil(boss.maxHp * 0.69);
+    (sim as any).updateDelveRuns();
+    expect(run.nhaliaBoss?.firedCantorPhases).toBe(1);
+    const cantors = [...sim.entities.values()].filter(
+      (e) => e.templateId === 'drowned_cantor' && !e.dead,
+    );
+    expect(cantors.length).toBe(2);
+    expect(boss.auras.some((a) => a.id === 'nhalia_cantor_shield')).toBe(true);
+
+    // And the Final Bell still fires at 10% on the re-pull.
+    run.nhaliaBoss!.firedCantorPhases = 2;
+    boss.hp = Math.max(1, Math.round(boss.maxHp * 0.08));
+    (sim as any).updateDelveRuns();
+    expect(run.nhaliaBoss?.finalBellFired).toBe(true);
+    const thralls = [...sim.entities.values()].filter(
+      (e) => e.templateId === 'choir_thrall' && !e.dead,
+    );
+    expect(thralls.length).toBeGreaterThanOrEqual(4);
   });
 });
 

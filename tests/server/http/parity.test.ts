@@ -736,32 +736,6 @@ describe('/admin/api dispatch parity (legacy flag vs new flag)', () => {
       url: '/admin/api/this-endpoint-does-not-exist',
       label: 'an unknown endpoint (auth precedes the 404 fallthrough)',
     },
-    // v0.20.0 housekeeping family (migrated in the release merge): the authed
-    // bodies touch housekeeping_db (Postgres), so like every other authed admin
-    // read/write only the db-free 401 contract is parity-pinned here; the body
-    // itself is parity by construction (BOTH arms call the ONE
-    // handleHousekeepingApi sub-dispatcher whole).
-    {
-      method: 'GET',
-      url: '/admin/api/housekeeping/rates',
-      label: 'a housekeeping catalog read (v0.20.0 family)',
-    },
-    {
-      method: 'POST',
-      url: '/admin/api/housekeeping/overrides',
-      label: 'the housekeeping override save (v0.20.0 family)',
-    },
-    {
-      method: 'GET',
-      url: '/admin/api/housekeeping/not-a-panel',
-      label: 'an unknown housekeeping sub-path (no RouteDef; auth precedes the in-family 404)',
-    },
-    {
-      method: 'DELETE',
-      url: '/admin/api/housekeeping/rates',
-      label:
-        'a wrong method on a housekeeping route (no RouteDef; auth precedes the in-family 405)',
-    },
   ];
 
   for (const { method, url, label } of NOAUTH_ADMIN_REQUESTS) {

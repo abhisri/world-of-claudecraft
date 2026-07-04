@@ -105,6 +105,7 @@ import {
   isDelvePos,
   MOBS,
   QUESTS,
+  SPIRIT_HEALER_NPC_ID,
   zoneAt,
 } from './data';
 import * as companionMod from './delves/companion';
@@ -873,6 +874,11 @@ export interface CharacterState {
   // still marked, rather than free-resurrecting on relog. See src/sim/spirit.ts.
   ghost?: boolean;
   corpsePos?: { x: number; z: number } | null;
+  // True when the character was saved dead (JSONB; optional so older saves load
+  // alive exactly as before). A dead-but-UNRELEASED logout resumes as a released
+  // ghost on relog (auto-release-on-logout), so logging out cannot bypass the
+  // death loop. See the addPlayer ghost block + src/sim/spirit.ts.
+  dead?: boolean;
   // The Keeper's Toll (Resurrection Sickness) remaining seconds (JSONB; optional/null when
   // none). Persisted so the penalty cannot be shed by logging out and back in.
   resSickness?: number | null;
@@ -1579,6 +1585,20 @@ export class Sim {
         ? this.groundPos(savedState.corpsePos.x, savedState.corpsePos.z)
         : null;
       player.hp = player.maxHp;
+    } else if (savedState?.dead && !isArenaPos(savedState.pos.x) && !isDelvePos(savedState.pos.x)) {
+      // Auto-release-on-logout: a character saved dead but UNRELEASED resumes as
+      // a released ghost rather than reviving in place at 1 hp (logging out must
+      // not bypass the death loop). Put the body back at the death spot, then run
+      // the normal release path so the corpse marker and graveyard choice
+      // (including the instance rule: a dungeon corpse releases to the outdoor
+      // graveyard nearest the door) cannot drift from spirit.ts. Delve, arena,
+      // and fiesta deaths keep their own bounded respawn rules and never enter
+      // the ghost loop, so those positions load exactly as before.
+      player.pos = this.groundPos(savedState.pos.x, savedState.pos.z);
+      player.prevPos = { ...player.pos };
+      this.rebucket(player);
+      player.dead = true;
+      releasePlayerSpirit(this.ctx, player.id);
     }
     if (savedState?.pet) this.restorePet(player, savedState.pet);
     // One-time Ravenpost welcome (doubles as the service announcement for
@@ -1711,7 +1731,9 @@ export class Sim {
       ),
       pos: { x: e.pos.x, z: e.pos.z },
       facing: e.facing,
-      // Ghost state, so a logged-out spirit resumes its corpse run on relog.
+      // Death state: a released spirit resumes its corpse run on relog, and a
+      // dead-but-unreleased corpse auto-releases on load (see addPlayer).
+      dead: e.dead,
       ghost: e.ghost,
       corpsePos: e.corpsePos ? { x: e.corpsePos.x, z: e.corpsePos.z } : null,
       // The Keeper's Toll persists across logout (it cannot be shed by relogging).
@@ -4271,6 +4293,7 @@ export class Sim {
       max: number;
       range: number;
       every: number;
+      windup?: number;
     },
   ): void {
     const d = dist2d(pet.pos, target.pos);
@@ -4281,33 +4304,63 @@ export class Sim {
     }
     pet.facing = angleTo(pet.pos, target.pos);
     pet.swingTimer -= DT;
-    if (pet.swingTimer > 0) return;
-    this.emit({
-      type: 'spellfx',
-      sourceId: pet.id,
-      targetId: target.id,
-      school: spell.school,
-      fx: 'projectile',
-    });
-    // Pet spells are resisted, not missed (same semantics as player casts).
-    if (isSpellResisted(this.rng, pet.level, target.level)) {
+    // Emit the projectile + resolve the hit (resisted, not missed: the same
+    // semantics as player casts). Shared by the instant path and the windup
+    // release below; the caller owns the swing-timer bookkeeping.
+    const fire = () => {
       this.emit({
-        type: 'damage',
+        type: 'spellfx',
         sourceId: pet.id,
         targetId: target.id,
-        amount: 0,
-        crit: false,
         school: spell.school,
-        ability: spell.name,
-        kind: 'resist',
+        fx: 'projectile',
       });
-      this.enterCombat(pet, target);
-    } else {
-      const dmg = Math.round(
-        this.rng.range(spell.min + pet.level * 0.8, spell.max + pet.level * 1.1),
-      );
-      this.dealDamage(pet, target, Math.max(1, dmg), false, spell.school, spell.name, 'hit');
+      if (isSpellResisted(this.rng, pet.level, target.level)) {
+        this.emit({
+          type: 'damage',
+          sourceId: pet.id,
+          targetId: target.id,
+          amount: 0,
+          crit: false,
+          school: spell.school,
+          ability: spell.name,
+          kind: 'resist',
+        });
+        this.enterCombat(pet, target);
+      } else {
+        const dmg = Math.round(
+          this.rng.range(spell.min + pet.level * 0.8, spell.max + pet.level * 1.1),
+        );
+        this.dealDamage(pet, target, Math.max(1, dmg), false, spell.school, spell.name, 'hit');
+      }
+    };
+    // A committed windup releases when its tick arrives, regardless of the
+    // swing timer (which is already counting the NEXT cycle: the windup eats
+    // into the cadence rather than extending it).
+    if (pet.rangedWindupReleaseTick != null) {
+      if (this.tickCount < pet.rangedWindupReleaseTick) return;
+      pet.rangedWindupReleaseTick = null;
+      fire();
+      return;
     }
+    if (pet.swingTimer > 0) return;
+    const windupTicks = Math.round((spell.windup ?? 0) / DT);
+    if (windupTicks > 0) {
+      // Telegraph first: the renderer starts the throw animation on 'windup'
+      // and the projectile leaves the hand at the release tick, lined up with
+      // the animation's release pose.
+      this.emit({
+        type: 'spellfx',
+        sourceId: pet.id,
+        targetId: target.id,
+        school: spell.school,
+        fx: 'windup',
+      });
+      pet.rangedWindupReleaseTick = this.tickCount + windupTicks;
+      pet.swingTimer = spell.every;
+      return;
+    }
+    fire();
     pet.swingTimer = spell.every;
   }
 
@@ -4883,6 +4936,7 @@ export class Sim {
     p.castingAbility = FISHING_CAST_ID;
     p.castTotal = FISHING_CAST_TIME;
     p.castRemaining = FISHING_CAST_TIME;
+    p.castTargetId = null;
     p.channeling = false;
     this.emit({
       type: 'castStart',
@@ -5014,9 +5068,16 @@ export class Sim {
   talkToNpc(npcId: number, pid?: number): void {
     const r = this.resolve(pid);
     if (!r) return;
-    const { meta } = r;
+    const { meta, e: p } = r;
     const npc = this.entities.get(npcId);
     if (!npc || !this.isQuestInteractionEntity(npc)) return;
+    // Dead players (released ghosts included) cannot talk to quest NPCs. The
+    // Spirit Healer is the one exception: talking to the angel is how a ghost
+    // reaches its resurrection offer (the res itself is resurrectAtSpiritHealer).
+    if (p.dead && npc.templateId !== SPIRIT_HEALER_NPC_ID) {
+      this.error(meta.entityId, "You can't do that while dead.");
+      return;
+    }
     if (this.interactNpcForQuests(npc, meta)) return;
     for (const qid of npc.questIds) {
       const quest = QUESTS[qid];

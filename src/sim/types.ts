@@ -362,6 +362,10 @@ export interface SetBonusEffect {
   spi?: number;
   ap?: number; // flat attack power
   crit?: number; // flat crit chance, 0..1
+  // Haste fraction (0.15 = 15% faster). ONE stat: it speeds melee and ranged
+  // auto-attack swings AND shortens spell cast/channel time, all together
+  // (folded into Entity.meleeHaste/rangedHaste/spellHaste in recalcPlayerStats).
+  haste?: number;
   castPushbackReduction?: number; // 0..1: fraction of damage cast-pushback removed (1 = immune)
   knockbackResistance?: number; // 0..1: fraction of on-hit knockback distance resisted (1 = immune)
 }
@@ -983,6 +987,12 @@ export interface MobTemplate {
     max: number;
     range: number;
     every: number;
+    /** Telegraph seconds between the windup spellfx (the renderer starts the
+     *  throw animation on it) and the actual release (projectile + damage).
+     *  Eats into `every`, so the fire-to-fire cadence is unchanged; the
+     *  release is committed once the windup starts. Omitted = release at the
+     *  timer with no telegraph, the original behavior (warlock demon bolts). */
+    windup?: number;
   };
   // On-hit mechanic: chance to silence the victim, locking out spell (non-physical) casts for a duration.
   silence?: { chance: number; duration: number; name: string; school?: string };
@@ -1448,6 +1458,11 @@ export interface Entity {
   attackPower: number;
   rangedPower: number; // hunters: ranged attack power
   spellPower: number; // casters: added to spell damage via per-spell coefficients
+  // Haste fractions from item-set bonuses (0 = none). Melee/ranged haste speed up
+  // the respective auto-attack swing; spell haste shortens cast and channel time.
+  meleeHaste: number;
+  rangedHaste: number;
+  spellHaste: number;
   critChance: number; // 0..1
   dodgeChance: number;
   castPushbackReduction: number; // 0..1: damage cast-pushback removed by item-set bonuses (1 = immune)
@@ -1458,6 +1473,9 @@ export interface Entity {
   targetId: number | null;
   autoAttack: boolean;
   swingTimer: number;
+  /** petSpell windup in flight: sim tick the committed release fires on
+   *  (transient combat state like swingTimer; never persisted or wired). */
+  rangedWindupReleaseTick?: number | null;
   inCombat: boolean;
   combatTimer: number; // time since last combat event
   auras: Aura[];
@@ -1469,6 +1487,12 @@ export interface Entity {
   castingAbility: string | null;
   castRemaining: number;
   castTotal: number;
+  // Entity-targeted casting: the target captured at cast start for entity-targeted
+  // casts (hostile and friendly) and channels. Timed casts and channel ticks resolve
+  // against this id, so retargeting mid-cast/mid-channel cannot redirect the spell,
+  // and clearing your target no longer cancels a channel. The channel still cancels
+  // if the locked target dies or turns non-hostile.
+  castTargetId: number | null;
   // Ground-targeted casting: the world point a `targetMode: 'position'` ability is
   // aimed at, captured (server-clamped to range) when the cast begins and read by
   // its area effects when it resolves. null for normal entity/self casts.
@@ -1837,13 +1861,16 @@ export type SimEvent = { pid?: number } & (
       crit: boolean;
       ability: string;
     }
-  // visual-only cue for the renderer: spell projectiles, channel beams, dot ticks, aoe novas
+  // visual-only cue for the renderer: spell projectiles, channel beams, dot
+  // ticks, aoe novas, and the ranged-mob windup telegraph ('windup' fires at
+  // the START of a petSpell windup so the throw animation leads the release;
+  // the 'projectile' for the same throw follows petSpell.windup later).
   | {
       type: 'spellfx';
       sourceId: number;
       targetId: number;
       school: string;
-      fx: 'projectile' | 'beam' | 'tick' | 'nova';
+      fx: 'projectile' | 'beam' | 'tick' | 'nova' | 'windup';
     }
   // visual-only cue anchored to a WORLD POINT rather than an entity: a
   // ground-targeted spell's impact (the burst/nova lands where it was aimed, not
@@ -2116,7 +2143,7 @@ export const MAX_VIRTUAL_LEVEL = 200; // table bound; far beyond any reachable l
 
 // VLEVEL_CUM[v] = total lifetime XP required to *reach* virtual level v.
 // VLEVEL_CUM[1] = 0; index 0 is unused padding.
-function buildVlevelCum(): number[] {
+const VLEVEL_CUM: number[] = (() => {
   const cum: number[] = [0, 0];
   let total = 0;
   // real levels: 1→2 … 19→20 come straight from XP_TABLE
@@ -2132,18 +2159,7 @@ function buildVlevelCum(): number[] {
     step *= POSTCAP_GROWTH;
   }
   return cum;
-}
-
-const VLEVEL_CUM: number[] = buildVlevelCum();
-
-// The cumulative table above is derived from XP_TABLE at module eval. A host
-// that mutates XP_TABLE (the game-config override layer, src/sim/game_config.ts)
-// must call this afterwards so virtual levels keep matching the live curve.
-export function refreshPostcapXpTable(): void {
-  const next = buildVlevelCum();
-  VLEVEL_CUM.length = 0;
-  VLEVEL_CUM.push(...next);
-}
+})();
 
 // Total lifetime XP needed to reach a given (virtual or real) level. Used to
 // backfill `lifetimeXp` for characters saved before the counter existed.
