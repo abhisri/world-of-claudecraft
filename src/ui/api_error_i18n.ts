@@ -1,14 +1,14 @@
 // Localizes a failed REST/WS call into player-facing text. Two layers, tried in
 // order:
 //
-//   1. CODE-FIRST. The migrated API pipeline (docs/api-pipeline/) answers errors
+//   1. CODE-FIRST. The API request pipeline (server/http/) answers errors
 //      with a stable machine `code` (`domain.reason`) drawn from the server
 //      catalog (server/http/error_codes.ts): either the RFC 9457 problem+json
 //      `code`, or the additive `code` on a migrated legacy `{ error, code, date }`
 //      body. A code in API_ERROR_KEYS resolves to its `apiError.<domain>.<reason>`
 //      key, with the two parametric cases (a suspension date, a rate-limit
 //      duration) formatted CLIENT-side (the server never localizes or formats).
-//   2. PROSE FALLBACK. Routes still on the old ladder (until Phase 25) answer with
+//   2. PROSE FALLBACK. Routes still on the old ladder (until it is removed) answer with
 //      bare English text and no code. The historical string matcher recognizes
 //      those and re-renders them through `t()` / `tServer()`; a code that is NOT
 //      in the table (an un-migrated route that grew one) also lands here.
@@ -93,7 +93,7 @@ export const API_ERROR_KEYS = {
   'two_factor.already_enabled': 'apiError.two_factor.already_enabled',
   'two_factor.not_enabled': 'apiError.two_factor.not_enabled',
 
-  // Phase 21 hardening contracts (no legacy English identity).
+  // The Content-Type / Origin gate hardening contracts (no legacy English identity).
   'body.unsupported_media_type': 'apiError.body.unsupported_media_type',
   'origin.cross_site': 'apiError.origin.cross_site',
 
@@ -173,7 +173,7 @@ export function userFacingApiError(err: unknown): string {
     if (byCode !== null) return byCode;
   }
 
-  // --- Prose fallback (old-ladder routes, until Phase 25). Moved verbatim from
+  // --- Prose fallback (old-ladder routes, until the ladder is removed). Moved verbatim from
   // src/main.ts; each arm re-localizes a stable English source string. ---
   const text = technicalErrorMessage(err);
   const suspended = text.match(/^This account is suspended until (.+)\.$/);

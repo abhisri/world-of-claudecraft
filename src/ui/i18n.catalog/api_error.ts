@@ -2,7 +2,7 @@
 //
 // The server (and offline Sim's REST-shaped failures) speak stable machine codes, never
 // English prose: server/http/error_codes.ts is the SINGLE source of truth for the code set.
-// Phase 22 wires the client matcher (src/main.ts userFacingApiError) to turn a received
+// The client matcher (src/main.ts userFacingApiError) turns a received
 // `domain.reason` code into player text via t('apiError.<domain>.<reason>', values).
 //
 // KEY SHAPE (fixed contract): a code 'domain.reason' maps VERBATIM to the nested key
@@ -27,7 +27,7 @@
 // "30 seconds"), so never pre-format a number into these values.
 
 export const apiErrorStrings = {
-  // Structural pipeline codes (the 9 primitives the Phase 7 serializers map an HTTP status onto).
+  // Structural pipeline codes (the 9 primitives the error serializers map an HTTP status onto).
   validation: {
     failed: 'Some fields are invalid. Check the form and try again.',
   },
@@ -144,12 +144,12 @@ export const apiErrorStrings = {
     already_enabled: 'Two-factor is already enabled.',
     not_enabled: 'Two-factor is not enabled.',
   },
-  // origin: the Phase 21 cross-site Origin gate (server/http/middleware/origin_check.ts).
+  // origin: the cross-site Origin gate (server/http/middleware/origin_check.ts).
   origin: {
     // reuses errors.api.crossSiteOrigin
     cross_site: 'Request blocked for security reasons.',
   },
-  // discord: the Phase 22 Discord family codes (server/discord.ts), riding alongside
+  // discord: the Discord family codes (server/discord.ts), riding alongside
   // the untouched legacy JSON prose. The shared 'rate limited' body is NOT here (it is
   // the cross-cutting rate_limit.exceeded identity).
   discord: {
