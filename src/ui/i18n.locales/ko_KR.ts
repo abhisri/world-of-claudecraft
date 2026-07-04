@@ -43,6 +43,11 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.pointsGained': '{points} 일일 보상 포인트를 획득했습니다.',
   'hudChrome.dailyRewards.showChestButton': '보물상자 표시',
   'hudChrome.dailyRewards.hideChestButton': '보물상자 숨기기',
+  'hudChrome.dailyRewards.hideChestConfirmTitle': '일일 보상 보물상자를 숨기시겠습니까?',
+  'hudChrome.dailyRewards.hideChestConfirmBody':
+    'HUD에서 보물상자 바로가기가 제거됩니다. 보상, 자격, 이 패널은 계속 이용할 수 있습니다. 바로가기는 옵션에서 다시 표시할 수 있습니다.',
+  'hudChrome.dailyRewards.hideChestConfirmOk': '보물상자 숨기기',
+  'hudChrome.dailyRewards.hideChestConfirmCancel': '취소',
   'hudChrome.dailyRewards.leaderboard': '일일 순위표',
   'hudChrome.dailyRewards.totalPlayer': '오늘 플레이어 {count}명',
   'hudChrome.dailyRewards.totalPlayers': '오늘 플레이어 {count}명',

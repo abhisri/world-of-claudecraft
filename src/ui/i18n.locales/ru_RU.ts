@@ -43,6 +43,11 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.pointsGained': 'Получено {points} очков ежедневных наград.',
   'hudChrome.dailyRewards.showChestButton': 'Показать сундук',
   'hudChrome.dailyRewards.hideChestButton': 'Скрыть сундук',
+  'hudChrome.dailyRewards.hideChestConfirmTitle': 'Скрыть сундук ежедневных наград?',
+  'hudChrome.dailyRewards.hideChestConfirmBody':
+    'Это уберёт ярлык сундука с вашего HUD. Награды, право на участие и эта панель останутся доступны; вернуть ярлык можно в настройках.',
+  'hudChrome.dailyRewards.hideChestConfirmOk': 'Скрыть сундук',
+  'hudChrome.dailyRewards.hideChestConfirmCancel': 'Отмена',
   'hudChrome.dailyRewards.leaderboard': 'Ежедневная таблица лидеров',
   'hudChrome.dailyRewards.totalPlayer': 'Сегодня {count} игрок',
   'hudChrome.dailyRewards.totalPlayers': 'Сегодня {count} игроков',

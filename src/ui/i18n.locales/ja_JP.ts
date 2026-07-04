@@ -43,6 +43,11 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'hudChrome.dailyRewards.pointsGained': '{points} デイリー報酬ポイントを獲得しました。',
   'hudChrome.dailyRewards.showChestButton': '宝箱を表示',
   'hudChrome.dailyRewards.hideChestButton': '宝箱を隠す',
+  'hudChrome.dailyRewards.hideChestConfirmTitle': 'デイリー報酬の宝箱を非表示にしますか？',
+  'hudChrome.dailyRewards.hideChestConfirmBody':
+    'HUDから宝箱のショートカットが削除されます。報酬、受給資格、このパネルは引き続き利用できます。ショートカットはオプションから再表示できます。',
+  'hudChrome.dailyRewards.hideChestConfirmOk': '宝箱を隠す',
+  'hudChrome.dailyRewards.hideChestConfirmCancel': 'キャンセル',
   'hudChrome.dailyRewards.leaderboard': 'デイリーランキング',
   'hudChrome.dailyRewards.totalPlayer': '本日のプレイヤー {count} 人',
   'hudChrome.dailyRewards.totalPlayers': '本日のプレイヤー {count} 人',
