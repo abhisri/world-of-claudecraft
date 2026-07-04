@@ -216,11 +216,10 @@ const CHICKEN_COW: ClipMap = {
   jump: 'Jump',
 };
 
-// Meshy-generated humanoid rig (edda_reedhand.glb / reedbound_acolyte.glb): the
-// separate GLBs the Meshy rig+animate pipeline returns (rigged base, walk, run,
-// idle, cast, hit, death) were merged into one file per character by
-// scripts/_merge_meshy_rig.mjs, matching skeleton nodes by name. Both are
-// casters, so attack aliases the cast clip.
+// Meshy-generated humanoid rig (edda_reedhand.glb): the separate GLBs the Meshy
+// rig+animate pipeline returns (rigged base, walk, run, idle, cast, hit, death)
+// were merged into one file per character by scripts/_merge_meshy_rig.mjs,
+// matching skeleton nodes by name. A caster, so attack aliases the cast clip.
 const MESHY_HUMANOID: ClipMap = {
   idle: 'Idle',
   walk: 'Walk',
@@ -228,6 +227,19 @@ const MESHY_HUMANOID: ClipMap = {
   attack: ['Cast'],
   cast: 'Cast',
   hit: ['Hit'],
+  death: 'Death',
+};
+
+// Raid 02 asset-pipeline rig (stone_cantor.glb): Mixamo-rigged, ships exactly
+// Idle / Cast / Walk / Death. A caster, so attack aliases the cast clip; run
+// aliases walk (no run clip); no hit-react clip (the pipeline no-ops missing
+// clips gracefully).
+const RAID_CASTER: ClipMap = {
+  idle: 'Idle',
+  walk: 'Walk',
+  run: 'Walk',
+  attack: ['Cast'],
+  cast: 'Cast',
   death: 'Death',
 };
 
@@ -909,13 +921,15 @@ export const VISUALS: Record<string, VisualDef> = {
     height: 3.5,
     clips: MESHY_HUMANOID,
   },
-  // Reedbound Acolyte (The Drowned Litany trash mob): Meshy-generated marsh
-  // cultist, ragged and gaunt. Rendered at 2x human height: the realistically
-  // proportioned Meshy mesh reads too small next to the chunky chibi rigs.
+  // Reedbound Acolyte (The Drowned Litany trash mob): Stone Cantor model from
+  // the Raid 02 asset batch. The earlier Meshy mesh (reedbound_acolyte.glb) was
+  // realistically proportioned and clashed with the chunky KayKit-style rigs;
+  // this one matches the game's proportions, so the standard humanoid height
+  // applies (the old def ran at 3.4 only to compensate for the thin mesh).
   mob_reedbound_acolyte: {
-    url: `${CREATURES}/reedbound_acolyte.glb`,
-    height: 3.4,
-    clips: MESHY_HUMANOID,
+    url: `${CREATURES}/stone_cantor.glb`,
+    height: HUMANOID_H,
+    clips: RAID_CASTER,
     tint: 'entity',
     tintStrength: 0.2,
   },
