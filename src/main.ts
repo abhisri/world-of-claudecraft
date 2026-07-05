@@ -21,6 +21,7 @@ import {
   resolveClickMoveAction,
   stepAngleToward,
 } from './game/click_move';
+import { clientEnvBits, installPageStateTracking, pageStateBits } from './game/client_env';
 import { getClientSeed } from './game/client_seed';
 import { initDesktopShellIntegration } from './game/desktop_shell_integration';
 import { takeEditorPlaytestRequest } from './game/editor_playtest';
@@ -1231,9 +1232,15 @@ async function startGame(
   // movement/camera/jump are applied to Input directly by the manager.
   const inputMeter = new InputActivityMeter();
   installInputActivityTracking(inputMeter, window, () => performance.now());
+  installPageStateTracking(window, document);
   const APM_BEAT_MS = 10_000;
   window.setInterval(() => {
-    world.reportTelemetry('apm', { count: inputMeter.drainCount(), periodMs: APM_BEAT_MS });
+    world.reportTelemetry('apm', {
+      count: inputMeter.drainCount(),
+      periodMs: APM_BEAT_MS,
+      env: clientEnvBits(),
+      vis: pageStateBits(),
+    });
   }, APM_BEAT_MS);
   const gamepadBindings = new GamepadBindings();
   const canUseGameKeysNow = () => !hud.isModalOpen() && chatInput.style.display !== 'block';
