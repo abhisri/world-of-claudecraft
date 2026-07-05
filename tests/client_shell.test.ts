@@ -1308,6 +1308,7 @@ describe('client HTML shell', () => {
       // No separate Target button anywhere: Target Closest (in the action ring)
       // is the one targeting helper on touch.
       expect(entry, name).not.toContain('id="mobile-target"');
+      expect(entry, name).not.toContain('data-i18n="hud.core.mobileTarget"');
     }
     expect(hudMobileCss).toContain('grid-template-columns: repeat(2, 58px);');
     expect(hudMobileCss).toContain('grid-template-columns: repeat(2, 54px);');
@@ -1324,9 +1325,15 @@ describe('client HTML shell', () => {
     expect(hudMobileCss).toContain('body.mobile-touch #mobile-more {\n    position: static;');
     expect(mainTs).toContain('onMenu: () => hud.toggleOptionsMenu(),');
     // The Target callback is gone with the button: Closest (onAttackNearest) is
-    // the only targeting helper the touch layer wires.
+    // the only targeting helper the touch layer wires. Pin BOTH arms: the
+    // removal AND the surviving Closest wiring (bindButton silently no-ops on
+    // a missing element, so only a positive source pin catches a lost binding).
     expect(mainTs).not.toContain('onTarget:');
     expect(mobileControlsTs).not.toContain("bindButton('mobile-target'");
+    expect(mainTs).toContain('onAttackNearest: () => attackNearest(),');
+    expect(mobileControlsTs).toContain(
+      "this.bindButton('mobile-attack-nearest', () => this.callbacks.onAttackNearest());",
+    );
   });
 
   it('keeps the left utility cluster (Autorun/Use/Jump) beside the move joystick', () => {
@@ -1345,15 +1352,28 @@ describe('client HTML shell', () => {
       }
     }
     // The cluster's horizontal offset scales with the Joystick Size setting so
-    // a grown joystick never slides under the buttons, and the whole stack
-    // starts past the 132px floating-joystick capture zone.
-    expect(hudMobileCss).toContain(
-      'left: calc(max(18px, env(safe-area-inset-left)) + 122px * var(--joy-scale, 1) + 10px);',
-    );
-    expect(hudMobileCss).toContain(
-      'left: calc(max(20px, env(safe-area-inset-left)) + 100px * var(--joy-scale, 1) + 14px);',
-    );
+    // a grown joystick never slides under the buttons, FLOORED (the max()) so
+    // even the minimum joy-scale 0.7 keeps the stack past the FIXED 132px
+    // floating-joystick capture zone.
+    expect(hudMobileCss).toContain('max(116px, 122px * var(--joy-scale, 1) + 10px)');
+    expect(hudMobileCss).toContain('max(114px, 100px * var(--joy-scale, 1) + 14px)');
     expect(hudMobileCss).toContain('body.mobile-touch #mobile-utility-cluster {');
+    // The per-button seats: Jump at the thumb, Use bulging mid-arc, Autorun on
+    // top, 12px vertical gaps (base .mobile-btn is 54px tall).
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch #mobile-jump {\n    left: 0;\n    bottom: 0;\n  }',
+    );
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch #mobile-interact {\n    left: 12px;\n    bottom: 66px;\n  }',
+    );
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch #mobile-autorun {\n    left: 0;\n    bottom: 132px;\n  }',
+    );
+    // The cast bar starts in the same over-132px strip the cluster now owns;
+    // it must sit ABOVE Jump (base 72 > 14+54, landscape 64 > 10+48), never
+    // render behind a button mid-cast.
+    expect(hudMobileCss).toContain('bottom: calc(72px + env(safe-area-inset-bottom));');
+    expect(hudMobileCss).toContain('bottom: calc(64px + env(safe-area-inset-bottom));');
     // Left-handed mode mirrors the cluster with the joystick, and the floating
     // capture zone follows the joystick's mirrored home.
     expect(hudMobileCss).toContain(
@@ -1381,14 +1401,70 @@ describe('client HTML shell', () => {
     // shared radius var and stays non-negative (nothing can leave the screen,
     // the regression the redesign fixed).
     expect(hudMobileCss).toContain('--mobile-ring-radius: 190px;');
-    expect(hudMobileCss).toContain('--mobile-ring-radius: 160px;');
-    expect(hudMobileCss).toContain('--mobile-ring-radius: 226px;');
     expect(hudMobileCss).not.toContain('calc(0px -');
+    // The equal-chord arc factors (cos/sin of 157.5 and 112.5 deg) on the two
+    // asymmetric slots, right-handed and mirrored: corrupting one angle breaks
+    // the even spacing without moving anything off-screen, so only a literal
+    // factor pin catches it.
+    expect(hudMobileCss).toContain(
+      '.mobile-action-slot[data-mobile-index="1"] {\n    right: calc(\n      var(--mobile-ring-attack-size) /\n      2 +\n      var(--mobile-ring-radius) *\n      0.9239 -',
+    );
+    expect(hudMobileCss).toContain(
+      '.mobile-action-slot[data-mobile-index="3"] {\n    right: calc(\n      var(--mobile-ring-attack-size) /\n      2 +\n      var(--mobile-ring-radius) *\n      0.3827 -',
+    );
+    expect(hudMobileCss).toContain(
+      '.mobile-action-slot[data-mobile-index="1"] {\n    left: calc(\n      var(--mobile-ring-attack-size) /\n      2 +\n      var(--mobile-ring-radius) *\n      0.9239 -',
+    );
+    expect(hudMobileCss).toContain(
+      '.mobile-action-slot[data-mobile-index="4"] {\n    left: calc(var(--mobile-ring-attack-size) / 2 - var(--mobile-ring-action-size) / 2);\n    right: auto;\n  }',
+    );
     // Closest nests in the crescent hollow; the page toggle is the outer
-    // satellite pip, larger than the old 44px floor.
+    // satellite pip (125deg factors), larger than the old 44px floor. Both
+    // keep their seats in the left-handed mirror.
     expect(hudMobileCss).toContain('--mobile-ring-hollow: 104px;');
     expect(hudMobileCss).toContain('--mobile-ring-toggle-size: 52px;');
     expect(hudMobileCss).toContain('--mobile-ring-toggle-radius: calc(');
+    expect(hudMobileCss).toContain('var(--mobile-ring-toggle-radius) *\n      0.5736 -');
+    expect(hudMobileCss).toContain('var(--mobile-ring-toggle-radius) *\n      0.8192 -');
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch.mobile-left-handed #mobile-attack-nearest {\n    left: calc(',
+    );
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch.mobile-left-handed #mobile-action-page-toggle {\n    left: calc(',
+    );
+    // The tier var packs are pinned as WHOLE blocks (selector + every value):
+    // a bare-literal pin would still pass if the compact and tablet packs were
+    // swapped between selectors.
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch.hud-mobile-compact #mobile-action-ring {\n' +
+        '    --mobile-ring-attack-size: 84px;\n' +
+        '    --mobile-ring-action-size: 54px;\n' +
+        '    --mobile-ring-radius: 160px;\n' +
+        '    --mobile-ring-toggle-size: 46px;\n' +
+        '    --mobile-ring-secondary-size: 50px;\n' +
+        '    --mobile-ring-hollow: 88px;\n' +
+        '    right: max(14px, env(safe-area-inset-right));\n' +
+        '    bottom: calc(10px + env(safe-area-inset-bottom));\n' +
+        '  }',
+    );
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch.hud-mobile-tablet #mobile-action-ring {\n' +
+        '    --mobile-ring-attack-size: 116px;\n' +
+        '    --mobile-ring-action-size: 76px;\n' +
+        '    --mobile-ring-radius: 226px;\n' +
+        '    --mobile-ring-toggle-size: 56px;\n' +
+        '    --mobile-ring-secondary-size: 60px;\n' +
+        '    --mobile-ring-hollow: 123px;\n' +
+        '  }',
+    );
+    expect(hudMobileCss).toContain(
+      'body.mobile-touch.hud-mobile-compact.mobile-left-handed #mobile-action-ring {',
+    );
+    // The compact minimap shrink and the hand-synced daily-chest offset are a
+    // COUPLED pair (170 * 0.44 + 8 = 83): pin both so one cannot drift without
+    // the other, and so the arc's vertical budget on a 360px-tall phone holds.
+    expect(hudMobileCss).toContain('transform: scale(0.44);');
+    expect(hudMobileCss).toContain('right: calc(max(6px, env(safe-area-inset-right)) + 83px);');
   });
 
   it('keeps the mobile spell bar in a scrollable row between the joysticks', () => {

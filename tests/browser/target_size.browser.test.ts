@@ -69,7 +69,7 @@ describe('mobile target-size: in-game touch controls are >=40x40 in landscape', 
 
   it('the compact-tier ring keeps every control at the floor (smallest sizes)', () => {
     // hud-mobile-compact re-tunes every --mobile-ring-* var downward for short
-    // landscape phones; the smallest of them (toggle 48, closest 52) must still
+    // landscape phones; the smallest of them (toggle 46, closest 50) must still
     // clear the 40px floor with margin.
     document.body.className = 'mobile-touch game-active hud-mobile-compact';
     const ring = el('div', { id: 'mobile-action-ring' });

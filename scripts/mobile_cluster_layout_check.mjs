@@ -18,12 +18,16 @@
 //
 // Needs `npm run dev` running. URL= overrides the target. Writes one PNG per
 // profile to tmp/. Exit 1 on any violation.
+import { mkdirSync } from 'node:fs';
 import puppeteer from 'puppeteer-core';
 import { BROWSER_PATH } from './browser_path.mjs';
 import { enterOfflineGame } from './enter_offline_game.mjs';
 
 const URL = process.env.URL || 'http://localhost:5173/';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// The offline dev server (no game server) 502s the homepage project-stats fetch;
+// that console error is expected noise, everything else is a real failure.
+const IGNORED_CONSOLE = /502|Bad Gateway|fetch project stats/i;
 
 const CONTROL_IDS = [
   'mobile-action-attack',
@@ -191,7 +195,17 @@ const browser = await puppeteer.launch({
   args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
 });
 try {
+  mkdirSync('tmp', { recursive: true });
   const page = await browser.newPage();
+  // Surface page crashes as first-class failures (house convention): without
+  // this a runtime JS error shows up only as a confusing downstream geometry
+  // miss ("controls never settled") instead of its root cause.
+  page.on('pageerror', (err) => fail(`pageerror: ${String(err).slice(0, 200)}`));
+  page.on('console', (msg) => {
+    if (msg.type() === 'error' && !IGNORED_CONSOLE.test(msg.text())) {
+      fail(`console error: ${msg.text().slice(0, 200)}`);
+    }
+  });
   // Boot on a desktop viewport first (the headless mobile-emulated boot can hang
   // on asset init, see ios_hud_scroll_check.mjs), then flip per profile.
   await page.setViewport({ width: 1280, height: 900 });
@@ -312,14 +326,31 @@ try {
   }
   await page.evaluate(() => document.body.classList.remove('mobile-camera-joystick-on'));
 
-  // Size-setting extremes: a max-size joystick must stay clear of the cluster,
-  // exactly what applySetting writes for joystickScale / actionButtonScale.
-  await page.evaluate(() => {
-    const c = document.getElementById('mobile-controls');
-    c?.style.setProperty('--joy-scale', '1.3');
-    c?.style.setProperty('--btn-scale', '1.3');
-  });
-  await sleep(300);
+  // Size-setting extremes, BOTH ends of the joystickScale range (0.7 min and
+  // 1.3 max, what applySetting writes for joystickScale / actionButtonScale):
+  // at max the grown joystick must not slide under the cluster; at min the
+  // cluster's floored offset must keep every button clear of the FIXED
+  // #mobile-move-zone capture area, or a movement thumb would trigger Jump.
+  for (const joyScale of ['0.7', '1.3']) {
+    await page.evaluate((v) => {
+      const c = document.getElementById('mobile-controls');
+      c?.style.setProperty('--joy-scale', v);
+      c?.style.setProperty('--btn-scale', v === '1.3' ? '1.3' : '1');
+    }, joyScale);
+    await sleep(300);
+    const ext = await collectRects(page);
+    if (ext.moveZone) {
+      for (const id of ['mobile-jump', 'mobile-interact', 'mobile-autorun']) {
+        const r = ext.controls[id];
+        if (r && edgeGap(r, ext.moveZone) < 0) {
+          fail(`joy-scale ${joyScale}: #${id} overlaps the move capture zone`);
+        }
+      }
+    } else {
+      fail(`joy-scale ${joyScale}: #mobile-move-zone not measurable`);
+    }
+  }
+  await sleep(100);
   const sc = await collectRects(page);
   const joy = await page.evaluate(() => {
     const r = document.getElementById('mobile-move-joystick')?.getBoundingClientRect();

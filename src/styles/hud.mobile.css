@@ -303,14 +303,19 @@
      hugging the right edge of the move-joystick zone, mirroring the right-side
      combat cluster's organisation for the left thumb. The horizontal offset
      scales with --joy-scale (the Joystick Size setting) so a grown joystick
-     never slides under the buttons, and the whole cluster sits clear of the
-     floating-joystick capture zone (#mobile-move-zone, <=132px wide) so a thumb
-     reaching for movement cannot land on a button. Jump is nearest the resting
-     thumb, Use bulges outward mid-arc, Autorun tops the stack; 12px vertical
-     gaps keep the taps unambiguous. */
+     never slides under the buttons, FLOORED so the cluster's left edge never
+     drops below 134px: the floating-joystick capture zone (#mobile-move-zone)
+     stays a FIXED min(30vw, 132px) at every joystick scale, so without the
+     floor the minimum setting (0.7) would park Jump over the zone's right
+     column and steal movement touches. Jump is nearest the resting thumb, Use
+     bulges outward mid-arc, Autorun tops the stack; 12px vertical gaps keep
+     the taps unambiguous. */
   body.mobile-touch #mobile-utility-cluster {
     position: absolute;
-    left: calc(max(18px, env(safe-area-inset-left)) + 122px * var(--joy-scale, 1) + 10px);
+    left: calc(
+      max(18px, env(safe-area-inset-left)) +
+      max(116px, 122px * var(--joy-scale, 1) + 10px)
+    );
     bottom: calc(14px + env(safe-area-inset-bottom));
     width: 76px;
     height: 200px;
@@ -886,7 +891,11 @@
   body.mobile-touch #castbar {
     position: fixed;
     left: calc(max(18px, env(safe-area-inset-left)) + 132px);
-    bottom: calc(17px + env(safe-area-inset-bottom));
+    /* 72px, not the old 17px: the left utility cluster (Jump at the bottom of
+       the 132px-plus strip this bar starts in) now owns that low band, and a
+       cast bar rendered behind the Jump button (z 19 vs 30) was unreadable
+       mid-cast. 72 sits just above Jump's top edge (14 + 54). */
+    bottom: calc(72px + env(safe-area-inset-bottom));
     width: min(170px, calc(50vw - 164px));
     min-width: 112px;
     height: 6px;
@@ -1337,7 +1346,10 @@
   /* The utility cluster mirrors with the (now right-side) move joystick. */
   body.mobile-touch.mobile-left-handed #mobile-utility-cluster {
     left: auto;
-    right: calc(max(18px, env(safe-area-inset-right)) + 122px * var(--joy-scale, 1) + 10px);
+    right: calc(
+      max(18px, env(safe-area-inset-right)) +
+      max(116px, 122px * var(--joy-scale, 1) + 10px)
+    );
     transform-origin: right bottom;
   }
   body.mobile-touch.mobile-left-handed #mobile-jump {
@@ -1363,10 +1375,6 @@
     left: auto;
     bottom: calc(158px + env(safe-area-inset-bottom));
     transform-origin: right bottom;
-  }
-  body.mobile-touch.mobile-left-handed #mobile-more {
-    left: auto;
-    right: auto;
   }
   body.mobile-touch.mobile-left-handed #mobile-extra-controls {
     left: 50%;
@@ -2364,15 +2372,22 @@
     }
     /* Landscape joystick is 100px (above), so the utility cluster tucks in
        closer; button rows re-seat for the 48px landscape .mobile-btn height.
-       The flat +14px (not +10px) keeps the cluster's left edge at 134px, past
-       the 132px #mobile-move-zone, so a movement thumb never lands on Jump. */
+       The 114px floor keeps the cluster's left edge at or past 134px at EVERY
+       Joystick Size (the capture zone stays a fixed 132px while --joy-scale
+       goes down to 0.7), so a movement thumb never lands on Jump. */
     body.mobile-touch #mobile-utility-cluster {
-      left: calc(max(20px, env(safe-area-inset-left)) + 100px * var(--joy-scale, 1) + 14px);
+      left: calc(
+        max(20px, env(safe-area-inset-left)) +
+        max(114px, 100px * var(--joy-scale, 1) + 14px)
+      );
       bottom: calc(10px + env(safe-area-inset-bottom));
     }
     body.mobile-touch.mobile-left-handed #mobile-utility-cluster {
       left: auto;
-      right: calc(max(20px, env(safe-area-inset-right)) + 100px * var(--joy-scale, 1) + 14px);
+      right: calc(
+        max(20px, env(safe-area-inset-right)) +
+        max(114px, 100px * var(--joy-scale, 1) + 14px)
+      );
     }
     body.mobile-touch #mobile-interact {
       bottom: 60px;
@@ -2439,7 +2454,10 @@
     }
     body.mobile-touch #castbar {
       left: calc(max(20px, env(safe-area-inset-left)) + 112px);
-      bottom: calc(15px + env(safe-area-inset-bottom));
+      /* Above the landscape utility cluster's Jump button (10 + 48 = 58), for
+         the same reason as the base rule: never render the cast bar behind a
+         button. */
+      bottom: calc(64px + env(safe-area-inset-bottom));
       width: min(160px, calc(50vw - 166px));
       min-width: 100px;
       height: 5px;
