@@ -395,9 +395,9 @@ describe('world boss anti-kite snare (Howling Gale)', () => {
     const sim = makeSim();
     const kiter = sim.addPlayer('hunter', 'Kiter');
     const { boss } = spawnBossNow(sim);
-    // 16yd: beyond the boss's ~12yd melee reach (so it is in the CHASE state, the kite
+    // 22yd: beyond the boss's ~17yd melee reach (so it is in the CHASE state, the kite
     // case none of the other pulses fire in), inside the 40yd snare radius.
-    const p = place(sim, boss, kiter, 16);
+    const p = place(sim, boss, kiter, 22);
     firePulse(sim, boss, kiter, 'chase');
     expect(boss.aiState).toBe('chase'); // the snare fired from the chase path
     const slow = p.auras.find((a) => a.kind === 'slow' && a.name === 'Howling Gale');
@@ -412,7 +412,7 @@ describe('world boss anti-kite snare (Howling Gale)', () => {
     const near = sim.addPlayer('hunter', 'Near');
     const far = sim.addPlayer('hunter', 'Runner');
     const { boss } = spawnBossNow(sim);
-    const pNear = place(sim, boss, near, 16); // inside the 40yd snare
+    const pNear = place(sim, boss, near, 22); // inside the 40yd snare
     const pFar = place(sim, boss, far, 200); // well beyond the 40yd radius
     firePulse(sim, boss, near, 'attack'); // the attack-state call fires before range resolves
     // Positive control: the in-range player IS snared (so the pulse really fired)...
@@ -425,7 +425,7 @@ describe('world boss anti-kite snare (Howling Gale)', () => {
     const sim = makeSim();
     const kiter = sim.addPlayer('hunter', 'Kiter');
     const { boss } = spawnBossNow(sim);
-    const p = place(sim, boss, kiter, 16);
+    const p = place(sim, boss, kiter, 22);
     // First pulse fires now; the cadence timer resets to `every` (5s), far past a tick.
     firePulse(sim, boss, kiter, 'chase');
     const slow = p.auras.find((a) => a.kind === 'slow' && a.name === 'Howling Gale');
@@ -433,7 +433,7 @@ describe('world boss anti-kite snare (Howling Gale)', () => {
     expect(boss.aoeSlowTimer).toBeGreaterThan(1); // reset, not left at 0
     const remainingAfterPulse = slow!.remaining; // full duration, not yet decayed
     // Keep the boss engaged for one more tick WITHOUT re-arming the cadence timer.
-    place(sim, boss, kiter, 16);
+    place(sim, boss, kiter, 22);
     (sim as any).dealDamage(p, boss, 10, false, 'physical', 'Chip', 'hit', true);
     boss.aiState = 'chase';
     boss.aggroTargetId = kiter;
@@ -458,21 +458,22 @@ describe('world boss participant HP scaling', () => {
     return p;
   }
 
-  it('spawns at 40k HP and grows the pool per participant, capped at 100k', () => {
+  it('spawns at 40k HP and grows the pool hard per participant, capped at 2M', () => {
     const sim = makeSim();
     const { boss } = spawnBossNow(sim);
     expect(boss.maxHp).toBe(40_000);
     expect(boss.hp).toBe(40_000);
 
-    // Five participants: 40k + 2k * (5 - 1) = 48k.
+    // Five participants: 40k + 40k * (5 - 1) = 200k.
     for (let i = 0; i < 5; i++) engage(sim, boss, sim.addPlayer('warrior', `P${i}`));
     sim.tick();
-    expect(boss.maxHp).toBe(48_000);
+    expect(boss.maxHp).toBe(200_000);
 
-    // A big raid tops out at the 100k cap (reached around 31 participants).
-    for (let i = 5; i < 40; i++) engage(sim, boss, sim.addPlayer('warrior', `Q${i}`));
+    // A big raid tops out at the 2M cap (reached around 50 participants) so it cannot
+    // be melted in a minute.
+    for (let i = 5; i < 60; i++) engage(sim, boss, sim.addPlayer('warrior', `Q${i}`));
     sim.tick();
-    expect(boss.maxHp).toBe(100_000);
+    expect(boss.maxHp).toBe(2_000_000);
   });
 
   it('never shrinks the grown pool when participants leave', () => {
@@ -480,19 +481,19 @@ describe('world boss participant HP scaling', () => {
     const { boss } = spawnBossNow(sim);
     for (let i = 0; i < 5; i++) engage(sim, boss, sim.addPlayer('warrior', `P${i}`));
     sim.tick();
-    expect(boss.maxHp).toBe(48_000);
+    expect(boss.maxHp).toBe(200_000);
     // The whole raid drops off the hate table: the boss keeps its enlarged pool.
     boss.threat.clear();
     sim.tick();
-    expect(boss.maxHp).toBe(48_000);
+    expect(boss.maxHp).toBe(200_000);
   });
 });
 
 describe('world boss is oversized and loud', () => {
-  it('is twice the normal boss size', () => {
+  it('is a towering, oversized world boss', () => {
     const sim = makeSim();
     const { boss } = spawnBossNow(sim);
-    expect(boss.scale).toBe(3.4);
+    expect(boss.scale).toBe(5);
   });
 
   it('bellows its engage yell far past the default yell range', () => {
@@ -543,5 +544,35 @@ describe('world boss is oversized and loud', () => {
     expect(yellTextTo(far).some((t) => /THUNDER ANSWERS/.test(t))).toBe(true);
     // ...but nothing reaches a player 400yd away, past the loud range.
     expect(yellTextTo(tooFar)).toHaveLength(0);
+  });
+});
+
+describe('world boss summons erupt centered on him and engage immediately', () => {
+  it('spawns adds on the boss, aggroed on his target, leashing to his spawn point', () => {
+    const sim = makeSim();
+    const tank = sim.addPlayer('warrior', 'Tank');
+    const { boss } = spawnBossNow(sim);
+    const pt = (sim as any).entities.get(tank) as Entity;
+    pt.maxHp = pt.hp = 1_000_000;
+    pt.pos = { x: boss.pos.x + 10, z: boss.pos.z, y: boss.pos.y };
+    (sim as any).dealDamage(pt, boss, 50, false, 'physical', 'Chip', 'hit', true);
+    // Drop him below the 0.66 summon threshold, then tick to fire the first wave.
+    boss.hp = Math.floor(boss.maxHp * 0.6);
+    sim.tick();
+    const adds = [...(sim as any).entities.values()].filter(
+      (e: Entity) => e.templateId === 'thunzharr_stormling' && !e.dead,
+    );
+    expect(adds).toHaveLength(2);
+    for (const add of adds) {
+      // Centered on the boss (they erupt from underneath him), not ringed out at arm's length.
+      expect(Math.hypot(add.pos.x - boss.pos.x, add.pos.z - boss.pos.z)).toBeLessThan(2);
+      // Attacking immediately: aggroed on the tank, in combat, already moving.
+      expect(add.aggroTargetId).toBe(tank);
+      expect(add.inCombat).toBe(true);
+      expect(add.aiState === 'chase' || add.aiState === 'attack').toBe(true);
+      // Kited too far, they run home to the boss's ORIGINAL spawn point.
+      expect(add.spawnPos.x).toBeCloseTo(boss.spawnPos.x, 5);
+      expect(add.spawnPos.z).toBeCloseTo(boss.spawnPos.z, 5);
+    }
   });
 });

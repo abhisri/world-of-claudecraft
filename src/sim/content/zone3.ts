@@ -918,7 +918,7 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
       { itemId: 'soulflame_cord', chance: 0.08, rollGroup: 'thunzharr_t2_belt' },
       { itemId: 'stormcallers_waistguard', chance: 0.08, rollGroup: 'thunzharr_t2_belt' },
     ],
-    scale: 3.4, // twice normal boss size: a mountain you cannot miss
+    scale: 5, // a towering world boss (Nythraxis-class); also widens his melee reach to ~17yd, swung single-target, so a kiter cannot open distance
     color: 0x7d8a99,
   },
   // Stormlings: lesser storm elementals Thunzharr tears loose from itself at the

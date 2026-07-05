@@ -107,7 +107,12 @@ async function shot(scale, name) {
   console.log(`shot ${name}: scale ${scale}`);
 }
 
-await shot(3.4, 'thunzharr-size-after');
+// "After" = the boss at its actual (current) template scale; "before" = an old 1.7x.
+const spawnedScale = await page.evaluate(
+  () => window.__game.sim.entities.get(window.__BOSS_ID).scale,
+);
+console.log('spawned (after) scale:', spawnedScale);
+await shot(spawnedScale, 'thunzharr-size-after');
 await shot(1.7, 'thunzharr-size-before');
 
 await browser.close();

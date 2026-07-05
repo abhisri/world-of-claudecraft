@@ -4742,16 +4742,35 @@ export class Sim {
     });
     const [topThreatId] = threatEntries(boss, 1)[0] ?? [];
     const victimId = boss.aggroTargetId ?? topThreatId ?? null;
-    const victim = victimId !== null ? this.entities.get(victimId) : null;
+    let victim = victimId !== null ? (this.entities.get(victimId) ?? null) : null;
+    if (!victim || victim.dead || victim.kind !== 'player') {
+      // Fallback so freshly-summoned adds always have a nearby enemy to charge even if
+      // the boss's own target just died or dropped: pick the closest live player.
+      let best: Entity | null = null;
+      let bestD = Infinity;
+      this.playerGrid.forEachInRadius(boss.pos.x, boss.pos.z, LEASH_DISTANCE, (pl, d2) => {
+        if (pl.kind === 'player' && !pl.dead && d2 < bestD) {
+          bestD = d2;
+          best = pl;
+        }
+      });
+      victim = best;
+    }
+    // World bosses erupt their adds from directly underneath them (centered, a tight
+    // 1yd cluster spread only enough to not stack on one point); ordinary summoners keep
+    // the wider 3.5yd ring beside the boss.
+    const spawnRadius = MOBS[boss.templateId]?.worldBoss ? 1 : 3.5;
     for (let k = 0; k < count; k++) {
       const ang = (k / count) * Math.PI * 2 + 0.7;
       const pos = this.groundPos(
-        boss.pos.x + Math.sin(ang) * 3.5,
-        boss.pos.z + Math.cos(ang) * 3.5,
+        boss.pos.x + Math.sin(ang) * spawnRadius,
+        boss.pos.z + Math.cos(ang) * spawnRadius,
       );
       const level = this.rng.int(template.minLevel, template.maxLevel);
       const add = createMob(this.nextId++, template, level, pos);
-      add.spawnPos = { ...boss.spawnPos }; // leashes with the boss; stays dead in instances
+      // Leash to the boss's ORIGINAL spawn (not his current, possibly-kited position):
+      // pulled too far from it, the add's chase-case leash check evades it home.
+      add.spawnPos = { ...boss.spawnPos };
       add.tappedById = boss.tappedById;
       this.addEntity(add);
       boss.summonedIds.push(add.id);
