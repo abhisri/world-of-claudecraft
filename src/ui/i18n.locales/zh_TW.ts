@@ -2881,6 +2881,16 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'entities.quests.q_mogger.completion':
     '莫格終於死了。東溪的田地更安全了，而你離開谷地時又多了一個值得傳頌的故事。',
   'entities.quests.q_mogger.objectives.0.label': '擊敗莫格',
+  'entities.quests.q_archetype_acceptance.title': '屬於你自己的技藝',
+  'entities.quests.q_archetype_acceptance.text':
+    '東溪的每一位工匠最終都會選定一門屬於自己的技藝。用一件事證明自己吧，{playerName}，宣告你的道路。',
+  'entities.quests.q_archetype_acceptance.completion': '你的道路已經選定；願你走得穩當。',
+  'entities.quests.q_archetype_acceptance.objectives.0.label': '擊敗森林之狼',
+  'entities.quests.q_prof_make_amends.title': '彌補',
+  'entities.quests.q_prof_make_amends.text':
+    '若要放下一門技藝、轉投另一門，工匠必須先為放棄的道路做出彌補，{playerName}。',
+  'entities.quests.q_prof_make_amends.completion': '彌補已經完成；一條新的道路已向你敞開。',
+  'entities.quests.q_prof_make_amends.objectives.0.label': '擊敗森林之狼',
   'entities.quests.q_drowned_choir.title': '溺亡唱詩班',
   'entities.quests.q_drowned_choir.text':
     '那些涉者並非單獨行動。在牠們之間行走的，是溺亡信徒——隨神殿一同沉沒的邪教徒，仍披著腐朽的法衣，仍從岸岩之間唱著那篇禱文。讓其中八人歸於沉寂，並為我帶回他們所攜的六件供品。我想知道他們要獻給女神的究竟是什麼。',

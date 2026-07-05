@@ -131,47 +131,15 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.crafting.unknownRecipe"
   ],
   "zh_CN": [
-    "entities.quests.q_archetype_acceptance.completion",
-    "entities.quests.q_archetype_acceptance.objectives.0.label",
-    "entities.quests.q_archetype_acceptance.text",
-    "entities.quests.q_archetype_acceptance.title",
-    "entities.quests.q_prof_make_amends.completion",
-    "entities.quests.q_prof_make_amends.objectives.0.label",
-    "entities.quests.q_prof_make_amends.text",
-    "entities.quests.q_prof_make_amends.title",
     "hudChrome.crafting.reagentLine"
   ],
   "zh_TW": [
-    "entities.quests.q_archetype_acceptance.completion",
-    "entities.quests.q_archetype_acceptance.objectives.0.label",
-    "entities.quests.q_archetype_acceptance.text",
-    "entities.quests.q_archetype_acceptance.title",
-    "entities.quests.q_prof_make_amends.completion",
-    "entities.quests.q_prof_make_amends.objectives.0.label",
-    "entities.quests.q_prof_make_amends.text",
-    "entities.quests.q_prof_make_amends.title",
     "hudChrome.crafting.reagentLine"
   ],
   "ko_KR": [
-    "entities.quests.q_archetype_acceptance.completion",
-    "entities.quests.q_archetype_acceptance.objectives.0.label",
-    "entities.quests.q_archetype_acceptance.text",
-    "entities.quests.q_archetype_acceptance.title",
-    "entities.quests.q_prof_make_amends.completion",
-    "entities.quests.q_prof_make_amends.objectives.0.label",
-    "entities.quests.q_prof_make_amends.text",
-    "entities.quests.q_prof_make_amends.title",
     "hudChrome.crafting.reagentLine"
   ],
   "ja_JP": [
-    "entities.quests.q_archetype_acceptance.completion",
-    "entities.quests.q_archetype_acceptance.objectives.0.label",
-    "entities.quests.q_archetype_acceptance.text",
-    "entities.quests.q_archetype_acceptance.title",
-    "entities.quests.q_prof_make_amends.completion",
-    "entities.quests.q_prof_make_amends.objectives.0.label",
-    "entities.quests.q_prof_make_amends.text",
-    "entities.quests.q_prof_make_amends.title",
     "hudChrome.crafting.reagentLine"
   ],
   "pt_BR": [
@@ -195,14 +163,6 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.crafting.unknownRecipe"
   ],
   "ru_RU": [
-    "entities.quests.q_archetype_acceptance.completion",
-    "entities.quests.q_archetype_acceptance.objectives.0.label",
-    "entities.quests.q_archetype_acceptance.text",
-    "entities.quests.q_archetype_acceptance.title",
-    "entities.quests.q_prof_make_amends.completion",
-    "entities.quests.q_prof_make_amends.objectives.0.label",
-    "entities.quests.q_prof_make_amends.text",
-    "entities.quests.q_prof_make_amends.title",
     "hudChrome.crafting.reagentLine"
   ],
   "nl_NL": [

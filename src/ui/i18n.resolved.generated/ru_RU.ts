@@ -7513,22 +7513,22 @@ export const ru_RU: EnTranslations = {
         }
       },
       "q_archetype_acceptance": {
-        "title": "A Craft to Call Your Own",
-        "text": "Every artisan of Eastbrook eventually settles on one craft to call their own. Prove yourself with a single deed, {playerName}, and declare your path.",
-        "completion": "Your path is chosen; walk it well.",
+        "title": "Ремесло по душе",
+        "text": "Рано или поздно каждый ремесленник Иствуда выбирает одно ремесло своим призванием. Докажи себя одним делом, {playerName}, и объяви свой путь.",
+        "completion": "Твой путь избран; иди по нему с честью.",
         "objectives": {
           "0": {
-            "label": "Forest Wolf slain"
+            "label": "Лесной волк убит"
           }
         }
       },
       "q_prof_make_amends": {
-        "title": "Making Amends",
-        "text": "To set aside one craft for another, an artisan must first make amends for the path not walked, {playerName}.",
-        "completion": "Amends made; a new path is open to you.",
+        "title": "Искупление",
+        "text": "Чтобы оставить одно ремесло ради другого, ремесленник должен сперва искупить путь, которым не пошёл, {playerName}.",
+        "completion": "Искупление свершилось; перед тобой открыт новый путь.",
         "objectives": {
           "0": {
-            "label": "Forest Wolf slain"
+            "label": "Лесной волк убит"
           }
         }
       },

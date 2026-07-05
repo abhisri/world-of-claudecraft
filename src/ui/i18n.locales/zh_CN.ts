@@ -2879,6 +2879,16 @@ export const zh_CN: Partial<Record<TranslationKey, string>> = {
   'entities.quests.q_mogger.completion':
     '莫格终于死了。东溪的田地更安全了，而你离开谷地时又多了一个值得传颂的故事。',
   'entities.quests.q_mogger.objectives.0.label': '击败莫格',
+  'entities.quests.q_archetype_acceptance.title': '属于你自己的技艺',
+  'entities.quests.q_archetype_acceptance.text':
+    '东溪的每一位匠人最终都会选定一门属于自己的技艺。用一件事证明自己吧，{playerName}，宣告你的道路。',
+  'entities.quests.q_archetype_acceptance.completion': '你的道路已经选定；愿你走得稳当。',
+  'entities.quests.q_archetype_acceptance.objectives.0.label': '击败森林之狼',
+  'entities.quests.q_prof_make_amends.title': '弥补',
+  'entities.quests.q_prof_make_amends.text':
+    '若要放下一门技艺、转投另一门，匠人必须先为放弃的道路做出弥补，{playerName}。',
+  'entities.quests.q_prof_make_amends.completion': '弥补已经完成；一条新的道路已向你敞开。',
+  'entities.quests.q_prof_make_amends.objectives.0.label': '击败森林之狼',
   'entities.quests.q_drowned_choir.title': '溺亡唱诗班',
   'entities.quests.q_drowned_choir.text':
     '那些涉行者并非孤身行动。它们之中游走着溺亡信徒——随神殿一同沉没的邪教徒，至今仍披着腐烂的法衣，仍在岸边礁石上吟唱祷词。让其中八名永远噤声，再为我带回它们随身携带的六件祭品。我想知道它们打算献给女神什么。',

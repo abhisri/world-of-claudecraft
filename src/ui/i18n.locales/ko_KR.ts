@@ -3005,6 +3005,18 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'entities.quests.q_mogger.completion':
     '마침내 모거가 죽었습니다. 이스트브룩의 들판은 더 안전해졌고, 당신은 전할 만한 이야기를 하나 더 안고 계곡을 떠납니다.',
   'entities.quests.q_mogger.objectives.0.label': '모거 처치',
+  'entities.quests.q_archetype_acceptance.title': '스스로 택하는 기술',
+  'entities.quests.q_archetype_acceptance.text':
+    '이스트브룩의 모든 장인은 결국 자신만의 기술 하나를 택하게 된다. {playerName}, 하나의 행동으로 스스로를 증명하고 그대의 길을 선언하라.',
+  'entities.quests.q_archetype_acceptance.completion':
+    '그대의 길이 정해졌다. 그 길을 굳건히 걸어가라.',
+  'entities.quests.q_archetype_acceptance.objectives.0.label': '숲늑대 처치',
+  'entities.quests.q_prof_make_amends.title': '속죄',
+  'entities.quests.q_prof_make_amends.text':
+    '한 기술을 버리고 다른 기술로 나아가려면, 장인은 먼저 걷지 않은 길에 대해 속죄해야 한다, {playerName}.',
+  'entities.quests.q_prof_make_amends.completion':
+    '속죄가 이루어졌다. 그대에게 새로운 길이 열렸다.',
+  'entities.quests.q_prof_make_amends.objectives.0.label': '숲늑대 처치',
   'entities.quests.q_drowned_choir.title': '익사한 성가대',
   'entities.quests.q_drowned_choir.text':
     '물거리들은 홀로 움직이지 않는다네. 그들 사이를 익사한 신도들이 걷고 있지 — 신전과 함께 가라앉은 그 광신도들은, 썩어버린 제의를 여전히 걸친 채 물가 바위에서 부르던 기도를 아직도 노래하고 있네. 그들 중 여덟을 침묵시키고, 그들이 지닌 제물 여섯 개를 내게 가져오게. 그들이 그 여신에게 무엇을 바치려는지 알고 싶네.',
