@@ -8,6 +8,7 @@ import puppeteer from 'puppeteer-core';
 
 import { BROWSER_PATH as EDGE } from './browser_path.mjs';
 
+
 const URL = process.env.GAME_URL ?? 'http://localhost:5173';
 const OUT = 'docs/screenshots';
 fs.mkdirSync(OUT, { recursive: true });
