@@ -15,11 +15,6 @@ import type { ProfessionRecord } from '../professions/types';
 export type GatheringProfessionId = 'mining' | 'logging' | 'herbalism';
 
 export interface GatheringProfessionDef extends ProfessionRecord {
-// ../professions/gathering.ts behind the SimContext seam. Icon glyphs follow
-// the same convention as talent nodes (content, rendered directly).
-export type GatheringProfessionId = 'mining' | 'logging' | 'herbalism';
-
-export interface GatheringProfessionDef {
   id: GatheringProfessionId;
   name: string;
   icon: string;
@@ -62,6 +57,7 @@ export const GATHERING_PROFESSIONS: Record<GatheringProfessionId, GatheringProfe
 // Stable iteration order, used for defaulting/normalizing a per-player
 // proficiency record. Keep in sync with GATHERING_PROFESSIONS above.
 export const GATHERING_PROFESSION_IDS: GatheringProfessionId[] = ['mining', 'logging', 'herbalism'];
+
 // Ten-craft ring content: pure data plus pure helper functions. No engine logic,
 // no mechanic wiring: this file only defines the ring geometry (order, pole tags)
 // and the adjacency/opposite lookups derived from it. See issue #1125.

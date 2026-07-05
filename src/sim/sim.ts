@@ -187,19 +187,19 @@ import * as petCommands from './pet/pet_commands';
 import {
   drainGatheringGrants,
   emptyGatheringProficiency,
+  gatherNodeById,
   gatheringSkillsView,
   gatherNodeById,
   harvestNode as harvestNodeImpl,
   isNodeHarvestableBy,
   normalizeGatheringProficiency,
 } from './professions/gathering';
+import {
   craftSkillsFor,
   emptyCraftSkills,
   gainCraftSkill,
   normalizeCraftSkills,
 } from './professions/wheel';
-  normalizeGatheringProficiency,
-} from './professions/gathering';
 import {
   craftSkillsFor,
   emptyCraftSkills,
@@ -6575,6 +6575,8 @@ export class Sim {
 
   get craftSkills(): Record<string, number> {
     return this.craftSkillsFor(this.primaryId);
+  }
+
   // Read-only gathering-profession proficiency surface for IWorld. Stubbed
   // directly on IWorld pending issue #1164 (a broader professions facet); see
   // that issue for the eventual reconciliation.
