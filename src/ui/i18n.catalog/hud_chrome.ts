@@ -1321,4 +1321,12 @@ export const hudChromeStrings = {
     lastSeen: 'Last seen: {when}',
     lastSeenNever: 'never',
   },
+  // Gathering proficiency section on the character sheet (#1124). Profession
+  // display names mirror src/sim/content/professions.ts (GatheringProfessionId).
+  gathering: {
+    title: 'Gathering',
+    mining: 'Mining',
+    logging: 'Logging',
+    herbalism: 'Herbalism',
+  },
 };

@@ -1181,6 +1181,12 @@ export const sv_SE: EnTranslations = {
     "social": {
       "lastSeen": "Senast sedd: {when}",
       "lastSeenNever": "aldrig"
+    },
+    "gathering": {
+      "title": "Insamling",
+      "mining": "Gruvdrift",
+      "logging": "Skogsavverkning",
+      "herbalism": "Örtkunskap"
     }
   },
   "guide": {
@@ -2519,7 +2525,9 @@ export const sv_SE: EnTranslations = {
   },
   "download": {
     "title": "Ladda ner skrivbordsstartaren",
-    "desc": "Hämta den fristående startaren för optimerad prestanda och spel i helskärm."
+    "desc": "Hämta den fristående startaren för optimerad prestanda och spel i helskärm.",
+    "macCta": "Ladda ner för macOS",
+    "windowsPending": "Windows-bygge väntar."
   },
   "comingSoon": {
     "placeholder": "Kommer snart...",
@@ -5666,6 +5674,24 @@ export const sv_SE: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Silverbladsskära"
+      },
+      "thorium_mining_pick": {
+        "name": "Toriumhacka"
+      },
+      "arcanite_mining_pick": {
+        "name": "Arkanithacka"
+      },
+      "ashwood_axe": {
+        "name": "Askträdsyxa"
+      },
+      "elderwood_axe": {
+        "name": "Gammelträdsyxa"
+      },
+      "goldleaf_sickle": {
+        "name": "Guldbladsskära"
+      },
+      "sunpetal_sickle": {
+        "name": "Solkronbladsskära"
       },
       "bristleback_maul": {
         "name": "Gallowglass-hammare"

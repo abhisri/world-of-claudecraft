@@ -1181,6 +1181,12 @@ export const id_ID: EnTranslations = {
     "social": {
       "lastSeen": "Terakhir terlihat: {when}",
       "lastSeenNever": "tidak pernah"
+    },
+    "gathering": {
+      "title": "Pengumpulan",
+      "mining": "Penambangan",
+      "logging": "Penebangan",
+      "herbalism": "Herbalisme"
     }
   },
   "guide": {
@@ -2519,7 +2525,9 @@ export const id_ID: EnTranslations = {
   },
   "download": {
     "title": "Unduh Peluncur Desktop",
-    "desc": "Dapatkan peluncur mandiri untuk performa optimal dan permainan layar penuh."
+    "desc": "Dapatkan peluncur mandiri untuk performa optimal dan permainan layar penuh.",
+    "macCta": "Unduh untuk macOS",
+    "windowsPending": "Build Windows tertunda."
   },
   "comingSoon": {
     "placeholder": "Segera Hadir...",
@@ -5666,6 +5674,24 @@ export const id_ID: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Sabit Daun Perak"
+      },
+      "thorium_mining_pick": {
+        "name": "Beliung Tambang Thorium"
+      },
+      "arcanite_mining_pick": {
+        "name": "Beliung Tambang Arcanite"
+      },
+      "ashwood_axe": {
+        "name": "Kapak Kayu Abu"
+      },
+      "elderwood_axe": {
+        "name": "Kapak Kayu Tua"
+      },
+      "goldleaf_sickle": {
+        "name": "Sabit Daun Emas"
+      },
+      "sunpetal_sickle": {
+        "name": "Sabit Kelopak Matahari"
       },
       "bristleback_maul": {
         "name": "Palu Gallowglass"

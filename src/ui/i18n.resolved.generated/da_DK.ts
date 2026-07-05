@@ -1181,6 +1181,12 @@ export const da_DK: EnTranslations = {
     "social": {
       "lastSeen": "Sidst set: {when}",
       "lastSeenNever": "aldrig"
+    },
+    "gathering": {
+      "title": "Indsamling",
+      "mining": "Minedrift",
+      "logging": "Skovhugst",
+      "herbalism": "Urtekundskab"
     }
   },
   "guide": {
@@ -2519,7 +2525,9 @@ export const da_DK: EnTranslations = {
   },
   "download": {
     "title": "Download Desktop-launcher",
-    "desc": "Hent den selvstændige launcher for optimeret ydeevne og fuldskærmsspil."
+    "desc": "Hent den selvstændige launcher for optimeret ydeevne og fuldskærmsspil.",
+    "macCta": "Download til macOS",
+    "windowsPending": "Windows-build afventer."
   },
   "comingSoon": {
     "placeholder": "Kommer snart...",
@@ -5666,6 +5674,24 @@ export const da_DK: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Sølvbladsegl"
+      },
+      "thorium_mining_pick": {
+        "name": "Thoriumminehakke"
+      },
+      "arcanite_mining_pick": {
+        "name": "Arkanitminehakke"
+      },
+      "ashwood_axe": {
+        "name": "Askeøkse"
+      },
+      "elderwood_axe": {
+        "name": "Gammeltræsøkse"
+      },
+      "goldleaf_sickle": {
+        "name": "Guldbladssegl"
+      },
+      "sunpetal_sickle": {
+        "name": "Solkronbladssegl"
       },
       "bristleback_maul": {
         "name": "Gallowglass-Hammer"
