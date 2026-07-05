@@ -345,9 +345,14 @@ export function terrainHeight(x: number, z: number, seed: number): number {
     if (dz < RIDGE_SIGMA * 3) {
       const profile = Math.exp(-(dz * dz) / (2 * RIDGE_SIGMA * RIDGE_SIGMA));
       const pass = smoothstep(PASS_HALF_WIDTH, PASS_SHOULDER, Math.abs(x - ridge.passX));
-      // jagged crest so the wall reads as mountains, not a berm (variance kept
-      // tight so the lowest saddle still beats the climb limit)
-      const crest = 1 + (fbm2(x * 0.03, ridge.z * 0.03, seed + 19, 2) - 0.5) * 0.4;
+      // jagged crest so the wall reads as mountains, not a berm: a coarse layer
+      // for peak/saddle shape plus a finer layer for crag/shoulder detail.
+      // Combined variance kept tight so the lowest saddle still beats the
+      // climb limit (tests/terrain_walls.test.ts).
+      const crest =
+        1 +
+        (fbm2(x * 0.03, ridge.z * 0.03, seed + 19, 2) - 0.5) * 0.4 +
+        (fbm2(x * 0.11, ridge.z * 0.11, seed + 23, 2) - 0.5) * 0.14;
       h += RIDGE_HEIGHT * crest * profile * pass;
     }
   }
@@ -361,7 +366,16 @@ export function terrainHeight(x: number, z: number, seed: number): number {
   const rimS = smoothstep(w.minZ + 30, w.minZ + 6, z);
   const rimN = smoothstep(w.maxZ - 30, w.maxZ - 6, z);
   const rim = Math.max(rimX, rimS, rimN);
-  h += rim * 55;
+  // The rim wall used to be a perfectly smooth berm (no noise at all), which
+  // read as artificial from a distance. Give it the same two-layer jagged
+  // crest as the inter-zone ridges: a coarse peak/saddle layer plus a finer
+  // crag layer, same conservative combined variance so the climb-limit
+  // invariant still holds along the whole rim.
+  const rimCrest =
+    1 +
+    (fbm2(x * 0.025, z * 0.025, seed + 29, 3) - 0.5) * 0.35 +
+    (fbm2(x * 0.09, z * 0.09, seed + 37, 2) - 0.5) * 0.15;
+  h += rim * 55 * rimCrest;
   h += mirefenImpactCraterOffset(x, z);
   h = applyEditLayer(x, z, h);
   return h;

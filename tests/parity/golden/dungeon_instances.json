@@ -841,8 +841,8 @@
       "tick": 4,
       "time": 0.2,
       "nextId": 416,
-      "state": "edb1a041",
-      "events": "8ca70f8e",
+      "state": "ae416258",
+      "events": "b0c301f0",
       "rng": {
         "draws": 49,
         "digest": "1d1c5dad"
@@ -862,7 +862,7 @@
           "cls": "warrior",
           "companionUpgrades": {},
           "counters": {
-            "damageTaken": 163124,
+            "damageTaken": 175396,
             "deaths": 1
           },
           "craftSkills": {},
@@ -985,7 +985,7 @@
           "critChance": 0.056,
           "detonateTimer": "Infinity",
           "dodgeChance": 0.056,
-          "fallStartY": 57.122741,
+          "fallStartY": 60.62914,
           "fiveSecondRule": 99.2,
           "hp": 50000,
           "id": 401,
@@ -1633,8 +1633,8 @@
       "tick": 5,
       "time": 0.25,
       "nextId": 416,
-      "state": "cd1a9f14",
-      "events": "5d7113da",
+      "state": "9d91fc10",
+      "events": "2dd4b9a0",
       "rng": {
         "draws": 49,
         "digest": "1d1c5dad"
@@ -1644,7 +1644,7 @@
       "tick": 10,
       "time": 0.5,
       "nextId": 416,
-      "state": "8a1df92c",
+      "state": "a1b6a2c8",
       "events": "741638a5",
       "rng": {
         "draws": 49,
@@ -1655,7 +1655,7 @@
       "tick": 15,
       "time": 0.75,
       "nextId": 416,
-      "state": "f92b727a",
+      "state": "c4198506",
       "events": "741638a5",
       "rng": {
         "draws": 49,
@@ -1666,7 +1666,7 @@
       "tick": 20,
       "time": 1,
       "nextId": 416,
-      "state": "05459bf7",
+      "state": "98937093",
       "events": "14a3ffd8",
       "rng": {
         "draws": 49,
@@ -1677,7 +1677,7 @@
       "tick": 24,
       "time": 1.2,
       "nextId": 416,
-      "state": "e32c4147",
+      "state": "084ca8e3",
       "events": "741638a5",
       "rng": {
         "draws": 49,
@@ -1698,7 +1698,7 @@
           "cls": "warrior",
           "companionUpgrades": {},
           "counters": {
-            "damageTaken": 163124,
+            "damageTaken": 175396,
             "deaths": 1
           },
           "craftSkills": {},
@@ -1736,7 +1736,7 @@
           "cls": "mage",
           "companionUpgrades": {},
           "counters": {
-            "damageTaken": 163124,
+            "damageTaken": 175396,
             "deaths": 1
           },
           "craftSkills": {},
@@ -1872,7 +1872,7 @@
       "tick": 24,
       "time": 1.2,
       "nextId": 416,
-      "state": "e32c4147",
+      "state": "084ca8e3",
       "events": "741638a5",
       "rng": {
         "draws": 49,
@@ -1893,7 +1893,7 @@
           "cls": "warrior",
           "companionUpgrades": {},
           "counters": {
-            "damageTaken": 163124,
+            "damageTaken": 175396,
             "deaths": 1
           },
           "craftSkills": {},
@@ -1931,7 +1931,7 @@
           "cls": "mage",
           "companionUpgrades": {},
           "counters": {
-            "damageTaken": 163124,
+            "damageTaken": 175396,
             "deaths": 1
           },
           "craftSkills": {},
