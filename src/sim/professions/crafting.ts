@@ -20,7 +20,7 @@ import { recipeById } from '../content/recipes';
 import type { SimContext } from '../sim_context';
 import { type MaterialRarity, rollMaterialRarity } from './gathering';
 import type { ProfessionRecipeRecord } from './types';
-import { gainCraftSkill } from './wheel';
+import { gainCraftSkill, tierCapability, tierForSkill, tierProgressMultiplier } from './wheel';
 
 // One flat craft-skill point per successful common-tier craft (the free-floor
 // rule: common-tier crafting itself never costs anything, but skill still
@@ -49,17 +49,24 @@ export function hasRecipeMaterials(
   return recipe.reagents.every((r) => ctx.countItem(r.itemId, pid) >= r.count);
 }
 
-/** Pure resolution of one craft attempt against one recipe, given an already-
- *  resolved player entity id: denies (no side effect at all) if the recipe id
- *  is unknown or any reagent is short, partial consumption never happens. On
- *  success, consumes every reagent, rolls the output's quality off the
- *  player's current skill in the recipe's craft, grants the output item, and
- *  grants a flat point of craft skill. */
-export function resolveCraft(ctx: SimContext, pid: number, recipeId: string): CraftResult {
-  const recipe = recipeById(recipeId);
-  if (!recipe) return { ok: false, recipeId, reason: 'unknown_recipe' };
+/** Pure resolution of one craft attempt against an already-resolved recipe
+ *  record and player entity id (issue #1128 tiered mastery gating): denies
+ *  (no side effect at all) if any reagent is short, partial consumption never
+ *  happens. On success, consumes every reagent, rolls the output's quality off
+ *  the player's current skill in the recipe's craft, grants the output item,
+ *  and grants craft skill scaled by tier mastery: full at or above the
+ *  player's tier capability (including always-full for the common tier,
+ *  regardless of capability), reduced one tier below, zero two or more tiers
+ *  below. Exported separately from `resolveCraft` so tests can exercise the
+ *  tier curve against a synthetic recipe without needing higher-tier content
+ *  in `content/recipes.ts`. */
+export function resolveCraftForRecipe(
+  ctx: SimContext,
+  pid: number,
+  recipe: ProfessionRecipeRecord,
+): CraftResult {
   if (!hasRecipeMaterials(ctx, recipe, pid)) {
-    return { ok: false, recipeId, reason: 'insufficient_materials' };
+    return { ok: false, recipeId: recipe.id, reason: 'insufficient_materials' };
   }
   for (const reagent of recipe.reagents) {
     ctx.removeItem(reagent.itemId, reagent.count, pid);
@@ -68,14 +75,28 @@ export function resolveCraft(ctx: SimContext, pid: number, recipeId: string): Cr
   const skill = meta ? (meta.craftSkills[recipe.professionId] ?? 0) : 0;
   const quality = rollMaterialRarity(skill, ctx.rng);
   ctx.addItem(recipe.resultItemId, recipe.resultCount, pid);
-  if (meta) gainCraftSkill(meta.craftSkills, recipe.professionId, CRAFT_SKILL_GAIN);
+  if (meta) {
+    const capabilityTier = tierCapability(meta.craftSkills, recipe.professionId);
+    const recipeTier = tierForSkill(recipe.skillReq);
+    const multiplier = tierProgressMultiplier(capabilityTier, recipeTier);
+    gainCraftSkill(meta.craftSkills, recipe.professionId, CRAFT_SKILL_GAIN * multiplier);
+  }
   return {
     ok: true,
-    recipeId,
+    recipeId: recipe.id,
     itemId: recipe.resultItemId,
     count: recipe.resultCount,
     quality,
   };
+}
+
+/** Pure resolution of one craft attempt against one recipe id, given an
+ *  already-resolved player entity id: denies with `unknown_recipe` if the id
+ *  does not resolve, otherwise delegates to `resolveCraftForRecipe`. */
+export function resolveCraft(ctx: SimContext, pid: number, recipeId: string): CraftResult {
+  const recipe = recipeById(recipeId);
+  if (!recipe) return { ok: false, recipeId, reason: 'unknown_recipe' };
+  return resolveCraftForRecipe(ctx, pid, recipe);
 }
 
 // Command entry point (behind the SimContext seam): resolves one player's

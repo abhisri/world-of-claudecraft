@@ -911,11 +911,6 @@ export interface CharacterState {
   // Ravenpost welcome letter already sent (optional so pre-mail saves load
   // cleanly and receive the announcement letter once on their next login).
   mailWelcomed?: boolean;
-  // World-boss loot lockouts now ride `raidLockouts` (keyed worldboss:<mobId>). The
-  // legacy per-day `worldBossDaily` field is intentionally dropped: pre-migration saves
-  // that still carry it just ignore it (a player locked at deploy may loot once more, a
-  // one-time, player-friendly transition), and their lockouts persist via raidLockouts
-  // from then on.
   // Flat per-craft skill tracking (#1126; JSONB, additive back-compat: absent or
   // partial on older saves loads the missing crafts as 0, see normalizeCraftSkills).
   craftSkills?: Record<string, number>;
@@ -1568,9 +1563,6 @@ export class Sim {
           markClears: s.delveDaily.markClears,
         };
       }
-      // Legacy s.worldBossDaily is intentionally not restored: world-boss lockouts now
-      // ride raidLockouts (loaded above), so a pre-migration save just drops its stale
-      // daily record.
     }
 
     // Resolve the flat talent struct once, before the stat pass + ability

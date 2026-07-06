@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { COMMON_RECIPES, recipeById } from '../src/sim/content/recipes';
-import { hasRecipeMaterials, resolveCraft } from '../src/sim/professions/crafting';
+import {
+  hasRecipeMaterials,
+  resolveCraft,
+  resolveCraftForRecipe,
+} from '../src/sim/professions/crafting';
+import type { ProfessionRecipeRecord } from '../src/sim/professions/types';
 import type { Rng } from '../src/sim/rng';
 import { Sim } from '../src/sim/sim';
 
@@ -188,5 +193,88 @@ describe('craftItem command (#1127)', () => {
     sim.craftItem('recipe_tough_jerky', pid);
     expect(sim.lastCraftResult?.ok).toBe(false);
     expect(sim.lastCraftResult?.reason).toBe('insufficient_materials');
+  });
+});
+
+describe('tiered mastery gating (#1128)', () => {
+  // A synthetic tier-1 recipe (skillReq 25, one bucket above common) reusing an
+  // existing harvested reagent, so these tests can drive the tier curve without
+  // needing higher-tier content in content/recipes.ts (that is a later issue).
+  const tier1Recipe: ProfessionRecipeRecord = {
+    id: 'test_tier1_recipe',
+    professionId: 'weaponcrafting',
+    resultItemId: 'eastbrook_arming_sword',
+    resultCount: 1,
+    reagents: [{ itemId: 'bone_fragments', count: 1 }],
+    skillReq: 25,
+    trivialAt: 50,
+    itemLevelBudget: 10,
+  };
+
+  function setSkill(sim: Sim, pid: number, craftId: string, value: number) {
+    const meta = (sim as any).players.get(pid);
+    meta.craftSkills[craftId] = value;
+  }
+
+  it('crafting at the player tier capability grants full skill progress', () => {
+    const sim = makeSim();
+    const pid = sim.playerId;
+    setSkill(sim, pid, 'weaponcrafting', 25); // tier-1 capability
+    grantItem(sim, 'bone_fragments', 1, pid);
+
+    const result = resolveCraftForRecipe((sim as any).ctx, pid, tier1Recipe);
+
+    expect(result.ok).toBe(true);
+    const meta = (sim as any).players.get(pid);
+    expect(meta.craftSkills.weaponcrafting).toBe(26); // 25 + full 1 point
+  });
+
+  it('crafting one tier below capability grants reduced (but non-zero) skill progress', () => {
+    const sim = makeSim();
+    const pid = sim.playerId;
+    setSkill(sim, pid, 'weaponcrafting', 50); // tier-2 capability, recipe is tier-1
+    grantItem(sim, 'bone_fragments', 1, pid);
+
+    const result = resolveCraftForRecipe((sim as any).ctx, pid, tier1Recipe);
+
+    expect(result.ok).toBe(true);
+    const meta = (sim as any).players.get(pid);
+    const gained = meta.craftSkills.weaponcrafting - 50;
+    expect(gained).toBeGreaterThan(0);
+    expect(gained).toBeLessThan(1);
+  });
+
+  it('crafting two or more tiers below capability grants zero skill progress', () => {
+    const sim = makeSim();
+    const pid = sim.playerId;
+    setSkill(sim, pid, 'weaponcrafting', 75); // tier-3 capability, recipe is tier-1
+    grantItem(sim, 'bone_fragments', 1, pid);
+
+    const result = resolveCraftForRecipe((sim as any).ctx, pid, tier1Recipe);
+
+    expect(result.ok).toBe(true);
+    const meta = (sim as any).players.get(pid);
+    expect(meta.craftSkills.weaponcrafting).toBe(75);
+  });
+
+  it('common-tier crafting always grants its full floor, regardless of capability', () => {
+    const lowCapSim = makeSim();
+    const lowPid = lowCapSim.playerId;
+    grantItem(lowCapSim, 'spider_leg', 1, lowPid);
+    const commonRecipe = recipeById('recipe_tough_jerky')!;
+    expect(commonRecipe.skillReq).toBe(0);
+
+    resolveCraftForRecipe((lowCapSim as any).ctx, lowPid, commonRecipe);
+    const lowMeta = (lowCapSim as any).players.get(lowPid);
+    expect(lowMeta.craftSkills.cooking).toBe(1);
+
+    const highCapSim = makeSim();
+    const highPid = highCapSim.playerId;
+    setSkill(highCapSim, highPid, 'cooking', 100); // high tier capability
+    grantItem(highCapSim, 'spider_leg', 1, highPid);
+
+    resolveCraftForRecipe((highCapSim as any).ctx, highPid, commonRecipe);
+    const highMeta = (highCapSim as any).players.get(highPid);
+    expect(highMeta.craftSkills.cooking).toBe(101); // still the full floor point
   });
 });
