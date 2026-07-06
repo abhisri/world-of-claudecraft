@@ -1059,6 +1059,18 @@ export const ko_KR: EnTranslations = {
         }
       }
     },
+    "crafting": {
+      "title": "제작",
+      "close": "제작 닫기",
+      "craft": "제작",
+      "reagentsNeeded": "필요 재료:",
+      "reagentLine": "{name} x{have}/{required}",
+      "empty": "알려진 제작법이 없습니다.",
+      "resultAria": "{name} 제작",
+      "craftedToast": "제작 완료:{name}",
+      "insufficientMaterials": "재료가 부족합니다.",
+      "unknownRecipe": "해당 제작법이 존재하지 않습니다."
+    },
     "devBadge": {
       "title": "개발자",
       "tiers": {

@@ -10,6 +10,16 @@
 
 export const pending: Record<string, readonly string[]> = {
   "es": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -20,6 +30,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "es_ES": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -30,6 +50,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "fr_FR": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -40,6 +70,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "fr_CA": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -51,6 +91,16 @@ export const pending: Record<string, readonly string[]> = {
   ],
   "en_CA": [],
   "it_IT": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -61,6 +111,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "de_DE": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -71,22 +131,36 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "zh_CN": [
+    "hudChrome.crafting.reagentLine",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.spellbookPageLabel"
   ],
   "zh_TW": [
+    "hudChrome.crafting.reagentLine",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.spellbookPageLabel"
   ],
   "ko_KR": [
+    "hudChrome.crafting.reagentLine",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.spellbookPageLabel"
   ],
   "ja_JP": [
+    "hudChrome.crafting.reagentLine",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.spellbookPageLabel"
   ],
   "pt_BR": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -97,10 +171,21 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "ru_RU": [
+    "hudChrome.crafting.reagentLine",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.spellbookPageLabel"
   ],
   "nl_NL": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -111,6 +196,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "pl_PL": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -121,6 +216,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "id_ID": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -131,6 +236,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "tr_TR": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -141,6 +256,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "sv_SE": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -151,6 +276,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "vi_VN": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",
@@ -161,6 +296,16 @@ export const pending: Record<string, readonly string[]> = {
     "hudChrome.options.mobileLeftHanded"
   ],
   "da_DK": [
+    "hudChrome.crafting.close",
+    "hudChrome.crafting.craft",
+    "hudChrome.crafting.craftedToast",
+    "hudChrome.crafting.empty",
+    "hudChrome.crafting.insufficientMaterials",
+    "hudChrome.crafting.reagentLine",
+    "hudChrome.crafting.reagentsNeeded",
+    "hudChrome.crafting.resultAria",
+    "hudChrome.crafting.title",
+    "hudChrome.crafting.unknownRecipe",
     "hudChrome.mobile.actionPageIndicator",
     "hudChrome.mobile.actionPageToggle",
     "hudChrome.mobile.actionRing",

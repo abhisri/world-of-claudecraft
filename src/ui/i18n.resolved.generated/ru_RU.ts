@@ -1059,6 +1059,18 @@ export const ru_RU: EnTranslations = {
         }
       }
     },
+    "crafting": {
+      "title": "Крафт",
+      "close": "Закрыть крафт",
+      "craft": "Создать",
+      "reagentsNeeded": "Требуется:",
+      "reagentLine": "{name} x{have}/{required}",
+      "empty": "Известных рецептов пока нет.",
+      "resultAria": "Создать {name}",
+      "craftedToast": "Создано: {name}",
+      "insufficientMaterials": "У вас недостаточно материалов.",
+      "unknownRecipe": "Такого рецепта не существует."
+    },
     "devBadge": {
       "title": "Разработчик",
       "tiers": {

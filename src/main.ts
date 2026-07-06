@@ -1040,6 +1040,9 @@ async function startGame(
           case 'bags':
             hud.toggleBags();
             break;
+          case 'crafting':
+            hud.toggleCrafting();
+            break;
           case 'char':
             hud.toggleChar();
             break;
