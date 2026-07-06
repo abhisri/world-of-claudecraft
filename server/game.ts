@@ -38,6 +38,8 @@ import { offensiveName } from './auth';
 import type {
   BotDetector,
   BotTrackingContext,
+  ConfigApplyResult,
+  ConfigField,
   SessionRuntimeSnapshot,
   SuspiciousPlayer,
 } from './bot_detector/contract';
@@ -84,7 +86,11 @@ import {
   muteAccountChat,
   recordInGameAction,
 } from './moderation_db';
-import { type ModerationHost, ModerationService } from './moderation_service';
+import {
+  canAttemptModerationCommands,
+  type ModerationHost,
+  ModerationService,
+} from './moderation_service';
 import { consumeMsgToken, createMsgRateBucket, type MsgRateBucketState } from './msg_rate_limit';
 import { nextRaidResetMs } from './raid_reset';
 import { REALM, REALM_PUBLIC_ORIGIN, REALM_RESET_TIME_ZONE } from './realm';
@@ -150,7 +156,6 @@ const RESTART_COUNTDOWN_STEPS = [
   { atSeconds: 590, text: 'Server restart in 10 seconds.' },
   { atSeconds: 600, text: 'Server restarting now.' },
 ] as const;
-const ANTIBOT_ENFORCE = process.env.ANTIBOT_ENFORCE === '1';
 // Clients stream movement intent every 50ms. If that stream goes silent while
 // the last packet held a key down, stop applying it instead of turning/running
 // forever. 750ms leaves room for normal jitter and short browser stalls.
@@ -405,6 +410,9 @@ export interface ClientSession {
   fbc: string;
   sourceUrl: string;
   isAdmin: boolean;
+  // Expanded admin permissions, snapshotted at join like isAdmin (a role change
+  // applies at the next login). Gates the in-game moderation commands.
+  adminPermissions: ReadonlySet<string>;
   // Seed the client sends at auth; signs its challenge answers.
   clientSeed: string;
   // Behavioral bot-detection state. Ephemeral — reset on every join.
@@ -1305,10 +1313,13 @@ export class GameServer {
   private runAntibotTick(): void {
     const now = Date.now();
     for (const session of this.clients.values()) {
+      // Enforcement gating lives in the detector's own runtime config (which
+      // defaults to the ANTIBOT_ENFORCE env var and is operator-tunable live),
+      // so the host-side kill-switch parameter is always granted here.
       const action = this.botDetector.handleTick(
         session.botTrackingContext,
         now,
-        ANTIBOT_ENFORCE,
+        true,
         this.captureBotDetectionSnapshot(session, now),
       );
       if (action === 'kick') {
@@ -1447,6 +1458,19 @@ export class GameServer {
       .catch((err) => console.error('failed to save account mech chroma:', err));
   }
 
+  /**
+   * Grant a mech-chroma cosmetic to an account by id (a Discord swag claim, whose
+   * points/claim are already resolved durably server-side). Best-effort live update:
+   * persist the grant, then push the refreshed cosmetics to any online session on the
+   * account. The live push is a no-op when the account is offline. Injected into the
+   * ported Discord swag route via configureDiscordRuntime (server/discord.ts).
+   */
+  grantMechChromaToAccount(accountId: number, chromaId: string): void {
+    void grantAccountMechChroma(accountId, chromaId)
+      .then((cosmetics) => this.updateLiveAccountCosmetics(accountId, cosmetics))
+      .catch((err) => console.error('failed to grant swag mech chroma:', err));
+  }
+
   private unequipAccountMechChroma(session: ClientSession, chromaId: string): void {
     const skin = mechChromaSkinIndex(chromaId);
     const itemId = mechChromaItemId(chromaId);
@@ -1482,6 +1506,7 @@ export class GameServer {
         accountCosmetics?: AccountCosmetics;
         chatStrikes?: number;
         isAdmin?: boolean;
+        adminPermissions?: readonly string[];
         clientSeed?: string;
         fbp?: string | null;
         fbc?: string | null;
@@ -1557,6 +1582,11 @@ export class GameServer {
       fbc: meta.fbc ?? '',
       sourceUrl: meta.sourceUrl ?? '',
       isAdmin: meta.isAdmin ?? false,
+      // Permissions come only from the explicit set main.ts computes from the
+      // account's roles; no is_admin fallback (fail closed, matching
+      // staff_db.effectiveAdminRoles). A staff member with zero permissions has
+      // no in-game moderation commands.
+      adminPermissions: new Set(meta.adminPermissions ?? []),
       clientSeed: meta.clientSeed ?? '',
       botTrackingContext,
       spectating: null,
@@ -1892,6 +1922,16 @@ export class GameServer {
 
   suspiciousPlayers(): SuspiciousPlayer[] {
     return this.botDetector.listSuspiciousPlayers();
+  }
+
+  antibotConfigFields(): ConfigField[] {
+    return this.botDetector.describeConfig();
+  }
+
+  // Validates and applies live (invalid entries are skipped and reported; the
+  // admin save path rejects on any error and re-applies its previous document).
+  applyAntibotConfig(overrides: Record<string, unknown>): ConfigApplyResult {
+    return this.botDetector.applyConfig(overrides);
   }
 
   detectionCalibration(): DetectionCalibrationSnapshot {
@@ -2288,7 +2328,8 @@ export class GameServer {
     if (session.spectating) {
       if (msg.cmd !== 'chat' || typeof msg.text !== 'string') return;
       const text = msg.text.trim();
-      if (session.isAdmin && this.moderation.handleChatCommand(session, text)) return;
+      if (canAttemptModerationCommands(session) && this.moderation.handleChatCommand(session, text))
+        return;
       if (this.isSpectateLocalChat(session, text)) {
         this.sendChatNotice(session, 'Local chat is unavailable while spectating.');
         return;
@@ -2366,7 +2407,12 @@ export class GameServer {
         if (typeof msg.id === 'number') sim.autoLoot(msg.id, pid);
         break;
       case 'harvestCorpse':
-        if (typeof msg.id === 'number') sim.harvestCorpse(msg.id, pid);
+        if (typeof msg.id === 'number') {
+          const components = Array.isArray(msg.components)
+            ? msg.components.filter((c): c is string => typeof c === 'string')
+            : undefined;
+          sim.harvestCorpse(msg.id, components, pid);
+        }
         break;
       case 'lootRoll':
         if (
@@ -2508,7 +2554,11 @@ export class GameServer {
       case 'chat': {
         if (typeof msg.text !== 'string') break;
         const text = msg.text.trim();
-        if (session.isAdmin && this.moderation.handleChatCommand(session, text)) break;
+        if (
+          canAttemptModerationCommands(session) &&
+          this.moderation.handleChatCommand(session, text)
+        )
+          break;
         if (this.isChatMuted(session)) break;
         if (!this.consumeChatToken(session)) break;
         const whoMatch = /^\/who(?:\s+([\s\S]+))?$/i.exec(text);

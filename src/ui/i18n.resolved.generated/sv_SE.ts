@@ -311,7 +311,15 @@ export const sv_SE: EnTranslations = {
       "nameplates": "Namn",
       "haptics": "Haptik",
       "hapticsOff": "Haptik av",
-      "toggleHaptics": "Växla haptik"
+      "toggleHaptics": "Växla haptik",
+      "hotbarPage": "Förmågor",
+      "hotbarPageAria": "Visa nästa uppsättning förmågor",
+      "actionRing": "Combat actions",
+      "actionPageToggle": "Switch action page",
+      "actionPageIndicator": "{page}",
+      "targetCycle": "Swap target",
+      "targetCycleShort": "Target",
+      "spellbookPageLabel": "Page {page}"
     },
     "tutorial": {
       "moveBodyTouch": "Använd rörelsespaken för att gå och dra på skärmen för att se dig omkring. Ta några steg för att börja.",
@@ -418,7 +426,9 @@ export const sv_SE: EnTranslations = {
       "itemLevelLine": "Föremålsnivå {level}",
       "itemScoreLine": "Poäng {score}",
       "showSecondaryActionBar": "Visa sekundärt handlingsfält",
-      "showDailyRewardsChest": "Visa kistan för dagliga belöningar"
+      "showDailyRewardsChest": "Visa kistan för dagliga belöningar",
+      "mobileCameraJoystick": "Camera joystick",
+      "mobileLeftHanded": "Left-handed layout"
     },
     "controller": {
       "title": "Handkontroll",
@@ -735,6 +745,23 @@ export const sv_SE: EnTranslations = {
       "thresholdSet": "Bytest. tröskel satt till {threshold}.",
       "summaryMaster": "Byteinställningar: Mästarbyte, bytesmästare {name}, tröskel {threshold}.",
       "summaryGroup": "Byteinställningar: Gruppbyte."
+    },
+    "corpseHarvest": {
+      "title": "Skörda",
+      "harvestButton": "Skörda",
+      "concentrateHint": "Ju färre delar du väljer, desto högre kvalitetsnivå får var och en.",
+      "alreadyHarvested": "Det här kadavret har redan skördats.",
+      "componentAria": "Skörda {component}",
+      "components": {
+        "hide": "Hud",
+        "fang": "Huggtand",
+        "silk": "Silke",
+        "venomSac": "Giftsäck",
+        "gills": "Gälar",
+        "claw": "Klo",
+        "horn": "Horn",
+        "tusk": "Bete"
+      }
     },
     "party": {
       "promoteLeader": "Befordra till ledare",
@@ -1169,6 +1196,101 @@ export const sv_SE: EnTranslations = {
     "social": {
       "lastSeen": "Senast sedd: {when}",
       "lastSeenNever": "aldrig"
+    },
+    "gathering": {
+      "title": "Insamling",
+      "mining": "Gruvdrift",
+      "logging": "Skogsavverkning",
+      "herbalism": "Örtkunskap"
+    }
+  },
+  "apiError": {
+    "validation": {
+      "failed": "Vissa fält är ogiltiga. Kontrollera formuläret och försök igen."
+    },
+    "json": {
+      "malformed": "Begäran kunde inte läsas. Försök igen."
+    },
+    "body": {
+      "too_large": "Begäran är för stor. Försök igen med mindre data.",
+      "unsupported_media_type": "Formatet på begäran stöds inte."
+    },
+    "db": {
+      "conflict": "Ändringen stod i konflikt med en annan uppdatering. Försök igen."
+    },
+    "rate_limit": {
+      "exceeded": "För många förfrågningar. Försök igen om {seconds}."
+    },
+    "internal": {
+      "error": "Något gick fel hos oss. Försök igen."
+    },
+    "auth": {
+      "token_missing": "Du måste vara inloggad för att göra det.",
+      "token_invalid": "Din session har gått ut. Logga in igen.",
+      "forbidden": "Du har inte behörighet att göra det.",
+      "invalid_credentials": "Ogiltigt användarnamn eller lösenord.",
+      "required": "Inte autentiserad.",
+      "web_login_only": "Inloggningar är endast tillåtna från spelklienten.",
+      "too_many_attempts": "För många försök. Vänta en minut och försök igen.",
+      "too_many_failed_attempts": "För många misslyckade försök. Vänta några minuter och försök igen.",
+      "current_password_incorrect": "Ditt nuvarande lösenord är felaktigt.",
+      "password_incorrect": "Ditt lösenord är felaktigt.",
+      "verification_failed": "Verifieringen misslyckades. Försök igen."
+    },
+    "account": {
+      "username_invalid": "Användarnamnet måste vara 3-24 tecken och använda bokstäver, siffror eller understreck.",
+      "username_not_allowed": "Det användarnamnet är inte tillåtet.",
+      "username_taken": "Det användarnamnet är redan upptaget.",
+      "username_mismatch": "Det användarnamnet matchar inte ditt konto.",
+      "password_too_short": "Lösenordet måste vara minst 6 tecken.",
+      "password_too_long": "Det nya lösenordet får vara högst 128 tecken.",
+      "characters_online": "Logga ut alla dina karaktärer innan du inaktiverar kontot.",
+      "deactivated": "Detta konto har inaktiverats. Kontakta en administratör för att återställa det.",
+      "not_found": "Kontot hittades inte."
+    },
+    "character": {
+      "name_invalid": "Ogiltigt karaktärsnamn. Använd 2-16 bokstäver.",
+      "name_not_allowed": "Det karaktärsnamnet är inte tillåtet.",
+      "invalid_class": "Ogiltig klass.",
+      "limit_reached": "Karaktärsgränsen är nådd.",
+      "name_taken": "Det namnet är upptaget.",
+      "not_found": "Karaktären hittades inte.",
+      "online": "Karaktären är för närvarande online.",
+      "rename_not_permitted": "Det är inte tillåtet att byta namn på denna karaktär.",
+      "delete_confirm": "Skriv karaktärens namn för att bekräfta raderingen.",
+      "already_in_world": "Karaktären är redan i världen.",
+      "taken_over": "Din karaktär togs över av en annan session.",
+      "rename_required": "Denna karaktär måste byta namn innan den går in i världen."
+    },
+    "moderation": {
+      "suspended_until": "Detta konto är avstängt till {date}.",
+      "suspended": "Detta konto är avstängt.",
+      "banned": "Detta konto har bannlysts.",
+      "force_rename": "En moderator kräver att en av dina karaktärer byter namn."
+    },
+    "email": {
+      "invalid": "Ange en giltig e-postadress.",
+      "unchanged": "Det är redan din e-postadress."
+    },
+    "two_factor": {
+      "code_invalid": "Den koden är inte giltig, försök igen.",
+      "setup_required": "Starta konfigurationen av tvåfaktorsautentisering först.",
+      "already_enabled": "Tvåfaktorsautentisering är redan aktiverad.",
+      "not_enabled": "Tvåfaktorsautentisering är inte aktiverad."
+    },
+    "origin": {
+      "cross_site": "Begäran blockerades av säkerhetsskäl."
+    },
+    "discord": {
+      "not_configured": "Discord-integrationen är inte tillgänglig just nu.",
+      "expired": "Den Discord-inloggningen har gått ut. Logga in med Discord igen.",
+      "already_linked": "Det Discord-kontot är redan kopplat till ett annat konto.",
+      "password_required": "Ange ett lösenord innan du kopplar bort ditt Discord-konto.",
+      "unknown_swag": "Den belöningen är inte tillgänglig.",
+      "link_required": "Koppla ditt Discord-konto först.",
+      "swag_claimed": "Du har redan hämtat den här belöningen.",
+      "swag_tier": "Nå en högre rang för att hämta den här.",
+      "swag_points": "Inte tillräckligt med poäng."
     }
   },
   "guide": {
@@ -2507,7 +2629,9 @@ export const sv_SE: EnTranslations = {
   },
   "download": {
     "title": "Ladda ner skrivbordsstartaren",
-    "desc": "Hämta den fristående startaren för optimerad prestanda och spel i helskärm."
+    "desc": "Hämta den fristående startaren för optimerad prestanda och spel i helskärm.",
+    "macCta": "Ladda ner för macOS",
+    "windowsPending": "Windows-bygge väntar."
   },
   "comingSoon": {
     "placeholder": "Kommer snart...",
@@ -3379,9 +3503,12 @@ export const sv_SE: EnTranslations = {
       "webLoginOnly": "Inloggningar är endast tillåtna från spelklienten.",
       "accountSuspended": "Detta konto är avstängt till {date}.",
       "alreadyInWorld": "Karaktären är redan i världen.",
+      "accountSessionLimit": "För många karaktärer på detta konto är redan i världen.",
       "takenOver": "Din karaktär togs över av en annan session.",
       "renameBeforeEntering": "Denna karaktär måste byta namn innan den går in i världen.",
-      "renameNotPermitted": "Det är inte tillåtet att byta namn på denna karaktär."
+      "renameNotPermitted": "Det är inte tillåtet att byta namn på denna karaktär.",
+      "unsupportedMediaType": "Formatet på begäran stöds inte.",
+      "crossSiteOrigin": "Begäran blockerades av säkerhetsskäl."
     }
   },
   "desktop": {
@@ -5654,6 +5781,24 @@ export const sv_SE: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Silverbladsskära"
+      },
+      "thorium_mining_pick": {
+        "name": "Toriumhacka"
+      },
+      "arcanite_mining_pick": {
+        "name": "Arkanithacka"
+      },
+      "ashwood_axe": {
+        "name": "Askträdsyxa"
+      },
+      "elderwood_axe": {
+        "name": "Gammelträdsyxa"
+      },
+      "goldleaf_sickle": {
+        "name": "Guldbladsskära"
+      },
+      "sunpetal_sickle": {
+        "name": "Solkronbladsskära"
       },
       "bristleback_maul": {
         "name": "Gallowglass-hammare"

@@ -311,7 +311,15 @@ export const tr_TR: EnTranslations = {
       "nameplates": "İsimler",
       "haptics": "Dokunsal Geri Bildirim",
       "hapticsOff": "Dokunsal Kapalı",
-      "toggleHaptics": "Dokunsal geri bildirimi aç/kapat"
+      "toggleHaptics": "Dokunsal geri bildirimi aç/kapat",
+      "hotbarPage": "Yetenekler",
+      "hotbarPageAria": "Sonraki yetenek grubunu göster",
+      "actionRing": "Combat actions",
+      "actionPageToggle": "Switch action page",
+      "actionPageIndicator": "{page}",
+      "targetCycle": "Swap target",
+      "targetCycleShort": "Target",
+      "spellbookPageLabel": "Page {page}"
     },
     "tutorial": {
       "moveBodyTouch": "Hareket etmek için hareket çubuğunu kullan ve etrafa bakmak için ekranı sürükle. Başlamak için birkaç adım at.",
@@ -418,7 +426,9 @@ export const tr_TR: EnTranslations = {
       "itemLevelLine": "Eşya Seviyesi {level}",
       "itemScoreLine": "Puan {score}",
       "showSecondaryActionBar": "İkincil Eylem Çubuğunu Göster",
-      "showDailyRewardsChest": "Günlük Ödül Sandığını Göster"
+      "showDailyRewardsChest": "Günlük Ödül Sandığını Göster",
+      "mobileCameraJoystick": "Camera joystick",
+      "mobileLeftHanded": "Left-handed layout"
     },
     "controller": {
       "title": "Oyun Kolu",
@@ -735,6 +745,23 @@ export const tr_TR: EnTranslations = {
       "thresholdSet": "Ganimet eşiği {threshold} olarak ayarlandı.",
       "summaryMaster": "Ganimet Ayarları: Yönetilen Ganimet, Ganimet Yöneticisi {name}, eşik {threshold}.",
       "summaryGroup": "Ganimet Ayarları: Grup Ganimeti."
+    },
+    "corpseHarvest": {
+      "title": "Toplama",
+      "harvestButton": "Topla",
+      "concentrateHint": "Ne kadar az parça seçersen, her biri o kadar yüksek kademede olur.",
+      "alreadyHarvested": "Bu leş zaten toplandı.",
+      "componentAria": "{component} topla",
+      "components": {
+        "hide": "Post",
+        "fang": "Diş",
+        "silk": "İpek",
+        "venomSac": "Zehir Kesesi",
+        "gills": "Solungaç",
+        "claw": "Pençe",
+        "horn": "Boynuz",
+        "tusk": "Azı Dişi"
+      }
     },
     "party": {
       "promoteLeader": "Lider Yap",
@@ -1169,6 +1196,101 @@ export const tr_TR: EnTranslations = {
     "social": {
       "lastSeen": "Son görülme: {when}",
       "lastSeenNever": "hiç"
+    },
+    "gathering": {
+      "title": "Toplama",
+      "mining": "Madencilik",
+      "logging": "Ağaç kesme",
+      "herbalism": "Bitkicilik"
+    }
+  },
+  "apiError": {
+    "validation": {
+      "failed": "Bazı alanlar geçersiz. Formu kontrol edip tekrar deneyin."
+    },
+    "json": {
+      "malformed": "Bu istek okunamadı. Lütfen tekrar deneyin."
+    },
+    "body": {
+      "too_large": "Bu istek çok büyük. Daha az veriyle tekrar deneyin.",
+      "unsupported_media_type": "Desteklenmeyen istek biçimi."
+    },
+    "db": {
+      "conflict": "Bu değişiklik başka bir güncellemeyle çakıştı. Lütfen tekrar deneyin."
+    },
+    "rate_limit": {
+      "exceeded": "Çok fazla istek. {seconds} içinde tekrar deneyin."
+    },
+    "internal": {
+      "error": "Bizim tarafımızda bir şeyler ters gitti. Lütfen tekrar deneyin."
+    },
+    "auth": {
+      "token_missing": "Bunu yapmak için giriş yapmış olmanız gerekir.",
+      "token_invalid": "Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın.",
+      "forbidden": "Bunu yapma izniniz yok.",
+      "invalid_credentials": "Geçersiz kullanıcı adı veya parola.",
+      "required": "Kimlik doğrulanmadı.",
+      "web_login_only": "Girişlere yalnızca oyun istemcisinden izin verilir.",
+      "too_many_attempts": "Çok fazla deneme. Bir dakika bekleyip tekrar deneyin.",
+      "too_many_failed_attempts": "Çok fazla başarısız deneme. Birkaç dakika bekleyip tekrar deneyin.",
+      "current_password_incorrect": "Mevcut parolanız yanlış.",
+      "password_incorrect": "Parolanız yanlış.",
+      "verification_failed": "Doğrulama başarısız oldu. Lütfen tekrar deneyin."
+    },
+    "account": {
+      "username_invalid": "Kullanıcı adı 3-24 karakter olmalı ve harf, rakam veya alt çizgi kullanmalıdır.",
+      "username_not_allowed": "Bu kullanıcı adına izin verilmiyor.",
+      "username_taken": "Bu kullanıcı adı zaten alınmış.",
+      "username_mismatch": "Bu kullanıcı adı hesabınızla eşleşmiyor.",
+      "password_too_short": "Parola en az 6 karakter olmalıdır.",
+      "password_too_long": "Yeni parola en fazla 128 karakter olmalıdır.",
+      "characters_online": "Devre dışı bırakmadan önce tüm karakterlerinizden çıkış yapın.",
+      "deactivated": "Bu hesap devre dışı bırakıldı. Geri yüklemek için bir yöneticiyle iletişime geçin.",
+      "not_found": "Hesap bulunamadı."
+    },
+    "character": {
+      "name_invalid": "Geçersiz karakter adı. 2-16 harf kullanın.",
+      "name_not_allowed": "Bu karakter adına izin verilmiyor.",
+      "invalid_class": "Geçersiz sınıf.",
+      "limit_reached": "Karakter sınırına ulaşıldı.",
+      "name_taken": "Bu ad alınmış.",
+      "not_found": "Karakter bulunamadı.",
+      "online": "Karakter şu anda çevrimiçi.",
+      "rename_not_permitted": "Bu karakterin yeniden adlandırılmasına izin verilmiyor.",
+      "delete_confirm": "Silmeyi onaylamak için karakter adını yazın.",
+      "already_in_world": "Karakter zaten dünyada.",
+      "taken_over": "Karakteriniz başka bir oturum tarafından devralındı.",
+      "rename_required": "Bu karakter dünyaya girmeden önce yeniden adlandırılmalıdır."
+    },
+    "moderation": {
+      "suspended_until": "Bu hesap {date} tarihine kadar askıya alındı.",
+      "suspended": "Bu hesap askıya alındı.",
+      "banned": "Bu hesap yasaklandı.",
+      "force_rename": "Bir moderatör, karakterlerinizden birinin yeniden adlandırılmasını gerektiriyor."
+    },
+    "email": {
+      "invalid": "Geçerli bir e-posta adresi girin.",
+      "unchanged": "Bu zaten sizin e-posta adresiniz."
+    },
+    "two_factor": {
+      "code_invalid": "Bu kod geçerli değil, tekrar deneyin.",
+      "setup_required": "Önce iki adımlı doğrulama kurulumunu başlatın.",
+      "already_enabled": "İki adımlı doğrulama zaten etkin.",
+      "not_enabled": "İki adımlı doğrulama etkin değil."
+    },
+    "origin": {
+      "cross_site": "Güvenlik nedeniyle istek engellendi."
+    },
+    "discord": {
+      "not_configured": "Discord entegrasyonu şu anda kullanılamıyor.",
+      "expired": "Bu Discord girişinin süresi doldu. Lütfen tekrar Discord ile giriş yapın.",
+      "already_linked": "Bu Discord hesabı zaten başka bir hesaba bağlı.",
+      "password_required": "Discord hesabınızın bağlantısını kaldırmadan önce bir parola belirleyin.",
+      "unknown_swag": "Bu ödül mevcut değil.",
+      "link_required": "Önce Discord hesabınızı bağlayın.",
+      "swag_claimed": "Bu ödülü zaten aldınız.",
+      "swag_tier": "Bunu almak için daha yüksek bir rütbeye ulaşın.",
+      "swag_points": "Yeterli puan yok."
     }
   },
   "guide": {
@@ -2507,7 +2629,9 @@ export const tr_TR: EnTranslations = {
   },
   "download": {
     "title": "Masaüstü Başlatıcısını İndir",
-    "desc": "Optimize edilmiş performans ve tam ekran oyun için bağımsız başlatıcıyı edinin."
+    "desc": "Optimize edilmiş performans ve tam ekran oyun için bağımsız başlatıcıyı edinin.",
+    "macCta": "macOS için indir",
+    "windowsPending": "Windows derlemesi beklemede."
   },
   "comingSoon": {
     "placeholder": "Yakında...",
@@ -3379,9 +3503,12 @@ export const tr_TR: EnTranslations = {
       "webLoginOnly": "Girişlere yalnızca oyun istemcisinden izin verilir.",
       "accountSuspended": "Bu hesap {date} tarihine kadar askıya alındı.",
       "alreadyInWorld": "Karakter zaten dünyada.",
+      "accountSessionLimit": "Bu hesaba ait çok fazla karakter zaten dünyada.",
       "takenOver": "Karakteriniz başka bir oturum tarafından devralındı.",
       "renameBeforeEntering": "Bu karakter dünyaya girmeden önce yeniden adlandırılmalıdır.",
-      "renameNotPermitted": "Bu karakterin yeniden adlandırılmasına izin verilmiyor."
+      "renameNotPermitted": "Bu karakterin yeniden adlandırılmasına izin verilmiyor.",
+      "unsupportedMediaType": "Desteklenmeyen istek biçimi.",
+      "crossSiteOrigin": "Güvenlik nedeniyle istek engellendi."
     }
   },
   "desktop": {
@@ -5654,6 +5781,24 @@ export const tr_TR: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Gümüşyaprak Orağı"
+      },
+      "thorium_mining_pick": {
+        "name": "Toryum Maden Kazması"
+      },
+      "arcanite_mining_pick": {
+        "name": "Arkanit Maden Kazması"
+      },
+      "ashwood_axe": {
+        "name": "Dişbudak Baltası"
+      },
+      "elderwood_axe": {
+        "name": "Kadim Ağaç Baltası"
+      },
+      "goldleaf_sickle": {
+        "name": "Altınyaprak Orağı"
+      },
+      "sunpetal_sickle": {
+        "name": "Güneşyaprağı Orağı"
       },
       "bristleback_maul": {
         "name": "Gallowglass Balyozu"

@@ -311,7 +311,15 @@ export const zh_TW: EnTranslations = {
       "nameplates": "名條",
       "haptics": "觸覺回饋",
       "hapticsOff": "觸覺回饋已關閉",
-      "toggleHaptics": "切換觸覺回饋"
+      "toggleHaptics": "切換觸覺回饋",
+      "hotbarPage": "技能",
+      "hotbarPageAria": "顯示下一組技能",
+      "actionRing": "戰鬥動作",
+      "actionPageToggle": "切換動作頁",
+      "actionPageIndicator": "{page}",
+      "targetCycle": "切換目標",
+      "targetCycleShort": "目標",
+      "spellbookPageLabel": "Page {page}"
     },
     "tutorial": {
       "moveBodyTouch": "使用搖桿移動，拖曳螢幕環顧四周。先走幾步開始吧。",
@@ -418,7 +426,9 @@ export const zh_TW: EnTranslations = {
       "itemLevelLine": "物品等級 {level}",
       "itemScoreLine": "評分 {score}",
       "showSecondaryActionBar": "顯示副動作列",
-      "showDailyRewardsChest": "顯示每日獎勵寶箱"
+      "showDailyRewardsChest": "顯示每日獎勵寶箱",
+      "mobileCameraJoystick": "攝影機搖桿",
+      "mobileLeftHanded": "左手配置"
     },
     "controller": {
       "title": "手把",
@@ -735,6 +745,23 @@ export const zh_TW: EnTranslations = {
       "thresholdSet": "品質門檻已設為{threshold}。",
       "summaryMaster": "拾取設定：隊長分配，分配者{name}，品質門檻{threshold}。",
       "summaryGroup": "拾取設定：小隊拾取。"
+    },
+    "corpseHarvest": {
+      "title": "採集",
+      "harvestButton": "採集",
+      "concentrateHint": "選擇的部位越少，每個部位的品質越高。",
+      "alreadyHarvested": "這具屍體已經被採集過了。",
+      "componentAria": "採集{component}",
+      "components": {
+        "hide": "獸皮",
+        "fang": "尖牙",
+        "silk": "絲線",
+        "venomSac": "毒囊",
+        "gills": "魚鰓",
+        "claw": "爪",
+        "horn": "角",
+        "tusk": "獠牙"
+      }
     },
     "party": {
       "promoteLeader": "提升為隊長",
@@ -1169,6 +1196,101 @@ export const zh_TW: EnTranslations = {
     "social": {
       "lastSeen": "最後上線: {when}",
       "lastSeenNever": "從未"
+    },
+    "gathering": {
+      "title": "採集",
+      "mining": "採礦",
+      "logging": "伐木",
+      "herbalism": "藥草學"
+    }
+  },
+  "apiError": {
+    "validation": {
+      "failed": "部分欄位無效。請檢查表單後再試一次。"
+    },
+    "json": {
+      "malformed": "無法讀取該請求。請再試一次。"
+    },
+    "body": {
+      "too_large": "該請求過大。請減少資料後再試一次。",
+      "unsupported_media_type": "不支援的請求格式。"
+    },
+    "db": {
+      "conflict": "該變更與另一次更新發生衝突。請再試一次。"
+    },
+    "rate_limit": {
+      "exceeded": "請求過於頻繁。請在 {seconds} 後再試一次。"
+    },
+    "internal": {
+      "error": "我們這邊發生了問題。請再試一次。"
+    },
+    "auth": {
+      "token_missing": "你需要登入後才能執行此操作。",
+      "token_invalid": "你的工作階段已過期。請重新登入。",
+      "forbidden": "你沒有執行此操作的權限。",
+      "invalid_credentials": "使用者名稱或密碼無效。",
+      "required": "尚未驗證。",
+      "web_login_only": "只能從遊戲客戶端登入。",
+      "too_many_attempts": "嘗試次數過多。請等待一分鐘後再試。",
+      "too_many_failed_attempts": "嘗試失敗次數過多。請稍候幾分鐘後再試。",
+      "current_password_incorrect": "目前密碼不正確。",
+      "password_incorrect": "密碼不正確。",
+      "verification_failed": "驗證失敗，請重試。"
+    },
+    "account": {
+      "username_invalid": "使用者名稱必須為 3-24 個字元，並使用字母、數字或底線。",
+      "username_not_allowed": "此使用者名稱不可使用。",
+      "username_taken": "此使用者名稱已被使用。",
+      "username_mismatch": "該使用者名稱與您的帳號不符。",
+      "password_too_short": "密碼至少需要 6 個字元。",
+      "password_too_long": "新密碼最多只能包含 128 個字元。",
+      "characters_online": "請先登出所有角色再進行停用。",
+      "deactivated": "此帳號已停用。請聯絡管理員以還原。",
+      "not_found": "找不到帳號。"
+    },
+    "character": {
+      "name_invalid": "角色名稱無效。請使用 2-16 個字母。",
+      "name_not_allowed": "此角色名稱不可使用。",
+      "invalid_class": "職業無效。",
+      "limit_reached": "已達角色數量上限。",
+      "name_taken": "此名稱已被使用。",
+      "not_found": "找不到角色。",
+      "online": "角色目前在線上。",
+      "rename_not_permitted": "不允許為此角色更名。",
+      "delete_confirm": "輸入角色名稱以確認刪除。",
+      "already_in_world": "角色已在世界中。",
+      "taken_over": "你的角色已被另一個工作階段接管。",
+      "rename_required": "此角色必須先更名才能進入世界。"
+    },
+    "moderation": {
+      "suspended_until": "此帳號停權至 {date}。",
+      "suspended": "此帳號已被停權。",
+      "banned": "此帳號已被封鎖。",
+      "force_rename": "管理員要求你的其中一個角色必須改名。"
+    },
+    "email": {
+      "invalid": "請輸入有效的電子郵件地址。",
+      "unchanged": "這已經是你目前的電子郵件地址了。"
+    },
+    "two_factor": {
+      "code_invalid": "這組代碼無效，請再試一次。",
+      "setup_required": "請先開始雙重驗證設定。",
+      "already_enabled": "雙重驗證已啟用。",
+      "not_enabled": "雙重驗證未啟用。"
+    },
+    "origin": {
+      "cross_site": "出於安全原因，請求已被封鎖。"
+    },
+    "discord": {
+      "not_configured": "Discord 整合目前無法使用。",
+      "expired": "該 Discord 登入已過期，請重新使用 Discord 登入。",
+      "already_linked": "該 Discord 帳號已連結到另一個帳號。",
+      "password_required": "取消連結 Discord 帳號前請先設定密碼。",
+      "unknown_swag": "該獎勵無法使用。",
+      "link_required": "請先連結你的 Discord 帳號。",
+      "swag_claimed": "你已經領取過此獎勵。",
+      "swag_tier": "達到更高階級才能領取此項目。",
+      "swag_points": "點數不足。"
     }
   },
   "guide": {
@@ -2507,7 +2629,9 @@ export const zh_TW: EnTranslations = {
   },
   "download": {
     "title": "下載電腦版啟動器",
-    "desc": "獲取獨立啟動器，以獲得更優化的效能和全螢幕遊戲體驗。"
+    "desc": "獲取獨立啟動器，以獲得更優化的效能和全螢幕遊戲體驗。",
+    "macCta": "下載 macOS 版",
+    "windowsPending": "Windows 版本即將推出。"
   },
   "comingSoon": {
     "placeholder": "敬請期待...",
@@ -3379,9 +3503,12 @@ export const zh_TW: EnTranslations = {
       "webLoginOnly": "只能從遊戲客戶端登入。",
       "accountSuspended": "此帳號停權至 {date}。",
       "alreadyInWorld": "角色已在世界中。",
+      "accountSessionLimit": "此帳號已有太多角色在世界中。",
       "takenOver": "你的角色已被另一個工作階段接管。",
       "renameBeforeEntering": "此角色必須先更名才能進入世界。",
-      "renameNotPermitted": "不允許為此角色更名。"
+      "renameNotPermitted": "不允許為此角色更名。",
+      "unsupportedMediaType": "不支援的請求格式。",
+      "crossSiteOrigin": "出於安全原因，請求已被封鎖。"
     }
   },
   "desktop": {
@@ -5654,6 +5781,24 @@ export const zh_TW: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "銀葉鐮刀"
+      },
+      "thorium_mining_pick": {
+        "name": "釷礦採礦鎬"
+      },
+      "arcanite_mining_pick": {
+        "name": "秘法採礦鎬"
+      },
+      "ashwood_axe": {
+        "name": "白蠟木斧"
+      },
+      "elderwood_axe": {
+        "name": "古木斧"
+      },
+      "goldleaf_sickle": {
+        "name": "金葉鐮刀"
+      },
+      "sunpetal_sickle": {
+        "name": "陽瓣鐮刀"
       },
       "bristleback_maul": {
         "name": "加洛格拉斯戰錘"

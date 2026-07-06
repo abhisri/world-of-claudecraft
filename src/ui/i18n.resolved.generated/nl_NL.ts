@@ -311,7 +311,15 @@ export const nl_NL: EnTranslations = {
       "nameplates": "Namen",
       "haptics": "Haptiek",
       "hapticsOff": "Haptiek uit",
-      "toggleHaptics": "Haptiek aan/uit"
+      "toggleHaptics": "Haptiek aan/uit",
+      "hotbarPage": "Vaardigheden",
+      "hotbarPageAria": "Toon de volgende set vaardigheden",
+      "actionRing": "Combat actions",
+      "actionPageToggle": "Switch action page",
+      "actionPageIndicator": "{page}",
+      "targetCycle": "Swap target",
+      "targetCycleShort": "Target",
+      "spellbookPageLabel": "Page {page}"
     },
     "tutorial": {
       "moveBodyTouch": "Gebruik de bewegingsstick om te bewegen en sleep over het scherm om rond te kijken. Zet een paar stappen om te beginnen.",
@@ -418,7 +426,9 @@ export const nl_NL: EnTranslations = {
       "itemLevelLine": "Itemniveau {level}",
       "itemScoreLine": "Score {score}",
       "showSecondaryActionBar": "Secundaire actiebalk tonen",
-      "showDailyRewardsChest": "Kist met dagelijkse beloningen tonen"
+      "showDailyRewardsChest": "Kist met dagelijkse beloningen tonen",
+      "mobileCameraJoystick": "Camera joystick",
+      "mobileLeftHanded": "Left-handed layout"
     },
     "controller": {
       "title": "Controller",
@@ -735,6 +745,23 @@ export const nl_NL: EnTranslations = {
       "thresholdSet": "Buitdrempel ingesteld op {threshold}.",
       "summaryMaster": "Buitinstellingen: Buitmeester-buit, Buitmeester {name}, drempel {threshold}.",
       "summaryGroup": "Buitinstellingen: Groepsbuit."
+    },
+    "corpseHarvest": {
+      "title": "Oogsten",
+      "harvestButton": "Oogsten",
+      "concentrateHint": "Hoe minder delen je kiest, hoe hoger de kwaliteit van elk deel.",
+      "alreadyHarvested": "Dit kadaver is al geoogst.",
+      "componentAria": "Oogst {component}",
+      "components": {
+        "hide": "Huid",
+        "fang": "Tand",
+        "silk": "Zijde",
+        "venomSac": "Gifzak",
+        "gills": "Kieuwen",
+        "claw": "Klauw",
+        "horn": "Hoorn",
+        "tusk": "Slagtand"
+      }
     },
     "party": {
       "promoteLeader": "Bevorderen tot leider",
@@ -1169,6 +1196,101 @@ export const nl_NL: EnTranslations = {
     "social": {
       "lastSeen": "Laatst gezien: {when}",
       "lastSeenNever": "nooit"
+    },
+    "gathering": {
+      "title": "Verzamelen",
+      "mining": "Mijnbouw",
+      "logging": "Houtkap",
+      "herbalism": "Kruidenkunde"
+    }
+  },
+  "apiError": {
+    "validation": {
+      "failed": "Sommige velden zijn ongeldig. Controleer het formulier en probeer het opnieuw."
+    },
+    "json": {
+      "malformed": "Dat verzoek kon niet worden gelezen. Probeer het opnieuw."
+    },
+    "body": {
+      "too_large": "Dat verzoek is te groot. Probeer het opnieuw met minder gegevens.",
+      "unsupported_media_type": "Niet-ondersteund verzoekformaat."
+    },
+    "db": {
+      "conflict": "Die wijziging conflicteerde met een andere update. Probeer het opnieuw."
+    },
+    "rate_limit": {
+      "exceeded": "Te veel verzoeken. Probeer het opnieuw over {seconds}."
+    },
+    "internal": {
+      "error": "Er is iets misgegaan aan onze kant. Probeer het opnieuw."
+    },
+    "auth": {
+      "token_missing": "Je moet ingelogd zijn om dat te doen.",
+      "token_invalid": "Je sessie is verlopen. Log opnieuw in.",
+      "forbidden": "Je hebt geen toestemming om dat te doen.",
+      "invalid_credentials": "Ongeldige gebruikersnaam of wachtwoord.",
+      "required": "Niet geauthenticeerd.",
+      "web_login_only": "Inloggen is alleen toegestaan vanuit de spelclient.",
+      "too_many_attempts": "Te veel pogingen. Wacht een minuut en probeer het opnieuw.",
+      "too_many_failed_attempts": "Te veel mislukte pogingen. Wacht een paar minuten en probeer het opnieuw.",
+      "current_password_incorrect": "Je huidige wachtwoord is onjuist.",
+      "password_incorrect": "Je wachtwoord is onjuist.",
+      "verification_failed": "Verificatie mislukt. Probeer het opnieuw."
+    },
+    "account": {
+      "username_invalid": "Gebruikersnaam moet 3-24 tekens lang zijn en letters, cijfers of een liggend streepje bevatten.",
+      "username_not_allowed": "Die gebruikersnaam is niet toegestaan.",
+      "username_taken": "Die gebruikersnaam is al in gebruik.",
+      "username_mismatch": "Die gebruikersnaam komt niet overeen met je account.",
+      "password_too_short": "Wachtwoord moet minstens 6 tekens lang zijn.",
+      "password_too_long": "Nieuw wachtwoord mag maximaal 128 tekens lang zijn.",
+      "characters_online": "Log al je personages uit voordat je het account deactiveert.",
+      "deactivated": "Dit account is gedeactiveerd. Neem contact op met een beheerder om het te herstellen.",
+      "not_found": "Account niet gevonden."
+    },
+    "character": {
+      "name_invalid": "Ongeldige personagenaam. Gebruik 2-16 letters.",
+      "name_not_allowed": "Die personagenaam is niet toegestaan.",
+      "invalid_class": "Ongeldige klasse.",
+      "limit_reached": "Maximumaantal personages bereikt.",
+      "name_taken": "Die naam is al in gebruik.",
+      "not_found": "Personage niet gevonden.",
+      "online": "Personage is momenteel online.",
+      "rename_not_permitted": "Dit personage hernoemen is niet toegestaan.",
+      "delete_confirm": "Typ de personagenaam om de verwijdering te bevestigen.",
+      "already_in_world": "Personage is al in de wereld.",
+      "taken_over": "Je personage is overgenomen door een andere sessie.",
+      "rename_required": "Dit personage moet hernoemd worden voordat het de wereld kan betreden."
+    },
+    "moderation": {
+      "suspended_until": "Dit account is geschorst tot {date}.",
+      "suspended": "Dit account is geschorst.",
+      "banned": "Dit account is verbannen.",
+      "force_rename": "Een moderator vereist dat een van je personages wordt hernoemd."
+    },
+    "email": {
+      "invalid": "Voer een geldig e-mailadres in.",
+      "unchanged": "Dat is al je e-mailadres."
+    },
+    "two_factor": {
+      "code_invalid": "Die code is niet geldig, probeer het opnieuw.",
+      "setup_required": "Stel eerst tweefactorauthenticatie in.",
+      "already_enabled": "Tweefactorauthenticatie is al ingeschakeld.",
+      "not_enabled": "Tweefactorauthenticatie is niet ingeschakeld."
+    },
+    "origin": {
+      "cross_site": "Verzoek geblokkeerd om veiligheidsredenen."
+    },
+    "discord": {
+      "not_configured": "Discord-integratie is momenteel niet beschikbaar.",
+      "expired": "Die Discord-aanmelding is verlopen. Meld je opnieuw aan met Discord.",
+      "already_linked": "Dat Discord-account is al gekoppeld aan een ander account.",
+      "password_required": "Stel een wachtwoord in voordat je je Discord-account ontkoppelt.",
+      "unknown_swag": "Die beloning is niet beschikbaar.",
+      "link_required": "Koppel eerst je Discord-account.",
+      "swag_claimed": "Je hebt deze beloning al geclaimd.",
+      "swag_tier": "Bereik een hogere rang om dit te claimen.",
+      "swag_points": "Niet genoeg punten."
     }
   },
   "guide": {
@@ -2507,7 +2629,9 @@ export const nl_NL: EnTranslations = {
   },
   "download": {
     "title": "Desktop-launcher downloaden",
-    "desc": "Download de losse launcher voor optimale prestaties en schermvullend spelen."
+    "desc": "Download de losse launcher voor optimale prestaties en schermvullend spelen.",
+    "macCta": "Download voor macOS",
+    "windowsPending": "Windows-build volgt later."
   },
   "comingSoon": {
     "placeholder": "Binnenkort beschikbaar...",
@@ -3379,9 +3503,12 @@ export const nl_NL: EnTranslations = {
       "webLoginOnly": "Inloggen is alleen toegestaan vanuit de spelclient.",
       "accountSuspended": "Dit account is geschorst tot {date}.",
       "alreadyInWorld": "Personage is al in de wereld.",
+      "accountSessionLimit": "Te veel personages op dit account zijn al in de wereld.",
       "takenOver": "Je personage is overgenomen door een andere sessie.",
       "renameBeforeEntering": "Dit personage moet hernoemd worden voordat het de wereld kan betreden.",
-      "renameNotPermitted": "Dit personage hernoemen is niet toegestaan."
+      "renameNotPermitted": "Dit personage hernoemen is niet toegestaan.",
+      "unsupportedMediaType": "Niet-ondersteund verzoekformaat.",
+      "crossSiteOrigin": "Verzoek geblokkeerd om veiligheidsredenen."
     }
   },
   "desktop": {
@@ -5654,6 +5781,24 @@ export const nl_NL: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Zilverbladsikkel"
+      },
+      "thorium_mining_pick": {
+        "name": "Thorium Mijnpik"
+      },
+      "arcanite_mining_pick": {
+        "name": "Arcaniet Mijnpik"
+      },
+      "ashwood_axe": {
+        "name": "Essenhouten Bijl"
+      },
+      "elderwood_axe": {
+        "name": "Oudhouten Bijl"
+      },
+      "goldleaf_sickle": {
+        "name": "Goudbladsikkel"
+      },
+      "sunpetal_sickle": {
+        "name": "Zonneblaadjessikkel"
       },
       "bristleback_maul": {
         "name": "Gallowglass-Hamer"

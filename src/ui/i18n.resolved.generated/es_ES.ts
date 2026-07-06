@@ -311,7 +311,15 @@ export const es_ES: EnTranslations = {
       "nameplates": "Nombres",
       "haptics": "Vibración",
       "hapticsOff": "Vibración desactivada",
-      "toggleHaptics": "Alternar vibración"
+      "toggleHaptics": "Alternar vibración",
+      "hotbarPage": "Habilidades",
+      "hotbarPageAria": "Mostrar el siguiente conjunto de habilidades",
+      "actionRing": "Combat actions",
+      "actionPageToggle": "Switch action page",
+      "actionPageIndicator": "{page}",
+      "targetCycle": "Swap target",
+      "targetCycleShort": "Target",
+      "spellbookPageLabel": "Page {page}"
     },
     "tutorial": {
       "moveBodyTouch": "Usa el joystick de movimiento para moverte y arrastra la pantalla para mirar alrededor. Da unos pasos para empezar.",
@@ -418,7 +426,9 @@ export const es_ES: EnTranslations = {
       "itemLevelLine": "Nivel de objeto {level}",
       "itemScoreLine": "Puntuación {score}",
       "showSecondaryActionBar": "Mostrar barra de acción secundaria",
-      "showDailyRewardsChest": "Mostrar cofre de recompensas diarias"
+      "showDailyRewardsChest": "Mostrar cofre de recompensas diarias",
+      "mobileCameraJoystick": "Camera joystick",
+      "mobileLeftHanded": "Left-handed layout"
     },
     "controller": {
       "title": "Mando",
@@ -735,6 +745,23 @@ export const es_ES: EnTranslations = {
       "thresholdSet": "Umbral de botín fijado en {threshold}.",
       "summaryMaster": "Ajustes de botín: botín maestro, repartidor {name}, umbral {threshold}.",
       "summaryGroup": "Ajustes de botín: botín de grupo."
+    },
+    "corpseHarvest": {
+      "title": "Recolección",
+      "harvestButton": "Recolectar",
+      "concentrateHint": "Cuantos menos componentes elijas, mayor será la calidad de cada uno.",
+      "alreadyHarvested": "Este cadáver ya ha sido recolectado.",
+      "componentAria": "Recolectar {component}",
+      "components": {
+        "hide": "Piel",
+        "fang": "Colmillo",
+        "silk": "Seda",
+        "venomSac": "Saco de veneno",
+        "gills": "Branquias",
+        "claw": "Garra",
+        "horn": "Cuerno",
+        "tusk": "Colmillo"
+      }
     },
     "party": {
       "promoteLeader": "Promover a líder",
@@ -1169,6 +1196,101 @@ export const es_ES: EnTranslations = {
     "social": {
       "lastSeen": "Última conexión: {when}",
       "lastSeenNever": "nunca"
+    },
+    "gathering": {
+      "title": "Recolección",
+      "mining": "Minería",
+      "logging": "Tala",
+      "herbalism": "Herboristería"
+    }
+  },
+  "apiError": {
+    "validation": {
+      "failed": "Algunos campos no son válidos. Revisa el formulario e inténtalo de nuevo."
+    },
+    "json": {
+      "malformed": "No se pudo leer la solicitud. Inténtalo de nuevo."
+    },
+    "body": {
+      "too_large": "La solicitud es demasiado grande. Inténtalo de nuevo con menos datos.",
+      "unsupported_media_type": "Formato de solicitud no compatible."
+    },
+    "db": {
+      "conflict": "Ese cambio entró en conflicto con otra actualización. Inténtalo de nuevo."
+    },
+    "rate_limit": {
+      "exceeded": "Demasiadas solicitudes. Inténtalo de nuevo en {seconds}."
+    },
+    "internal": {
+      "error": "Algo salió mal de nuestro lado. Inténtalo de nuevo."
+    },
+    "auth": {
+      "token_missing": "Necesitas iniciar sesión para hacer eso.",
+      "token_invalid": "Tu sesión ha expirado. Inicia sesión de nuevo.",
+      "forbidden": "No tienes permiso para hacer eso.",
+      "invalid_credentials": "Usuario o contraseña no válidos.",
+      "required": "No autenticado.",
+      "web_login_only": "El inicio de sesión solo se permite desde el cliente del juego.",
+      "too_many_attempts": "Demasiados intentos. Espera un minuto e inténtalo de nuevo.",
+      "too_many_failed_attempts": "Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.",
+      "current_password_incorrect": "Tu contraseña actual es incorrecta.",
+      "password_incorrect": "Tu contraseña es incorrecta.",
+      "verification_failed": "La verificación falló. Inténtalo de nuevo."
+    },
+    "account": {
+      "username_invalid": "El usuario debe tener 3-24 caracteres y usar letras, dígitos o guion bajo.",
+      "username_not_allowed": "Ese nombre de usuario no está permitido.",
+      "username_taken": "Ese nombre de usuario ya está en uso.",
+      "username_mismatch": "Ese nombre de usuario no coincide con tu cuenta.",
+      "password_too_short": "La contraseña debe tener al menos 6 caracteres.",
+      "password_too_long": "La nueva contraseña debe tener como máximo 128 caracteres.",
+      "characters_online": "Cierra la sesión de todos tus personajes antes de desactivar la cuenta.",
+      "deactivated": "Esta cuenta ha sido desactivada. Contacta con un administrador para restaurarla.",
+      "not_found": "Cuenta no encontrada."
+    },
+    "character": {
+      "name_invalid": "Nombre de personaje no válido. Usa 2-16 letras.",
+      "name_not_allowed": "Ese nombre de personaje no está permitido.",
+      "invalid_class": "Clase no válida.",
+      "limit_reached": "Límite de personajes alcanzado.",
+      "name_taken": "Ese nombre ya está en uso.",
+      "not_found": "Personaje no encontrado.",
+      "online": "El personaje está conectado.",
+      "rename_not_permitted": "No se permite cambiar el nombre de este personaje.",
+      "delete_confirm": "Escribe el nombre del personaje para confirmar la eliminación.",
+      "already_in_world": "El personaje ya está en el mundo.",
+      "taken_over": "Otra sesión tomó el control de tu personaje.",
+      "rename_required": "Este personaje debe cambiar de nombre antes de entrar al mundo."
+    },
+    "moderation": {
+      "suspended_until": "Esta cuenta está suspendida hasta {date}.",
+      "suspended": "Esta cuenta está suspendida.",
+      "banned": "Esta cuenta ha sido expulsada.",
+      "force_rename": "Un moderador exige que cambies el nombre de uno de tus personajes."
+    },
+    "email": {
+      "invalid": "Introduce una dirección de correo electrónico válida.",
+      "unchanged": "Esa ya es tu dirección de correo electrónico."
+    },
+    "two_factor": {
+      "code_invalid": "Ese código no es válido. Inténtalo de nuevo.",
+      "setup_required": "Primero comienza la configuración de la autenticación en dos pasos.",
+      "already_enabled": "La autenticación en dos pasos ya está activada.",
+      "not_enabled": "La autenticación en dos pasos no está activada."
+    },
+    "origin": {
+      "cross_site": "Solicitud bloqueada por motivos de seguridad."
+    },
+    "discord": {
+      "not_configured": "La integración con Discord no está disponible en este momento.",
+      "expired": "El inicio de sesión de Discord expiró. Inicia sesión con Discord de nuevo.",
+      "already_linked": "Esa cuenta de Discord ya está vinculada a otra cuenta.",
+      "password_required": "Establece una contraseña antes de desvincular tu cuenta de Discord.",
+      "unknown_swag": "Esa recompensa no está disponible.",
+      "link_required": "Primero vincula tu cuenta de Discord.",
+      "swag_claimed": "Ya has reclamado esta recompensa.",
+      "swag_tier": "Alcanza un rango superior para reclamar esto.",
+      "swag_points": "Puntos insuficientes."
     }
   },
   "guide": {
@@ -2507,7 +2629,9 @@ export const es_ES: EnTranslations = {
   },
   "download": {
     "title": "Descargar lanzador de escritorio",
-    "desc": "Consigue el lanzador independiente para un rendimiento optimizado y juego a pantalla completa."
+    "desc": "Consigue el lanzador independiente para un rendimiento optimizado y juego a pantalla completa.",
+    "macCta": "Descargar version macOS",
+    "windowsPending": "Compilacion de Windows pendiente."
   },
   "comingSoon": {
     "placeholder": "Próximamente...",
@@ -3379,9 +3503,12 @@ export const es_ES: EnTranslations = {
       "webLoginOnly": "El inicio de sesión solo se permite desde el cliente del juego.",
       "accountSuspended": "Esta cuenta está suspendida hasta {date}.",
       "alreadyInWorld": "El personaje ya está en el mundo.",
+      "accountSessionLimit": "Demasiados personajes de esta cuenta ya están en el mundo.",
       "takenOver": "Otra sesión tomó el control de tu personaje.",
       "renameBeforeEntering": "Este personaje debe cambiar de nombre antes de entrar en el mundo.",
-      "renameNotPermitted": "No se permite cambiar el nombre de este personaje."
+      "renameNotPermitted": "No se permite cambiar el nombre de este personaje.",
+      "unsupportedMediaType": "Formato de solicitud no compatible.",
+      "crossSiteOrigin": "Solicitud bloqueada por motivos de seguridad."
     }
   },
   "desktop": {
@@ -5654,6 +5781,24 @@ export const es_ES: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Hoz de Hoja de Plata"
+      },
+      "thorium_mining_pick": {
+        "name": "Pico de Minería de Torio"
+      },
+      "arcanite_mining_pick": {
+        "name": "Pico de Minería de Arcanita"
+      },
+      "ashwood_axe": {
+        "name": "Hacha de Fresno"
+      },
+      "elderwood_axe": {
+        "name": "Hacha de Madera Añeja"
+      },
+      "goldleaf_sickle": {
+        "name": "Hoz de Hoja Dorada"
+      },
+      "sunpetal_sickle": {
+        "name": "Hoz de Pétalo Solar"
       },
       "bristleback_maul": {
         "name": "Martillo Gallowglass"

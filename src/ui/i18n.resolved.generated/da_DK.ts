@@ -311,7 +311,15 @@ export const da_DK: EnTranslations = {
       "nameplates": "Navne",
       "haptics": "Haptik",
       "hapticsOff": "Haptik fra",
-      "toggleHaptics": "Slå haptik til/fra"
+      "toggleHaptics": "Slå haptik til/fra",
+      "hotbarPage": "Evner",
+      "hotbarPageAria": "Vis næste sæt evner",
+      "actionRing": "Combat actions",
+      "actionPageToggle": "Switch action page",
+      "actionPageIndicator": "{page}",
+      "targetCycle": "Swap target",
+      "targetCycleShort": "Target",
+      "spellbookPageLabel": "Page {page}"
     },
     "tutorial": {
       "moveBodyTouch": "Brug bevægelsesstikken til at bevæge dig og træk på skærmen for at se dig omkring. Tag et par skridt for at begynde.",
@@ -418,7 +426,9 @@ export const da_DK: EnTranslations = {
       "itemLevelLine": "Genstandsniveau {level}",
       "itemScoreLine": "Score {score}",
       "showSecondaryActionBar": "Vis sekundær handlingslinje",
-      "showDailyRewardsChest": "Vis kisten med daglige belønninger"
+      "showDailyRewardsChest": "Vis kisten med daglige belønninger",
+      "mobileCameraJoystick": "Camera joystick",
+      "mobileLeftHanded": "Left-handed layout"
     },
     "controller": {
       "title": "Controller",
@@ -735,6 +745,23 @@ export const da_DK: EnTranslations = {
       "thresholdSet": "Byttetærskel sat til {threshold}.",
       "summaryMaster": "Bytteindstillinger: Mesterbytte, bytteleder {name}, tærskel {threshold}.",
       "summaryGroup": "Bytteindstillinger: Gruppebytte."
+    },
+    "corpseHarvest": {
+      "title": "Høst",
+      "harvestButton": "Høst",
+      "concentrateHint": "Jo færre dele du vælger, desto højere kvalitetsgrad får hver enkelt.",
+      "alreadyHarvested": "Dette kadaver er allerede blevet høstet.",
+      "componentAria": "Høst {component}",
+      "components": {
+        "hide": "Skind",
+        "fang": "Hugtand",
+        "silk": "Silke",
+        "venomSac": "Giftsæk",
+        "gills": "Gæller",
+        "claw": "Klo",
+        "horn": "Horn",
+        "tusk": "Stødtand"
+      }
     },
     "party": {
       "promoteLeader": "Forfrem til leder",
@@ -1169,6 +1196,101 @@ export const da_DK: EnTranslations = {
     "social": {
       "lastSeen": "Sidst set: {when}",
       "lastSeenNever": "aldrig"
+    },
+    "gathering": {
+      "title": "Indsamling",
+      "mining": "Minedrift",
+      "logging": "Skovhugst",
+      "herbalism": "Urtekundskab"
+    }
+  },
+  "apiError": {
+    "validation": {
+      "failed": "Nogle felter er ugyldige. Tjek formularen og prøv igen."
+    },
+    "json": {
+      "malformed": "Anmodningen kunne ikke læses. Prøv venligst igen."
+    },
+    "body": {
+      "too_large": "Anmodningen er for stor. Prøv igen med færre data.",
+      "unsupported_media_type": "Anmodningsformatet understøttes ikke."
+    },
+    "db": {
+      "conflict": "Ændringen kom i konflikt med en anden opdatering. Prøv venligst igen."
+    },
+    "rate_limit": {
+      "exceeded": "For mange anmodninger. Prøv igen om {seconds}."
+    },
+    "internal": {
+      "error": "Der gik noget galt hos os. Prøv venligst igen."
+    },
+    "auth": {
+      "token_missing": "Du skal være logget ind for at gøre det.",
+      "token_invalid": "Din session er udløbet. Log venligst ind igen.",
+      "forbidden": "Du har ikke tilladelse til at gøre det.",
+      "invalid_credentials": "Ugyldigt brugernavn eller adgangskode.",
+      "required": "Ikke godkendt.",
+      "web_login_only": "Login er kun tilladt fra spilklienten.",
+      "too_many_attempts": "For mange forsøg. Vent et minut og prøv igen.",
+      "too_many_failed_attempts": "For mange mislykkede forsøg. Vent et par minutter og prøv igen.",
+      "current_password_incorrect": "Din nuværende adgangskode er forkert.",
+      "password_incorrect": "Din adgangskode er forkert.",
+      "verification_failed": "Verificeringen mislykkedes. Prøv venligst igen."
+    },
+    "account": {
+      "username_invalid": "Brugernavnet skal være på 3-24 tegn og bruge bogstaver, cifre eller understregning.",
+      "username_not_allowed": "Det brugernavn er ikke tilladt.",
+      "username_taken": "Det brugernavn er allerede optaget.",
+      "username_mismatch": "Det brugernavn passer ikke til din konto.",
+      "password_too_short": "Adgangskoden skal være på mindst 6 tegn.",
+      "password_too_long": "Den nye adgangskode må højst være på 128 tegn.",
+      "characters_online": "Log ud af alle dine karakterer, før du deaktiverer.",
+      "deactivated": "Denne konto er blevet deaktiveret. Kontakt en administrator for at genoprette den.",
+      "not_found": "Kontoen blev ikke fundet."
+    },
+    "character": {
+      "name_invalid": "Ugyldigt karakternavn. Brug 2-16 bogstaver.",
+      "name_not_allowed": "Det karakternavn er ikke tilladt.",
+      "invalid_class": "Ugyldig klasse.",
+      "limit_reached": "Grænsen for antal karakterer er nået.",
+      "name_taken": "Det navn er optaget.",
+      "not_found": "Karakteren blev ikke fundet.",
+      "online": "Karakteren er i øjeblikket online.",
+      "rename_not_permitted": "Det er ikke tilladt at omdøbe denne karakter.",
+      "delete_confirm": "Skriv karakterens navn for at bekræfte sletning.",
+      "already_in_world": "Karakteren er allerede i verdenen.",
+      "taken_over": "Din karakter blev overtaget af en anden session.",
+      "rename_required": "Denne karakter skal omdøbes, før den kan komme ind i verdenen."
+    },
+    "moderation": {
+      "suspended_until": "Denne konto er suspenderet indtil {date}.",
+      "suspended": "Denne konto er suspenderet.",
+      "banned": "Denne konto er blevet udelukket.",
+      "force_rename": "En moderator kræver, at en af dine karakterer omdøbes."
+    },
+    "email": {
+      "invalid": "Indtast en gyldig e-mailadresse.",
+      "unchanged": "Det er allerede din e-mailadresse."
+    },
+    "two_factor": {
+      "code_invalid": "Den kode er ikke gyldig, prøv igen.",
+      "setup_required": "Start opsætning af to-faktor først.",
+      "already_enabled": "To-faktor er allerede aktiveret.",
+      "not_enabled": "To-faktor er ikke aktiveret."
+    },
+    "origin": {
+      "cross_site": "Anmodningen blev blokeret af sikkerhedsmæssige årsager."
+    },
+    "discord": {
+      "not_configured": "Discord-integration er ikke tilgængelig lige nu.",
+      "expired": "Det Discord-login er udløbet. Log venligst ind med Discord igen.",
+      "already_linked": "Den Discord-konto er allerede knyttet til en anden konto.",
+      "password_required": "Angiv en adgangskode, før du fjerner tilknytningen til din Discord-konto.",
+      "unknown_swag": "Den belønning er ikke tilgængelig.",
+      "link_required": "Knyt din Discord-konto først.",
+      "swag_claimed": "Du har allerede indløst denne belønning.",
+      "swag_tier": "Nå en højere rang for at indløse denne.",
+      "swag_points": "Ikke nok point."
     }
   },
   "guide": {
@@ -2507,7 +2629,9 @@ export const da_DK: EnTranslations = {
   },
   "download": {
     "title": "Download Desktop-launcher",
-    "desc": "Hent den selvstændige launcher for optimeret ydeevne og fuldskærmsspil."
+    "desc": "Hent den selvstændige launcher for optimeret ydeevne og fuldskærmsspil.",
+    "macCta": "Download til macOS",
+    "windowsPending": "Windows-build afventer."
   },
   "comingSoon": {
     "placeholder": "Kommer snart...",
@@ -3379,9 +3503,12 @@ export const da_DK: EnTranslations = {
       "webLoginOnly": "Login er kun tilladt fra spilklienten.",
       "accountSuspended": "Denne konto er suspenderet indtil {date}.",
       "alreadyInWorld": "Karakteren er allerede i verdenen.",
+      "accountSessionLimit": "For mange karakterer på denne konto er allerede i verdenen.",
       "takenOver": "Din karakter blev overtaget af en anden session.",
       "renameBeforeEntering": "Denne karakter skal omdøbes, før den kan komme ind i verdenen.",
-      "renameNotPermitted": "Det er ikke tilladt at omdøbe denne karakter."
+      "renameNotPermitted": "Det er ikke tilladt at omdøbe denne karakter.",
+      "unsupportedMediaType": "Anmodningsformatet understøttes ikke.",
+      "crossSiteOrigin": "Anmodningen blev blokeret af sikkerhedsmæssige årsager."
     }
   },
   "desktop": {
@@ -5654,6 +5781,24 @@ export const da_DK: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Sølvbladsegl"
+      },
+      "thorium_mining_pick": {
+        "name": "Thoriumminehakke"
+      },
+      "arcanite_mining_pick": {
+        "name": "Arkanitminehakke"
+      },
+      "ashwood_axe": {
+        "name": "Askeøkse"
+      },
+      "elderwood_axe": {
+        "name": "Gammeltræsøkse"
+      },
+      "goldleaf_sickle": {
+        "name": "Guldbladssegl"
+      },
+      "sunpetal_sickle": {
+        "name": "Solkronbladssegl"
       },
       "bristleback_maul": {
         "name": "Gallowglass-Hammer"

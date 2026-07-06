@@ -311,7 +311,15 @@ export const de_DE: EnTranslations = {
       "nameplates": "Namen",
       "haptics": "Haptik",
       "hapticsOff": "Haptik aus",
-      "toggleHaptics": "Haptik umschalten"
+      "toggleHaptics": "Haptik umschalten",
+      "hotbarPage": "Fähigkeiten",
+      "hotbarPageAria": "Nächste Fähigkeitengruppe anzeigen",
+      "actionRing": "Combat actions",
+      "actionPageToggle": "Switch action page",
+      "actionPageIndicator": "{page}",
+      "targetCycle": "Swap target",
+      "targetCycleShort": "Target",
+      "spellbookPageLabel": "Page {page}"
     },
     "tutorial": {
       "moveBodyTouch": "Nutze den Bewegungsstick zum Bewegen und zieh über den Bildschirm, um dich umzusehen. Mach ein paar Schritte, um zu beginnen.",
@@ -418,7 +426,9 @@ export const de_DE: EnTranslations = {
       "itemLevelLine": "Gegenstandsstufe {level}",
       "itemScoreLine": "Wertung {score}",
       "showSecondaryActionBar": "Zweite Aktionsleiste anzeigen",
-      "showDailyRewardsChest": "Truhe der täglichen Belohnungen anzeigen"
+      "showDailyRewardsChest": "Truhe der täglichen Belohnungen anzeigen",
+      "mobileCameraJoystick": "Camera joystick",
+      "mobileLeftHanded": "Left-handed layout"
     },
     "controller": {
       "title": "Controller",
@@ -735,6 +745,23 @@ export const de_DE: EnTranslations = {
       "thresholdSet": "Beuteschwelle auf {threshold} gesetzt.",
       "summaryMaster": "Beute-Einstellungen: Meisterbeute, Plündermeister {name}, Schwelle {threshold}.",
       "summaryGroup": "Beute-Einstellungen: Gruppenbeute."
+    },
+    "corpseHarvest": {
+      "title": "Verwerten",
+      "harvestButton": "Verwerten",
+      "concentrateHint": "Je weniger Teile du wählst, desto höher ist die Qualitätsstufe jedes einzelnen Teils.",
+      "alreadyHarvested": "Dieser Kadaver wurde bereits verwertet.",
+      "componentAria": "{component} verwerten",
+      "components": {
+        "hide": "Haut",
+        "fang": "Fangzahn",
+        "silk": "Seide",
+        "venomSac": "Giftsack",
+        "gills": "Kiemen",
+        "claw": "Klaue",
+        "horn": "Horn",
+        "tusk": "Stoßzahn"
+      }
     },
     "party": {
       "promoteLeader": "Zum Anführer befördern",
@@ -1169,6 +1196,101 @@ export const de_DE: EnTranslations = {
     "social": {
       "lastSeen": "Zuletzt gesehen: {when}",
       "lastSeenNever": "nie"
+    },
+    "gathering": {
+      "title": "Sammeln",
+      "mining": "Bergbau",
+      "logging": "Holzfällen",
+      "herbalism": "Kräuterkunde"
+    }
+  },
+  "apiError": {
+    "validation": {
+      "failed": "Einige Felder sind ungültig. Prüfe das Formular und versuche es erneut."
+    },
+    "json": {
+      "malformed": "Diese Anfrage konnte nicht gelesen werden. Bitte versuche es erneut."
+    },
+    "body": {
+      "too_large": "Diese Anfrage ist zu groß. Versuche es mit weniger Daten erneut.",
+      "unsupported_media_type": "Nicht unterstütztes Anfrageformat."
+    },
+    "db": {
+      "conflict": "Diese Änderung kollidierte mit einer anderen Aktualisierung. Bitte versuche es erneut."
+    },
+    "rate_limit": {
+      "exceeded": "Zu viele Anfragen. Versuche es in {seconds} erneut."
+    },
+    "internal": {
+      "error": "Auf unserer Seite ist etwas schiefgelaufen. Bitte versuche es erneut."
+    },
+    "auth": {
+      "token_missing": "Du musst angemeldet sein, um das zu tun.",
+      "token_invalid": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+      "forbidden": "Du hast keine Berechtigung, das zu tun.",
+      "invalid_credentials": "Benutzername oder Passwort ungültig.",
+      "required": "Nicht angemeldet.",
+      "web_login_only": "Anmeldungen sind nur über den Spiel-Client erlaubt.",
+      "too_many_attempts": "Zu viele Versuche. Warte eine Minute und versuche es erneut.",
+      "too_many_failed_attempts": "Zu viele fehlgeschlagene Versuche. Warte ein paar Minuten und versuche es erneut.",
+      "current_password_incorrect": "Dein aktuelles Passwort ist falsch.",
+      "password_incorrect": "Dein Passwort ist falsch.",
+      "verification_failed": "Verifizierung fehlgeschlagen. Bitte versuche es erneut."
+    },
+    "account": {
+      "username_invalid": "Der Benutzername muss 3-24 Zeichen lang sein und Buchstaben, Ziffern oder Unterstrich verwenden.",
+      "username_not_allowed": "Dieser Benutzername ist nicht erlaubt.",
+      "username_taken": "Dieser Benutzername ist bereits vergeben.",
+      "username_mismatch": "Dieser Benutzername passt nicht zu deinem Konto.",
+      "password_too_short": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+      "password_too_long": "Das neue Passwort darf höchstens 128 Zeichen lang sein.",
+      "characters_online": "Melde alle deine Charaktere ab, bevor du das Konto deaktivierst.",
+      "deactivated": "Dieses Konto wurde deaktiviert. Wende dich an einen Administrator, um es wiederherzustellen.",
+      "not_found": "Konto nicht gefunden."
+    },
+    "character": {
+      "name_invalid": "Ungültiger Charaktername. Verwende 2-16 Buchstaben.",
+      "name_not_allowed": "Dieser Charaktername ist nicht erlaubt.",
+      "invalid_class": "Ungültige Klasse.",
+      "limit_reached": "Charakterlimit erreicht.",
+      "name_taken": "Dieser Name ist bereits vergeben.",
+      "not_found": "Charakter nicht gefunden.",
+      "online": "Der Charakter ist derzeit online.",
+      "rename_not_permitted": "Das Umbenennen dieses Charakters ist nicht erlaubt.",
+      "delete_confirm": "Gib den Charakternamen ein, um das Löschen zu bestätigen.",
+      "already_in_world": "Der Charakter ist bereits in der Welt.",
+      "taken_over": "Dein Charakter wurde von einer anderen Sitzung übernommen.",
+      "rename_required": "Dieser Charakter muss vor dem Betreten der Welt umbenannt werden."
+    },
+    "moderation": {
+      "suspended_until": "Dieses Konto ist bis {date} suspendiert.",
+      "suspended": "Dieses Konto ist suspendiert.",
+      "banned": "Dieses Konto wurde gesperrt.",
+      "force_rename": "Ein Moderator verlangt, dass einer deiner Charaktere umbenannt wird."
+    },
+    "email": {
+      "invalid": "Gib eine gültige E-Mail-Adresse ein.",
+      "unchanged": "Das ist bereits deine E-Mail-Adresse."
+    },
+    "two_factor": {
+      "code_invalid": "Dieser Code ist ungültig, versuche es erneut.",
+      "setup_required": "Starte zuerst die Zwei-Faktor-Einrichtung.",
+      "already_enabled": "Zwei-Faktor ist bereits aktiviert.",
+      "not_enabled": "Zwei-Faktor ist nicht aktiviert."
+    },
+    "origin": {
+      "cross_site": "Anfrage aus Sicherheitsgründen blockiert."
+    },
+    "discord": {
+      "not_configured": "Die Discord-Integration ist derzeit nicht verfügbar.",
+      "expired": "Diese Discord-Anmeldung ist abgelaufen. Bitte melde dich erneut mit Discord an.",
+      "already_linked": "Dieses Discord-Konto ist bereits mit einem anderen Konto verknüpft.",
+      "password_required": "Lege ein Passwort fest, bevor du dein Discord-Konto trennst.",
+      "unknown_swag": "Diese Belohnung ist nicht verfügbar.",
+      "link_required": "Verknüpfe zuerst dein Discord-Konto.",
+      "swag_claimed": "Du hast diese Belohnung bereits beansprucht.",
+      "swag_tier": "Erreiche einen höheren Rang, um dies zu beanspruchen.",
+      "swag_points": "Nicht genügend Punkte."
     }
   },
   "guide": {
@@ -2507,7 +2629,9 @@ export const de_DE: EnTranslations = {
   },
   "download": {
     "title": "Desktop-Launcher herunterladen",
-    "desc": "Hol dir den eigenständigen Launcher für optimierte Leistung und Vollbildspiel."
+    "desc": "Hol dir den eigenständigen Launcher für optimierte Leistung und Vollbildspiel.",
+    "macCta": "Download fuer macOS",
+    "windowsPending": "Windows-Build ausstehend."
   },
   "comingSoon": {
     "placeholder": "Demnächst...",
@@ -3379,9 +3503,12 @@ export const de_DE: EnTranslations = {
       "webLoginOnly": "Anmeldungen sind nur über den Spiel-Client erlaubt.",
       "accountSuspended": "Dieses Konto ist bis {date} suspendiert.",
       "alreadyInWorld": "Der Charakter ist bereits in der Welt.",
+      "accountSessionLimit": "Zu viele Charaktere dieses Kontos sind bereits in der Welt.",
       "takenOver": "Dein Charakter wurde von einer anderen Sitzung übernommen.",
       "renameBeforeEntering": "Dieser Charakter muss vor dem Betreten der Welt umbenannt werden.",
-      "renameNotPermitted": "Das Umbenennen dieses Charakters ist nicht erlaubt."
+      "renameNotPermitted": "Das Umbenennen dieses Charakters ist nicht erlaubt.",
+      "unsupportedMediaType": "Nicht unterstütztes Anfrageformat.",
+      "crossSiteOrigin": "Anfrage aus Sicherheitsgründen blockiert."
     }
   },
   "desktop": {
@@ -5654,6 +5781,24 @@ export const de_DE: EnTranslations = {
       },
       "silverleaf_sickle": {
         "name": "Silberblatt-Sichel"
+      },
+      "thorium_mining_pick": {
+        "name": "Thorium-Grabpickel"
+      },
+      "arcanite_mining_pick": {
+        "name": "Arkanit-Grabpickel"
+      },
+      "ashwood_axe": {
+        "name": "Eschenholzaxt"
+      },
+      "elderwood_axe": {
+        "name": "Altholzaxt"
+      },
+      "goldleaf_sickle": {
+        "name": "Goldblatt-Sichel"
+      },
+      "sunpetal_sickle": {
+        "name": "Sonnenblütensichel"
       },
       "bristleback_maul": {
         "name": "Gallowglass-Hammer"

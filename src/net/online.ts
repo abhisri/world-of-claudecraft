@@ -172,10 +172,29 @@ export class ApiError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    // The stable machine code from the server's error body (RFC 9457 problem+json
+    // `code`, or the additive `code` on a migrated legacy body), when present. The
+    // client matcher (src/ui/api_error_i18n.ts) prefers it over the English message.
+    readonly code?: string,
+    // The parsed error body, so the matcher can read code params (e.g.
+    // retryAfterSeconds, date) that ride top-level alongside the code.
+    readonly params?: Record<string, unknown>,
   ) {
     super(message);
     this.name = 'ApiError';
   }
+}
+
+// Builds the ApiError for a non-ok JSON response, capturing the stable `code` and
+// the body params when the server sent them (both problem+json and the migrated
+// legacy `{ error, code, ... }` bodies carry a top-level `code`).
+function apiErrorFromBody(data: unknown, status: number): ApiError {
+  const body = data && typeof data === 'object' ? (data as Record<string, unknown>) : undefined;
+  const rawError = body?.error;
+  const message = typeof rawError === 'string' ? rawError : `request failed (${status})`;
+  const rawCode = body?.code;
+  const code = typeof rawCode === 'string' && rawCode.length > 0 ? rawCode : undefined;
+  return new ApiError(message, status, code, code ? body : undefined);
 }
 
 /** True for an auth-class failure where a stored token should be discarded. */
@@ -238,7 +257,7 @@ export class Api {
       body: JSON.stringify(body),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new ApiError(data.error ?? `request failed (${res.status})`, res.status);
+    if (!res.ok) throw apiErrorFromBody(data, res.status);
     return data;
   }
 
@@ -247,7 +266,7 @@ export class Api {
       headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new ApiError(data.error ?? `request failed (${res.status})`, res.status);
+    if (!res.ok) throw apiErrorFromBody(data, res.status);
     return data;
   }
 
@@ -261,7 +280,7 @@ export class Api {
       body: JSON.stringify(body),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new ApiError(data.error ?? `request failed (${res.status})`, res.status);
+    if (!res.ok) throw apiErrorFromBody(data, res.status);
     return data;
   }
 
@@ -441,13 +460,13 @@ export class Api {
     });
     const text = await res.text();
     if (!res.ok) {
-      let msg = `request failed (${res.status})`;
+      let data: unknown;
       try {
-        msg = JSON.parse(text).error ?? msg;
+        data = JSON.parse(text);
       } catch {
-        /* non-JSON error body */
+        /* non-JSON error body: apiErrorFromBody keeps the diagnostic message */
       }
-      throw new ApiError(msg, res.status);
+      throw apiErrorFromBody(data, res.status);
     }
     return JSON.parse(text);
   }
@@ -808,6 +827,9 @@ function blankEntity(id: number): Entity {
     yelledEngage: false,
     stoneskinTimer: 0,
     terrifyTimer: 0,
+    aoeSlowTimer: 0,
+    loudYellTimer: 0,
+    loudYellIndex: 0,
     detonateTimer: Infinity,
     firedSummons: 0,
     summonedIds: [],
@@ -1805,8 +1827,8 @@ export class ClientWorld implements IWorld {
   autoLoot(id: number): void {
     this.cmd({ cmd: 'autoloot', id });
   }
-  harvestCorpse(id: number): void {
-    this.cmd({ cmd: 'harvestCorpse', id });
+  harvestCorpse(id: number, components?: string[]): void {
+    this.cmd({ cmd: 'harvestCorpse', id, components });
   }
   // --- IWorldLoot: need-greed roll submit + HUD reconcile read ---
   submitLootRoll(rollId: number, choice: LootRollChoice): void {
